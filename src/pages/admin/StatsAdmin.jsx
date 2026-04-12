@@ -1,0 +1,424 @@
+// ============================================================
+// src/pages/admin/StatsAdmin.jsx — Tableau de bord analytique
+// ============================================================
+import { useEffect, useState, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Users, GraduationCap, BookOpen, TrendingUp,
+  CheckCircle, Calendar, Award, Globe2,
+  RefreshCw, ChevronUp, ChevronDown, Minus,
+} from 'lucide-react';
+import { LayoutAdmin } from './LayoutAdmin';
+import axios from 'axios';
+import toast from 'react-hot-toast';
+
+const API = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
+// ── Helpers ──────────────────────────────────────────────────
+function fmt(n) {
+  if (n === null || n === undefined) return '—';
+  if (n >= 1000) return (n / 1000).toFixed(1) + 'k';
+  return n;
+}
+
+function dateFr(iso) {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleDateString('fr-SN', {
+    day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit',
+  });
+}
+
+function jourFr(yyyymmdd) {
+  if (!yyyymmdd) return '';
+  const [, m, d] = yyyymmdd.split('-');
+  const jours = ['', 'Jan','Fév','Mar','Avr','Mai','Juin','Juil','Aoû','Sep','Oct','Nov','Déc'];
+  return `${parseInt(d)} ${jours[parseInt(m)]}`;
+}
+
+const NIVEAU_ORDER = ['CM1','CM2','6eme','5eme','4eme','3eme','Seconde','Premiere','Terminale'];
+
+const COULEURS_NIVEAU = {
+  CM1:'bg-tate-soleil', CM2:'bg-amber-400',
+  '6eme':'bg-savoir',   '5eme':'bg-blue-400',
+  '4eme':'bg-purple-400','3eme':'bg-pink-400',
+  Seconde:'bg-emerald-500', Premiere:'bg-teal-500', Terminale:'bg-cyan-600',
+};
+
+// ── Carte stat ────────────────────────────────────────────────
+function StatCard({ label, value, icon: Icon, color, sub, trend }) {
+  return (
+    <motion.div whileHover={{ y:-3, boxShadow:'0 8px 24px rgba(61,28,0,.10)' }}
+      className="card flex items-start gap-4">
+      <div className={`w-12 h-12 rounded-2xl ${color} flex items-center justify-center flex-shrink-0`}>
+        <Icon size={22} className="text-white" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-2xl font-bold text-tate-terre leading-none">{value}</p>
+        <p className="text-sm text-tate-terre/60 mt-0.5">{label}</p>
+        {sub && <p className="text-xs text-tate-terre/40 mt-0.5">{sub}</p>}
+      </div>
+      {trend !== undefined && (
+        <div className={`flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-full ${
+          trend > 0 ? 'bg-green-50 text-succes' :
+          trend < 0 ? 'bg-red-50 text-alerte'  : 'bg-gray-50 text-gray-500'
+        }`}>
+          {trend > 0 ? <ChevronUp size={12} /> : trend < 0 ? <ChevronDown size={12} /> : <Minus size={12} />}
+          {Math.abs(trend)}%
+        </div>
+      )}
+    </motion.div>
+  );
+}
+
+// ── Barre de progression simple ───────────────────────────────
+function BarreProgression({ label, value, max, couleur, pct, right }) {
+  const p = pct !== undefined ? pct : (max > 0 ? Math.round((value / max) * 100) : 0);
+  return (
+    <div className="mb-3">
+      <div className="flex justify-between text-sm mb-1.5">
+        <span className="font-medium text-tate-terre truncate max-w-[55%]">{label}</span>
+        <span className="text-tate-terre/60 text-xs">{right ?? `${value} session${value !== 1 ? 's' : ''}`}</span>
+      </div>
+      <div className="h-2.5 bg-tate-doux rounded-full overflow-hidden">
+        <motion.div
+          initial={{ width:0 }} animate={{ width:`${p}%` }}
+          transition={{ duration:0.8, ease:'easeOut' }}
+          className={`h-full rounded-full ${couleur || 'bg-tate-soleil'}`}
+        />
+      </div>
+    </div>
+  );
+}
+
+// ── Mini graphique 7 jours (barres CSS) ──────────────────────
+function GraphiqueSemaine({ data }) {
+  if (!data || data.length === 0) {
+    return <p className="text-sm text-tate-terre/40 text-center py-8">Aucune donnée cette semaine</p>;
+  }
+  const maxVal = Math.max(...data.map(d => d.total), 1);
+  return (
+    <div className="flex items-end gap-2 h-28 mt-2">
+      {data.map((d, i) => {
+        const hPct = Math.round((d.total / maxVal) * 100);
+        const rPct = d.total > 0 ? Math.round((d.reussies / d.total) * 100) : 0;
+        return (
+          <div key={i} className="flex-1 flex flex-col items-center gap-1 group relative">
+            {/* Tooltip */}
+            <div className="absolute bottom-full mb-1 hidden group-hover:flex flex-col items-center z-10">
+              <div className="bg-tate-terre text-white text-xs rounded-xl px-3 py-1.5 whitespace-nowrap shadow-lg">
+                <p className="font-semibold">{jourFr(d._id)}</p>
+                <p>{d.total} session{d.total !== 1 ? 's' : ''} · {rPct}% réussite</p>
+              </div>
+              <div className="w-2 h-2 bg-tate-terre rotate-45 -mt-1" />
+            </div>
+            {/* Barre réussite (en vert par-dessus) */}
+            <div className="w-full flex-1 relative rounded-t-lg overflow-hidden bg-tate-doux">
+              <motion.div
+                initial={{ height:0 }}
+                animate={{ height:`${hPct}%` }}
+                transition={{ duration:0.6, delay: i * 0.05, ease:'easeOut' }}
+                className="absolute bottom-0 w-full bg-tate-soleil/80"
+              />
+              <motion.div
+                initial={{ height:0 }}
+                animate={{ height:`${Math.round((d.reussies / Math.max(d.total,1)) * hPct)}%` }}
+                transition={{ duration:0.6, delay: i * 0.05 + 0.2, ease:'easeOut' }}
+                className="absolute bottom-0 w-full bg-succes/70"
+              />
+            </div>
+            <span className="text-[10px] text-tate-terre/50 mt-0.5">{jourFr(d._id)}</span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// ── Badge niveau ──────────────────────────────────────────────
+function BadgeNiveau({ niveau }) {
+  const colors = {
+    CM1:'bg-amber-100 text-amber-700', CM2:'bg-amber-100 text-amber-700',
+    '6eme':'bg-blue-100 text-blue-700', '5eme':'bg-blue-100 text-blue-700',
+    '4eme':'bg-purple-100 text-purple-700', '3eme':'bg-pink-100 text-pink-700',
+    Seconde:'bg-emerald-100 text-emerald-700',
+    Premiere:'bg-teal-100 text-teal-700',
+    Terminale:'bg-cyan-100 text-cyan-700',
+  };
+  return (
+    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${colors[niveau] || 'bg-gray-100 text-gray-600'}`}>
+      {niveau || '—'}
+    </span>
+  );
+}
+
+// ── Composant principal ───────────────────────────────────────
+export function StatsAdmin() {
+  const [data,    setData]    = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [err,     setErr]     = useState(null);
+
+  const charger = useCallback(async () => {
+    setLoading(true);
+    setErr(null);
+    try {
+      const token = localStorage.getItem('accessToken');
+      const r = await axios.get(`${API}/stats/admin`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setData(r.data.data);
+    } catch (e) {
+      const msg = e.response?.data?.error || e.message;
+      setErr(msg);
+      toast.error('Impossible de charger les statistiques');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { charger(); }, [charger]);
+
+  // ── Calculs dérivés ──
+  const maxEleves = data
+    ? Math.max(...(data.elevesParNiveau || []).map(n => n.count), 1)
+    : 1;
+
+  const niveauxTriés = data
+    ? [...(data.elevesParNiveau || [])].sort((a, b) => {
+        const ia = NIVEAU_ORDER.indexOf(a._id);
+        const ib = NIVEAU_ORDER.indexOf(b._id);
+        return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
+      })
+    : [];
+
+  // ── Action refresh ──
+  const BtnRefresh = (
+    <button onClick={charger}
+      className="flex items-center gap-2 text-sm font-medium text-tate-terre/60 hover:text-tate-terre
+                 bg-white border border-tate-border rounded-xl px-3 py-1.5 hover:bg-tate-doux transition-all">
+      <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
+      Actualiser
+    </button>
+  );
+
+  return (
+    <LayoutAdmin titre="Statistiques" action={BtnRefresh}>
+      <AnimatePresence mode="wait">
+        {loading && !data ? (
+          <motion.div key="loader" initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }}
+            className="flex flex-col items-center justify-center py-24 gap-4">
+            <div className="w-12 h-12 rounded-full border-4 border-tate-soleil border-t-transparent animate-spin" />
+            <p className="text-tate-terre/50 text-sm">Chargement des statistiques…</p>
+          </motion.div>
+        ) : err ? (
+          <motion.div key="err" initial={{ opacity:0 }} animate={{ opacity:1 }}
+            className="card text-center py-16">
+            <p className="text-4xl mb-3">⚠️</p>
+            <p className="font-serif text-tate-terre font-bold mb-1">Erreur de chargement</p>
+            <p className="text-tate-terre/50 text-sm mb-4">{err}</p>
+            <button onClick={charger} className="btn-tate px-6 py-2 text-sm">Réessayer</button>
+          </motion.div>
+        ) : data && (
+          <motion.div key="content" initial={{ opacity:0, y:6 }} animate={{ opacity:1, y:0 }}>
+
+            {/* ── Cartes résumé ── */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+              <StatCard
+                label="Élèves actifs"     value={fmt(data.totalEleves)}
+                icon={Users}              color="bg-tate-soleil"
+                sub={`+${data.nouveauxEleves} ce mois`} />
+              <StatCard
+                label="Professeurs"       value={fmt(data.totalProfs)}
+                icon={GraduationCap}      color="bg-savoir" />
+              <StatCard
+                label="Sessions totales"  value={fmt(data.totalSessions)}
+                icon={BookOpen}           color="bg-succes"
+                sub={`${data.sessionsAujourd} aujourd'hui`} />
+              <StatCard
+                label="Taux de réussite"  value={`${data.tauxReussite}%`}
+                icon={TrendingUp}         color="bg-alerte"
+                sub={`${fmt(data.sessionsReussies)} chapitres maîtrisés`} />
+            </div>
+
+            {/* ── Ligne 2 : graphique semaine + répartition niveaux ── */}
+            <div className="grid lg:grid-cols-2 gap-6 mb-6">
+
+              {/* Activité 7 jours */}
+              <div className="card">
+                <h2 className="font-serif font-bold text-tate-terre mb-1 flex items-center gap-2">
+                  <Calendar size={17} className="text-tate-soleil" />
+                  Activité — 7 derniers jours
+                </h2>
+                <p className="text-xs text-tate-terre/40 mb-4">
+                  <span className="inline-block w-3 h-2 rounded bg-tate-soleil/80 mr-1 align-middle" />sessions totales &nbsp;
+                  <span className="inline-block w-3 h-2 rounded bg-succes/70 mr-1 align-middle" />maîtrisées
+                </p>
+                <GraphiqueSemaine data={data.sessionsParJour} />
+              </div>
+
+              {/* Répartition niveaux */}
+              <div className="card">
+                <h2 className="font-serif font-bold text-tate-terre mb-4 flex items-center gap-2">
+                  <GraduationCap size={17} className="text-tate-soleil" />
+                  Élèves par niveau
+                </h2>
+                {niveauxTriés.length === 0 ? (
+                  <p className="text-sm text-tate-terre/40 text-center py-8">Aucun élève inscrit</p>
+                ) : (
+                  niveauxTriés.map(n => (
+                    <BarreProgression
+                      key={n._id}
+                      label={n._id || 'Sans niveau'}
+                      value={n.count}
+                      max={maxEleves}
+                      couleur={COULEURS_NIVEAU[n._id] || 'bg-tate-soleil'}
+                      right={`${n.count} élève${n.count > 1 ? 's' : ''}`}
+                    />
+                  ))
+                )}
+              </div>
+
+            </div>
+
+            {/* ── Ligne 3 : top chapitres + top élèves ── */}
+            <div className="grid lg:grid-cols-2 gap-6 mb-6">
+
+              {/* Top chapitres */}
+              <div className="card">
+                <h2 className="font-serif font-bold text-tate-terre mb-4 flex items-center gap-2">
+                  <BookOpen size={17} className="text-tate-soleil" />
+                  Chapitres les plus travaillés
+                </h2>
+                {data.topChapitres.length === 0 ? (
+                  <p className="text-sm text-tate-terre/40 text-center py-8">Aucune session enregistrée</p>
+                ) : (
+                  <div className="space-y-3">
+                    {data.topChapitres.map((c, i) => (
+                      <div key={i} className="flex items-center gap-3">
+                        <span className="w-6 h-6 rounded-full bg-tate-doux text-xs font-bold text-tate-terre flex items-center justify-center flex-shrink-0">
+                          {i + 1}
+                        </span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-tate-terre truncate">{c.titre}</p>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            {c.niveau && <BadgeNiveau niveau={c.niveau} />}
+                            <span className="text-xs text-tate-terre/40">
+                              {c.total} session{c.total !== 1 ? 's' : ''}
+                            </span>
+                          </div>
+                        </div>
+                        <div className={`text-sm font-bold px-2.5 py-1 rounded-xl ${
+                          c.tauxPct >= 80 ? 'bg-green-50 text-succes' :
+                          c.tauxPct >= 60 ? 'bg-amber-50 text-amber-600' :
+                          'bg-red-50 text-alerte'
+                        }`}>
+                          {c.tauxPct}%
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Top élèves */}
+              <div className="card">
+                <h2 className="font-serif font-bold text-tate-terre mb-4 flex items-center gap-2">
+                  <Award size={17} className="text-tate-soleil" />
+                  Meilleurs élèves
+                </h2>
+                {data.topEleves.length === 0 ? (
+                  <p className="text-sm text-tate-terre/40 text-center py-8">Aucun élève actif</p>
+                ) : (
+                  <div className="space-y-3">
+                    {data.topEleves.map((e, i) => (
+                      <div key={i} className="flex items-center gap-3">
+                        <span className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm text-white flex-shrink-0 ${
+                          i === 0 ? 'bg-tate-soleil' : i === 1 ? 'bg-gray-300' : i === 2 ? 'bg-amber-600' : 'bg-tate-doux text-tate-terre'
+                        }`}>
+                          {i < 3 ? ['🥇','🥈','🥉'][i] : i + 1}
+                        </span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold text-tate-terre truncate">{e.nom}</p>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            {e.niveau && <BadgeNiveau niveau={e.niveau} />}
+                            <span className="text-xs text-tate-terre/40">
+                              {e.maitrises} chapitre{e.maitrises !== 1 ? 's' : ''} maîtrisé{e.maitrises !== 1 ? 's' : ''}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm font-bold text-tate-terre">{e.sessions}</p>
+                          <p className="text-xs text-tate-terre/40">sessions</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+            </div>
+
+            {/* ── Ligne 4 : activité langues + sessions récentes ── */}
+            <div className="grid lg:grid-cols-2 gap-6">
+
+              {/* Langues */}
+              <div className="card">
+                <h2 className="font-serif font-bold text-tate-terre mb-4 flex items-center gap-2">
+                  <Globe2 size={17} className="text-tate-soleil" />
+                  Cours de langues — 30 jours
+                </h2>
+                {data.activiteLangues.length === 0 ? (
+                  <p className="text-sm text-tate-terre/40 text-center py-8">Aucune activité langue ce mois</p>
+                ) : (
+                  (() => {
+                    const maxL = Math.max(...data.activiteLangues.map(l => l.total), 1);
+                    return data.activiteLangues.map((l, i) => (
+                      <BarreProgression
+                        key={i}
+                        label={l._id}
+                        value={l.total}
+                        max={maxL}
+                        couleur="bg-savoir"
+                        right={`${l.total} session${l.total !== 1 ? 's' : ''}`}
+                      />
+                    ));
+                  })()
+                )}
+              </div>
+
+              {/* Sessions récentes */}
+              <div className="card">
+                <h2 className="font-serif font-bold text-tate-terre mb-4 flex items-center gap-2">
+                  <CheckCircle size={17} className="text-tate-soleil" />
+                  Sessions récentes
+                </h2>
+                {data.sessionsRecentes.length === 0 ? (
+                  <p className="text-sm text-tate-terre/40 text-center py-8">Aucune session terminée</p>
+                ) : (
+                  <div className="space-y-0 divide-y divide-tate-border/40">
+                    {data.sessionsRecentes.map((s, i) => (
+                      <div key={i} className="flex items-center gap-3 py-2.5">
+                        <div className={`w-2 h-2 rounded-full flex-shrink-0 ${s.maitrise ? 'bg-succes' : 'bg-alerte'}`} />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-tate-terre truncate">{s.eleveNom}</p>
+                          <p className="text-xs text-tate-terre/50 truncate">{s.chapitreNom}</p>
+                        </div>
+                        <div className="text-right flex-shrink-0">
+                          <p className={`text-sm font-bold ${s.maitrise ? 'text-succes' : 'text-alerte'}`}>
+                            {s.scorePct}%
+                          </p>
+                          <p className="text-[10px] text-tate-terre/40">{dateFr(s.completedAt)}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+            </div>
+
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </LayoutAdmin>
+  );
+}

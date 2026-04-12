@@ -1,0 +1,81 @@
+// ─────────────────────────────────────────────
+// src/store/useEleveStore.js
+// Flux simplifié : accueil → cours HTML plein écran → score
+// Le QCM est intégré dans le HTML. La détection se fait côté client.
+// ─────────────────────────────────────────────
+import { create } from 'zustand';
+import api from '../lib/api';
+
+export const useEleveStore = create((set, get) => ({
+  chapitres:    [],
+  chapitreActif: null,   // { _id, titre, matiere, niveau }
+  leconActive:  null,    // { _id, chapitreId, contenuHTML, titre }
+  chargement:   false,
+
+  // ── Charger les chapitres ─────────────────────────────────
+  chargerChapitres: async (niveau, matiereCode) => {
+    try {
+      set({ chargement: true });
+      const params = new URLSearchParams({ niveau });
+      if (matiereCode) params.append('matiereCode', matiereCode);
+      const { data } = await api.get(`/chapitres?${params}`);
+      set({ chapitres: data.data });
+    } catch {
+      set({ chapitres: [] });
+    } finally {
+      set({ chargement: false });
+    }
+  },
+
+  // ── Ouvrir un chapitre : charger le cours HTML publié ────
+  ouvrirChapitre: async (chapitre) => {
+    set({ chargement: true, chapitreActif: chapitre, leconActive: null });
+    try {
+      const { data } = await api.get(`/lecons/${chapitre._id}`);
+      set({ leconActive: data.data });
+    } catch (e) {
+      const msg = e.response?.data?.error || e.message;
+      set({ leconActive: null });
+      throw new Error(msg);
+    } finally {
+      set({ chargement: false });
+    }
+  },
+
+  // ── Soumettre le score calculé depuis le HTML ─────────────
+  soumettreScore: async ({ chapitreId, leconId, score, nbCorrectes, nbTotal }) => {
+    const { data } = await api.post('/resultats/soumettre', {
+      chapitreId, leconId, score, nbCorrectes, nbTotal,
+    });
+    // Mettre à jour localement les chapitres validés si maîtrisé
+    if (data.data.maitrise) {
+      set(s => ({
+        chapitres: s.chapitres.map(c =>
+          c._id === chapitreId ? { ...c, _valide: true } : c
+        ),
+      }));
+    }
+    return data.data;
+  },
+
+  // ── Retourner à la liste ──────────────────────────────────
+  retourAccueil: () => set({ leconActive: null, chapitreActif: null }),
+
+  // ── Charger le QCM actif d'un chapitre ───────────────────
+  chargerQCMChapitre: async (chapitreId) => {
+    const { data } = await api.get(`/qcm/chapitre/${chapitreId}/actif`);
+    return data.data;
+  },
+
+  // ── Soumettre les réponses du QCM ─────────────────────────
+  soumettreQCM: async (qcmId, reponses) => {
+    const { data } = await api.post(`/qcm/${qcmId}/soumettre`, { reponses });
+    return data.data;
+  },
+
+  // ── Régénérer un QCM avec variation ──────────────────────
+  regenererQCM: async (qcmId, chapitreId) => {
+    const { data } = await api.post(`/qcm/${qcmId}/regenerer`, { chapitreId });
+    return data.data;
+  },
+}));

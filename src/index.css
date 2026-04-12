@@ -1,0 +1,173 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-tate-creme text-tate-terre font-sans;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  h1, h2, h3 { @apply font-serif; }
+  * { @apply scroll-smooth; }
+}
+
+@layer components {
+
+  /* ── Bouton principal Taté ─────────────────────────────── */
+  .btn-tate {
+    @apply relative overflow-hidden font-bold px-6 py-3 rounded-2xl
+           text-white transition-all duration-200
+           active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed
+           shadow-tate;
+    background: linear-gradient(135deg, #F97316 0%, #EA580C 100%);
+  }
+  .btn-tate:hover:not(:disabled) {
+    box-shadow: 0 8px 32px rgba(249, 115, 22, 0.35);
+    transform: translateY(-1px);
+  }
+  .btn-tate:active:not(:disabled) {
+    transform: scale(0.95) translateY(0);
+  }
+
+  /* ── Bouton secondaire ────────────────────────────────── */
+  .btn-outline {
+    @apply border-2 border-tate-border text-tate-terre font-semibold px-6 py-3 rounded-2xl
+           hover:bg-tate-doux hover:border-tate-soleil
+           active:scale-95 transition-all duration-150;
+  }
+
+  /* ── Bouton sombre ────────────────────────────────────── */
+  .btn-dark {
+    @apply font-bold px-6 py-3 rounded-2xl text-white
+           active:scale-95 transition-all duration-150 shadow-card-lg;
+    background: linear-gradient(135deg, #1C0A00 0%, #431407 100%);
+  }
+  .btn-dark:hover:not(:disabled) {
+    opacity: 0.88;
+    transform: translateY(-1px);
+  }
+
+  /* ── Bouton succès ────────────────────────────────────── */
+  .btn-succes {
+    @apply font-bold px-6 py-3 rounded-2xl text-white
+           active:scale-95 transition-all duration-150;
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.25);
+  }
+
+  /* ── Carte standard ───────────────────────────────────── */
+  .card {
+    @apply bg-white rounded-2xl border border-tate-border p-4 shadow-card;
+    transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
+  }
+  .card:hover {
+    box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  }
+
+  /* ── Carte interactive ────────────────────────────────── */
+  .card-interactive {
+    @apply card cursor-pointer;
+  }
+  .card-interactive:hover {
+    @apply border-tate-soleil;
+    box-shadow: 0 6px 30px rgba(249, 115, 22, 0.15);
+    transform: translateY(-1px);
+  }
+  .card-interactive:active {
+    transform: scale(0.98);
+  }
+
+  /* ── Badge ────────────────────────────────────────────── */
+  .badge {
+    @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold;
+  }
+  .badge-premium {
+    @apply badge text-amber-800;
+    background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+    border: 1px solid #F59E0B;
+  }
+  .badge-success {
+    @apply badge bg-emerald-100 text-emerald-700 border border-emerald-200;
+  }
+  .badge-info {
+    @apply badge bg-blue-100 text-blue-700 border border-blue-200;
+  }
+  .badge-warning {
+    @apply badge bg-orange-100 text-orange-700 border border-orange-200;
+  }
+
+  /* ── Input ────────────────────────────────────────────── */
+  .input-tate {
+    @apply w-full border-2 border-tate-border rounded-xl px-4 py-3 text-tate-terre
+           bg-white placeholder-neutre
+           focus:outline-none focus:border-tate-soleil focus:ring-2 focus:ring-tate-soleil/15
+           transition-all duration-150 text-base;
+  }
+  .input-tate:focus {
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.12);
+  }
+
+  /* ── Barre de progression ─────────────────────────────── */
+  .progress-bar {
+    @apply h-2.5 bg-tate-doux rounded-full overflow-hidden;
+  }
+  .progress-fill {
+    @apply h-full rounded-full transition-all duration-700 ease-out;
+    background: linear-gradient(90deg, #F97316, #F59E0B);
+  }
+
+  /* ── Header élève vibrant ─────────────────────────────── */
+  .header-eleve {
+    @apply sticky top-0 z-20;
+    background: rgba(255, 251, 245, 0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid #FDE68A;
+    box-shadow: 0 2px 16px rgba(249, 115, 22, 0.08);
+  }
+
+  /* ── Gradient texte ───────────────────────────────────── */
+  .text-gradient {
+    background: linear-gradient(135deg, #F97316, #7C3AED);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .text-gradient-gold {
+    background: linear-gradient(135deg, #F97316, #F59E0B);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ── Skeleton loader ──────────────────────────────────── */
+  .skeleton {
+    @apply rounded-xl;
+    background: linear-gradient(90deg, #FFF4E6 25%, #FFF8F0 50%, #FFF4E6 75%);
+    background-size: 400% 100%;
+    animation: shimmer 1.6s ease-in-out infinite;
+  }
+
+  /* ── Divider ──────────────────────────────────────────── */
+  .divider {
+    @apply flex items-center gap-3 text-xs text-neutre font-semibold uppercase tracking-wider;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    @apply flex-1 h-px bg-tate-border;
+  }
+
+  /* ── Scrollbar cachée ─────────────────────────────────── */
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+}
+
+/* ── Animations globales ──────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-6px); }
+}
