@@ -2,8 +2,9 @@
 // src/pages/RegisterEleve.jsx — Inscription élève
 // ============================================================
 import { useState } from 'react';
-import { motion }   from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { Mail, Phone } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import axios from 'axios';
 import toast from 'react-hot-toast';
@@ -20,8 +21,9 @@ export function RegisterEleve() {
   const navigate = useNavigate();
   const { setUser } = useAuthStore();
 
+  const [mode, setMode] = useState('email'); // 'email' | 'telephone'
   const [form, setForm] = useState({
-    nom: '', email: '', password: '', confirmPassword: '',
+    nom: '', email: '', telephone: '', password: '', confirmPassword: '',
     niveau: '', parentEmail: '',
   });
   const [loading, setLoading] = useState(false);
@@ -34,16 +36,25 @@ export function RegisterEleve() {
       return toast.error('Les mots de passe ne correspondent pas');
     if (!form.niveau)
       return toast.error('Choisis ton niveau scolaire');
+    if (!form.nom.trim())
+      return toast.error('Ton prénom et nom sont requis');
 
     setLoading(true);
     try {
-      const { data } = await axios.post(`${API}/auth/register/eleve`, {
+      const payload = {
         nom:         form.nom.trim(),
-        email:       form.email.trim(),
         password:    form.password,
         niveau:      form.niveau,
         parentEmail: form.parentEmail.trim() || undefined,
-      });
+      };
+      if (mode === 'email') {
+        if (!form.email.trim()) return toast.error('Email requis');
+        payload.email = form.email.trim();
+      } else {
+        if (!form.telephone.trim()) return toast.error('Numéro de téléphone requis');
+        payload.telephone = form.telephone.trim();
+      }
+      const { data } = await axios.post(`${API}/auth/register/eleve`, payload);
 
       // Stocker tokens et user
       localStorage.setItem('accessToken',  data.data.accessToken);
@@ -81,12 +92,53 @@ export function RegisterEleve() {
               placeholder="Ex : Aminata Diallo" className="input-tate" required />
           </div>
 
-          {/* Email */}
-          <div>
-            <label className="block text-sm font-semibold text-tate-terre mb-1.5">Email</label>
-            <input type="email" value={form.email} onChange={e => set('email', e.target.value)}
-              placeholder="ton@email.com" className="input-tate" required />
+          {/* Toggle email / téléphone */}
+          <div className="flex bg-tate-creme rounded-xl p-1 border border-tate-border shadow-card">
+            {[
+              { key: 'email', icon: Mail, label: 'Email' },
+              { key: 'telephone', icon: Phone, label: 'Téléphone' },
+            ].map(opt => {
+              const Icon = opt.icon;
+              return (
+                <button key={opt.key} type="button"
+                  onClick={() => { setMode(opt.key); set('email', ''); set('telephone', ''); }}
+                  className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-semibold transition-all ${
+                    mode === opt.key
+                      ? 'bg-tate-soleil text-tate-terre shadow-sm'
+                      : 'text-tate-terre/50 hover:text-tate-terre'
+                  }`}>
+                  <Icon size={14} />
+                  {opt.label}
+                </button>
+              );
+            })}
           </div>
+
+          {/* Email ou Téléphone */}
+          <AnimatePresence mode="wait">
+            <motion.div key={mode}
+              initial={{ opacity: 0, x: mode === 'email' ? -8 : 8 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}>
+              {mode === 'email' ? (
+                <div>
+                  <label className="block text-sm font-semibold text-tate-terre mb-1.5">Adresse email</label>
+                  <input type="email" value={form.email} onChange={e => set('email', e.target.value)}
+                    placeholder="ton@email.com" className="input-tate" />
+                </div>
+              ) : (
+                <div>
+                  <label className="block text-sm font-semibold text-tate-terre mb-1.5">Numéro de téléphone</label>
+                  <div className="flex gap-2">
+                    <span className="input-tate w-16 text-center font-semibold text-tate-terre/60 flex-shrink-0">+221</span>
+                    <input type="tel" value={form.telephone} onChange={e => set('telephone', e.target.value)}
+                      placeholder="77 123 45 67" className="input-tate flex-1" />
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          </AnimatePresence>
 
           {/* Niveau */}
           <div>

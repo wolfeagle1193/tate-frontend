@@ -234,36 +234,6 @@ export function Login() {
             </button>
           </form>
 
-          {/* Séparateur */}
-          <div className="flex items-center gap-3 my-5">
-            <div className="flex-1 h-px bg-tate-border" />
-            <span className="text-xs text-tate-terre/40 font-medium">ou continuer avec</span>
-            <div className="flex-1 h-px bg-tate-border" />
-          </div>
-
-          {/* Bouton Google */}
-          {GOOGLE_CLIENT_ID ? (
-            <div className="w-full flex justify-center">
-              {googleLoading ? (
-                <div className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl border-2 border-tate-border bg-white text-sm font-semibold text-tate-terre/50">
-                  <span className="animate-spin inline-block w-4 h-4 border-2 border-tate-terre/20 border-t-tate-terre/60 rounded-full" />
-                  Connexion Google…
-                </div>
-              ) : (
-                <div ref={googleRef} className="w-full" />
-              )}
-            </div>
-          ) : (
-            <button type="button" disabled
-              className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl
-                         border-2 border-tate-border bg-white opacity-50 cursor-not-allowed
-                         text-sm font-semibold text-tate-terre">
-              <IconGoogle />
-              Continuer avec Google
-              <span className="text-xs text-tate-terre/40 ml-1">(bientôt)</span>
-            </button>
-          )}
-
           {/* Liens inscription */}
           <div className="mt-6 text-center">
             <p className="text-sm text-tate-terre/50 mb-3">Pas encore de compte ?</p>
