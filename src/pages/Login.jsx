@@ -1,9 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Phone, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import toast from 'react-hot-toast';
+import axios from 'axios';
+
+const API = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
 
 // Icône Google SVG inline
 function IconGoogle() {
@@ -22,8 +26,49 @@ export function Login() {
   const [identifiant, setIdentifiant] = useState('');
   const [password,    setPassword]   = useState('');
   const [showPwd,     setShowPwd]    = useState(false);
-  const { login, loading } = useAuthStore();
-  const navigate = useNavigate();
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const { login, loading, setUser } = useAuthStore();
+  const navigate  = useNavigate();
+  const googleRef = useRef(null);
+
+  // ── Initialiser Google Identity Services ─────────────────
+  useEffect(() => {
+    if (!GOOGLE_CLIENT_ID || !window.google) return;
+    window.google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      callback:  handleGoogleCallback,
+      auto_select: false,
+    });
+    if (googleRef.current) {
+      window.google.accounts.id.renderButton(googleRef.current, {
+        theme: 'outline', size: 'large', text: 'continue_with',
+        shape: 'rectangular', logo_alignment: 'left', width: 380,
+      });
+    }
+  }, []);
+
+  const handleGoogleCallback = async (response) => {
+    setGoogleLoading(true);
+    try {
+      const { data } = await axios.post(`${API}/auth/google`, { credential: response.credential });
+      const { accessToken, refreshToken, user } = data.data;
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
+      setUser(user);
+      toast.success(`Bienvenue, ${user.nom.split(' ')[0]} ! 👋`);
+      // Si l'élève n'a pas encore choisi son niveau, on le redirige vers la config
+      if (user.isNew && user.role === 'eleve') {
+        navigate('/eleve/profil');
+      } else {
+        const routes = { admin: '/admin', prof: '/prof', eleve: '/eleve', parent: '/parent' };
+        navigate(routes[user.role] || '/eleve');
+      }
+    } catch (e) {
+      toast.error(e.response?.data?.error || 'Connexion Google échouée');
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,10 +82,6 @@ export function Login() {
     } catch (err) {
       toast.error(err.response?.data?.error || 'Identifiant ou mot de passe incorrect');
     }
-  };
-
-  const handleGoogle = () => {
-    toast('Connexion Google bientôt disponible !', { icon: '🚀' });
   };
 
   return (
@@ -201,13 +242,27 @@ export function Login() {
           </div>
 
           {/* Bouton Google */}
-          <button type="button" onClick={handleGoogle}
-            className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl
-                       border-2 border-tate-border bg-white hover:border-tate-soleil/50
-                       hover:shadow-card transition-all text-sm font-semibold text-tate-terre">
-            <IconGoogle />
-            Continuer avec Google
-          </button>
+          {GOOGLE_CLIENT_ID ? (
+            <div className="w-full flex justify-center">
+              {googleLoading ? (
+                <div className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl border-2 border-tate-border bg-white text-sm font-semibold text-tate-terre/50">
+                  <span className="animate-spin inline-block w-4 h-4 border-2 border-tate-terre/20 border-t-tate-terre/60 rounded-full" />
+                  Connexion Google…
+                </div>
+              ) : (
+                <div ref={googleRef} className="w-full" />
+              )}
+            </div>
+          ) : (
+            <button type="button" disabled
+              className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl
+                         border-2 border-tate-border bg-white opacity-50 cursor-not-allowed
+                         text-sm font-semibold text-tate-terre">
+              <IconGoogle />
+              Continuer avec Google
+              <span className="text-xs text-tate-terre/40 ml-1">(bientôt)</span>
+            </button>
+          )}
 
           {/* Liens inscription */}
           <div className="mt-6 text-center">
