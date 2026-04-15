@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { useAuthStore }  from './store/useAuthStore';
 import { useEleveStore } from './store/useEleveStore';
+import { InstallPWA } from './components/InstallPWA';
 
 import { Login }          from './pages/Login';
 import { RegisterEleve }  from './pages/RegisterEleve';
@@ -82,6 +83,7 @@ export default function App() {
           error:   { iconTheme: { primary: '#D85A30', secondary: '#fff' } },
         }}
       />
+      <InstallPWA />
       <Routes>
         {/* ── PUBLIC ────────────────────────────────────── */}
         <Route path="/login"            element={<Login />} />

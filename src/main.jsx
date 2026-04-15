@@ -8,3 +8,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <App />
   </React.StrictMode>
 )
+// ── Enregistrement du Service Worker PWA ──────────────────
+if ('serviceWorker' in navigator && import.meta.env.PROD) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(() => console.log('✅ Service Worker Taté enregistré'))
+      .catch(e => console.warn('SW erreur:', e));
+  });
+}
