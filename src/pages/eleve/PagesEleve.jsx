@@ -423,8 +423,9 @@ function PageCoursFormate() {
       {/* Header */}
       <div className="sticky top-0 z-10 bg-white/95 backdrop-blur border-b border-tate-border px-4 py-3 flex items-center gap-3 shadow-card">
         <button onClick={retourAccueil}
-          className="w-9 h-9 rounded-xl bg-tate-doux flex items-center justify-center text-tate-terre/60 hover:bg-tate-soleil/20 hover:text-tate-terre transition-all flex-shrink-0">
-          <ChevronLeft size={18} />
+          className="flex items-center gap-1 px-2.5 h-9 rounded-xl bg-tate-doux text-tate-terre/70 hover:bg-tate-soleil/20 hover:text-tate-terre transition-all flex-shrink-0 font-semibold text-xs">
+          <ChevronLeft size={16} />
+          Retour
         </button>
         <div className="flex-1 min-w-0">
           <p className="font-serif font-bold text-tate-terre text-sm truncate">{chapitreActif.titre}</p>
@@ -441,7 +442,7 @@ function PageCoursFormate() {
             </button>
             <button onClick={passerExercices}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 ${phase === 'exercices' ? 'bg-white shadow text-tate-terre' : 'text-tate-terre/50'}`}>
-              Exercices
+              S'exercer
               {nbExos > 0 && <span className={`text-[10px] px-1.5 rounded-full font-bold ${phase === 'exercices' ? 'bg-tate-soleil text-white' : 'bg-tate-terre/20 text-tate-terre'}`}>{nbExos}</span>}
             </button>
           </div>
@@ -892,10 +893,11 @@ function PageCoursHTML() {
            style={{ height: 56 }}>
         <button
           onClick={phaseHTML === 'exercices' && aExercices ? revenirAuCours : retourAccueil}
-          className="w-9 h-9 rounded-xl bg-tate-doux flex items-center justify-center
-                     text-tate-terre/60 hover:bg-tate-soleil/20 hover:text-tate-terre transition-all flex-shrink-0"
+          className="flex items-center gap-1 px-2.5 h-9 rounded-xl bg-tate-doux
+                     text-tate-terre/70 hover:bg-tate-soleil/20 hover:text-tate-terre transition-all flex-shrink-0 font-semibold text-xs"
           title={phaseHTML === 'exercices' && aExercices ? 'Retour au cours' : 'Retour aux chapitres'}>
-          <ChevronLeft size={18} />
+          <ChevronLeft size={16} />
+          {phaseHTML === 'exercices' && aExercices ? 'Cours' : 'Retour'}
         </button>
 
         <div className="flex-1 min-w-0">
@@ -920,7 +922,7 @@ function PageCoursHTML() {
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 ${
                 phaseHTML === 'exercices' ? 'bg-white shadow text-tate-terre' : 'text-tate-terre/50 hover:text-tate-terre/70'
               }`}>
-              Exercices
+              S'exercer
             </button>
           </div>
         )}
@@ -1291,19 +1293,37 @@ function CarteChapitreBeauty({ chap, index, isValide, matiere, onClick }) {
 // ─────────────────────────────────────────────────────────────────
 // Sections Français — onglets redesignés
 // ─────────────────────────────────────────────────────────────────
+const SEC_TOUS = { key: '__tous__', label: 'Tous', icone: '📚', couleur: 'border-tate-soleil bg-tate-doux text-tate-terre', bar: 'bg-tate-soleil' };
+
 function FrancaisOnglets({ chapitres, isValide, matiere, onDemarrer }) {
-  const [onglet, setOnglet] = useState(SECTIONS_FR[0].key);
-  const chapsOnglet = chapitres.filter(c => getSectionChap(c) === onglet);
-  const secActive   = SECTIONS_FR.find(s => s.key === onglet);
+  const [onglet, setOnglet] = useState('__tous__');
+
+  // Chapitres sans section définie
+  const sectionKeys = SECTIONS_FR.map(s => s.key);
+  const chapsAvecSection = chapitres.filter(c => sectionKeys.includes(getSectionChap(c)));
+  const chapsSansSection = chapitres.filter(c => !sectionKeys.includes(getSectionChap(c)));
+
+  // Construire la liste d'onglets à afficher (sections ayant au moins 1 chapitre + "Tous" toujours en premier)
+  const secAvecChap = SECTIONS_FR.filter(s => chapitres.some(c => getSectionChap(c) === s.key));
+  const onglets = [SEC_TOUS, ...secAvecChap];
+
+  // Chapitres à afficher selon l'onglet actif
+  const chapsOnglet = onglet === '__tous__'
+    ? chapitres
+    : chapitres.filter(c => getSectionChap(c) === onglet);
+
+  const secActive = onglet === '__tous__' ? SEC_TOUS : (SECTIONS_FR.find(s => s.key === onglet) || SEC_TOUS);
 
   return (
     <div>
       {/* Onglets compacts scrollables */}
       <div className="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-hide">
-        {SECTIONS_FR.map(sec => {
-          const valides = chapitres.filter(c => getSectionChap(c) === sec.key && isValide(c._id)).length;
-          const total   = chapitres.filter(c => getSectionChap(c) === sec.key).length;
-          const actif   = onglet === sec.key;
+        {onglets.map(sec => {
+          const total  = sec.key === '__tous__' ? chapitres.length : chapitres.filter(c => getSectionChap(c) === sec.key).length;
+          const valides = sec.key === '__tous__'
+            ? chapitres.filter(c => isValide(c._id)).length
+            : chapitres.filter(c => getSectionChap(c) === sec.key && isValide(c._id)).length;
+          const actif  = onglet === sec.key;
           return (
             <button key={sec.key} onClick={() => setOnglet(sec.key)}
               className={`flex-shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-xl border-2 text-xs font-semibold transition-all
@@ -1387,23 +1407,22 @@ function CarteMatiere({ matiere, nbChapitres, nbValides, onClick }) {
 // Vue chapitres pour une matière sélectionnée
 // ─────────────────────────────────────────────────────────────────
 function VueChapitres({ matiere, chapitres, isValide, nbValides, chargement, onDemarrer, onRetour }) {
-  const afficherSectionsFr = matiere.id === 'FR' && NIVEAUX_4_SECTIONS.includes(''); // will be set externally
-
   return (
     <motion.div initial={{ opacity:0, x:20 }} animate={{ opacity:1, x:0 }} exit={{ opacity:0, x:-20 }}
       transition={{ duration:0.2 }}>
+
+      {/* Bouton retour visible en haut */}
+      <button onClick={onRetour}
+        className="flex items-center gap-1.5 mb-4 px-3 py-2 rounded-xl bg-white border-2 border-tate-border text-tate-terre font-semibold text-sm hover:bg-tate-doux transition-all shadow-card">
+        <ChevronLeft size={16} className="text-tate-terre" />
+        ← Retour aux matières
+      </button>
 
       {/* En-tête matière */}
       <div className={`rounded-2xl p-4 mb-5 bg-gradient-to-r ${matiere.gradient} relative overflow-hidden`}>
         {/* Cercle décoratif */}
         <div className="absolute -right-4 -top-4 w-20 h-20 rounded-full bg-white/10" />
         <div className="absolute -right-2 top-6 w-10 h-10 rounded-full bg-white/10" />
-
-        <button onClick={onRetour}
-          className="flex items-center gap-1.5 text-white/80 hover:text-white text-xs font-semibold mb-3 transition-colors">
-          <ChevronLeft size={14} />
-          Retour aux matières
-        </button>
 
         <div className="flex items-center gap-3 relative z-10">
           <span className="text-3xl leading-none">{matiere.icone}</span>
@@ -1454,16 +1473,17 @@ function VueChapitresFr({ matiere, chapitres, isValide, nbValides, chargement, o
     <motion.div initial={{ opacity:0, x:20 }} animate={{ opacity:1, x:0 }} exit={{ opacity:0, x:-20 }}
       transition={{ duration:0.2 }}>
 
+      {/* Bouton retour visible en haut */}
+      <button onClick={onRetour}
+        className="flex items-center gap-1.5 mb-4 px-3 py-2 rounded-xl bg-white border-2 border-tate-border text-tate-terre font-semibold text-sm hover:bg-tate-doux transition-all shadow-card">
+        <ChevronLeft size={16} className="text-tate-terre" />
+        ← Retour aux matières
+      </button>
+
       {/* En-tête matière */}
       <div className={`rounded-2xl p-4 mb-5 bg-gradient-to-r ${matiere.gradient} relative overflow-hidden`}>
         <div className="absolute -right-4 -top-4 w-20 h-20 rounded-full bg-white/10" />
         <div className="absolute -right-2 top-6 w-10 h-10 rounded-full bg-white/10" />
-
-        <button onClick={onRetour}
-          className="flex items-center gap-1.5 text-white/80 hover:text-white text-xs font-semibold mb-3 transition-colors">
-          <ChevronLeft size={14} />
-          Retour aux matières
-        </button>
 
         <div className="flex items-center gap-3 relative z-10">
           <span className="text-3xl leading-none">{matiere.icone}</span>
@@ -1531,7 +1551,7 @@ export function AccueilEleve() {
     chapitres.some(ch => (ch._id === c.chapitreId || ch._id === c.chapitreId?._id))
   ).length;
 
-  const afficherSectionsFr = matiereActive === 'FR' && NIVEAUX_4_SECTIONS.includes(user?.niveau);
+  const afficherSectionsFr = matiereActive === 'FR';
 
   const handleSelectMatiere = useCallback((mat) => {
     setMatiereActive(mat.id);
