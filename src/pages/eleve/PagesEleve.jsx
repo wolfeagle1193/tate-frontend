@@ -574,8 +574,8 @@ function PageCoursFormate() {
                       📝
                     </motion.div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-tate-soleil text-[10px] font-bold uppercase tracking-widest mb-0.5">Prêt à pratiquer ?</p>
-                      <h3 className="text-white font-serif font-bold text-xl leading-tight">S'exercer</h3>
+                      <p className="text-tate-soleil text-[10px] font-bold uppercase tracking-widest mb-0.5">Cours terminé !</p>
+                      <h3 className="text-white font-serif font-bold text-xl leading-tight">Passer aux exercices</h3>
                       <p className="text-white/60 text-xs mt-1">{nbExos} exercice{nbExos > 1 ? 's' : ''} t'attendent</p>
                     </div>
                     <div className="bg-tate-soleil/20 border border-tate-soleil/40 text-tate-soleil text-sm font-bold px-3 py-1.5 rounded-xl flex-shrink-0">
@@ -584,7 +584,7 @@ function PageCoursFormate() {
                   </div>
                   {/* Footer doré */}
                   <div className="bg-tate-soleil px-6 py-3.5 flex items-center justify-between">
-                    <span className="text-tate-terre font-bold text-sm">Commencer les exercices</span>
+                    <span className="text-tate-terre font-bold text-sm">Passer aux exercices →</span>
                     <ChevronRight size={20} className="text-tate-terre group-hover:translate-x-1.5 transition-transform duration-200" />
                   </div>
                 </button>
@@ -734,24 +734,31 @@ function PageCoursFormate() {
 
 // ─────────────────────────────────────────────────────────────────
 // Utilitaire : scinder le HTML cours / exercices
-// Détecte le titre "Exercices" ou attributs CSS pour séparer
+// Détecte le titre "Exercices", "QCM", "Questions", etc.
 // ─────────────────────────────────────────────────────────────────
 function splitCourseExercices(html) {
   if (!html) return { coursHTML: '', exercicesHTML: '', aExercices: false };
   const patterns = [
-    /<h2[^>]*>\s*[^<]*[Ee]xercices?[^<]*<\/h2>/,
-    /<h2[^>]*>\s*[^<]*[Ee]xercises?[^<]*<\/h2>/,
-    /<h2[^>]*>\s*[^<]*(À toi|A toi|Pratique|Entraînement|Application)[^<]*<\/h2>/i,
-    /<section[^>]*(?:class|id)="[^"]*exercice[^"]*"/i,
-    /<div[^>]*(?:class|id)="[^"]*exercice[^"]*"/i,
+    // QCM (titre h1, h2, h3, h4 — peu importe le style ou la casse)
+    /<h[1-4][^>]*>[^<]*QCM[^<]*<\/h[1-4]>/i,
+    // "Exercices", "Exercice"
+    /<h[1-4][^>]*>\s*[^<]*[Ee]xercices?[^<]*<\/h[1-4]>/,
+    /<h[1-4][^>]*>\s*[^<]*[Ee]xercises?[^<]*<\/h[1-4]>/,
+    // "Questions" (section de QCM)
+    /<h[1-4][^>]*>[^<]*Questions[^<]*<\/h[1-4]>/i,
+    // "À toi", "Pratique", "Application", "Entraînement"
+    /<h[1-4][^>]*>\s*[^<]*(À toi|A toi|Pratique|Entraînement|Entraînement|Application)[^<]*<\/h[1-4]>/i,
+    // Sections ou divs marquées exercice/qcm
+    /<section[^>]*(?:class|id)="[^"]*(?:exercice|qcm)[^"]*"/i,
+    /<div[^>]*(?:class|id)="[^"]*(?:exercice|qcm)[^"]*"/i,
   ];
   for (const re of patterns) {
     const idx = html.search(re);
     if (idx !== -1) {
       return {
-        coursHTML:    html.slice(0, idx),
+        coursHTML:     html.slice(0, idx),
         exercicesHTML: html.slice(idx),
-        aExercices:   true,
+        aExercices:    true,
       };
     }
   }
@@ -959,15 +966,15 @@ function PageCoursHTML() {
               </button>
 
               {aExercices ? (
-                /* Bouton S'exercer */
+                /* Bouton Passer aux exercices */
                 <button
                   onClick={allerAuxExercices}
                   className="flex-1 h-10 rounded-xl font-bold text-sm transition-all
                              flex items-center justify-center gap-2
-                             bg-gradient-to-r from-tate-terre to-amber-900 text-white
-                             hover:opacity-90 active:scale-[0.98]">
+                             bg-gradient-to-r from-tate-soleil to-amber-500 text-tate-terre
+                             hover:opacity-90 active:scale-[0.98] shadow-sm">
                   <span>📝</span>
-                  <span>S'exercer</span>
+                  <span>Passer aux exercices</span>
                   <ChevronRight size={15} />
                 </button>
               ) : (
