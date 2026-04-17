@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   CheckCircle, Star, Flame, GraduationCap,
@@ -542,32 +542,64 @@ function PageCoursFormate() {
               </div>
             )}
 
-            {/* CTA vers exercices */}
+            {/* CTA vers exercices — carte attractive plein écran */}
             {nbExos > 0 && (
-              <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-                {/* Séparateur visuel */}
-                <div className="flex items-center gap-3 my-6">
-                  <div className="flex-1 h-0.5 bg-gradient-to-r from-transparent to-tate-border" />
-                  <div className="flex items-center gap-2 bg-tate-soleil/10 border-2 border-tate-soleil/30 rounded-full px-4 py-1.5">
-                    <span className="text-sm font-bold text-tate-soleil">📝 {nbExos} exercices</span>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.35, type: 'spring', bounce: 0.3 }}
+                className="mt-8 mb-4">
+
+                {/* Séparateur "cours terminé" */}
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="flex-1 h-px bg-gradient-to-r from-transparent via-tate-border to-transparent" />
+                  <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-100 border border-green-200">
+                    <CheckCircle size={12} className="text-succes" />
+                    <span className="text-xs font-bold text-succes">Cours lu</span>
                   </div>
-                  <div className="flex-1 h-0.5 bg-gradient-to-l from-transparent to-tate-border" />
+                  <div className="flex-1 h-px bg-gradient-to-r from-transparent via-tate-border to-transparent" />
                 </div>
 
-                <button onClick={passerExercices}
-                  className="btn-tate w-full py-4 text-base font-bold flex items-center justify-center gap-3 rounded-3xl">
-                  <span>Commencer les exercices</span>
-                  <span className="text-xl">📝</span>
+                {/* Carte "S'exercer" attractive */}
+                <button
+                  onClick={passerExercices}
+                  className="group w-full rounded-3xl overflow-hidden shadow-tate hover:shadow-xl transition-all duration-300 active:scale-[0.97] block text-left">
+                  {/* Header foncé */}
+                  <div className="bg-gradient-to-r from-tate-terre via-tate-terre to-amber-900 px-6 py-5 flex items-center gap-4">
+                    <motion.div
+                      animate={{ rotate: [0, -8, 8, -4, 0] }}
+                      transition={{ delay: 0.8, duration: 0.5 }}
+                      className="w-14 h-14 rounded-2xl bg-tate-soleil flex items-center justify-center text-3xl shadow-lg flex-shrink-0 group-hover:scale-110 transition-transform">
+                      📝
+                    </motion.div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-tate-soleil text-[10px] font-bold uppercase tracking-widest mb-0.5">Prêt à pratiquer ?</p>
+                      <h3 className="text-white font-serif font-bold text-xl leading-tight">S'exercer</h3>
+                      <p className="text-white/60 text-xs mt-1">{nbExos} exercice{nbExos > 1 ? 's' : ''} t'attendent</p>
+                    </div>
+                    <div className="bg-tate-soleil/20 border border-tate-soleil/40 text-tate-soleil text-sm font-bold px-3 py-1.5 rounded-xl flex-shrink-0">
+                      {nbExos}
+                    </div>
+                  </div>
+                  {/* Footer doré */}
+                  <div className="bg-tate-soleil px-6 py-3.5 flex items-center justify-between">
+                    <span className="text-tate-terre font-bold text-sm">Commencer les exercices</span>
+                    <ChevronRight size={20} className="text-tate-terre group-hover:translate-x-1.5 transition-transform duration-200" />
+                  </div>
                 </button>
               </motion.div>
             )}
 
             {/* Terminer sans exercices */}
             {nbExos === 0 && (
-              <button onClick={terminer} disabled={submitting}
-                className="btn-succes w-full py-4 text-base font-bold flex items-center justify-center gap-2 rounded-3xl">
+              <motion.button
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                onClick={terminer} disabled={submitting}
+                className="btn-succes w-full py-4 text-base font-bold flex items-center justify-center gap-2 rounded-3xl mt-8">
                 {submitting ? '⏳ Enregistrement…' : '✅ Cours terminé — Valider'}
-              </button>
+              </motion.button>
             )}
           </motion.div>
         )}
@@ -699,17 +731,58 @@ function PageCoursFormate() {
   );
 }
 
+// ─────────────────────────────────────────────────────────────────
+// Utilitaire : scinder le HTML cours / exercices
+// Détecte le titre "Exercices" ou attributs CSS pour séparer
+// ─────────────────────────────────────────────────────────────────
+function splitCourseExercices(html) {
+  if (!html) return { coursHTML: '', exercicesHTML: '', aExercices: false };
+  const patterns = [
+    /<h2[^>]*>\s*[^<]*[Ee]xercices?[^<]*<\/h2>/,
+    /<h2[^>]*>\s*[^<]*[Ee]xercises?[^<]*<\/h2>/,
+    /<h2[^>]*>\s*[^<]*(À toi|A toi|Pratique|Entraînement|Application)[^<]*<\/h2>/i,
+    /<section[^>]*(?:class|id)="[^"]*exercice[^"]*"/i,
+    /<div[^>]*(?:class|id)="[^"]*exercice[^"]*"/i,
+  ];
+  for (const re of patterns) {
+    const idx = html.search(re);
+    if (idx !== -1) {
+      return {
+        coursHTML:    html.slice(0, idx),
+        exercicesHTML: html.slice(idx),
+        aExercices:   true,
+      };
+    }
+  }
+  return { coursHTML: html, exercicesHTML: '', aExercices: false };
+}
+
 // ─────────────────────────────────────────────
-// PAGE COURS HTML — plein écran iframe + QCM intégré
+// PAGE COURS HTML — plein écran iframe
+// Phase 'cours' : affiche uniquement le contenu de cours
+// Phase 'exercices' : affiche uniquement les exercices + validation
 // ─────────────────────────────────────────────
 function PageCoursHTML() {
   const { leconActive, chapitreActif, retourAccueil, soumettreScore } = useEleveStore();
   const iframeRef = useRef(null);
 
+  const [phaseHTML,    setPhaseHTML]    = useState('cours'); // 'cours' | 'exercices'
   const [scoreOverlay, setScoreOverlay] = useState(null);
   const [submitting,   setSubmitting]   = useState(false);
   const [erreur,       setErreur]       = useState('');
   const [aDesQCM,      setADesQCM]      = useState(null);
+
+  // ── Scinder le HTML en cours + exercices ──────────────────────
+  // (hook appelé avant le early return pour respecter les règles des hooks)
+  const { coursHTML, exercicesHTML, aExercices } = useMemo(
+    () => splitCourseExercices(leconActive?.contenuHTML || ''),
+    [leconActive?.contenuHTML]
+  );
+
+  if (!leconActive || !chapitreActif) return null;
+
+  // HTML affiché dans l'iframe selon la phase
+  const htmlAffiche = phaseHTML === 'cours' ? coursHTML : exercicesHTML;
 
   const onIframeLoad = () => {
     const iframe = iframeRef.current;
@@ -720,14 +793,12 @@ function PageCoursHTML() {
     setADesQCM(radios.length > 0);
   };
 
-  if (!leconActive || !chapitreActif) return null;
-
   const detecterEtValider = async () => {
     setErreur('');
     const iframe = iframeRef.current;
     if (!iframe) return;
     const iDoc = iframe.contentDocument || iframe.contentWindow?.document;
-    if (!iDoc) { setErreur("Impossible d'accéder au contenu du cours."); return; }
+    if (!iDoc) { setErreur("Impossible d'accéder au contenu."); return; }
 
     const groupes = {};
     iDoc.querySelectorAll('input[type="radio"]').forEach(input => {
@@ -744,7 +815,7 @@ function PageCoursHTML() {
     const questionsValides = Object.values(groupes).filter(g => g.aReponseCorrecte);
     const nbTotal = questionsValides.length;
     if (nbTotal === 0) {
-      setErreur('Aucune question QCM trouvée. Vérifie que ton HTML contient data-correct="true".');
+      setErreur('Aucune question QCM trouvée dans les exercices.');
       return;
     }
 
@@ -755,8 +826,8 @@ function PageCoursHTML() {
     }
 
     const nbCorrectes = questionsValides.filter(g => g.selectionne === g.correct).length;
-    const score = Math.round((nbCorrectes / nbTotal) * 100);
-    const maitrise = score >= 80;
+    const score       = Math.round((nbCorrectes / nbTotal) * 100);
+    const maitrise    = score >= 80;
 
     setSubmitting(true);
     try {
@@ -776,12 +847,12 @@ function PageCoursHTML() {
   const terminerSansQCM = async () => {
     setSubmitting(true);
     try {
-      await soumettreScore({
+      const resultat = await soumettreScore({
         chapitreId: chapitreActif._id,
         leconId:    leconActive._id,
         score: 100, nbCorrectes: 1, nbTotal: 1,
       });
-      setScoreOverlay({ score: 100, nbCorrectes: 1, nbTotal: 1, maitrise: true, tentative: 1, avecQCM: false });
+      setScoreOverlay({ score: 100, nbCorrectes: 1, nbTotal: 1, maitrise: true, tentative: resultat?.tentative || 1, avecQCM: false });
     } catch (e) {
       toast.error(e.response?.data?.error || e.message || 'Erreur');
     } finally {
@@ -792,6 +863,7 @@ function PageCoursHTML() {
   const reessayer = () => {
     setScoreOverlay(null);
     setErreur('');
+    setPhaseHTML('exercices');
     const iframe = iframeRef.current;
     if (!iframe) return;
     const iDoc = iframe.contentDocument || iframe.contentWindow?.document;
@@ -800,56 +872,160 @@ function PageCoursHTML() {
     iframe.contentWindow?.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const allerAuxExercices = () => {
+    setPhaseHTML('exercices');
+    setADesQCM(null);
+    setErreur('');
+  };
+
+  const revenirAuCours = () => {
+    setPhaseHTML('cours');
+    setErreur('');
+  };
+
   return (
     <div className="fixed inset-0 bg-white overflow-hidden" style={{ zIndex: 9999 }}>
+
+      {/* ── Header ─────────────────────────────────────────── */}
+      <div className="absolute top-0 left-0 right-0 z-10 bg-white/96 backdrop-blur-sm
+                      border-b border-tate-border px-4 flex items-center gap-3 shadow-card"
+           style={{ height: 56 }}>
+        <button
+          onClick={phaseHTML === 'exercices' && aExercices ? revenirAuCours : retourAccueil}
+          className="w-9 h-9 rounded-xl bg-tate-doux flex items-center justify-center
+                     text-tate-terre/60 hover:bg-tate-soleil/20 hover:text-tate-terre transition-all flex-shrink-0"
+          title={phaseHTML === 'exercices' && aExercices ? 'Retour au cours' : 'Retour aux chapitres'}>
+          <ChevronLeft size={18} />
+        </button>
+
+        <div className="flex-1 min-w-0">
+          <p className="font-serif font-bold text-tate-terre text-sm leading-none truncate">{chapitreActif.titre}</p>
+          <p className="text-[10px] text-tate-terre/40 mt-0.5">
+            {phaseHTML === 'cours' ? '📖 Cours' : '📝 Exercices'}
+          </p>
+        </div>
+
+        {/* Onglets cours / exercices si exercices trouvés */}
+        {aExercices && (
+          <div className="flex bg-tate-doux rounded-xl p-0.5 gap-0.5 flex-shrink-0">
+            <button
+              onClick={revenirAuCours}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                phaseHTML === 'cours' ? 'bg-white shadow text-tate-terre' : 'text-tate-terre/50 hover:text-tate-terre/70'
+              }`}>
+              Cours
+            </button>
+            <button
+              onClick={allerAuxExercices}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 ${
+                phaseHTML === 'exercices' ? 'bg-white shadow text-tate-terre' : 'text-tate-terre/50 hover:text-tate-terre/70'
+              }`}>
+              Exercices
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* ── Iframe contenu ─────────────────────────────────── */}
       <iframe
+        key={phaseHTML}  /* force reload à chaque changement de phase */
         ref={iframeRef}
-        srcDoc={IFRAME_CSS + leconActive.contenuHTML}
+        srcDoc={IFRAME_CSS + htmlAffiche}
         title={chapitreActif.titre}
         onLoad={onIframeLoad}
-        className="absolute inset-0 w-full border-none"
-        style={{ height: 'calc(100% - 64px)', display: 'block' }}
+        className="absolute w-full border-none"
+        style={{ top: 56, height: 'calc(100% - 56px - 64px)', display: 'block' }}
         sandbox="allow-scripts allow-same-origin"
       />
 
-      <div className="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm
+      {/* ── Barre du bas ───────────────────────────────────── */}
+      <div className="absolute bottom-0 left-0 right-0 bg-white/96 backdrop-blur-sm
                       border-t border-tate-border px-4 py-3 z-10
                       shadow-[0_-4px_24px_rgba(0,0,0,0.10)]"
            style={{ height: 64 }}>
         <div className="flex items-center gap-3 max-w-2xl mx-auto h-full">
-          <button onClick={retourAccueil}
-            className="w-10 h-10 rounded-xl bg-tate-doux border border-tate-border
-                       flex items-center justify-center text-tate-terre/60
-                       hover:bg-tate-soleil/20 hover:text-tate-terre transition-all flex-shrink-0"
-            title="Retour aux chapitres">
-            <Home size={17} />
-          </button>
 
-          {erreur ? (
-            <div className="flex-1 flex items-center gap-2 bg-orange-50 border border-orange-200
-                            rounded-xl px-3 py-1.5">
-              <span className="text-xs text-orange-700 flex-1">⚠️ {erreur}</span>
-              <button onClick={() => setErreur('')} className="text-orange-400 hover:text-orange-600 flex-shrink-0">
-                <X size={14} />
+          {phaseHTML === 'cours' ? (
+            /* ── Phase COURS ─── */
+            <>
+              <button
+                onClick={retourAccueil}
+                className="w-10 h-10 rounded-xl bg-tate-doux border border-tate-border flex items-center justify-center
+                           text-tate-terre/60 hover:bg-tate-soleil/20 hover:text-tate-terre transition-all flex-shrink-0"
+                title="Retour aux chapitres">
+                <Home size={17} />
               </button>
-            </div>
-          ) : aDesQCM === false ? (
-            <button onClick={terminerSansQCM} disabled={submitting}
-              className="flex-1 h-10 rounded-xl bg-succes text-white font-bold text-sm
-                         hover:bg-succes/90 active:scale-98 transition-all disabled:opacity-60
-                         flex items-center justify-center gap-2">
-              {submitting ? <><span className="animate-spin inline-block">⏳</span> Enregistrement…</> : <>✅ Cours terminé</>}
-            </button>
+
+              {aExercices ? (
+                /* Bouton S'exercer */
+                <button
+                  onClick={allerAuxExercices}
+                  className="flex-1 h-10 rounded-xl font-bold text-sm transition-all
+                             flex items-center justify-center gap-2
+                             bg-gradient-to-r from-tate-terre to-amber-900 text-white
+                             hover:opacity-90 active:scale-[0.98]">
+                  <span>📝</span>
+                  <span>S'exercer</span>
+                  <ChevronRight size={15} />
+                </button>
+              ) : (
+                /* Pas d'exercices : terminer directement */
+                <button
+                  onClick={terminerSansQCM}
+                  disabled={submitting}
+                  className="flex-1 h-10 rounded-xl bg-succes text-white font-bold text-sm
+                             hover:bg-succes/90 active:scale-[0.98] transition-all disabled:opacity-60
+                             flex items-center justify-center gap-2">
+                  {submitting
+                    ? <><span className="animate-spin inline-block">⏳</span> Enregistrement…</>
+                    : <>✅ Cours terminé</>}
+                </button>
+              )}
+            </>
           ) : (
-            <button onClick={detecterEtValider} disabled={submitting}
-              className="flex-1 h-10 rounded-xl bg-tate-terre text-white font-bold text-sm
-                         hover:bg-tate-terre/85 active:scale-98 transition-all disabled:opacity-60
-                         flex items-center justify-center gap-2">
-              {submitting
-                ? <><span className="animate-spin inline-block">⏳</span> Calcul du score…</>
-                : <>✅ Valider mes réponses</>
-              }
-            </button>
+            /* ── Phase EXERCICES ─── */
+            <>
+              <button
+                onClick={revenirAuCours}
+                className="w-10 h-10 rounded-xl bg-tate-doux border border-tate-border flex items-center justify-center
+                           text-tate-terre/60 hover:bg-tate-soleil/20 hover:text-tate-terre transition-all flex-shrink-0"
+                title="Revoir le cours">
+                <ChevronLeft size={17} />
+              </button>
+
+              {erreur ? (
+                <div className="flex-1 flex items-center gap-2 bg-orange-50 border border-orange-200 rounded-xl px-3 py-1.5">
+                  <span className="text-xs text-orange-700 flex-1">⚠️ {erreur}</span>
+                  <button onClick={() => setErreur('')} className="text-orange-400 hover:text-orange-600 flex-shrink-0">
+                    <X size={14} />
+                  </button>
+                </div>
+              ) : aDesQCM === false ? (
+                /* Exercices sans QCM interactif */
+                <button
+                  onClick={terminerSansQCM}
+                  disabled={submitting}
+                  className="flex-1 h-10 rounded-xl bg-succes text-white font-bold text-sm
+                             hover:bg-succes/90 active:scale-[0.98] transition-all disabled:opacity-60
+                             flex items-center justify-center gap-2">
+                  {submitting
+                    ? <><span className="animate-spin inline-block">⏳</span> Enregistrement…</>
+                    : <>✅ Exercices terminés</>}
+                </button>
+              ) : (
+                /* Exercices avec QCM */
+                <button
+                  onClick={detecterEtValider}
+                  disabled={submitting}
+                  className="flex-1 h-10 rounded-xl bg-tate-terre text-white font-bold text-sm
+                             hover:bg-tate-terre/85 active:scale-[0.98] transition-all disabled:opacity-60
+                             flex items-center justify-center gap-2">
+                  {submitting
+                    ? <><span className="animate-spin inline-block">⏳</span> Calcul du score…</>
+                    : <>✅ Valider mes réponses</>}
+                </button>
+              )}
+            </>
           )}
         </div>
       </div>
