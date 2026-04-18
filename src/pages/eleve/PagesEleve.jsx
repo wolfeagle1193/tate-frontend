@@ -151,118 +151,411 @@ function ProgressBar({ value, max = 100, color = '' }) {
 }
 
 // ─────────────────────────────────────────────────────────────────
-// CSS injecté dans les iframes HTML pour meilleure présentation
+// CSS injecté dans les iframes HTML — design moderne Taté
 // ─────────────────────────────────────────────────────────────────
 const IFRAME_CSS = `
 <style>
-  :root { --orange: #F97316; --terre: #1C0A00; --vert: #10B981; --violet: #7C3AED; }
-  * { box-sizing: border-box; }
-  body {
-    font-family: 'Segoe UI', Arial, sans-serif;
-    font-size: 15px;
-    line-height: 1.7;
-    color: var(--terre);
-    background: #FFFBF5;
-    padding: 16px 16px 80px;
-    max-width: 680px;
-    margin: 0 auto;
-  }
-  h1, h2, h3 { font-family: Georgia, serif; color: var(--terre); }
-  h1 { font-size: 1.4em; margin-bottom: 8px; }
-  h2 { font-size: 1.15em; border-bottom: 2px solid var(--orange); padding-bottom: 6px; margin-top: 28px; margin-bottom: 12px; }
-  h3 { font-size: 1em; color: var(--orange); margin-top: 20px; }
-  p { margin: 8px 0; }
-  ul, ol { padding-left: 20px; margin: 8px 0; }
-  li { margin: 5px 0; }
-  strong { color: var(--terre); }
-  em { color: #555; }
-  blockquote {
-    border-left: 4px solid var(--orange);
-    background: #FFF4E6;
-    padding: 12px 16px;
-    margin: 16px 0;
-    border-radius: 0 12px 12px 0;
-    font-style: normal;
-  }
-  code, pre {
-    background: #F1F5F9;
-    border-radius: 6px;
-    padding: 2px 6px;
-    font-size: 0.9em;
-    font-family: monospace;
-  }
-  pre { padding: 12px; overflow-x: auto; }
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lora:ital,wght@0,600;0,700;1,600&display=swap');
 
-  /* ── Section exercices ── */
-  .exercices, [class*="exercice"], [id*="exercice"], [class*="exercise"] {
-    margin-top: 40px !important;
-    padding-top: 0 !important;
+  /* ── Variables de marque ── */
+  :root {
+    --or:      #F97316;
+    --or-fonce:#EA580C;
+    --terre:   #1C0A00;
+    --terre2:  #3D1C00;
+    --vert:    #10B981;
+    --creme:   #FFFBF5;
+    --doux:    #FFF3E0;
+    --card-bg: #ffffff;
+    --radius:  16px;
+    --sh:      0 4px 24px rgba(249,115,22,0.10);
+    --sh-md:   0 8px 32px rgba(249,115,22,0.15);
   }
-  .exercices-titre, h2[class*="exercice"], h2[id*="exercice"], h2:has(+ .exercice) {
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; font-size: 16px; }
+
+  /* ══════════════════════════════════════
+     PLEIN ÉCRAN — padding uniquement sur body
+  ══════════════════════════════════════ */
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 1rem;
+    line-height: 1.85;
+    color: var(--terre2);
+    background: var(--creme);
+    width: 100%;
+    min-height: 100vh;
+    padding: 0 16px 120px;   /* padding latéral UNIQUEMENT ici */
+    overflow-x: hidden;
+  }
+
+  /* ══════════════════════════════════════
+     TYPOGRAPHIE & TITRES
+     — 0 margin/padding latéral : body s'en charge
+  ══════════════════════════════════════ */
+  h1 {
+    font-family: 'Lora', Georgia, serif;
+    font-size: clamp(1.35rem, 4vw, 1.85rem);
+    font-weight: 700;
+    color: var(--terre);
+    line-height: 1.25;
+    margin: 24px 0 4px;
+    padding: 0;
+  }
+
+  h2 {
+    font-family: 'Lora', Georgia, serif;
+    font-size: clamp(1.05rem, 3vw, 1.2rem);
+    font-weight: 700;
+    color: var(--terre);
+    line-height: 1.3;
+    margin: 28px -16px 0;     /* déborde sur les bords pour prendre toute la largeur */
+    padding: 12px 16px;
+    background: linear-gradient(90deg, #FFF3E0 0%, #FFFBF5 70%, transparent 100%);
+    border-left: 5px solid var(--or);
     position: relative;
   }
-
-  /* Séparateur avant les exercices */
-  h2:nth-of-type(2), h2.exercices, h2[id*="exercice"] {
-    margin-top: 40px;
-    padding-top: 24px;
+  h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, #F4C77544, transparent);
   }
 
-  /* Cartes de questions QCM */
-  .question, [class*="question"] {
-    background: white;
-    border: 2px solid #FDE68A;
-    border-radius: 14px;
-    padding: 16px;
+  h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--or-fonce);
+    margin: 20px 0 6px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  h3::before { content: '▸'; font-size: 0.8em; opacity: 0.6; }
+
+  h4 {
+    font-size: 0.87rem;
+    font-weight: 700;
+    color: var(--terre);
+    opacity: 0.55;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin: 18px 0 5px;
+  }
+
+  /* ══════════════════════════════════════
+     CONTENU DE BASE
+  ══════════════════════════════════════ */
+  p {
+    margin: 9px 0;
+    font-size: 0.97rem;
+    line-height: 1.85;
+    color: var(--terre2);
+  }
+
+  ul, ol {
+    padding-left: 22px;
+    margin: 8px 0;
+  }
+  li {
+    margin: 6px 0;
+    padding-left: 4px;
+    line-height: 1.75;
+    font-size: 0.96rem;
+  }
+  ul li::marker { color: var(--or); font-size: 1.15em; }
+  ol li::marker { color: var(--or); font-weight: 800; }
+
+  strong { color: var(--terre); font-weight: 700; }
+  em     { color: #7C3A00; font-style: italic; }
+
+  /* ══════════════════════════════════════
+     BLOCS SPÉCIAUX — pleine largeur
+  ══════════════════════════════════════ */
+
+  /* Règle / blockquote — pleine largeur */
+  blockquote {
+    margin: 18px -16px;
+    padding: 16px 20px 16px 22px;
+    background: linear-gradient(135deg, #FFF3E0, #FFFBF5 80%);
+    border: none;
+    border-left: 5px solid var(--or);
+    box-shadow: var(--sh);
+    position: relative;
+    font-style: normal;
+  }
+  blockquote::before {
+    content: '📌';
+    position: absolute;
+    top: -12px; left: 12px;
+    font-size: 20px;
+  }
+  blockquote p { margin: 0; font-weight: 600; color: var(--terre); }
+
+  /* Astuce / info — pleine largeur */
+  .astuce, .info, .note, [class*="astuce"], [class*="info-box"] {
+    margin: 14px -16px;
+    padding: 13px 20px;
+    background: #EFF6FF;
+    border-left: 4px solid #3B82F6;
+    font-size: 0.93rem;
+    color: #1D4ED8;
+    line-height: 1.65;
+  }
+
+  /* Piège / attention — pleine largeur */
+  .piege, .warning, .attention, [class*="piege"], [class*="attention"] {
+    margin: 14px -16px;
+    padding: 13px 20px;
+    background: #FFF7ED;
+    border-left: 4px solid var(--or);
+    font-size: 0.93rem;
+    color: #7C2D12;
+    line-height: 1.65;
+  }
+
+  /* Fin de cours — pleine largeur */
+  .fin-cours, [id*="fin"], [class*="fin-cours"] {
+    margin: 28px -16px 0;
+    padding: 22px 24px;
+    background: linear-gradient(135deg, #F0FDF4, #FFFBF5);
+    border-top: 2px solid #86EFAC;
+    border-bottom: 2px solid #86EFAC;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(16,185,129,.10);
+  }
+
+  /* ══════════════════════════════════════
+     TABLEAUX — pleine largeur
+  ══════════════════════════════════════ */
+  table {
+    width: 100%;
+    margin: 18px 0;
+    border-collapse: collapse;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--sh);
+    font-size: 0.9rem;
+  }
+  thead {
+    background: linear-gradient(90deg, var(--or), var(--or-fonce));
+    color: white;
+  }
+  thead th {
+    padding: 12px 16px;
+    font-weight: 700;
+    text-align: left;
+    font-size: 0.88rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  tbody tr:nth-child(even) { background: #FFF9F0; }
+  tbody tr:nth-child(odd)  { background: white; }
+  tbody tr:hover           { background: #FFEDD5; transition: background 0.15s; }
+  tbody td { padding: 11px 16px; border-bottom: 1px solid #FDE68A33; }
+
+  /* ══════════════════════════════════════
+     CODE — pleine largeur
+  ══════════════════════════════════════ */
+  code {
+    background: #FFF0E0;
+    color: var(--or-fonce);
+    border: 1px solid #FDDCAA;
+    border-radius: 6px;
+    padding: 2px 7px;
+    font-size: 0.87em;
+    font-family: 'Courier New', monospace;
+  }
+  pre {
+    background: #1C0A00;
+    color: #FFD580;
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    overflow-x: auto;
+    margin: 16px -16px;
+    font-size: 0.87rem;
+    line-height: 1.65;
+    box-shadow: 0 4px 20px rgba(0,0,0,.2);
+  }
+  pre code { background: transparent; color: inherit; border: none; padding: 0; }
+
+  /* ══════════════════════════════════════
+     HR — pleine largeur
+  ══════════════════════════════════════ */
+  hr {
+    border: none;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--or) 40%, var(--or) 60%, transparent);
+    margin: 28px 0;
+    opacity: 0.22;
+    border-radius: 2px;
+  }
+
+  /* ══════════════════════════════════════
+     IMAGES — pleine largeur
+  ══════════════════════════════════════ */
+  img {
+    max-width: 100%;
+    border-radius: var(--radius);
+    margin: 14px auto;
+    display: block;
+    box-shadow: var(--sh);
+  }
+
+  /* ══════════════════════════════════════
+     QCM — SECTION EXERCICES
+  ══════════════════════════════════════ */
+
+  /* Titre QCM */
+  h1:first-child, h2:first-child {
+    color: var(--terre);
+  }
+
+  /* Numéro de question sous forme de carte — pleine largeur */
+  .question, [class*="question-block"], [class*="q-card"] {
+    background: var(--card-bg);
+    border: 2px solid #FDE68A66;
+    border-radius: 18px;
+    padding: 20px;
     margin: 16px 0;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    box-shadow: var(--sh);
+    transition: box-shadow 0.2s, border-color 0.2s;
+  }
+  .question:hover, [class*="question-block"]:hover {
+    box-shadow: var(--sh-md);
+    border-color: #F4C775;
   }
 
-  /* Inputs et radios plus beaux */
-  input[type="radio"] {
-    accent-color: var(--orange);
-    width: 18px; height: 18px;
-    cursor: pointer;
-    margin-right: 8px;
-  }
+  /* Label = option de réponse */
   label {
-    cursor: pointer;
     display: flex;
     align-items: flex-start;
-    gap: 8px;
-    padding: 10px 14px;
-    border-radius: 10px;
-    border: 2px solid #FDE68A;
-    margin: 6px 0;
+    gap: 12px;
+    padding: 13px 18px;
+    margin: 8px 0;
     background: white;
-    transition: all 0.15s;
-    font-size: 14px;
-  }
-  label:hover { background: #FFF4E6; border-color: var(--orange); }
-  input[type="text"], input[type="input"], textarea {
-    border: 2px solid #FDE68A;
-    border-radius: 10px;
-    padding: 10px 14px;
-    width: 100%;
-    font-size: 14px;
-    outline: none;
-    transition: border-color 0.15s;
-    background: white;
-  }
-  input[type="text"]:focus, textarea:focus { border-color: var(--orange); }
-
-  /* Boutons */
-  button:not([class*="btn"]) {
-    background: linear-gradient(135deg, #F97316, #EA580C);
-    color: white;
-    border: none;
-    border-radius: 12px;
-    padding: 10px 20px;
-    font-size: 14px;
-    font-weight: 700;
+    border: 2px solid #F4C77544;
+    border-radius: 14px;
     cursor: pointer;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    transition: all 0.18s;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  label:hover {
+    background: #FFFBF0;
+    border-color: var(--or);
+    transform: translateX(3px);
+    box-shadow: 0 3px 12px rgba(249,115,22,0.12);
+  }
+  label:has(input:checked) {
+    background: linear-gradient(90deg, #FFF7ED, #FFFBF5);
+    border-color: var(--or);
+    font-weight: 600;
+    color: var(--or-fonce);
+    box-shadow: 0 4px 14px rgba(249,115,22,0.18);
+  }
+
+  input[type="radio"] {
+    accent-color: var(--or);
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* Inputs texte */
+  input[type="text"], input[type="input"], textarea {
+    width: 100%;
+    padding: 13px 18px;
+    border: 2px solid #FDE68A88;
+    border-radius: 14px;
+    font-size: 0.96rem;
+    font-family: inherit;
+    outline: none;
+    background: white;
+    color: var(--terre);
+    transition: border-color 0.2s, box-shadow 0.2s;
     margin-top: 8px;
   }
+  input[type="text"]:focus, textarea:focus {
+    border-color: var(--or);
+    box-shadow: 0 0 0 4px rgba(249,115,22,0.10);
+  }
+
+  /* Bouton de validation */
+  button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: linear-gradient(135deg, var(--or), var(--or-fonce));
+    color: white;
+    border: none;
+    border-radius: 16px;
+    padding: 14px 28px;
+    font-size: 0.97rem;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.12s, box-shadow 0.15s;
+    box-shadow: 0 5px 18px rgba(249,115,22,0.35);
+    letter-spacing: 0.02em;
+    margin-top: 10px;
+  }
+  button:hover  { opacity: 0.88; box-shadow: 0 7px 24px rgba(249,115,22,0.40); }
+  button:active { transform: scale(0.97); }
+
+  /* ══════════════════════════════════════
+     RÉSULTATS CORRECTION (après soumission)
+  ══════════════════════════════════════ */
+  .correct, [class*="correct"] {
+    background: #F0FDF4 !important;
+    border-color: #86EFAC !important;
+    color: #15803D;
+  }
+  .incorrect, [class*="incorrect"], [class*="faux"] {
+    background: #FFF1F2 !important;
+    border-color: #FCA5A5 !important;
+    color: #B91C1C;
+  }
+
+  /* ══════════════════════════════════════
+     BADGES / TAGS
+  ══════════════════════════════════════ */
+  .badge, .tag, [class*="badge"], [class*="tag"] {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 12px;
+    background: #FFF3E0;
+    color: var(--or-fonce);
+    border: 1.5px solid #F4C775;
+    border-radius: 100px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin: 3px 2px;
+    letter-spacing: 0.02em;
+  }
+
+  /* ══════════════════════════════════════
+     SÉLECTION DE TEXTE
+  ══════════════════════════════════════ */
+  ::selection {
+    background: rgba(249,115,22,0.18);
+    color: var(--terre);
+  }
+
+  /* ══════════════════════════════════════
+     SCROLLBAR DISCRÈTE
+  ══════════════════════════════════════ */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #F4C775; border-radius: 10px; }
 </style>
 `;
 
@@ -891,43 +1184,62 @@ function PageCoursHTML() {
     setErreur('');
   };
 
-  return (
-    <div className="fixed inset-0 bg-white overflow-hidden" style={{ zIndex: 9999 }}>
+  /* Indicateur de phase (point coloré) */
+  const phaseLabel = phaseHTML === 'cours'
+    ? { dot: 'bg-blue-400', text: 'Lecture du cours', icon: '📖' }
+    : { dot: 'bg-tate-soleil', text: 'Exercices', icon: '📝' };
 
-      {/* ── Header ─────────────────────────────────────────── */}
-      <div className="absolute top-0 left-0 right-0 z-10 bg-white/96 backdrop-blur-sm
-                      border-b border-tate-border px-4 flex items-center gap-3 shadow-card"
-           style={{ height: 56 }}>
+  return (
+    <div className="fixed inset-0 overflow-hidden" style={{ zIndex: 9999, background: '#FFFBF5' }}>
+
+      {/* ── Header moderne ─────────────────────────────────── */}
+      <div className="absolute top-0 left-0 right-0 z-10 flex items-center gap-3 px-3"
+           style={{
+             height: 54,
+             background: 'rgba(255,251,245,0.97)',
+             backdropFilter: 'blur(12px)',
+             borderBottom: '1px solid #F4C77555',
+             boxShadow: '0 1px 16px rgba(249,115,22,0.08)',
+           }}>
+
+        {/* Bouton retour */}
         <button
           onClick={phaseHTML === 'exercices' && aExercices ? revenirAuCours : retourAccueil}
-          className="flex items-center gap-1 px-2.5 h-9 rounded-xl bg-tate-doux
-                     text-tate-terre/70 hover:bg-tate-soleil/20 hover:text-tate-terre transition-all flex-shrink-0 font-semibold text-xs"
-          title={phaseHTML === 'exercices' && aExercices ? 'Retour au cours' : 'Retour aux chapitres'}>
-          <ChevronLeft size={16} />
-          {phaseHTML === 'exercices' && aExercices ? 'Cours' : 'Retour'}
+          className="flex items-center gap-1 h-9 px-3 rounded-xl font-semibold text-xs
+                     text-tate-terre/70 hover:text-tate-terre transition-all flex-shrink-0"
+          style={{ background: '#F4C77522', border: '1.5px solid #F4C77566' }}>
+          <ChevronLeft size={15} strokeWidth={2.5} />
+          {phaseHTML === 'exercices' && aExercices ? '← Cours' : '← Retour'}
         </button>
 
+        {/* Titre + phase */}
         <div className="flex-1 min-w-0">
-          <p className="font-serif font-bold text-tate-terre text-sm leading-none truncate">{chapitreActif.titre}</p>
-          <p className="text-[10px] text-tate-terre/40 mt-0.5">
-            {phaseHTML === 'cours' ? '📖 Cours' : '📝 Exercices'}
+          <p className="font-bold text-tate-terre text-sm leading-tight truncate" style={{ fontFamily: 'Georgia, serif' }}>
+            {chapitreActif.titre}
           </p>
+          <div className="flex items-center gap-1.5 mt-0.5">
+            <span className={`w-1.5 h-1.5 rounded-full ${phaseLabel.dot} inline-block`} />
+            <span className="text-[10px] text-tate-terre/45 font-medium">{phaseLabel.icon} {phaseLabel.text}</span>
+          </div>
         </div>
 
-        {/* Onglets cours / exercices si exercices trouvés */}
+        {/* Pills cours / exercices */}
         {aExercices && (
-          <div className="flex bg-tate-doux rounded-xl p-0.5 gap-0.5 flex-shrink-0">
-            <button
-              onClick={revenirAuCours}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                phaseHTML === 'cours' ? 'bg-white shadow text-tate-terre' : 'text-tate-terre/50 hover:text-tate-terre/70'
+          <div className="flex rounded-xl overflow-hidden flex-shrink-0"
+               style={{ border: '1.5px solid #F4C77566', background: '#FFF3E0' }}>
+            <button onClick={revenirAuCours}
+              className={`px-3 py-1.5 text-xs font-bold transition-all ${
+                phaseHTML === 'cours'
+                  ? 'bg-tate-terre text-white'
+                  : 'text-tate-terre/50 hover:text-tate-terre'
               }`}>
               Cours
             </button>
-            <button
-              onClick={allerAuxExercices}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 ${
-                phaseHTML === 'exercices' ? 'bg-white shadow text-tate-terre' : 'text-tate-terre/50 hover:text-tate-terre/70'
+            <button onClick={allerAuxExercices}
+              className={`px-3 py-1.5 text-xs font-bold transition-all ${
+                phaseHTML === 'exercices'
+                  ? 'bg-tate-soleil text-tate-terre'
+                  : 'text-tate-terre/50 hover:text-tate-terre'
               }`}>
               S'exercer
             </button>
@@ -935,59 +1247,79 @@ function PageCoursHTML() {
         )}
       </div>
 
-      {/* ── Iframe contenu ─────────────────────────────────── */}
+      {/* ── Iframe plein écran ──────────────────────────────── */}
       <iframe
-        key={phaseHTML}  /* force reload à chaque changement de phase */
+        key={phaseHTML}
         ref={iframeRef}
         srcDoc={IFRAME_CSS + htmlAffiche}
         title={chapitreActif.titre}
         onLoad={onIframeLoad}
-        className="absolute w-full border-none"
-        style={{ top: 56, height: 'calc(100% - 56px - 64px)', display: 'block' }}
+        className="absolute border-none"
+        style={{
+          top: 54,
+          left: 0,
+          right: 0,
+          width: '100%',
+          height: 'calc(100% - 54px - 68px)',
+          display: 'block',
+        }}
         sandbox="allow-scripts allow-same-origin"
       />
 
-      {/* ── Barre du bas ───────────────────────────────────── */}
-      <div className="absolute bottom-0 left-0 right-0 bg-white/96 backdrop-blur-sm
-                      border-t border-tate-border px-4 py-3 z-10
-                      shadow-[0_-4px_24px_rgba(0,0,0,0.10)]"
-           style={{ height: 64 }}>
-        <div className="flex items-center gap-3 max-w-2xl mx-auto h-full">
+      {/* ── Barre du bas moderne ───────────────────────────── */}
+      <div className="absolute bottom-0 left-0 right-0 z-10 px-4"
+           style={{
+             height: 68,
+             background: 'rgba(255,251,245,0.97)',
+             backdropFilter: 'blur(12px)',
+             borderTop: '1px solid #F4C77555',
+             boxShadow: '0 -4px 24px rgba(249,115,22,0.09)',
+             display: 'flex',
+             alignItems: 'center',
+           }}>
+        <div className="flex items-center gap-3 w-full max-w-2xl mx-auto">
 
           {phaseHTML === 'cours' ? (
             /* ── Phase COURS ─── */
             <>
               <button
                 onClick={retourAccueil}
-                className="w-10 h-10 rounded-xl bg-tate-doux border border-tate-border flex items-center justify-center
-                           text-tate-terre/60 hover:bg-tate-soleil/20 hover:text-tate-terre transition-all flex-shrink-0"
-                title="Retour aux chapitres">
+                className="w-10 h-10 rounded-xl flex items-center justify-center
+                           text-tate-terre/50 hover:text-tate-terre transition-all flex-shrink-0"
+                style={{ background: '#F4C77522', border: '1.5px solid #F4C77566' }}
+                title="Accueil">
                 <Home size={17} />
               </button>
 
               {aExercices ? (
-                /* Bouton Passer aux exercices */
                 <button
                   onClick={allerAuxExercices}
-                  className="flex-1 h-10 rounded-xl font-bold text-sm transition-all
-                             flex items-center justify-center gap-2
-                             bg-gradient-to-r from-tate-soleil to-amber-500 text-tate-terre
-                             hover:opacity-90 active:scale-[0.98] shadow-sm">
+                  className="flex-1 h-11 rounded-2xl font-bold text-sm transition-all
+                             flex items-center justify-center gap-2 active:scale-[0.98]"
+                  style={{
+                    background: 'linear-gradient(135deg, #F97316, #EA580C)',
+                    color: 'white',
+                    boxShadow: '0 4px 16px rgba(249,115,22,0.35)',
+                    letterSpacing: '0.01em',
+                  }}>
                   <span>📝</span>
                   <span>Passer aux exercices</span>
-                  <ChevronRight size={15} />
+                  <ChevronRight size={16} />
                 </button>
               ) : (
-                /* Pas d'exercices : terminer directement */
                 <button
                   onClick={terminerSansQCM}
                   disabled={submitting}
-                  className="flex-1 h-10 rounded-xl bg-succes text-white font-bold text-sm
-                             hover:bg-succes/90 active:scale-[0.98] transition-all disabled:opacity-60
-                             flex items-center justify-center gap-2">
+                  className="flex-1 h-11 rounded-2xl font-bold text-sm transition-all
+                             flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-60"
+                  style={{
+                    background: 'linear-gradient(135deg, #10B981, #059669)',
+                    color: 'white',
+                    boxShadow: '0 4px 16px rgba(16,185,129,0.30)',
+                  }}>
                   {submitting
                     ? <><span className="animate-spin inline-block">⏳</span> Enregistrement…</>
-                    : <>✅ Cours terminé</>}
+                    : <>✅ Cours terminé — Valider</>}
                 </button>
               )}
             </>
@@ -996,39 +1328,47 @@ function PageCoursHTML() {
             <>
               <button
                 onClick={revenirAuCours}
-                className="w-10 h-10 rounded-xl bg-tate-doux border border-tate-border flex items-center justify-center
-                           text-tate-terre/60 hover:bg-tate-soleil/20 hover:text-tate-terre transition-all flex-shrink-0"
+                className="w-10 h-10 rounded-xl flex items-center justify-center
+                           text-tate-terre/50 hover:text-tate-terre transition-all flex-shrink-0"
+                style={{ background: '#F4C77522', border: '1.5px solid #F4C77566' }}
                 title="Revoir le cours">
                 <ChevronLeft size={17} />
               </button>
 
               {erreur ? (
-                <div className="flex-1 flex items-center gap-2 bg-orange-50 border border-orange-200 rounded-xl px-3 py-1.5">
+                <div className="flex-1 flex items-center gap-2 rounded-xl px-3 py-2"
+                     style={{ background: '#FFF7ED', border: '1.5px solid #FED7AA' }}>
                   <span className="text-xs text-orange-700 flex-1">⚠️ {erreur}</span>
                   <button onClick={() => setErreur('')} className="text-orange-400 hover:text-orange-600 flex-shrink-0">
                     <X size={14} />
                   </button>
                 </div>
               ) : aDesQCM === false ? (
-                /* Exercices sans QCM interactif */
                 <button
                   onClick={terminerSansQCM}
                   disabled={submitting}
-                  className="flex-1 h-10 rounded-xl bg-succes text-white font-bold text-sm
-                             hover:bg-succes/90 active:scale-[0.98] transition-all disabled:opacity-60
-                             flex items-center justify-center gap-2">
+                  className="flex-1 h-11 rounded-2xl font-bold text-sm transition-all
+                             flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-60"
+                  style={{
+                    background: 'linear-gradient(135deg, #10B981, #059669)',
+                    color: 'white',
+                    boxShadow: '0 4px 16px rgba(16,185,129,0.30)',
+                  }}>
                   {submitting
                     ? <><span className="animate-spin inline-block">⏳</span> Enregistrement…</>
                     : <>✅ Exercices terminés</>}
                 </button>
               ) : (
-                /* Exercices avec QCM */
                 <button
                   onClick={detecterEtValider}
                   disabled={submitting}
-                  className="flex-1 h-10 rounded-xl bg-tate-terre text-white font-bold text-sm
-                             hover:bg-tate-terre/85 active:scale-[0.98] transition-all disabled:opacity-60
-                             flex items-center justify-center gap-2">
+                  className="flex-1 h-11 rounded-2xl font-bold text-sm transition-all
+                             flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-60"
+                  style={{
+                    background: 'linear-gradient(135deg, #1C0A00, #3D1500)',
+                    color: 'white',
+                    boxShadow: '0 4px 16px rgba(28,10,0,0.25)',
+                  }}>
                   {submitting
                     ? <><span className="animate-spin inline-block">⏳</span> Calcul du score…</>
                     : <>✅ Valider mes réponses</>}
