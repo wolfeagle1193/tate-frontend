@@ -316,8 +316,8 @@ const IFRAME_CSS = `
     line-height: 1.65;
   }
 
-  /* Fin de cours — pleine largeur */
-  .fin-cours, [id*="fin"], [class*="fin-cours"] {
+  /* Fin de cours — pleine largeur (sélecteur précis, évite les faux positifs) */
+  .fin-cours, [class*="fin-cours"] {
     margin: 28px -16px 0;
     padding: 22px 24px;
     background: linear-gradient(135deg, #F0FDF4, #FFFBF5);
@@ -325,6 +325,27 @@ const IFRAME_CSS = `
     border-bottom: 2px solid #86EFAC;
     text-align: center;
     box-shadow: 0 4px 20px rgba(16,185,129,.10);
+  }
+
+  /* ══════════════════════════════════════
+     MASQUER les encadrés de métadonnées cours (matière / classe / chapitre)
+     généré automatiquement par l'IA en fin de HTML
+  ══════════════════════════════════════ */
+  .info-cours, .course-info, .meta-cours, .metadata-cours,
+  .entete-cours, .header-cours, .chapitre-info, .cours-info,
+  [class*="info-cours"], [class*="course-info"],
+  [class*="meta-cours"], [class*="entete-cours"],
+  [class*="header-cours"], [class*="chapitre-info"],
+  [id*="info-cours"], [id*="course-info"], [id*="meta-cours"],
+  /* Div avec fond orange/ambre inline (pattern IA commun) */
+  [style*="background: #FFF3E0"],
+  [style*="background-color: #FFF3E0"],
+  [style*="background: #FFFBF0"],
+  [style*="background: #FFF7ED"],
+  [style*="background-color: #FFF7ED"],
+  [style*="background: orange"],
+  [style*="background-color: orange"] {
+    display: none !important;
   }
 
   /* ══════════════════════════════════════
@@ -487,28 +508,18 @@ const IFRAME_CSS = `
     box-shadow: 0 0 0 4px rgba(249,115,22,0.10);
   }
 
-  /* Bouton de validation */
-  button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    background: linear-gradient(135deg, var(--or), var(--or-fonce));
-    color: white;
-    border: none;
-    border-radius: 16px;
-    padding: 14px 28px;
-    font-size: 0.97rem;
-    font-weight: 700;
-    font-family: inherit;
-    cursor: pointer;
-    transition: opacity 0.15s, transform 0.12s, box-shadow 0.15s;
-    box-shadow: 0 5px 18px rgba(249,115,22,0.35);
-    letter-spacing: 0.02em;
-    margin-top: 10px;
+  /* Boutons de soumission QCM générés par l'IA :
+     MASQUÉS — la validation est gérée par le bouton React "Valider mes réponses"
+     Cela évite le double bouton de validation */
+  button[type="submit"],
+  input[type="submit"],
+  button.valider, button.soumettre, button.submit,
+  button.btn-valider, button.btn-soumettre,
+  [class*="btn-submit"], [class*="btn-valider"], [class*="btn-soumettre"],
+  form > button:last-of-type,
+  .qcm-submit, .quiz-submit, .quiz-btn {
+    display: none !important;
   }
-  button:hover  { opacity: 0.88; box-shadow: 0 7px 24px rgba(249,115,22,0.40); }
-  button:active { transform: scale(0.97); }
 
   /* ══════════════════════════════════════
      RÉSULTATS CORRECTION (après soumission)
@@ -560,158 +571,307 @@ const IFRAME_CSS = `
 `;
 
 // ─────────────────────────────────────────────────────────────────
+// CONFETTI — particules animées pour la victoire
+// ─────────────────────────────────────────────────────────────────
+const CONFETTI_COLORS = ['#F97316','#10B981','#F59E0B','#3B82F6','#EF4444','#8B5CF6','#EC4899','#14B8A6','#FBBF24','#34D399'];
+
+function ConfettiPluie({ actif }) {
+  const pieces = useMemo(() => {
+    if (!actif) return [];
+    return Array.from({ length: 36 }, (_, i) => ({
+      id: i,
+      left:     4 + (i * 2.6) % 92,
+      delay:    (i * 0.09) % 1.6,
+      duration: 1.6 + (i * 0.11) % 1.4,
+      color:    CONFETTI_COLORS[i % CONFETTI_COLORS.length],
+      w:        6 + (i * 2) % 8,
+      h:        4 + (i * 3) % 6,
+      rot:      (i * 73) % 540,
+    }));
+  }, [actif]);
+
+  if (!actif) return null;
+  return (
+    <div className="fixed inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 60 }}>
+      {pieces.map(p => (
+        <motion.div key={p.id}
+          initial={{ y: -16, opacity: 1, rotate: 0 }}
+          animate={{ y: '105vh', opacity: [1, 1, 0.7, 0], rotate: p.rot }}
+          transition={{ duration: p.duration, delay: p.delay, ease: [0.2, 0, 0.8, 1] }}
+          style={{
+            position: 'absolute', top: 0, left: `${p.left}%`,
+            width: p.w, height: p.h,
+            background: p.color, borderRadius: 2,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────
 // SCORE OVERLAY — partagé entre les deux modes de cours
-// Règle : max 2 fautes pour valider un chapitre
+// Règle : max 2 fautes pour valider — recommencer OBLIGATOIRE si échec
 // ─────────────────────────────────────────────────────────────────
 function ScoreOverlay({ overlay, onRetour, onReessayer }) {
+  // Les hooks doivent être appelés avant tout early return
+  const nbErreurs = overlay ? (overlay.nbErreurs ?? (overlay.nbTotal - overlay.nbCorrectes)) : 0;
+  const valide    = !!(overlay?.maitrise && overlay?.avecQCM);
+  const nbEtoiles = valide ? (nbErreurs === 0 ? 3 : nbErreurs === 1 ? 2 : 1) : 0;
+
+  const champCfg = useMemo(() => {
+    if (!overlay) return {};
+    if (overlay.avecQCM === false) return { icon:'📖', titre:'Cours terminé !', bg:'from-blue-50', titreCls:'text-tate-terre' };
+    if (!overlay.maitrise) return {
+      icon: nbErreurs >= 6 ? '📚' : nbErreurs >= 4 ? '😞' : '😓',
+      titre: `${nbErreurs} faute${nbErreurs > 1 ? 's' : ''}`,
+      sous:  'Non validé — recommence !',
+      bg:    'from-red-50', titreCls: 'text-alerte',
+    };
+    if (nbErreurs === 0) return { icon:'🥇', titre:'PARFAIT !',    sous:'Zéro faute — tu es un vrai champion !',       bg:'from-amber-50',  titreCls:'text-amber-500' };
+    if (nbErreurs === 1) return { icon:'🏆', titre:'EXCELLENT !',  sous:'1 seule faute — performance remarquable !',   bg:'from-yellow-50', titreCls:'text-yellow-600' };
+    return             { icon:'⭐', titre:'BRAVO !',      sous:'2 fautes — limite respectée. Chapitre validé !', bg:'from-green-50',  titreCls:'text-succes' };
+  }, [overlay, nbErreurs]);
+
   if (!overlay) return null;
 
-  const nbErreurs = overlay.nbErreurs ?? (overlay.nbTotal - overlay.nbCorrectes);
-
-  // Icône champion selon le nombre de fautes
-  const champIcon = (() => {
-    if (overlay.avecQCM === false) return '📖';
-    if (!overlay.maitrise) return nbErreurs >= 5 ? '📚' : '😓';
-    if (nbErreurs === 0) return '🥇';
-    if (nbErreurs === 1) return '🏆';
-    return '⭐'; // 2 fautes
-  })();
-
-  // Message selon les fautes
-  const message = (() => {
-    if (overlay.avecQCM === false) return '✨ Cours enregistré ! Continue comme ça !';
-    if (overlay.maitrise) {
-      if (nbErreurs === 0) return '🥇 Parfait ! Aucune faute — tu es un champion !';
-      if (nbErreurs === 1) return '🏆 Excellent ! 1 seule faute. Chapitre maîtrisé !';
-      return '⭐ Bien joué ! 2 fautes — limite respectée. Chapitre validé !';
-    }
-    return `Tu as fait ${nbErreurs} faute${nbErreurs > 1 ? 's' : ''} sur ${overlay.nbTotal} question${overlay.nbTotal > 1 ? 's' : ''}. Il faut au maximum 2 fautes pour valider. Relis bien le cours et réessaie !`;
-  })();
-
-  // Étoiles de récompense (sur 3)
-  const nbEtoiles = overlay.maitrise
-    ? (nbErreurs === 0 ? 3 : nbErreurs === 1 ? 2 : 1)
-    : 0;
-
   return (
-    <AnimatePresence>
-      {overlay && (
-        <motion.div
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/60 z-50 flex items-end sm:items-center justify-center p-4">
+    <>
+      {/* Confettis hors du card */}
+      <ConfettiPluie actif={valide} />
+
+      <AnimatePresence>
+        {overlay && (
           <motion.div
-            initial={{ y: 80, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 80, opacity: 0 }} transition={{ type: 'spring', bounce: 0.3 }}
-            className="bg-white rounded-3xl w-full max-w-sm shadow-2xl overflow-hidden">
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
 
-            {/* En-tête résultat */}
-            <div className={`px-6 pt-8 pb-6 text-center ${
-              overlay.maitrise ? 'bg-gradient-to-b from-green-50 to-white' : 'bg-gradient-to-b from-red-50 to-white'
-            }`}>
-              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}
-                transition={{ type: 'spring', bounce: 0.6, delay: 0.15 }}
-                className="text-6xl mb-2">
-                {champIcon}
-              </motion.div>
+            <motion.div
+              initial={{ scale: 0.75, opacity: 0, y: 40 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.85, opacity: 0, y: 20 }}
+              transition={{ type: 'spring', bounce: 0.42, duration: 0.5 }}
+              className="bg-white rounded-3xl w-full max-w-sm shadow-2xl overflow-hidden">
 
-              {/* Titre */}
-              {overlay.avecQCM === false ? (
-                <h2 className="text-xl font-serif font-bold text-tate-terre mb-2">Cours terminé !</h2>
-              ) : (
+              {/* ══════════ VICTOIRE ══════════ */}
+              {valide && (
                 <>
-                  <h2 className={`text-3xl font-serif font-bold mb-1 ${overlay.maitrise ? 'text-succes' : 'text-alerte'}`}>
-                    {overlay.maitrise ? 'Validé !' : 'Non validé'}
-                  </h2>
-
-                  {/* Compteurs fautes / bonnes réponses */}
-                  <div className="flex items-center justify-center gap-4 mb-3 mt-2">
-                    <div className={`flex flex-col items-center px-4 py-2 rounded-2xl ${
-                      nbErreurs === 0 ? 'bg-green-100' : nbErreurs <= 2 ? 'bg-amber-50' : 'bg-red-50'
-                    }`}>
-                      <span className={`text-2xl font-bold ${
-                        nbErreurs === 0 ? 'text-succes' : nbErreurs <= 2 ? 'text-amber-600' : 'text-alerte'
-                      }`}>{nbErreurs}</span>
-                      <span className="text-xs text-tate-terre/50">faute{nbErreurs !== 1 ? 's' : ''}</span>
+                  {/* Zone trophée */}
+                  <div className={`px-6 pt-10 pb-6 text-center bg-gradient-to-b ${champCfg.bg} to-white relative overflow-hidden`}>
+                    {/* Halo lumineux derrière l'icône */}
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <motion.div
+                        animate={{ scale: [1, 1.18, 1], opacity: [0.25, 0.45, 0.25] }}
+                        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                        className="w-40 h-40 rounded-full bg-tate-soleil/20"
+                      />
                     </div>
-                    <div className="text-tate-terre/20 text-xl">·</div>
-                    <div className="flex flex-col items-center px-4 py-2 rounded-2xl bg-tate-doux">
-                      <span className="text-2xl font-bold text-tate-terre">{overlay.nbCorrectes}</span>
-                      <span className="text-xs text-tate-terre/50">bonne{overlay.nbCorrectes !== 1 ? 's' : ''}</span>
-                    </div>
-                    <div className="text-tate-terre/20 text-xl">·</div>
-                    <div className="flex flex-col items-center px-4 py-2 rounded-2xl bg-tate-doux">
-                      <span className="text-2xl font-bold text-tate-terre">{overlay.nbTotal}</span>
-                      <span className="text-xs text-tate-terre/50">total</span>
-                    </div>
-                  </div>
 
-                  {/* Barre de score */}
-                  <div className="h-3 bg-tate-doux rounded-full overflow-hidden mx-6">
-                    <motion.div initial={{ width: 0 }} animate={{ width: `${overlay.score}%` }}
-                      transition={{ duration: 0.8, delay: 0.3 }}
-                      className={`h-full rounded-full ${overlay.maitrise ? 'bg-succes' : 'bg-alerte'}`} />
-                  </div>
-                  <p className="text-xs text-tate-terre/40 mt-1.5">{overlay.score}% · Règle : max 2 fautes pour valider</p>
+                    {/* Grande icône */}
+                    <motion.div
+                      initial={{ scale: 0, rotate: -25 }}
+                      animate={{ scale: [0, 1.35, 1], rotate: [-25, 8, 0] }}
+                      transition={{ duration: 0.55, delay: 0.05, ease: 'easeOut' }}
+                      className="relative text-8xl leading-none mb-3"
+                      style={{ filter: 'drop-shadow(0 10px 24px rgba(249,115,22,0.45))' }}>
+                      {champCfg.icon}
+                    </motion.div>
 
-                  {/* Étoiles si validé */}
-                  {overlay.maitrise && (
-                    <div className="flex justify-center gap-1.5 mt-3">
+                    {/* Titre PARFAIT / EXCELLENT / BRAVO */}
+                    <motion.h2
+                      initial={{ opacity: 0, y: 14, scale: 0.9 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      transition={{ delay: 0.3, type: 'spring', bounce: 0.4 }}
+                      className={`text-4xl font-black tracking-tight mb-0.5 ${champCfg.titreCls}`}
+                      style={{ fontFamily: 'Georgia, serif', letterSpacing: '-0.01em' }}>
+                      {champCfg.titre}
+                    </motion.h2>
+                    <motion.p
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.48 }}
+                      className="text-sm text-tate-terre/55 mb-5">
+                      {champCfg.sous}
+                    </motion.p>
+
+                    {/* ⭐⭐⭐ étoiles animées */}
+                    <div className="flex justify-center gap-4 mb-4">
                       {[1, 2, 3].map(i => (
                         <motion.div key={i}
-                          initial={{ scale: 0, rotate: -20 }}
-                          animate={{ scale: 1, rotate: 0 }}
-                          transition={{ delay: 0.4 + i * 0.1, type: 'spring', bounce: 0.5 }}>
-                          <Star size={22}
-                            className={i <= nbEtoiles ? 'fill-tate-soleil text-tate-soleil' : 'text-tate-doux'} />
+                          initial={{ scale: 0, rotate: 60, opacity: 0 }}
+                          animate={i <= nbEtoiles
+                            ? { scale: [0, 1.6, 1.1, 1], rotate: [60, -12, 5, 0], opacity: 1 }
+                            : { scale: 1, opacity: 0.15 }
+                          }
+                          transition={{ delay: 0.58 + i * 0.18, type: 'spring', bounce: 0.7 }}>
+                          <Star size={40}
+                            className={i <= nbEtoiles
+                              ? 'fill-tate-soleil text-tate-soleil drop-shadow-sm'
+                              : 'text-gray-200 fill-gray-100'
+                            }
+                          />
                         </motion.div>
                       ))}
                     </div>
-                  )}
+
+                    {/* Pills stats */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 1.0 }}
+                      className="flex items-center justify-center gap-2 flex-wrap">
+                      <span className="bg-green-100 text-green-700 px-3 py-1.5 rounded-xl text-xs font-bold">
+                        ✓ {overlay.nbCorrectes}/{overlay.nbTotal} bonnes
+                      </span>
+                      <span className={`px-3 py-1.5 rounded-xl text-xs font-bold ${
+                        nbErreurs === 0 ? 'bg-green-50 text-green-600' : 'bg-amber-50 text-amber-700'
+                      }`}>
+                        {nbErreurs === 0 ? '🎯 Sans faute !' : `${nbErreurs} faute${nbErreurs > 1 ? 's' : ''}`}
+                      </span>
+                      {overlay.tentative > 1 && (
+                        <span className="bg-tate-doux text-tate-terre/55 px-3 py-1.5 rounded-xl text-xs font-bold">
+                          essai #{overlay.tentative}
+                        </span>
+                      )}
+                    </motion.div>
+                  </div>
+
+                  {/* Bouton suivant */}
+                  <div className="px-6 pb-6 pt-3">
+                    <motion.button
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 1.15 }}
+                      onClick={onRetour}
+                      whileHover={{ scale: 1.02, boxShadow: '0 8px 32px rgba(249,115,22,0.45)' }}
+                      whileTap={{ scale: 0.97 }}
+                      className="w-full py-4 rounded-2xl font-black text-base tracking-wide flex items-center justify-center gap-2.5"
+                      style={{
+                        background: 'linear-gradient(135deg, #F97316, #EA580C)',
+                        color: 'white',
+                        boxShadow: '0 6px 24px rgba(249,115,22,0.40)',
+                        letterSpacing: '0.02em',
+                      }}>
+                      <Trophy size={19} />
+                      Chapitre suivant !
+                    </motion.button>
+                  </div>
                 </>
               )}
-            </div>
 
-            {/* Corps */}
-            <div className="px-6 pb-6 space-y-3">
-              <div className={`rounded-2xl p-3.5 text-sm text-center font-medium leading-relaxed ${
-                overlay.maitrise
-                  ? 'bg-green-50 border border-green-200 text-green-800'
-                  : 'bg-red-50 border border-red-200 text-red-800'
-              }`}>
-                {message}
-              </div>
-
-              {/* Tentative */}
-              {overlay.tentative > 1 && (
-                <p className="text-xs text-center text-tate-terre/40">
-                  Tentative n°{overlay.tentative}
-                </p>
-              )}
-
-              {overlay.maitrise ? (
-                <button onClick={onRetour} className="btn-tate w-full py-3.5 flex items-center justify-center gap-2">
-                  <Trophy size={16} /> Chapitre suivant
-                </button>
-              ) : (
+              {/* ══════════ COURS SANS QCM terminé ══════════ */}
+              {overlay.avecQCM === false && (
                 <>
-                  {onReessayer && (
-                    <button onClick={onReessayer}
-                      className="w-full py-3.5 rounded-2xl bg-tate-terre text-white font-bold text-sm
-                                 hover:bg-tate-terre/85 transition-all flex items-center justify-center gap-2">
-                      <RotateCcw size={15} /> Recommencer le cours
+                  <div className="px-6 pt-8 pb-6 text-center">
+                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}
+                      transition={{ type: 'spring', bounce: 0.55, delay: 0.1 }}
+                      className="text-6xl mb-3">📖</motion.div>
+                    <h2 className="text-xl font-serif font-bold text-tate-terre mb-2">Cours terminé !</h2>
+                    <p className="text-sm text-tate-terre/50">Chapitre enregistré — continue comme ça !</p>
+                  </div>
+                  <div className="px-6 pb-6">
+                    <button onClick={onRetour}
+                      className="btn-tate w-full py-3.5 flex items-center justify-center gap-2">
+                      Continuer
                     </button>
-                  )}
-                  <button onClick={onRetour}
-                    className="w-full py-2.5 text-sm text-tate-terre/50 hover:text-tate-terre transition-colors">
-                    Retour aux chapitres
-                  </button>
+                  </div>
                 </>
               )}
-            </div>
+
+              {/* ══════════ ÉCHEC — RECOMMENCER OBLIGATOIRE ══════════ */}
+              {!overlay.maitrise && overlay.avecQCM && (
+                <>
+                  <div className="px-6 pt-8 pb-5 text-center bg-gradient-to-b from-red-50 to-white">
+                    {/* Icône secouée */}
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1, x: [0, -6, 6, -4, 4, 0] }}
+                      transition={{ scale: { type:'spring', bounce:0.5, delay:0.1 }, x: { delay: 0.55, duration: 0.5 } }}
+                      className="text-7xl mb-3">
+                      {nbErreurs >= 6 ? '📚' : '😓'}
+                    </motion.div>
+
+                    <motion.h2
+                      initial={{ opacity:0, y:10 }}
+                      animate={{ opacity:1, y:0 }}
+                      transition={{ delay:0.3 }}
+                      className="text-3xl font-black text-alerte mb-1"
+                      style={{ fontFamily:'Georgia, serif' }}>
+                      {nbErreurs} faute{nbErreurs > 1 ? 's' : ''}
+                    </motion.h2>
+                    <p className="text-sm text-tate-terre/60 mb-5">
+                      Il faut <strong className="text-tate-terre">au maximum 2 fautes</strong> pour valider ce chapitre.
+                    </p>
+
+                    {/* Barre d'erreurs */}
+                    <div className="mx-4 mb-4">
+                      <div className="flex items-center justify-between text-xs text-tate-terre/40 mb-1.5">
+                        <span>Tes réponses</span>
+                        <span>{overlay.nbCorrectes} ✓ · {nbErreurs} ✗</span>
+                      </div>
+                      <div className="h-4 bg-tate-doux rounded-full overflow-hidden flex">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: `${(overlay.nbCorrectes / overlay.nbTotal) * 100}%` }}
+                          transition={{ duration: 0.7, delay: 0.4 }}
+                          className="h-full bg-succes rounded-l-full"
+                        />
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: `${(nbErreurs / overlay.nbTotal) * 100}%` }}
+                          transition={{ duration: 0.7, delay: 0.6 }}
+                          className="h-full bg-alerte rounded-r-full"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Seuil limite */}
+                    <div className="flex items-center justify-center gap-2">
+                      {[...Array(Math.min(overlay.nbTotal, 8))].map((_, i) => (
+                        <div key={i}
+                          className={`w-3 h-3 rounded-full transition-all ${
+                            i < overlay.nbCorrectes ? 'bg-succes' : 'bg-alerte'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    {overlay.tentative > 1 && (
+                      <p className="text-xs text-tate-terre/30 mt-3">Tentative n°{overlay.tentative}</p>
+                    )}
+                  </div>
+
+                  {/* Conseil + bouton UNIQUE */}
+                  <div className="px-6 pb-6 pt-3 space-y-3">
+                    <div className="bg-amber-50 border border-amber-200 rounded-2xl px-4 py-3 text-sm text-amber-800 leading-relaxed text-center">
+                      💡 <strong>Relis attentivement le cours</strong> en te concentrant sur les points difficiles, puis réessaie !
+                    </div>
+
+                    {/* ─ PAS de "Retour aux chapitres" — SEUL le bouton Recommencer ─ */}
+                    <motion.button
+                      initial={{ opacity:0, y:8 }}
+                      animate={{ opacity:1, y:0 }}
+                      transition={{ delay:0.45 }}
+                      onClick={onReessayer}
+                      whileHover={{ scale:1.02 }}
+                      whileTap={{ scale:0.97 }}
+                      className="w-full py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-2.5 tracking-wide"
+                      style={{
+                        background:'linear-gradient(135deg,#1C0A00,#3D1500)',
+                        color:'white',
+                        boxShadow:'0 5px 20px rgba(28,10,0,0.30)',
+                        letterSpacing:'0.02em',
+                      }}>
+                      <RotateCcw size={17} /> Recommencer le cours
+                    </motion.button>
+                  </div>
+                </>
+              )}
+
+            </motion.div>
           </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
 
