@@ -96,11 +96,42 @@ function Barre({ pct, color = 'bg-succes' }) {
   );
 }
 
+// ── Helpers ──
+const couleurFautes = (n) =>
+  n === 0 ? 'text-succes' : n <= 2 ? 'text-amber-500' : 'text-alerte';
+const bgFautes = (n) =>
+  n === 0 ? 'bg-green-100 text-green-800' : n <= 2 ? 'bg-amber-50 text-amber-800' : 'bg-red-50 text-red-800';
+
 // ── Modal détail élève ────────────────────────────────────────
 function ModalDetailEleve({ eleve, onClose }) {
+  const [onglet,      setOnglet]      = useState('apercu'); // 'apercu' | 'chapitres'
+  const [progression, setProgression] = useState([]);
+  const [loadProg,    setLoadProg]    = useState(false);
+
   const tauxMaitrise = eleve.totalSessions > 0
     ? Math.round((eleve.maitrises / eleve.totalSessions) * 100)
     : 0;
+
+  const chargerProgression = useCallback(async () => {
+    if (progression.length > 0) return;
+    setLoadProg(true);
+    try {
+      const { data } = await axios.get(
+        `${API}/resultats/progression/${eleve._id}`,
+        { headers: hdrs() }
+      );
+      // Trier par dernier accès
+      const sorted = (data.data || []).sort(
+        (a, b) => new Date(b.derniereAt || 0) - new Date(a.derniereAt || 0)
+      );
+      setProgression(sorted);
+    } catch { setProgression([]); }
+    finally { setLoadProg(false); }
+  }, [eleve._id, progression.length]);
+
+  useEffect(() => {
+    if (onglet === 'chapitres') chargerProgression();
+  }, [onglet, chargerProgression]);
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
@@ -157,8 +188,28 @@ function ModalDetailEleve({ eleve, onClose }) {
           </div>
         </div>
 
+        {/* Onglets Aperçu / Par chapitre */}
+        <div className="flex border-b border-tate-border flex-shrink-0 px-5">
+          {[
+            { id: 'apercu',    label: '📈 Aperçu'          },
+            { id: 'chapitres', label: '📚 Par chapitre'    },
+          ].map(tab => (
+            <button key={tab.id} onClick={() => setOnglet(tab.id)}
+              className={`flex-1 py-3 text-sm font-bold border-b-2 transition-all ${
+                onglet === tab.id
+                  ? 'border-tate-soleil text-tate-terre'
+                  : 'border-transparent text-tate-terre/40 hover:text-tate-terre/60'
+              }`}>
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
         {/* Corps scrollable */}
         <div className="overflow-y-auto flex-1 p-5 space-y-5">
+
+          {/* ═══════════ ONGLET APERÇU ═══════════ */}
+          {onglet === 'apercu' && <>
 
           {/* Taux de maîtrise */}
           {eleve.totalSessions > 0 && (
@@ -280,6 +331,84 @@ function ModalDetailEleve({ eleve, onClose }) {
               <p className="text-xs text-tate-terre/60">🕐 Dernier exercice : {dateLongFr(eleve.dernierAt)}</p>
             )}
           </div>
+
+          </>} {/* fin onglet apercu */}
+
+          {/* ═══════════ ONGLET PAR CHAPITRE ═══════════ */}
+          {onglet === 'chapitres' && (
+            <>
+              {loadProg ? (
+                <div className="flex flex-col items-center py-12 gap-3">
+                  <div className="w-8 h-8 rounded-full border-4 border-tate-soleil border-t-transparent animate-spin" />
+                  <p className="text-sm text-tate-terre/40">Chargement de l'historique…</p>
+                </div>
+              ) : progression.length === 0 ? (
+                <div className="text-center py-12">
+                  <p className="text-4xl mb-2">📊</p>
+                  <p className="text-sm text-tate-terre/50">Aucun résultat de QCM enregistré</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {progression.map((chap, i) => {
+                    const best = Math.max(...chap.tentatives.map(t => t.score));
+                    return (
+                      <div key={i} className={`rounded-2xl border-2 overflow-hidden ${
+                        chap.maitrise ? 'border-green-200 bg-green-50/30' : 'border-tate-border bg-white'
+                      }`}>
+                        {/* En-tête chapitre */}
+                        <div className="flex items-center gap-3 px-4 py-3">
+                          <div className={`text-xl flex-shrink-0 ${chap.maitrise ? '' : 'opacity-50'}`}>
+                            {chap.maitrise
+                              ? (chap.tentatives.find(t => t.maitrise)?.nbErreurs === 0 ? '🥇' :
+                                 chap.tentatives.find(t => t.maitrise)?.nbErreurs === 1 ? '🏆' : '⭐')
+                              : '📚'}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-semibold text-tate-terre text-sm truncate">{chap.titre}</p>
+                            <p className="text-xs text-tate-terre/40">{chap.niveau} · {chap.tentatives.length} tentative{chap.tentatives.length > 1 ? 's' : ''}</p>
+                          </div>
+                          <div className="text-right flex-shrink-0">
+                            <p className={`text-base font-bold ${couleurScore(best)}`}>{best}%</p>
+                            <p className="text-xs text-tate-terre/40">meilleur</p>
+                          </div>
+                        </div>
+
+                        {/* Historique tentatives */}
+                        <div className="border-t border-tate-border/40 px-4 py-2 space-y-1.5">
+                          {chap.tentatives.map((t, j) => {
+                            const nbErr = t.nbErreurs ?? (t.nbTotal - t.nbCorrectes);
+                            return (
+                              <div key={j} className="flex items-center gap-2 text-xs">
+                                <span className="text-tate-terre/30 w-5 flex-shrink-0">#{t.tentative}</span>
+                                <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold ${
+                                  t.maitrise ? 'bg-succes text-white' : 'bg-alerte/20 text-alerte'
+                                }`}>
+                                  {t.maitrise ? '✓' : '✗'}
+                                </div>
+                                <div className="flex-1 h-4 bg-tate-doux rounded-full overflow-hidden">
+                                  <div
+                                    className={`h-full rounded-full ${t.maitrise ? 'bg-succes' : t.score >= 60 ? 'bg-amber-400' : 'bg-alerte'}`}
+                                    style={{ width: `${t.score}%` }} />
+                                </div>
+                                <span className={`font-bold w-10 text-right ${couleurScore(t.score)}`}>{t.score}%</span>
+                                <span className={`px-1.5 py-0.5 rounded-lg text-[10px] font-semibold ${bgFautes(nbErr)}`}>
+                                  {nbErr} faute{nbErr !== 1 ? 's' : ''}
+                                </span>
+                                <span className="text-tate-terre/30 text-[10px] hidden sm:block">
+                                  {dateFr(t.completedAt)}
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </>
+          )}
+
         </div>
       </motion.div>
     </div>

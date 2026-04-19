@@ -561,8 +561,38 @@ const IFRAME_CSS = `
 
 // ─────────────────────────────────────────────────────────────────
 // SCORE OVERLAY — partagé entre les deux modes de cours
+// Règle : max 2 fautes pour valider un chapitre
 // ─────────────────────────────────────────────────────────────────
 function ScoreOverlay({ overlay, onRetour, onReessayer }) {
+  if (!overlay) return null;
+
+  const nbErreurs = overlay.nbErreurs ?? (overlay.nbTotal - overlay.nbCorrectes);
+
+  // Icône champion selon le nombre de fautes
+  const champIcon = (() => {
+    if (overlay.avecQCM === false) return '📖';
+    if (!overlay.maitrise) return nbErreurs >= 5 ? '📚' : '😓';
+    if (nbErreurs === 0) return '🥇';
+    if (nbErreurs === 1) return '🏆';
+    return '⭐'; // 2 fautes
+  })();
+
+  // Message selon les fautes
+  const message = (() => {
+    if (overlay.avecQCM === false) return '✨ Cours enregistré ! Continue comme ça !';
+    if (overlay.maitrise) {
+      if (nbErreurs === 0) return '🥇 Parfait ! Aucune faute — tu es un champion !';
+      if (nbErreurs === 1) return '🏆 Excellent ! 1 seule faute. Chapitre maîtrisé !';
+      return '⭐ Bien joué ! 2 fautes — limite respectée. Chapitre validé !';
+    }
+    return `Tu as fait ${nbErreurs} faute${nbErreurs > 1 ? 's' : ''} sur ${overlay.nbTotal} question${overlay.nbTotal > 1 ? 's' : ''}. Il faut au maximum 2 fautes pour valider. Relis bien le cours et réessaie !`;
+  })();
+
+  // Étoiles de récompense (sur 3)
+  const nbEtoiles = overlay.maitrise
+    ? (nbErreurs === 0 ? 3 : nbErreurs === 1 ? 2 : 1)
+    : 0;
+
   return (
     <AnimatePresence>
       {overlay && (
@@ -574,67 +604,101 @@ function ScoreOverlay({ overlay, onRetour, onReessayer }) {
             exit={{ y: 80, opacity: 0 }} transition={{ type: 'spring', bounce: 0.3 }}
             className="bg-white rounded-3xl w-full max-w-sm shadow-2xl overflow-hidden">
 
+            {/* En-tête résultat */}
             <div className={`px-6 pt-8 pb-6 text-center ${
-              overlay.maitrise ? 'bg-gradient-to-b from-green-50 to-white' : 'bg-gradient-to-b from-orange-50 to-white'
+              overlay.maitrise ? 'bg-gradient-to-b from-green-50 to-white' : 'bg-gradient-to-b from-red-50 to-white'
             }`}>
               <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}
                 transition={{ type: 'spring', bounce: 0.6, delay: 0.15 }}
-                className="text-6xl mb-3">
-                {overlay.avecQCM === false ? '📖' : overlay.maitrise ? '🏆' : overlay.score >= 60 ? '💪' : '📚'}
+                className="text-6xl mb-2">
+                {champIcon}
               </motion.div>
 
+              {/* Titre */}
               {overlay.avecQCM === false ? (
                 <h2 className="text-xl font-serif font-bold text-tate-terre mb-2">Cours terminé !</h2>
               ) : (
                 <>
-                  <h2 className="text-3xl font-serif font-bold text-tate-terre mb-1">{overlay.score}%</h2>
-                  <p className="text-sm text-tate-terre/60 mb-3">
-                    {overlay.nbCorrectes} bonne{overlay.nbCorrectes > 1 ? 's' : ''} réponse{overlay.nbCorrectes > 1 ? 's' : ''} sur {overlay.nbTotal}
-                  </p>
-                  <div className="h-3 bg-tate-doux rounded-full overflow-hidden mx-4">
+                  <h2 className={`text-3xl font-serif font-bold mb-1 ${overlay.maitrise ? 'text-succes' : 'text-alerte'}`}>
+                    {overlay.maitrise ? 'Validé !' : 'Non validé'}
+                  </h2>
+
+                  {/* Compteurs fautes / bonnes réponses */}
+                  <div className="flex items-center justify-center gap-4 mb-3 mt-2">
+                    <div className={`flex flex-col items-center px-4 py-2 rounded-2xl ${
+                      nbErreurs === 0 ? 'bg-green-100' : nbErreurs <= 2 ? 'bg-amber-50' : 'bg-red-50'
+                    }`}>
+                      <span className={`text-2xl font-bold ${
+                        nbErreurs === 0 ? 'text-succes' : nbErreurs <= 2 ? 'text-amber-600' : 'text-alerte'
+                      }`}>{nbErreurs}</span>
+                      <span className="text-xs text-tate-terre/50">faute{nbErreurs !== 1 ? 's' : ''}</span>
+                    </div>
+                    <div className="text-tate-terre/20 text-xl">·</div>
+                    <div className="flex flex-col items-center px-4 py-2 rounded-2xl bg-tate-doux">
+                      <span className="text-2xl font-bold text-tate-terre">{overlay.nbCorrectes}</span>
+                      <span className="text-xs text-tate-terre/50">bonne{overlay.nbCorrectes !== 1 ? 's' : ''}</span>
+                    </div>
+                    <div className="text-tate-terre/20 text-xl">·</div>
+                    <div className="flex flex-col items-center px-4 py-2 rounded-2xl bg-tate-doux">
+                      <span className="text-2xl font-bold text-tate-terre">{overlay.nbTotal}</span>
+                      <span className="text-xs text-tate-terre/50">total</span>
+                    </div>
+                  </div>
+
+                  {/* Barre de score */}
+                  <div className="h-3 bg-tate-doux rounded-full overflow-hidden mx-6">
                     <motion.div initial={{ width: 0 }} animate={{ width: `${overlay.score}%` }}
                       transition={{ duration: 0.8, delay: 0.3 }}
-                      className={`h-full rounded-full ${overlay.maitrise ? 'bg-succes' : 'bg-tate-soleil'}`} />
+                      className={`h-full rounded-full ${overlay.maitrise ? 'bg-succes' : 'bg-alerte'}`} />
                   </div>
-                  <p className="text-xs text-tate-terre/40 mt-2">Score minimum pour valider : 80%</p>
+                  <p className="text-xs text-tate-terre/40 mt-1.5">{overlay.score}% · Règle : max 2 fautes pour valider</p>
+
+                  {/* Étoiles si validé */}
+                  {overlay.maitrise && (
+                    <div className="flex justify-center gap-1.5 mt-3">
+                      {[1, 2, 3].map(i => (
+                        <motion.div key={i}
+                          initial={{ scale: 0, rotate: -20 }}
+                          animate={{ scale: 1, rotate: 0 }}
+                          transition={{ delay: 0.4 + i * 0.1, type: 'spring', bounce: 0.5 }}>
+                          <Star size={22}
+                            className={i <= nbEtoiles ? 'fill-tate-soleil text-tate-soleil' : 'text-tate-doux'} />
+                        </motion.div>
+                      ))}
+                    </div>
+                  )}
                 </>
               )}
             </div>
 
+            {/* Corps */}
             <div className="px-6 pb-6 space-y-3">
-              <div className={`rounded-2xl p-4 text-sm text-center ${
+              <div className={`rounded-2xl p-3.5 text-sm text-center font-medium leading-relaxed ${
                 overlay.maitrise
                   ? 'bg-green-50 border border-green-200 text-green-800'
-                  : 'bg-orange-50 border border-orange-200 text-orange-800'
+                  : 'bg-red-50 border border-red-200 text-red-800'
               }`}>
-                {overlay.avecQCM === false
-                  ? '✨ Chapitre enregistré ! Continue comme ça !'
-                  : overlay.maitrise
-                    ? '✨ Félicitations ! Tu maîtrises ce chapitre. Résultat enregistré !'
-                    : `Il faut au moins 80% pour valider. Tu es à ${overlay.score}%. Relis le cours et réessaie !`
-                }
+                {message}
               </div>
 
-              {overlay.maitrise && overlay.avecQCM && (
-                <div className="flex justify-center gap-1">
-                  {[1, 2, 3].map(i => (
-                    <Star key={i} size={20}
-                      className={i <= (overlay.score === 100 ? 3 : overlay.score >= 90 ? 2 : 1)
-                        ? 'fill-tate-soleil text-tate-soleil' : 'text-tate-doux'} />
-                  ))}
-                </div>
+              {/* Tentative */}
+              {overlay.tentative > 1 && (
+                <p className="text-xs text-center text-tate-terre/40">
+                  Tentative n°{overlay.tentative}
+                </p>
               )}
 
               {overlay.maitrise ? (
-                <button onClick={onRetour} className="btn-tate w-full py-3.5">
-                  Chapitre suivant 🚀
+                <button onClick={onRetour} className="btn-tate w-full py-3.5 flex items-center justify-center gap-2">
+                  <Trophy size={16} /> Chapitre suivant
                 </button>
               ) : (
                 <>
                   {onReessayer && (
                     <button onClick={onReessayer}
-                      className="w-full py-3.5 rounded-2xl bg-tate-terre text-white font-bold text-sm hover:bg-tate-terre/85 transition-all flex items-center justify-center gap-2">
-                      <RotateCcw size={15} /> Réessayer
+                      className="w-full py-3.5 rounded-2xl bg-tate-terre text-white font-bold text-sm
+                                 hover:bg-tate-terre/85 transition-all flex items-center justify-center gap-2">
+                      <RotateCcw size={15} /> Recommencer le cours
                     </button>
                   )}
                   <button onClick={onRetour}
@@ -687,6 +751,7 @@ function PageCoursFormate() {
     try {
       const nbCorrectes = Object.values(corrects).filter(Boolean).length;
       const nbTotal     = Object.keys(corrects).length || 1;
+      const nbErreurs   = nbTotal - nbCorrectes;
       const score       = Math.round((nbCorrectes / nbTotal) * 100);
       const result = await soumettreScore({
         chapitreId: chapitreActif._id,
@@ -699,6 +764,7 @@ function PageCoursFormate() {
         score:       exosFaits === 0 ? 100 : score,
         nbCorrectes: exosFaits === 0 ? 1 : nbCorrectes,
         nbTotal:     exosFaits === 0 ? 1 : nbTotal,
+        nbErreurs:   exosFaits === 0 ? 0 : nbErreurs,
         maitrise:    result.maitrise,
         tentative:   result.tentative,
         avecQCM:     exosFaits > 0,
@@ -1127,8 +1193,8 @@ function PageCoursHTML() {
     }
 
     const nbCorrectes = questionsValides.filter(g => g.selectionne === g.correct).length;
+    const nbErreurs   = nbTotal - nbCorrectes;
     const score       = Math.round((nbCorrectes / nbTotal) * 100);
-    const maitrise    = score >= 80;
 
     setSubmitting(true);
     try {
@@ -1137,7 +1203,7 @@ function PageCoursHTML() {
         leconId:    leconActive._id,
         score, nbCorrectes, nbTotal,
       });
-      setScoreOverlay({ score, nbCorrectes, nbTotal, maitrise, tentative: resultat.tentative, avecQCM: true });
+      setScoreOverlay({ score, nbCorrectes, nbTotal, nbErreurs, maitrise: resultat.maitrise, tentative: resultat.tentative, avecQCM: true });
     } catch (e) {
       toast.error(e.response?.data?.error || e.message || 'Erreur lors de la sauvegarde');
     } finally {
@@ -1883,6 +1949,18 @@ export function AccueilEleve() {
   const [showPaywall,    setShowPaywall]    = useState(false);
   const [motifPaywall,   setMotifPaywall]   = useState('general');
   const [erreurCours,    setErreurCours]    = useState('');
+  const [progression,    setProgression]    = useState([]);
+  const [showAllProg,    setShowAllProg]    = useState(false);
+
+  useEffect(() => {
+    const token = getToken();
+    if (!token) return;
+    axios.get(`${API}/resultats/ma-progression`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(({ data }) => setProgression(data.data || []))
+      .catch(() => setProgression([]));
+  }, []);
 
   if (leconActive) return <PageCours />;
 
@@ -2024,6 +2102,82 @@ export function AccueilEleve() {
                 </div>
               )}
             </div>
+
+            {/* ── Mes notes récentes ──────────────────────────── */}
+            {progression.length > 0 && (
+              <div className="mb-5">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-base">📊</span>
+                    <p className="text-xs font-bold text-tate-terre/60 uppercase tracking-wider">Mes notes</p>
+                  </div>
+                  {progression.length > 3 && (
+                    <button onClick={() => setShowAllProg(v => !v)}
+                      className="text-xs text-tate-soleil font-semibold hover:underline">
+                      {showAllProg ? 'Réduire' : `Voir tout (${progression.length})`}
+                    </button>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  {(showAllProg ? progression : progression.slice(0, 3))
+                    .sort((a, b) => new Date(b.derniereAt || 0) - new Date(a.derniereAt || 0))
+                    .map((chap, i) => {
+                      const derniereT = chap.tentatives[chap.tentatives.length - 1];
+                      const lastErr   = derniereT?.nbErreurs ?? 0;
+                      const lastScore = derniereT?.score ?? 0;
+                      return (
+                        <motion.div key={chap.chapitreId?._id || i}
+                          initial={{ opacity:0, y:4 }} animate={{ opacity:1, y:0 }}
+                          transition={{ delay: i * 0.04 }}
+                          className={`bg-white rounded-2xl border-2 p-3 flex items-center gap-3 shadow-card ${
+                            chap.maitrise ? 'border-green-200' : lastErr <= 3 ? 'border-amber-200' : 'border-red-100'
+                          }`}>
+                          {/* Icône statut */}
+                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-lg ${
+                            chap.maitrise ? 'bg-green-100' : lastErr <= 3 ? 'bg-amber-50' : 'bg-red-50'
+                          }`}>
+                            {chap.maitrise
+                              ? (lastErr === 0 ? '🥇' : lastErr === 1 ? '🏆' : '⭐')
+                              : (lastErr <= 3 ? '💪' : '📚')}
+                          </div>
+                          {/* Infos chapitre */}
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-semibold text-tate-terre truncate">{chap.titre}</p>
+                            <div className="flex items-center gap-2 mt-0.5">
+                              <span className="text-xs text-tate-terre/40">
+                                {chap.tentatives.length} tentative{chap.tentatives.length > 1 ? 's' : ''}
+                              </span>
+                              {chap.maitrise && (
+                                <span className="text-xs text-succes font-semibold">✓ Validé</span>
+                              )}
+                            </div>
+                            {/* Mini historique des scores */}
+                            <div className="flex items-center gap-1 mt-1.5">
+                              {chap.tentatives.slice(-5).map((t, j) => (
+                                <div key={j} title={`Tentative ${t.tentative}: ${t.score}% (${t.nbErreurs ?? '?'} faute${(t.nbErreurs ?? 1) > 1 ? 's' : ''})`}
+                                  className={`h-4 flex-1 rounded-sm text-[9px] font-bold flex items-center justify-center text-white ${
+                                    t.maitrise ? 'bg-succes' : t.score >= 60 ? 'bg-amber-400' : 'bg-alerte'
+                                  }`}>
+                                  {t.score}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                          {/* Dernier score */}
+                          <div className="text-right flex-shrink-0">
+                            <p className={`text-xl font-bold ${
+                              chap.maitrise ? 'text-succes' : lastErr <= 3 ? 'text-amber-500' : 'text-alerte'
+                            }`}>{lastScore}%</p>
+                            <p className="text-[10px] text-tate-terre/40 mt-0.5">
+                              {lastErr} faute{lastErr !== 1 ? 's' : ''}
+                            </p>
+                          </div>
+                        </motion.div>
+                      );
+                    })}
+                </div>
+              </div>
+            )}
 
             {/* Bannière premium si pas d'accès */}
             {!aAcces && (

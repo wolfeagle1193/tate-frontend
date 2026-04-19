@@ -1,9 +1,24 @@
 import { useEffect, useState } from 'react';
 import { motion }    from 'framer-motion';
-import { Star, TrendingUp, AlertTriangle, CheckCircle, BookOpen, Flame, Trophy, LogOut } from 'lucide-react';
+import { Star, TrendingUp, AlertTriangle, CheckCircle, BookOpen, Flame, Trophy, LogOut, ChevronDown, ChevronUp } from 'lucide-react';
 import { useAuthStore }  from '../../store/useAuthStore';
 import { useNavigate }   from 'react-router-dom';
 import api               from '../../lib/api';
+
+const dateFr = (iso) => {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  const now = new Date();
+  const diffJ = Math.floor((now - d) / (1000 * 60 * 60 * 24));
+  if (diffJ === 0) return 'Auj.';
+  if (diffJ === 1) return 'Hier';
+  if (diffJ < 7)  return `${diffJ}j`;
+  return d.toLocaleDateString('fr-FR', { day:'2-digit', month:'short' });
+};
+
+const couleurScore = (s) => s >= 80 ? 'text-green-600' : s >= 60 ? 'text-amber-500' : 'text-red-500';
+const bgFautes = (n) =>
+  n === 0 ? 'bg-green-100 text-green-800' : n <= 2 ? 'bg-amber-50 text-amber-800' : 'bg-red-50 text-red-700';
 
 // ─── Layout parent ───────────────────────────
 function LayoutParent({ children }) {
@@ -67,9 +82,11 @@ function CarteEnfant({ enfant, actif, onClick }) {
 }
 
 // ─── Détail progression ──────────────────────
-function DetailEnfant({ enfant, sessions }) {
+function DetailEnfant({ enfant, sessions, progression }) {
   const chapValides  = enfant.chapitresValides || [];
   const enDifficulte = sessions.filter(s => s.scorePct < 80);
+  const [onglet,         setOnglet]         = useState('apercu');
+  const [chapExpanded,   setChapExpanded]   = useState({});
 
   return (
     <motion.div initial={{ opacity:0, y:8 }} animate={{ opacity:1, y:0 }} className="space-y-4 mt-4">
@@ -84,14 +101,34 @@ function DetailEnfant({ enfant, sessions }) {
         <div className="card text-center py-4">
           <Trophy size={20} className="text-tate-soleil mx-auto mb-1" />
           <p className="text-xl font-bold text-tate-terre">{chapValides.length}</p>
-          <p className="text-xs text-tate-terre/50">Chapitres validés</p>
+          <p className="text-xs text-tate-terre/50">Validés</p>
         </div>
         <div className="card text-center py-4">
           <Star size={20} className="text-savoir mx-auto mb-1" />
-          <p className="text-xl font-bold text-tate-terre">{enfant.badges?.length || 0}</p>
-          <p className="text-xs text-tate-terre/50">Badges</p>
+          <p className="text-xl font-bold text-tate-terre">{progression.length}</p>
+          <p className="text-xs text-tate-terre/50">Chapitres tentés</p>
         </div>
       </div>
+
+      {/* Onglets */}
+      <div className="flex rounded-2xl bg-tate-doux p-1 gap-1">
+        {[
+          { id:'apercu',    label:'Aperçu'          },
+          { id:'chapitres', label:'Progression QCM'  },
+        ].map(tab => (
+          <button key={tab.id} onClick={() => setOnglet(tab.id)}
+            className={`flex-1 py-2 rounded-xl text-sm font-bold transition-all ${
+              onglet === tab.id
+                ? 'bg-white shadow text-tate-terre'
+                : 'text-tate-terre/50 hover:text-tate-terre/70'
+            }`}>
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {/* ─── Onglet Aperçu ─── */}
+      {onglet === 'apercu' && <>
 
       {/* Alerte difficultés */}
       {enDifficulte.length > 0 && (
@@ -179,7 +216,90 @@ function DetailEnfant({ enfant, sessions }) {
         )}
       </div>
 
-      {/* Message */}
+      </>} {/* fin onglet apercu */}
+
+      {/* ─── Onglet Progression QCM ─── */}
+      {onglet === 'chapitres' && (
+        <div className="space-y-3">
+          {progression.length === 0 ? (
+            <div className="card text-center py-10">
+              <p className="text-3xl mb-2">📊</p>
+              <p className="text-sm text-tate-terre/50">Aucun exercice QCM effectué pour le moment</p>
+            </div>
+          ) : (
+            progression
+              .sort((a, b) => new Date(b.derniereAt || 0) - new Date(a.derniereAt || 0))
+              .map((chap, i) => {
+                const isOpen = !!chapExpanded[i];
+                const derniereT = chap.tentatives[chap.tentatives.length - 1];
+                const lastErr = derniereT?.nbErreurs ?? 0;
+                const best = Math.max(...chap.tentatives.map(t => t.score));
+                return (
+                  <div key={i} className={`rounded-2xl border-2 overflow-hidden ${
+                    chap.maitrise ? 'border-green-200 bg-green-50/20' : 'border-tate-border bg-white'
+                  }`}>
+                    {/* En-tête cliquable */}
+                    <button
+                      onClick={() => setChapExpanded(prev => ({ ...prev, [i]: !prev[i] }))}
+                      className="w-full flex items-center gap-3 px-4 py-3 text-left">
+                      <span className="text-xl flex-shrink-0">
+                        {chap.maitrise
+                          ? (chap.tentatives.find(t => t.maitrise)?.nbErreurs === 0 ? '🥇' :
+                             chap.tentatives.find(t => t.maitrise)?.nbErreurs === 1 ? '🏆' : '⭐')
+                          : (lastErr <= 3 ? '💪' : '📚')}
+                      </span>
+                      <div className="flex-1 min-w-0 text-left">
+                        <p className="font-semibold text-tate-terre text-sm truncate">{chap.titre}</p>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <span className="text-xs text-tate-terre/40">
+                            {chap.tentatives.length} tentative{chap.tentatives.length > 1 ? 's' : ''}
+                          </span>
+                          {chap.maitrise && (
+                            <span className="text-xs text-succes font-semibold">✓ Validé</span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <p className={`text-lg font-bold ${couleurScore(best)}`}>{best}%</p>
+                        {isOpen ? <ChevronUp size={14} className="text-tate-terre/30" /> : <ChevronDown size={14} className="text-tate-terre/30" />}
+                      </div>
+                    </button>
+
+                    {/* Détail tentatives */}
+                    {isOpen && (
+                      <div className="border-t border-tate-border/40 px-4 py-3 space-y-2">
+                        {chap.tentatives.map((t, j) => {
+                          const nbErr = t.nbErreurs ?? (t.nbTotal - t.nbCorrectes);
+                          return (
+                            <div key={j} className="flex items-center gap-2 text-xs">
+                              <span className="text-tate-terre/30 w-4 flex-shrink-0">#{t.tentative}</span>
+                              <div className={`w-5 h-5 rounded flex items-center justify-center text-[10px] font-bold flex-shrink-0 ${
+                                t.maitrise ? 'bg-succes text-white' : 'bg-red-100 text-alerte'
+                              }`}>
+                                {t.maitrise ? '✓' : '✗'}
+                              </div>
+                              <div className="flex-1 h-3 bg-tate-doux rounded-full overflow-hidden">
+                                <div className={`h-full rounded-full ${t.maitrise ? 'bg-succes' : t.score >= 60 ? 'bg-amber-400' : 'bg-alerte'}`}
+                                  style={{ width:`${t.score}%` }} />
+                              </div>
+                              <span className={`font-bold w-9 text-right ${couleurScore(t.score)}`}>{t.score}%</span>
+                              <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${bgFautes(nbErr)}`}>
+                                {nbErr} ✗
+                              </span>
+                              <span className="text-tate-terre/30 text-[10px]">{dateFr(t.completedAt)}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              })
+          )}
+        </div>
+      )}
+
+      {/* Message motivant */}
       <div className="bg-tate-doux border border-tate-border rounded-2xl p-4 text-center">
         <p className="text-sm text-tate-terre leading-relaxed">
           {chapValides.length >= 5
@@ -196,11 +316,12 @@ function DetailEnfant({ enfant, sessions }) {
 
 // ─── PAGE PRINCIPALE PARENT ──────────────────
 export function EspaceParent() {
-  const { user }  = useAuthStore();
-  const [enfants,  setEnfants]  = useState([]);
-  const [actif,    setActif]    = useState(null);
-  const [sessions, setSessions] = useState([]);
-  const [loading,  setLoading]  = useState(true);
+  const { user }      = useAuthStore();
+  const [enfants,     setEnfants]     = useState([]);
+  const [actif,       setActif]       = useState(null);
+  const [sessions,    setSessions]    = useState([]);
+  const [progression, setProgression] = useState([]);
+  const [loading,     setLoading]     = useState(true);
 
   useEffect(() => {
     api.get('/stats/parent')
@@ -208,23 +329,30 @@ export function EspaceParent() {
         setEnfants(data.data || []);
         if (data.data?.length > 0) {
           setActif(data.data[0]);
-          chargerSessions(data.data[0]._id);
+          chargerEnfant(data.data[0]._id);
         }
       })
       .catch(() => setEnfants([]))
       .finally(() => setLoading(false));
   }, []);
 
-  const chargerSessions = async (eleveId) => {
+  const chargerEnfant = async (eleveId) => {
     try {
-      const { data } = await api.get(`/stats/eleve/${eleveId}`);
-      setSessions(data.data || []);
-    } catch { setSessions([]); }
+      const [sessRes, progRes] = await Promise.allSettled([
+        api.get(`/stats/eleve/${eleveId}`),
+        api.get(`/resultats/progression/${eleveId}`),
+      ]);
+      setSessions(sessRes.status === 'fulfilled' ? sessRes.value.data.data || [] : []);
+      setProgression(progRes.status === 'fulfilled' ? progRes.value.data.data || [] : []);
+    } catch {
+      setSessions([]); setProgression([]);
+    }
   };
 
   const selectionner = (enfant) => {
     setActif(enfant);
-    chargerSessions(enfant._id);
+    setSessions([]); setProgression([]);
+    chargerEnfant(enfant._id);
   };
 
   if (loading) return (
@@ -268,7 +396,7 @@ export function EspaceParent() {
           {enfants.length === 1 && (
             <CarteEnfant enfant={enfants[0]} actif onClick={() => {}} />
           )}
-          {actif && <DetailEnfant enfant={actif} sessions={sessions} />}
+          {actif && <DetailEnfant enfant={actif} sessions={sessions} progression={progression} />}
         </>
       )}
     </LayoutParent>
