@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { useAuthStore }  from './store/useAuthStore';
 import { useEleveStore } from './store/useEleveStore';
@@ -66,9 +67,22 @@ function RootRedirect() {
   return <Navigate to={routes[user.role] || '/login'} replace />;
 }
 
+// ── Initialisation : rafraîchit le profil silencieusement au démarrage
+function AuthInit() {
+  const { user, rafraichirUser } = useAuthStore();
+  useEffect(() => {
+    if (user && localStorage.getItem('accessToken')) {
+      // Rafraîchit en arrière-plan sans bloquer l'interface
+      rafraichirUser().catch(() => {});
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  return null;
+}
+
 export default function App() {
   return (
     <BrowserRouter>
+      <AuthInit />
       <Toaster
         position="top-center"
         toastOptions={{

@@ -104,9 +104,15 @@ const bgFautes = (n) =>
 
 // ── Modal détail élève ────────────────────────────────────────
 function ModalDetailEleve({ eleve, onClose }) {
-  const [onglet,      setOnglet]      = useState('apercu'); // 'apercu' | 'chapitres'
+  const [onglet,      setOnglet]      = useState('apercu'); // 'apercu' | 'chapitres' | 'planning'
   const [progression, setProgression] = useState([]);
   const [loadProg,    setLoadProg]    = useState(false);
+  const [planning,    setPlanning]    = useState([]);
+  const [loadPlan,    setLoadPlan]    = useState(false);
+  const [newPlan,     setNewPlan]     = useState({ type:'exercice', dateProgrammee:'', noteAdmin:'' });
+  const [chapList,    setChapList]    = useState([]);
+  const [chapSelected, setChapSelected] = useState('');
+  const [planSubmitting, setPlanSubmitting] = useState(false);
 
   const tauxMaitrise = eleve.totalSessions > 0
     ? Math.round((eleve.maitrises / eleve.totalSessions) * 100)
@@ -129,9 +135,56 @@ function ModalDetailEleve({ eleve, onClose }) {
     finally { setLoadProg(false); }
   }, [eleve._id, progression.length]);
 
+  const chargerPlanning = useCallback(async () => {
+    setLoadPlan(true);
+    try {
+      const [planRes, chapRes] = await Promise.all([
+        axios.get(`${API}/planning?eleveId=${eleve._id}`, { headers: hdrs() }),
+        axios.get(`${API}/chapitres?niveau=${eleve.niveau || ''}`, { headers: hdrs() }),
+      ]);
+      setPlanning(planRes.data.data || []);
+      setChapList(chapRes.data.data || []);
+    } catch { setPlanning([]); }
+    finally { setLoadPlan(false); }
+  }, [eleve._id, eleve.niveau]);
+
+  const programmerDevoir = async () => {
+    if (!chapSelected || !newPlan.dateProgrammee) {
+      toast.error('Sélectionne un chapitre et une date');
+      return;
+    }
+    setPlanSubmitting(true);
+    try {
+      await axios.post(`${API}/planning`, {
+        eleveId: eleve._id,
+        chapitreId: chapSelected,
+        type: newPlan.type,
+        noteAdmin: newPlan.noteAdmin,
+        dateProgrammee: newPlan.dateProgrammee,
+      }, { headers: hdrs() });
+      toast.success('Devoir programmé avec succès !');
+      setNewPlan({ type:'exercice', dateProgrammee:'', noteAdmin:'' });
+      setChapSelected('');
+      chargerPlanning();
+    } catch (e) {
+      toast.error(e.response?.data?.error || 'Erreur lors de la programmation');
+    } finally {
+      setPlanSubmitting(false);
+    }
+  };
+
+  const supprimerPlan = async (id) => {
+    try {
+      await axios.delete(`${API}/planning/${id}`, { headers: hdrs() });
+      setPlanning(p => p.filter(x => x._id !== id));
+      toast.success('Devoir supprimé');
+    } catch { toast.error('Erreur'); }
+  };
+
   useEffect(() => {
     if (onglet === 'chapitres') chargerProgression();
-  }, [onglet, chargerProgression]);
+    if (onglet === 'planning')  chargerPlanning();
+  }, [onglet, chargerProgression, chargerPlanning]);
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
@@ -188,14 +241,15 @@ function ModalDetailEleve({ eleve, onClose }) {
           </div>
         </div>
 
-        {/* Onglets Aperçu / Par chapitre */}
-        <div className="flex border-b border-tate-border flex-shrink-0 px-5">
+        {/* Onglets */}
+        <div className="flex border-b border-tate-border flex-shrink-0 px-3">
           {[
-            { id: 'apercu',    label: '📈 Aperçu'          },
-            { id: 'chapitres', label: '📚 Par chapitre'    },
+            { id: 'apercu',    label: '📈 Aperçu'         },
+            { id: 'chapitres', label: '📚 Chapitres'      },
+            { id: 'planning',  label: '📅 Programmer'     },
           ].map(tab => (
             <button key={tab.id} onClick={() => setOnglet(tab.id)}
-              className={`flex-1 py-3 text-sm font-bold border-b-2 transition-all ${
+              className={`flex-1 py-3 text-xs font-bold border-b-2 transition-all ${
                 onglet === tab.id
                   ? 'border-tate-soleil text-tate-terre'
                   : 'border-transparent text-tate-terre/40 hover:text-tate-terre/60'
@@ -407,6 +461,139 @@ function ModalDetailEleve({ eleve, onClose }) {
                 </div>
               )}
             </>
+          )}
+
+          {/* ═══════════ ONGLET PROGRAMMER ═══════════ */}
+          {onglet === 'planning' && (
+            <div className="space-y-4">
+              {/* Formulaire créer un devoir */}
+              <div className="bg-tate-creme rounded-2xl border-2 border-tate-border p-4 space-y-3">
+                <p className="text-xs font-bold text-tate-terre/60 uppercase tracking-wider">📅 Programmer un devoir</p>
+
+                {/* Chapitre */}
+                <div>
+                  <label className="text-xs font-semibold text-tate-terre/60 block mb-1">Chapitre</label>
+                  {loadPlan ? (
+                    <div className="h-10 bg-tate-doux rounded-xl animate-pulse" />
+                  ) : (
+                    <select
+                      value={chapSelected}
+                      onChange={e => setChapSelected(e.target.value)}
+                      className="w-full h-10 rounded-xl border-2 border-tate-border px-3 text-sm text-tate-terre bg-white focus:border-tate-soleil focus:outline-none transition-all">
+                      <option value="">— Choisir un chapitre —</option>
+                      {chapList.map(c => (
+                        <option key={c._id} value={c._id}>{c.titre}</option>
+                      ))}
+                    </select>
+                  )}
+                </div>
+
+                {/* Type */}
+                <div>
+                  <label className="text-xs font-semibold text-tate-terre/60 block mb-1">Type de devoir</label>
+                  <div className="flex gap-2">
+                    {[
+                      { v:'cours',    l:'📖 Cours',    bg:'bg-blue-100 text-blue-800'   },
+                      { v:'exercice', l:'📝 Exercice', bg:'bg-amber-100 text-amber-800' },
+                      { v:'revision', l:'🔄 Révision', bg:'bg-green-100 text-green-800' },
+                    ].map(t => (
+                      <button key={t.v}
+                        onClick={() => setNewPlan(p => ({ ...p, type: t.v }))}
+                        className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all border-2 ${
+                          newPlan.type === t.v ? 'border-tate-soleil ' + t.bg : 'border-transparent bg-white text-tate-terre/50'
+                        }`}>
+                        {t.l}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Date & heure */}
+                <div>
+                  <label className="text-xs font-semibold text-tate-terre/60 block mb-1">Date & heure limite</label>
+                  <input
+                    type="datetime-local"
+                    value={newPlan.dateProgrammee}
+                    min={new Date().toISOString().slice(0,16)}
+                    onChange={e => setNewPlan(p => ({ ...p, dateProgrammee: e.target.value }))}
+                    className="w-full h-10 rounded-xl border-2 border-tate-border px-3 text-sm text-tate-terre bg-white focus:border-tate-soleil focus:outline-none transition-all"
+                  />
+                </div>
+
+                {/* Message */}
+                <div>
+                  <label className="text-xs font-semibold text-tate-terre/60 block mb-1">Message pour l'élève (optionnel)</label>
+                  <textarea
+                    value={newPlan.noteAdmin}
+                    onChange={e => setNewPlan(p => ({ ...p, noteAdmin: e.target.value }))}
+                    placeholder="Ex : Concentre-toi sur les exemples du cours…"
+                    rows={2}
+                    className="w-full rounded-xl border-2 border-tate-border px-3 py-2 text-sm text-tate-terre bg-white focus:border-tate-soleil focus:outline-none resize-none transition-all"
+                  />
+                </div>
+
+                <button
+                  onClick={programmerDevoir}
+                  disabled={planSubmitting || !chapSelected || !newPlan.dateProgrammee}
+                  className="w-full h-11 rounded-2xl font-bold text-sm text-white transition-all disabled:opacity-50"
+                  style={{ background:'linear-gradient(135deg,#F97316,#EA580C)', boxShadow:'0 4px 16px rgba(249,115,22,0.3)' }}>
+                  {planSubmitting ? '⏳ Programmation…' : '📅 Programmer ce devoir'}
+                </button>
+              </div>
+
+              {/* Liste des plannings existants */}
+              <div>
+                <p className="text-xs font-bold text-tate-terre/60 uppercase tracking-wider mb-2">
+                  Devoirs programmés ({planning.length})
+                </p>
+                {loadPlan ? (
+                  <div className="space-y-2">
+                    {[1,2].map(i => <div key={i} className="h-14 bg-tate-doux rounded-xl animate-pulse" />)}
+                  </div>
+                ) : planning.length === 0 ? (
+                  <p className="text-sm text-tate-terre/40 text-center py-6">Aucun devoir programmé pour cet élève.</p>
+                ) : (
+                  <div className="space-y-2">
+                    {planning.map(p => {
+                      const dateP = new Date(p.dateProgrammee);
+                      const depasse = dateP < new Date();
+                      const STATUT_LABEL = {
+                        en_attente: { l:'En attente', c:'bg-blue-50 text-blue-700' },
+                        en_cours:   { l:'En cours',   c:'bg-amber-50 text-amber-700' },
+                        fait_sans_validation: { l:'Fait (non validé)', c:'bg-orange-50 text-orange-700' },
+                        valide:     { l:'Validé ✓',   c:'bg-green-50 text-green-700' },
+                        expire:     { l:'Expiré',     c:'bg-gray-50 text-gray-500' },
+                      };
+                      const s = STATUT_LABEL[p.statut] || { l:p.statut, c:'bg-gray-50 text-gray-600' };
+                      return (
+                        <div key={p._id}
+                          className={`bg-white rounded-2xl border-2 px-4 py-3 flex items-center gap-3 ${
+                            p.statut === 'valide' ? 'border-green-200' : depasse ? 'border-red-200' : 'border-tate-border'
+                          }`}>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs font-semibold text-tate-terre truncate">
+                              {p.type === 'cours' ? '📖' : p.type === 'revision' ? '🔄' : '📝'}{' '}
+                              {p.chapitreId?.titre || '—'}
+                            </p>
+                            <p className={`text-[10px] font-medium mt-0.5 ${depasse && p.statut === 'en_attente' ? 'text-red-500' : 'text-tate-terre/40'}`}>
+                              {depasse && p.statut === 'en_attente' ? '⚠️ En retard · ' : ''}
+                              {dateP.toLocaleDateString('fr-SN', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' })}
+                            </p>
+                          </div>
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0 ${s.c}`}>{s.l}</span>
+                          {p.statut === 'en_attente' && (
+                            <button onClick={() => supprimerPlan(p._id)}
+                              className="w-7 h-7 rounded-lg flex items-center justify-center text-red-400 hover:bg-red-50 flex-shrink-0">
+                              <X size={14} />
+                            </button>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </div>
           )}
 
         </div>

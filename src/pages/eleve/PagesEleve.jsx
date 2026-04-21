@@ -571,22 +571,23 @@ const IFRAME_CSS = `
 `;
 
 // ─────────────────────────────────────────────────────────────────
-// CONFETTI — particules animées pour la victoire
+// CÉLÉBRATION — confetti + feux d'artifice
 // ─────────────────────────────────────────────────────────────────
 const CONFETTI_COLORS = ['#F97316','#10B981','#F59E0B','#3B82F6','#EF4444','#8B5CF6','#EC4899','#14B8A6','#FBBF24','#34D399'];
 
 function ConfettiPluie({ actif }) {
   const pieces = useMemo(() => {
     if (!actif) return [];
-    return Array.from({ length: 36 }, (_, i) => ({
+    return Array.from({ length: 60 }, (_, i) => ({
       id: i,
-      left:     4 + (i * 2.6) % 92,
-      delay:    (i * 0.09) % 1.6,
-      duration: 1.6 + (i * 0.11) % 1.4,
+      left:     2 + (i * 1.65) % 96,
+      delay:    (i * 0.05) % 2.2,
+      duration: 1.8 + (i * 0.09) % 1.6,
       color:    CONFETTI_COLORS[i % CONFETTI_COLORS.length],
-      w:        6 + (i * 2) % 8,
-      h:        4 + (i * 3) % 6,
-      rot:      (i * 73) % 540,
+      w:        5 + (i * 3) % 9,
+      h:        3 + (i * 2) % 7,
+      rot:      (i * 97) % 720,
+      shape:    i % 3 === 0 ? 50 : i % 3 === 1 ? 3 : 0, // circle, rounded, square
     }));
   }, [actif]);
 
@@ -595,13 +596,63 @@ function ConfettiPluie({ actif }) {
     <div className="fixed inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 60 }}>
       {pieces.map(p => (
         <motion.div key={p.id}
-          initial={{ y: -16, opacity: 1, rotate: 0 }}
-          animate={{ y: '105vh', opacity: [1, 1, 0.7, 0], rotate: p.rot }}
-          transition={{ duration: p.duration, delay: p.delay, ease: [0.2, 0, 0.8, 1] }}
+          initial={{ y: -20, opacity: 1, rotate: 0, scale: 1 }}
+          animate={{ y: '110vh', opacity: [1, 1, 0.8, 0], rotate: p.rot, scale: [1, 0.8, 0.6] }}
+          transition={{ duration: p.duration, delay: p.delay, ease: [0.25, 0.1, 0.8, 1] }}
           style={{
             position: 'absolute', top: 0, left: `${p.left}%`,
             width: p.w, height: p.h,
-            background: p.color, borderRadius: 2,
+            background: p.color, borderRadius: p.shape,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+// Feux d'artifice — éclats qui explosent depuis plusieurs points
+function FeuDArtifice({ actif }) {
+  const eclats = useMemo(() => {
+    if (!actif) return [];
+    const centres = [[20,25],[50,15],[80,28],[35,40],[65,20]];
+    const result = [];
+    centres.forEach(([cx, cy], bi) => {
+      for (let i = 0; i < 14; i++) {
+        const angle = (i / 14) * Math.PI * 2;
+        const rayon = 28 + (i * 7) % 22;
+        result.push({
+          id: `${bi}-${i}`,
+          cx, cy,
+          dx: Math.cos(angle) * rayon,
+          dy: Math.sin(angle) * rayon - 10,
+          color: CONFETTI_COLORS[(bi * 3 + i * 2) % CONFETTI_COLORS.length],
+          delay: bi * 0.45 + (i * 0.025),
+          size:  4 + (i * 2) % 5,
+        });
+      }
+    });
+    return result;
+  }, [actif]);
+
+  if (!actif) return null;
+  return (
+    <div className="fixed inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 61 }}>
+      {eclats.map(p => (
+        <motion.div key={p.id}
+          initial={{ x: `${p.cx}vw`, y: `${p.cy}vh`, scale: 0, opacity: 0 }}
+          animate={{
+            x: `calc(${p.cx}vw + ${p.dx}px)`,
+            y: `calc(${p.cy}vh + ${p.dy}px)`,
+            scale: [0, 1.8, 0.9, 0],
+            opacity: [0, 1, 1, 0],
+          }}
+          transition={{ duration: 1.1, delay: p.delay, ease: 'easeOut', repeat: 2, repeatDelay: 2.2 }}
+          style={{
+            position: 'absolute',
+            width: p.size, height: p.size,
+            borderRadius: '50%',
+            background: p.color,
+            boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
           }}
         />
       ))}
@@ -610,258 +661,320 @@ function ConfettiPluie({ actif }) {
 }
 
 // ─────────────────────────────────────────────────────────────────
-// SCORE OVERLAY — partagé entre les deux modes de cours
-// Règle : max 2 fautes pour valider — recommencer OBLIGATOIRE si échec
+// SCORE OVERLAY — résultat QCM + vue correction + célébration
 // ─────────────────────────────────────────────────────────────────
-function ScoreOverlay({ overlay, onRetour, onReessayer }) {
-  // Les hooks doivent être appelés avant tout early return
+function ScoreOverlay({ overlay, onRetour, onReessayer, onVoirCorrection }) {
+  // Hooks AVANT tout early return
+  const [phaseOverlay, setPhaseOverlay] = useState('score'); // 'score'
+
   const nbErreurs = overlay ? (overlay.nbErreurs ?? (overlay.nbTotal - overlay.nbCorrectes)) : 0;
   const valide    = !!(overlay?.maitrise && overlay?.avecQCM);
   const nbEtoiles = valide ? (nbErreurs === 0 ? 3 : nbErreurs === 1 ? 2 : 1) : 0;
 
   const champCfg = useMemo(() => {
     if (!overlay) return {};
-    if (overlay.avecQCM === false) return { icon:'📖', titre:'Cours terminé !', bg:'from-blue-50', titreCls:'text-tate-terre' };
+    if (overlay.avecQCM === false) return { icon:'📖', titre:'Cours terminé !', bg:'from-blue-50', titreCls:'text-blue-700' };
     if (!overlay.maitrise) return {
       icon: nbErreurs >= 6 ? '📚' : nbErreurs >= 4 ? '😞' : '😓',
       titre: `${nbErreurs} faute${nbErreurs > 1 ? 's' : ''}`,
-      sous:  'Non validé — recommence !',
-      bg:    'from-red-50', titreCls: 'text-alerte',
+      sous:  'Trop de fautes — tu dois recommencer',
+      bg:    'from-red-50', titreCls: 'text-red-500',
     };
-    if (nbErreurs === 0) return { icon:'🥇', titre:'PARFAIT !',    sous:'Zéro faute — tu es un vrai champion !',       bg:'from-amber-50',  titreCls:'text-amber-500' };
-    if (nbErreurs === 1) return { icon:'🏆', titre:'EXCELLENT !',  sous:'1 seule faute — performance remarquable !',   bg:'from-yellow-50', titreCls:'text-yellow-600' };
-    return             { icon:'⭐', titre:'BRAVO !',      sous:'2 fautes — limite respectée. Chapitre validé !', bg:'from-green-50',  titreCls:'text-succes' };
+    if (nbErreurs === 0) return {
+      icon:'🥇', titre:'PARFAIT !',
+      sous:'Zéro faute — tu es un vrai champion ! Imbattable !',
+      bg:'from-amber-50', titreCls:'text-amber-500',
+      adjectifs: ['GÉNIAL !', 'INCROYABLE !', 'CHAMPION !'],
+    };
+    if (nbErreurs === 1) return {
+      icon:'🏆', titre:'EXCELLENT !',
+      sous:'1 seule faute — performance remarquable ! Tu maîtrises !',
+      bg:'from-yellow-50', titreCls:'text-yellow-600',
+      adjectifs: ['SUPER !', 'BRILLANT !', 'MAGNIFIQUE !'],
+    };
+    return {
+      icon:'⭐', titre:'BRAVO !',
+      sous:'2 fautes — limite respectée. Chapitre validé !',
+      bg:'from-green-50', titreCls:'text-green-600',
+      adjectifs: ['BRAVO !', 'BIEN JOUÉ !', 'SUPER !'],
+    };
   }, [overlay, nbErreurs]);
+
+  // Réinitialiser la phase quand overlay change
+  useEffect(() => { if (overlay) setPhaseOverlay('score'); }, [overlay]);
 
   if (!overlay) return null;
 
   return (
     <>
-      {/* Confettis hors du card */}
-      <ConfettiPluie actif={valide} />
+      {/* Feux d'artifice + Confettis */}
+      <ConfettiPluie actif={valide && phaseOverlay === 'score'} />
+      <FeuDArtifice  actif={valide && phaseOverlay === 'score'} />
 
       <AnimatePresence>
         {overlay && (
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
+            className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-3"
+            style={{ background: valide ? 'rgba(0,0,0,0.75)' : 'rgba(0,0,0,0.65)' }}>
 
             <motion.div
-              initial={{ scale: 0.75, opacity: 0, y: 40 }}
+              initial={{ scale: 0.78, opacity: 0, y: 50 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.85, opacity: 0, y: 20 }}
-              transition={{ type: 'spring', bounce: 0.42, duration: 0.5 }}
-              className="bg-white rounded-3xl w-full max-w-sm shadow-2xl overflow-hidden">
+              exit={{ scale: 0.88, opacity: 0, y: 30 }}
+              transition={{ type: 'spring', bounce: 0.4, duration: 0.5 }}
+              className="bg-white rounded-3xl w-full max-w-sm shadow-2xl overflow-hidden max-h-[92vh] flex flex-col">
 
-              {/* ══════════ VICTOIRE ══════════ */}
+              {/* ══════════ VICTOIRE 🎉 ══════════ */}
               {valide && (
                 <>
-                  {/* Zone trophée */}
-                  <div className={`px-6 pt-10 pb-6 text-center bg-gradient-to-b ${champCfg.bg} to-white relative overflow-hidden`}>
-                    {/* Halo lumineux derrière l'icône */}
+                  <div className={`px-5 pt-8 pb-5 text-center bg-gradient-to-b ${champCfg.bg} to-white relative overflow-hidden flex-shrink-0`}>
+                    {/* Halos concentriques pulsés */}
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                       <motion.div
-                        animate={{ scale: [1, 1.18, 1], opacity: [0.25, 0.45, 0.25] }}
-                        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-                        className="w-40 h-40 rounded-full bg-tate-soleil/20"
+                        animate={{ scale: [1, 1.3, 1], opacity: [0.15, 0.3, 0.15] }}
+                        transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+                        className="w-52 h-52 rounded-full bg-tate-soleil/20 absolute"
+                      />
+                      <motion.div
+                        animate={{ scale: [1, 1.6, 1], opacity: [0.08, 0.2, 0.08] }}
+                        transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut', delay: 0.4 }}
+                        className="w-72 h-72 rounded-full bg-tate-soleil/10 absolute"
                       />
                     </div>
 
-                    {/* Grande icône */}
+                    {/* Icône principale animée */}
                     <motion.div
-                      initial={{ scale: 0, rotate: -25 }}
-                      animate={{ scale: [0, 1.35, 1], rotate: [-25, 8, 0] }}
-                      transition={{ duration: 0.55, delay: 0.05, ease: 'easeOut' }}
-                      className="relative text-8xl leading-none mb-3"
-                      style={{ filter: 'drop-shadow(0 10px 24px rgba(249,115,22,0.45))' }}>
+                      initial={{ scale: 0, rotate: -30 }}
+                      animate={{ scale: [0, 1.5, 1.15, 1], rotate: [-30, 15, -5, 0] }}
+                      transition={{ duration: 0.7, delay: 0.05, ease: 'easeOut' }}
+                      className="relative text-[88px] leading-none mb-2"
+                      style={{ filter: 'drop-shadow(0 12px 28px rgba(249,115,22,0.5))' }}>
                       {champCfg.icon}
                     </motion.div>
 
-                    {/* Titre PARFAIT / EXCELLENT / BRAVO */}
-                    <motion.h2
-                      initial={{ opacity: 0, y: 14, scale: 0.9 }}
+                    {/* Titre animé avec adjectifs */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 16, scale: 0.85 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
-                      transition={{ delay: 0.3, type: 'spring', bounce: 0.4 }}
-                      className={`text-4xl font-black tracking-tight mb-0.5 ${champCfg.titreCls}`}
-                      style={{ fontFamily: 'Georgia, serif', letterSpacing: '-0.01em' }}>
-                      {champCfg.titre}
-                    </motion.h2>
+                      transition={{ delay: 0.32, type: 'spring', bounce: 0.5 }}>
+                      <h2 className={`text-4xl font-black mb-0.5 ${champCfg.titreCls}`}
+                          style={{ fontFamily:'Georgia,serif', letterSpacing:'-0.01em',
+                            textShadow: nbErreurs === 0 ? '0 2px 12px rgba(249,115,22,0.3)' : 'none' }}>
+                        {champCfg.titre}
+                      </h2>
+                      {champCfg.adjectifs && (
+                        <motion.p
+                          animate={{ opacity: [0.5, 1, 0.5] }}
+                          transition={{ duration: 2, repeat: Infinity }}
+                          className="text-xs font-bold tracking-[0.18em] uppercase text-tate-terre/40 mb-1">
+                          {champCfg.adjectifs[0]}
+                        </motion.p>
+                      )}
+                    </motion.div>
+
                     <motion.p
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      transition={{ delay: 0.48 }}
-                      className="text-sm text-tate-terre/55 mb-5">
+                      transition={{ delay: 0.5 }}
+                      className="text-xs text-tate-terre/50 mb-4 leading-relaxed px-2">
                       {champCfg.sous}
                     </motion.p>
 
-                    {/* ⭐⭐⭐ étoiles animées */}
-                    <div className="flex justify-center gap-4 mb-4">
+                    {/* Étoiles 3D */}
+                    <div className="flex justify-center gap-3 mb-3">
                       {[1, 2, 3].map(i => (
                         <motion.div key={i}
-                          initial={{ scale: 0, rotate: 60, opacity: 0 }}
+                          initial={{ scale: 0, rotate: 90, opacity: 0 }}
                           animate={i <= nbEtoiles
-                            ? { scale: [0, 1.6, 1.1, 1], rotate: [60, -12, 5, 0], opacity: 1 }
-                            : { scale: 1, opacity: 0.15 }
+                            ? { scale: [0, 1.8, 1.2, 1], rotate: [90, -15, 8, 0], opacity: 1 }
+                            : { scale: 1, opacity: 0.12 }
                           }
-                          transition={{ delay: 0.58 + i * 0.18, type: 'spring', bounce: 0.7 }}>
-                          <Star size={40}
+                          transition={{ delay: 0.6 + i * 0.2, type:'spring', bounce: 0.8 }}>
+                          <Star size={38}
                             className={i <= nbEtoiles
-                              ? 'fill-tate-soleil text-tate-soleil drop-shadow-sm'
-                              : 'text-gray-200 fill-gray-100'
-                            }
+                              ? 'fill-tate-soleil text-tate-soleil'
+                              : 'fill-gray-100 text-gray-200'}
+                            style={i <= nbEtoiles ? { filter:'drop-shadow(0 3px 8px rgba(249,115,22,0.5))' } : {}}
                           />
                         </motion.div>
                       ))}
                     </div>
 
-                    {/* Pills stats */}
+                    {/* Stats pills */}
                     <motion.div
-                      initial={{ opacity: 0, y: 8 }}
+                      initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 1.0 }}
-                      className="flex items-center justify-center gap-2 flex-wrap">
-                      <span className="bg-green-100 text-green-700 px-3 py-1.5 rounded-xl text-xs font-bold">
+                      transition={{ delay: 1.1 }}
+                      className="flex items-center justify-center gap-1.5 flex-wrap">
+                      <span className="bg-green-100 text-green-700 px-2.5 py-1 rounded-xl text-xs font-bold">
                         ✓ {overlay.nbCorrectes}/{overlay.nbTotal} bonnes
                       </span>
-                      <span className={`px-3 py-1.5 rounded-xl text-xs font-bold ${
-                        nbErreurs === 0 ? 'bg-green-50 text-green-600' : 'bg-amber-50 text-amber-700'
+                      <span className={`px-2.5 py-1 rounded-xl text-xs font-bold ${
+                        nbErreurs === 0 ? 'bg-amber-50 text-amber-600' : 'bg-orange-50 text-orange-600'
                       }`}>
                         {nbErreurs === 0 ? '🎯 Sans faute !' : `${nbErreurs} faute${nbErreurs > 1 ? 's' : ''}`}
                       </span>
                       {overlay.tentative > 1 && (
-                        <span className="bg-tate-doux text-tate-terre/55 px-3 py-1.5 rounded-xl text-xs font-bold">
+                        <span className="bg-tate-doux text-tate-terre/50 px-2.5 py-1 rounded-xl text-xs font-bold">
                           essai #{overlay.tentative}
                         </span>
                       )}
                     </motion.div>
                   </div>
 
-                  {/* Bouton suivant */}
-                  <div className="px-6 pb-6 pt-3">
+                  {/* Boutons */}
+                  <div className="px-5 pb-5 pt-3 space-y-2.5 flex-shrink-0">
+                    {/* Voir la correction */}
+                    {onVoirCorrection && (
+                      <motion.button
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 1.2 }}
+                        onClick={onVoirCorrection}
+                        className="w-full py-2.5 rounded-2xl font-semibold text-sm flex items-center justify-center gap-2 text-tate-terre/70 border-2 border-tate-border hover:border-tate-soleil hover:text-tate-terre transition-all">
+                        <Eye size={15} /> Voir la correction
+                      </motion.button>
+                    )}
                     <motion.button
-                      initial={{ opacity: 0, y: 12 }}
+                      initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 1.15 }}
+                      transition={{ delay: 1.3 }}
                       onClick={onRetour}
-                      whileHover={{ scale: 1.02, boxShadow: '0 8px 32px rgba(249,115,22,0.45)' }}
+                      whileHover={{ scale: 1.02, boxShadow: '0 8px 32px rgba(249,115,22,0.5)' }}
                       whileTap={{ scale: 0.97 }}
-                      className="w-full py-4 rounded-2xl font-black text-base tracking-wide flex items-center justify-center gap-2.5"
+                      className="w-full py-4 rounded-2xl font-black text-base flex items-center justify-center gap-2.5"
                       style={{
                         background: 'linear-gradient(135deg, #F97316, #EA580C)',
                         color: 'white',
-                        boxShadow: '0 6px 24px rgba(249,115,22,0.40)',
+                        boxShadow: '0 6px 24px rgba(249,115,22,0.45)',
                         letterSpacing: '0.02em',
                       }}>
-                      <Trophy size={19} />
-                      Chapitre suivant !
+                      <Trophy size={18} /> Chapitre suivant !
                     </motion.button>
                   </div>
                 </>
               )}
 
-              {/* ══════════ COURS SANS QCM terminé ══════════ */}
+              {/* ══════════ COURS SANS QCM ══════════ */}
               {overlay.avecQCM === false && (
                 <>
-                  <div className="px-6 pt-8 pb-6 text-center">
+                  <div className="px-5 pt-7 pb-5 text-center flex-shrink-0">
                     <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}
-                      transition={{ type: 'spring', bounce: 0.55, delay: 0.1 }}
+                      transition={{ type:'spring', bounce:0.55, delay:0.1 }}
                       className="text-6xl mb-3">📖</motion.div>
-                    <h2 className="text-xl font-serif font-bold text-tate-terre mb-2">Cours terminé !</h2>
+                    <h2 className="text-xl font-serif font-bold text-tate-terre mb-1.5">Cours terminé !</h2>
                     <p className="text-sm text-tate-terre/50">Chapitre enregistré — continue comme ça !</p>
                   </div>
-                  <div className="px-6 pb-6">
-                    <button onClick={onRetour}
-                      className="btn-tate w-full py-3.5 flex items-center justify-center gap-2">
-                      Continuer
-                    </button>
+                  <div className="px-5 pb-5 flex-shrink-0">
+                    <motion.button
+                      initial={{ opacity:0, y:8 }} animate={{ opacity:1, y:0 }}
+                      transition={{ delay:0.3 }}
+                      onClick={onRetour}
+                      whileHover={{ scale:1.02 }} whileTap={{ scale:0.97 }}
+                      className="w-full py-4 rounded-2xl font-bold text-white text-sm flex items-center justify-center gap-2"
+                      style={{ background:'linear-gradient(135deg,#F97316,#EA580C)', boxShadow:'0 4px 16px rgba(249,115,22,0.35)' }}>
+                      Continuer →
+                    </motion.button>
                   </div>
                 </>
               )}
 
-              {/* ══════════ ÉCHEC — RECOMMENCER OBLIGATOIRE ══════════ */}
+              {/* ══════════ ÉCHEC — recommencer OBLIGATOIRE ══════════ */}
               {!overlay.maitrise && overlay.avecQCM && (
                 <>
-                  <div className="px-6 pt-8 pb-5 text-center bg-gradient-to-b from-red-50 to-white">
-                    {/* Icône secouée */}
+                  <div className="px-5 pt-7 pb-4 text-center bg-gradient-to-b from-red-50 to-white flex-shrink-0">
                     <motion.div
                       initial={{ scale: 0 }}
-                      animate={{ scale: 1, x: [0, -6, 6, -4, 4, 0] }}
-                      transition={{ scale: { type:'spring', bounce:0.5, delay:0.1 }, x: { delay: 0.55, duration: 0.5 } }}
-                      className="text-7xl mb-3">
-                      {nbErreurs >= 6 ? '📚' : '😓'}
+                      animate={{ scale: 1, x: [0, -7, 7, -5, 5, -3, 3, 0] }}
+                      transition={{ scale:{type:'spring',bounce:0.5,delay:0.1}, x:{delay:0.55,duration:0.6} }}
+                      className="text-6xl mb-2">
+                      {nbErreurs >= 6 ? '📚' : nbErreurs >= 4 ? '😞' : '😓'}
                     </motion.div>
 
                     <motion.h2
-                      initial={{ opacity:0, y:10 }}
-                      animate={{ opacity:1, y:0 }}
+                      initial={{ opacity:0, y:10 }} animate={{ opacity:1, y:0 }}
                       transition={{ delay:0.3 }}
-                      className="text-3xl font-black text-alerte mb-1"
-                      style={{ fontFamily:'Georgia, serif' }}>
+                      className="text-3xl font-black text-red-500 mb-1"
+                      style={{ fontFamily:'Georgia,serif' }}>
                       {nbErreurs} faute{nbErreurs > 1 ? 's' : ''}
                     </motion.h2>
-                    <p className="text-sm text-tate-terre/60 mb-5">
-                      Il faut <strong className="text-tate-terre">au maximum 2 fautes</strong> pour valider ce chapitre.
+                    <p className="text-xs text-tate-terre/55 mb-4">
+                      Maximum <strong>2 fautes</strong> pour valider. Tu peux y arriver !
                     </p>
 
-                    {/* Barre d'erreurs */}
-                    <div className="mx-4 mb-4">
-                      <div className="flex items-center justify-between text-xs text-tate-terre/40 mb-1.5">
+                    {/* Barre visuelle */}
+                    <div className="mx-3 mb-3">
+                      <div className="flex items-center justify-between text-[10px] text-tate-terre/35 mb-1">
                         <span>Tes réponses</span>
                         <span>{overlay.nbCorrectes} ✓ · {nbErreurs} ✗</span>
                       </div>
-                      <div className="h-4 bg-tate-doux rounded-full overflow-hidden flex">
+                      <div className="h-3.5 bg-gray-100 rounded-full overflow-hidden flex">
                         <motion.div
-                          initial={{ width: 0 }}
-                          animate={{ width: `${(overlay.nbCorrectes / overlay.nbTotal) * 100}%` }}
-                          transition={{ duration: 0.7, delay: 0.4 }}
-                          className="h-full bg-succes rounded-l-full"
+                          initial={{ width:0 }}
+                          animate={{ width:`${(overlay.nbCorrectes/overlay.nbTotal)*100}%` }}
+                          transition={{ duration:0.7, delay:0.4 }}
+                          className="h-full bg-green-400"
                         />
                         <motion.div
-                          initial={{ width: 0 }}
-                          animate={{ width: `${(nbErreurs / overlay.nbTotal) * 100}%` }}
-                          transition={{ duration: 0.7, delay: 0.6 }}
-                          className="h-full bg-alerte rounded-r-full"
+                          initial={{ width:0 }}
+                          animate={{ width:`${(nbErreurs/overlay.nbTotal)*100}%` }}
+                          transition={{ duration:0.7, delay:0.6 }}
+                          className="h-full bg-red-400"
                         />
                       </div>
                     </div>
 
-                    {/* Seuil limite */}
-                    <div className="flex items-center justify-center gap-2">
-                      {[...Array(Math.min(overlay.nbTotal, 8))].map((_, i) => (
+                    {/* Dots */}
+                    <div className="flex items-center justify-center gap-1.5 flex-wrap mb-1">
+                      {[...Array(Math.min(overlay.nbTotal, 10))].map((_, i) => (
                         <div key={i}
-                          className={`w-3 h-3 rounded-full transition-all ${
-                            i < overlay.nbCorrectes ? 'bg-succes' : 'bg-alerte'
-                          }`}
+                          className={`w-2.5 h-2.5 rounded-full ${i < overlay.nbCorrectes ? 'bg-green-400' : 'bg-red-400'}`}
                         />
                       ))}
                     </div>
                     {overlay.tentative > 1 && (
-                      <p className="text-xs text-tate-terre/30 mt-3">Tentative n°{overlay.tentative}</p>
+                      <p className="text-[10px] text-tate-terre/30 mt-2">Tentative n°{overlay.tentative}</p>
                     )}
                   </div>
 
-                  {/* Conseil + bouton UNIQUE */}
-                  <div className="px-6 pb-6 pt-3 space-y-3">
-                    <div className="bg-amber-50 border border-amber-200 rounded-2xl px-4 py-3 text-sm text-amber-800 leading-relaxed text-center">
-                      💡 <strong>Relis attentivement le cours</strong> en te concentrant sur les points difficiles, puis réessaie !
+                  {/* Conseil + boutons */}
+                  <div className="px-5 pb-5 pt-3 space-y-2.5 flex-shrink-0">
+                    <div className="bg-amber-50 border border-amber-200 rounded-2xl px-4 py-2.5 text-xs text-amber-800 leading-relaxed text-center">
+                      💡 <strong>Relis le cours</strong> attentivement puis reviens faire les exercices !
                     </div>
 
-                    {/* ─ PAS de "Retour aux chapitres" — SEUL le bouton Recommencer ─ */}
+                    {/* Voir la correction en priorité */}
+                    {onVoirCorrection && (
+                      <motion.button
+                        initial={{ opacity:0, y:6 }} animate={{ opacity:1, y:0 }}
+                        transition={{ delay:0.3 }}
+                        onClick={onVoirCorrection}
+                        whileHover={{ scale:1.01 }} whileTap={{ scale:0.98 }}
+                        className="w-full py-3.5 rounded-2xl font-bold text-sm flex items-center justify-center gap-2"
+                        style={{
+                          background:'linear-gradient(135deg,#1D9E75,#059669)',
+                          color:'white',
+                          boxShadow:'0 4px 16px rgba(16,185,129,0.35)',
+                        }}>
+                        <Eye size={16} /> Comprendre mes erreurs
+                      </motion.button>
+                    )}
+
+                    {/* Recommencer — bouton obligatoire */}
                     <motion.button
-                      initial={{ opacity:0, y:8 }}
-                      animate={{ opacity:1, y:0 }}
+                      initial={{ opacity:0, y:8 }} animate={{ opacity:1, y:0 }}
                       transition={{ delay:0.45 }}
                       onClick={onReessayer}
-                      whileHover={{ scale:1.02 }}
-                      whileTap={{ scale:0.97 }}
-                      className="w-full py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-2.5 tracking-wide"
+                      whileHover={{ scale:1.02 }} whileTap={{ scale:0.97 }}
+                      className="w-full py-3.5 rounded-2xl font-black text-sm flex items-center justify-center gap-2.5"
                       style={{
                         background:'linear-gradient(135deg,#1C0A00,#3D1500)',
                         color:'white',
-                        boxShadow:'0 5px 20px rgba(28,10,0,0.30)',
+                        boxShadow:'0 4px 18px rgba(28,10,0,0.28)',
                         letterSpacing:'0.02em',
                       }}>
-                      <RotateCcw size={17} /> Recommencer le cours
+                      <RotateCcw size={16} /> Recommencer le cours
                     </motion.button>
                   </div>
                 </>
@@ -1292,12 +1405,14 @@ function splitCourseExercices(html) {
 function PageCoursHTML() {
   const { leconActive, chapitreActif, retourAccueil, soumettreScore } = useEleveStore();
   const iframeRef = useRef(null);
+  const groupesResultatRef = useRef(null); // stocke les résultats pour la correction
 
-  const [phaseHTML,    setPhaseHTML]    = useState('cours'); // 'cours' | 'exercices'
-  const [scoreOverlay, setScoreOverlay] = useState(null);
-  const [submitting,   setSubmitting]   = useState(false);
-  const [erreur,       setErreur]       = useState('');
-  const [aDesQCM,      setADesQCM]      = useState(null);
+  const [phaseHTML,      setPhaseHTML]      = useState('cours'); // 'cours' | 'exercices'
+  const [scoreOverlay,   setScoreOverlay]   = useState(null);
+  const [submitting,     setSubmitting]     = useState(false);
+  const [erreur,         setErreur]         = useState('');
+  const [aDesQCM,        setADesQCM]        = useState(null);
+  const [correctionMode, setCorrectionMode] = useState(false); // affiche la correction dans l'iframe
 
   // ── Scinder le HTML en cours + exercices ──────────────────────
   // (hook appelé avant le early return pour respecter les règles des hooks)
@@ -1356,6 +1471,10 @@ function PageCoursHTML() {
     const nbErreurs   = nbTotal - nbCorrectes;
     const score       = Math.round((nbCorrectes / nbTotal) * 100);
 
+    // Stocker les groupes pour la vue correction
+    groupesResultatRef.current = groupes;
+    setCorrectionMode(false);
+
     setSubmitting(true);
     try {
       const resultat = await soumettreScore({
@@ -1390,13 +1509,70 @@ function PageCoursHTML() {
   const reessayer = () => {
     setScoreOverlay(null);
     setErreur('');
-    setPhaseHTML('exercices');
+    setCorrectionMode(false);
+    groupesResultatRef.current = null;
+    setPhaseHTML('cours'); // recommencer depuis le cours
     const iframe = iframeRef.current;
     if (!iframe) return;
     const iDoc = iframe.contentDocument || iframe.contentWindow?.document;
     if (!iDoc) return;
     iDoc.querySelectorAll('input[type="radio"]').forEach(i => { i.checked = false; });
     iframe.contentWindow?.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Afficher la correction dans l'iframe (injecter les styles)
+  const afficherCorrectionIframe = () => {
+    const iframe = iframeRef.current;
+    if (!iframe) return;
+    const iDoc = iframe.contentDocument || iframe.contentWindow?.document;
+    if (!iDoc) return;
+
+    const groupes = groupesResultatRef.current;
+    if (!groupes) return;
+
+    // Désactiver tous les radios
+    iDoc.querySelectorAll('input[type="radio"]').forEach(input => {
+      input.disabled = true;
+    });
+
+    // Colorier les réponses par groupe
+    Object.entries(groupes).forEach(([name, g]) => {
+      iDoc.querySelectorAll(`input[name="${CSS.escape(name)}"]`).forEach(input => {
+        const label = input.closest('label') || input.parentElement;
+        if (!label) return;
+
+        if (input.value === g.correct && input.value === g.selectionne) {
+          // Bonne réponse choisie ✅
+          label.style.cssText += ';background:#F0FDF4!important;border-color:#22C55E!important;color:#15803D!important;';
+          const tag = iDoc.createElement('span');
+          tag.textContent = ' ✅ Bonne réponse';
+          tag.style.cssText = 'font-size:0.78em;font-weight:800;margin-left:6px;color:#15803D;';
+          label.appendChild(tag);
+        } else if (input.value === g.correct && input.value !== g.selectionne) {
+          // Bonne réponse non choisie
+          label.style.cssText += ';background:#F0FDF4!important;border-color:#86EFAC!important;color:#15803D!important;opacity:0.85;';
+          const tag = iDoc.createElement('span');
+          tag.textContent = ' ← Bonne réponse';
+          tag.style.cssText = 'font-size:0.78em;font-weight:700;margin-left:6px;color:#16A34A;';
+          label.appendChild(tag);
+        } else if (input.value === g.selectionne && input.value !== g.correct) {
+          // Mauvaise réponse choisie ✗
+          label.style.cssText += ';background:#FEF2F2!important;border-color:#FCA5A5!important;color:#B91C1C!important;';
+          const tag = iDoc.createElement('span');
+          tag.textContent = ' ✗ Ta réponse';
+          tag.style.cssText = 'font-size:0.78em;font-weight:700;margin-left:6px;color:#B91C1C;';
+          label.appendChild(tag);
+        }
+      });
+    });
+
+    // Remonter en haut
+    iframe.contentWindow?.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Fermer l'overlay et passer en mode correction
+    setScoreOverlay(null);
+    setCorrectionMode(true);
+    setPhaseHTML('exercices');
   };
 
   const allerAuxExercices = () => {
@@ -1410,9 +1586,11 @@ function PageCoursHTML() {
     setErreur('');
   };
 
-  /* Indicateur de phase (point coloré) */
-  const phaseLabel = phaseHTML === 'cours'
-    ? { dot: 'bg-blue-400', text: 'Lecture du cours', icon: '📖' }
+  /* Indicateur de phase */
+  const phaseLabel = correctionMode
+    ? { dot: 'bg-green-400', text: 'Mode correction', icon: '🔍' }
+    : phaseHTML === 'cours'
+    ? { dot: 'bg-blue-400',  text: 'Lecture du cours', icon: '📖' }
     : { dot: 'bg-tate-soleil', text: 'Exercices', icon: '📝' };
 
   return (
@@ -1505,7 +1683,21 @@ function PageCoursHTML() {
            }}>
         <div className="flex items-center gap-3 w-full max-w-2xl mx-auto">
 
-          {phaseHTML === 'cours' ? (
+          {/* ── MODE CORRECTION ─── */}
+          {correctionMode ? (
+            <>
+              <div className="flex-1 flex items-center gap-2 rounded-xl px-3 py-2"
+                   style={{ background:'#F0FDF4', border:'1.5px solid #86EFAC' }}>
+                <span className="text-xs text-green-700 font-semibold flex-1">🔍 Mode correction — lis bien les bonnes réponses !</span>
+              </div>
+              <button
+                onClick={reessayer}
+                className="flex-shrink-0 h-10 px-4 rounded-xl font-bold text-xs flex items-center gap-1.5 text-white"
+                style={{ background:'linear-gradient(135deg,#1C0A00,#3D1500)', boxShadow:'0 3px 12px rgba(0,0,0,0.2)' }}>
+                <RotateCcw size={14} /> Recommencer
+              </button>
+            </>
+          ) : phaseHTML === 'cours' ? (
             /* ── Phase COURS ─── */
             <>
               <button
@@ -1605,7 +1797,12 @@ function PageCoursHTML() {
         </div>
       </div>
 
-      <ScoreOverlay overlay={scoreOverlay} onRetour={retourAccueil} onReessayer={reessayer} />
+      <ScoreOverlay
+        overlay={scoreOverlay}
+        onRetour={retourAccueil}
+        onReessayer={reessayer}
+        onVoirCorrection={groupesResultatRef.current ? afficherCorrectionIframe : null}
+      />
     </div>
   );
 }
@@ -2101,7 +2298,7 @@ function VueChapitresFr({ matiere, chapitres, isValide, nbValides, chargement, o
 // ACCUEIL ÉLÈVE — refonte complète
 // ─────────────────────────────────────────────────────────────────
 export function AccueilEleve() {
-  const { user } = useAuthStore();
+  const { user, rafraichirUser } = useAuthStore();
   const navigate = useNavigate();
   const { chapitres, chargerChapitres, ouvrirChapitre, leconActive, chargement } = useEleveStore();
 
@@ -2111,15 +2308,28 @@ export function AccueilEleve() {
   const [erreurCours,    setErreurCours]    = useState('');
   const [progression,    setProgression]    = useState([]);
   const [showAllProg,    setShowAllProg]    = useState(false);
+  const [devoirs,        setDevoirs]        = useState([]); // planning admin
 
   useEffect(() => {
     const token = getToken();
     if (!token) return;
+
+    // Rafraîchir le profil complet (chapitresValides à jour)
+    rafraichirUser().catch(() => {});
+
+    // Charger la progression QCM
     axios.get(`${API}/resultats/ma-progression`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(({ data }) => setProgression(data.data || []))
       .catch(() => setProgression([]));
+
+    // Charger les devoirs planifiés + vérifier les rappels
+    axios.get(`${API}/planning/mes-devoirs`, { headers: { Authorization: `Bearer ${token}` } })
+      .then(({ data }) => setDevoirs(data.data || []))
+      .catch(() => setDevoirs([]));
+    axios.get(`${API}/planning/verifier-rappels`, { headers: { Authorization: `Bearer ${token}` } })
+      .catch(() => {});
   }, []);
 
   if (leconActive) return <PageCours />;
@@ -2239,6 +2449,48 @@ export function AccueilEleve() {
               </div>
             </div>
 
+            {/* ── Devoirs planifiés par l'admin ─────────────── */}
+            {devoirs.filter(d => d.statut === 'en_attente' || d.statut === 'en_cours').length > 0 && (
+              <motion.div initial={{ opacity:0, y:-4 }} animate={{ opacity:1, y:0 }}
+                className="mb-4 rounded-2xl overflow-hidden border-2 border-blue-200 bg-blue-50">
+                <div className="px-4 py-3 flex items-center gap-2 border-b border-blue-100">
+                  <span className="text-base">📅</span>
+                  <p className="text-xs font-bold text-blue-800 uppercase tracking-wider">Mes devoirs</p>
+                  <span className="ml-auto bg-blue-200 text-blue-800 text-xs font-bold px-2 py-0.5 rounded-full">
+                    {devoirs.filter(d => d.statut === 'en_attente' || d.statut === 'en_cours').length}
+                  </span>
+                </div>
+                <div className="divide-y divide-blue-100">
+                  {devoirs.filter(d => d.statut === 'en_attente' || d.statut === 'en_cours').slice(0, 3).map(d => {
+                    const dateP = new Date(d.dateProgrammee);
+                    const depasse = dateP < new Date();
+                    const dateStr = dateP.toLocaleDateString('fr-SN', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+                    return (
+                      <div key={d._id} className="px-4 py-2.5 flex items-center gap-3">
+                        <span className="text-lg flex-shrink-0">{d.type === 'cours' ? '📖' : d.type === 'revision' ? '🔄' : '📝'}</span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-semibold text-tate-terre truncate">
+                            {d.titre || d.chapitreId?.titre || 'Devoir'}
+                          </p>
+                          <p className={`text-[10px] font-medium ${depasse ? 'text-red-500' : 'text-blue-600'}`}>
+                            {depasse ? '⚠️ En retard · ' : '⏰ '}
+                            {dateStr}
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => {
+                            if (d.chapitreId) handleDemarrer(d.chapitreId);
+                          }}
+                          className="flex-shrink-0 text-xs font-bold text-blue-700 bg-blue-100 hover:bg-blue-200 px-2.5 py-1.5 rounded-xl transition-all">
+                          Faire →
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </motion.div>
+            )}
+
             {/* Carte progression globale */}
             <div className="bg-white rounded-2xl border-2 border-tate-border p-4 mb-5 shadow-card">
               <div className="flex items-center gap-3 mb-3">
@@ -2247,19 +2499,27 @@ export function AccueilEleve() {
                 </div>
                 <div className="flex-1">
                   <p className="font-semibold text-tate-terre text-sm">Ma progression</p>
-                  <p className="text-xs text-tate-terre/50">{nbValidesMat} chapitre{nbValidesMat !== 1 ? 's' : ''} validé{nbValidesMat !== 1 ? 's' : ''} au total</p>
+                  <p className="text-xs text-tate-terre/50">
+                    {nbValidesMat} chapitre{nbValidesMat !== 1 ? 's' : ''} validé{nbValidesMat !== 1 ? 's' : ''} au total
+                  </p>
                 </div>
                 <div className="text-right">
                   <p className="text-2xl font-serif font-bold text-tate-soleil">{nbValidesMat}</p>
                   <p className="text-xs text-tate-terre/40">chapitres</p>
                 </div>
               </div>
-              {nbValidesMat > 0 && (
-                <div className="h-2 rounded-full bg-tate-doux overflow-hidden">
-                  <motion.div initial={{ width:0 }} animate={{ width:`${Math.min(nbValidesMat * 5, 100)}%` }}
-                    transition={{ duration:0.8 }}
-                    className="h-full rounded-full bg-gradient-to-r from-tate-soleil to-amber-500" />
-                </div>
+              <div className="h-2 rounded-full bg-tate-doux overflow-hidden">
+                <motion.div
+                  initial={{ width:0 }}
+                  animate={{ width: nbValidesMat > 0 ? `${Math.min(nbValidesMat * 5, 100)}%` : '0%' }}
+                  transition={{ duration:0.8 }}
+                  className="h-full rounded-full bg-gradient-to-r from-tate-soleil to-amber-500"
+                />
+              </div>
+              {nbValidesMat === 0 && (
+                <p className="text-xs text-tate-terre/35 mt-2 text-center">
+                  Commence ton premier chapitre pour voir ta progression !
+                </p>
               )}
             </div>
 

@@ -1,15 +1,14 @@
 // ─────────────────────────────────────────────
 // src/store/useEleveStore.js
 // Flux simplifié : accueil → cours HTML plein écran → score
-// Le QCM est intégré dans le HTML. La détection se fait côté client.
 // ─────────────────────────────────────────────
 import { create } from 'zustand';
 import api from '../lib/api';
 
 export const useEleveStore = create((set, get) => ({
   chapitres:    [],
-  chapitreActif: null,   // { _id, titre, matiere, niveau }
-  leconActive:  null,    // { _id, chapitreId, contenuHTML, titre }
+  chapitreActif: null,
+  leconActive:  null,
   chargement:   false,
 
   // ── Charger les chapitres ─────────────────────────────────
@@ -47,14 +46,28 @@ export const useEleveStore = create((set, get) => ({
     const { data } = await api.post('/resultats/soumettre', {
       chapitreId, leconId, score, nbCorrectes, nbTotal,
     });
-    // Mettre à jour localement les chapitres validés si maîtrisé
+
+    // Mettre à jour localement le chapitreActif si maîtrisé
     if (data.data.maitrise) {
       set(s => ({
         chapitres: s.chapitres.map(c =>
           c._id === chapitreId ? { ...c, _valide: true } : c
         ),
       }));
+
+      // Mettre à jour le user dans authStore sans rechargement réseau
+      try {
+        const { useAuthStore } = await import('./useAuthStore');
+        useAuthStore.getState().ajouterChapitreValide({
+          chapitreId,
+          scoreFinal: score,
+          valideAt:   new Date().toISOString(),
+        });
+      } catch {
+        // Silencieux si authStore indisponible
+      }
     }
+
     return data.data;
   },
 
