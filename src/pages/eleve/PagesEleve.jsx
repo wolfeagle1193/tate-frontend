@@ -2678,7 +2678,16 @@ export function AccueilEleve() {
                         </div>
                         <button
                           onClick={() => {
-                            if (d.chapitreId) handleDemarrer(d.chapitreId);
+                            if (d.chapitreId) {
+                              // Si aucune matière active, la définir depuis le devoir
+                              // pour que le bouton retour ramène à la liste des chapitres
+                              const mCode = d.chapitreId.matiereId?.code;
+                              if (mCode && !matiereActive) {
+                                setMatiereActive(mCode);
+                                chargerChapitres(user?.niveau, mCode);
+                              }
+                              handleDemarrer(d.chapitreId);
+                            }
                           }}
                           className="flex-shrink-0 text-xs font-bold text-blue-700 bg-blue-100 hover:bg-blue-200 px-2.5 py-1.5 rounded-xl transition-all">
                           Faire →

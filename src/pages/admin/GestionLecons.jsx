@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   CheckCircle, Eye, Clock, BookOpen, X,
   AlertCircle, Trash2, EyeOff, RefreshCw,
-  Globe, Lock, Layers, ChevronDown, ChevronUp,
+  Globe, Lock, Layers, ChevronDown, ChevronUp, Edit2, Save,
 } from 'lucide-react';
 import { useAdminStore } from '../../store/useAdminStore';
 import { LayoutAdmin }  from './LayoutAdmin';
@@ -50,7 +50,7 @@ function BlocApercu({ bloc }) {
 }
 
 // ── Modal aperçu complet ──────────────────────────────────────
-function ModalApercu({ lecon, onClose, onValider, onMasquer, onSupprimer, estPubliee }) {
+function ModalApercu({ lecon, onClose, onValider, onMasquer, onSupprimer, onEditer, estPubliee }) {
   const [confirmeSupp, setConfirmeSupp] = useState(false);
   const aHTML   = !!lecon.contenuHTML;
   const aBlocs  = lecon.contenuStructure?.length > 0;
@@ -162,6 +162,13 @@ function ModalApercu({ lecon, onClose, onValider, onMasquer, onSupprimer, estPub
           <div className="flex gap-3">
             <button onClick={onClose} className="btn-outline flex-1 py-3 text-sm">Fermer</button>
 
+            {/* Bouton Éditer (toujours visible) */}
+            <button onClick={() => onEditer?.(lecon)}
+              className="flex-1 py-3 text-sm font-bold rounded-2xl flex items-center justify-center gap-2 transition-all
+                         bg-violet-100 text-violet-700 border-2 border-violet-200 hover:bg-violet-200">
+              <Edit2 size={15} /> Modifier
+            </button>
+
             {!estPubliee && onValider && (
               <button onClick={() => { onValider(lecon._id); onClose(); toast.success('✅ Leçon publiée !'); }}
                 className="btn-succes flex-1 py-3 text-sm flex items-center justify-center gap-2">
@@ -212,8 +219,146 @@ function ModalApercu({ lecon, onClose, onValider, onMasquer, onSupprimer, estPub
   );
 }
 
+// ── Modal édition contenu ─────────────────────────────────────
+function ModalEditer({ lecon, onClose, onSaved }) {
+  const aHTML  = !!lecon.contenuHTML;
+  const [titre,       setTitre]       = useState(lecon.titre || '');
+  const [contenuHTML, setContenuHTML] = useState(lecon.contenuHTML || '');
+  const [saving,      setSaving]      = useState(false);
+  const [onglet,      setOnglet]      = useState(aHTML ? 'html' : 'apercu');
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      const payload = { titre };
+      if (aHTML) payload.contenuHTML = contenuHTML;
+      await axios.patch(`${API}/lecons/${lecon._id}/contenu`, payload, {
+        headers: { Authorization: `Bearer ${getToken()}` },
+      });
+      toast.success('✅ Contenu mis à jour !');
+      onSaved?.();
+      onClose();
+    } catch (e) {
+      toast.error(e.response?.data?.error || 'Erreur de sauvegarde');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"
+         onClick={onClose}>
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.9, opacity: 0 }}
+        onClick={e => e.stopPropagation()}
+        className="bg-white rounded-3xl w-full max-w-3xl shadow-2xl max-h-[92vh] flex flex-col overflow-hidden">
+
+        {/* En-tête */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-tate-border flex-shrink-0 bg-gradient-to-r from-violet-50 to-white">
+          <div>
+            <h2 className="font-serif font-bold text-tate-terre text-lg">Modifier la leçon</h2>
+            <p className="text-xs text-tate-terre/50 mt-0.5">Les modifications seront visibles par les élèves immédiatement</p>
+          </div>
+          <button onClick={onClose} className="w-9 h-9 rounded-xl hover:bg-tate-doux flex items-center justify-center text-tate-terre/50">
+            <X size={18} />
+          </button>
+        </div>
+
+        {/* Corps */}
+        <div className="overflow-y-auto flex-1 p-6 space-y-4">
+          {/* Titre */}
+          <div>
+            <label className="text-xs font-bold text-tate-terre/60 uppercase tracking-wide block mb-1.5">Titre de la leçon</label>
+            <input
+              value={titre}
+              onChange={e => setTitre(e.target.value)}
+              className="w-full h-11 rounded-xl border-2 border-tate-border px-3 text-sm text-tate-terre bg-white focus:border-violet-400 focus:outline-none transition-all"
+              placeholder="Titre de la leçon…"
+            />
+          </div>
+
+          {/* Contenu HTML uniquement */}
+          {aHTML && (
+            <div>
+              <div className="flex gap-2 mb-3">
+                {[
+                  { id: 'html',   label: '✏️ Éditer HTML' },
+                  { id: 'apercu', label: '👁️ Aperçu'     },
+                ].map(tab => (
+                  <button key={tab.id} onClick={() => setOnglet(tab.id)}
+                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border-2 ${
+                      onglet === tab.id
+                        ? 'border-violet-300 bg-violet-50 text-violet-700'
+                        : 'border-tate-border bg-white text-tate-terre/50 hover:border-violet-200'
+                    }`}>
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+
+              {onglet === 'html' ? (
+                <div>
+                  <label className="text-xs font-bold text-tate-terre/60 uppercase tracking-wide block mb-1.5">
+                    Contenu HTML du cours
+                  </label>
+                  <textarea
+                    value={contenuHTML}
+                    onChange={e => setContenuHTML(e.target.value)}
+                    rows={18}
+                    className="w-full rounded-xl border-2 border-tate-border px-3 py-2.5 text-xs text-tate-terre bg-gray-50 focus:border-violet-400 focus:outline-none resize-y font-mono leading-relaxed transition-all"
+                    placeholder="Colle le HTML du cours ici…"
+                    style={{ minHeight: '320px' }}
+                  />
+                  <p className="text-xs text-tate-terre/40 mt-1.5">
+                    {contenuHTML.length.toLocaleString('fr-FR')} caractères
+                  </p>
+                </div>
+              ) : (
+                <div className="rounded-2xl overflow-hidden border border-tate-border">
+                  <div className="bg-tate-terre/5 px-4 py-2 flex items-center gap-2 border-b border-tate-border">
+                    <div className="flex gap-1.5">
+                      <div className="w-3 h-3 rounded-full bg-red-400" />
+                      <div className="w-3 h-3 rounded-full bg-yellow-400" />
+                      <div className="w-3 h-3 rounded-full bg-green-400" />
+                    </div>
+                    <p className="text-xs text-tate-terre/40 flex-1 text-center">Aperçu du cours</p>
+                  </div>
+                  <iframe srcDoc={contenuHTML} title="Aperçu"
+                    style={{ width: '100%', height: '50vh', border: 'none', display: 'block' }}
+                    sandbox="allow-scripts" />
+                </div>
+              )}
+            </div>
+          )}
+
+          {!aHTML && (
+            <div className="text-center py-8 bg-tate-creme rounded-2xl">
+              <p className="text-2xl mb-2">🧩</p>
+              <p className="text-sm font-semibold text-tate-terre/60 mb-1">Cours généré par IA ou par blocs</p>
+              <p className="text-xs text-tate-terre/40">Pour modifier ce type de cours, génère-en un nouveau depuis "Préparer un cours".</p>
+            </div>
+          )}
+        </div>
+
+        {/* Actions */}
+        <div className="px-6 py-4 border-t border-tate-border bg-gray-50 flex-shrink-0 flex gap-3">
+          <button onClick={onClose} className="btn-outline flex-1 py-3 text-sm">Annuler</button>
+          <button
+            onClick={handleSave}
+            disabled={saving || !titre.trim() || (aHTML && !contenuHTML.trim())}
+            className="flex-1 py-3 rounded-2xl font-bold text-sm text-white transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+            style={{ background: 'linear-gradient(135deg, #7C3AED, #6D28D9)' }}>
+            {saving ? '⏳ Sauvegarde…' : <><Save size={15} /> Enregistrer les modifications</>}
+          </button>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
 // ── Carte leçon ───────────────────────────────────────────────
-function CarteLecon({ lecon, index, onVoir, onValider, onMasquer, onSupprimer, estPubliee }) {
+function CarteLecon({ lecon, index, onVoir, onValider, onMasquer, onSupprimer, onEditer, estPubliee }) {
   const [actionsOuvertes, setActionsOuvertes] = useState(false);
 
   const typeCours = () => {
@@ -279,6 +424,13 @@ function CarteLecon({ lecon, index, onVoir, onValider, onMasquer, onSupprimer, e
             <Eye size={13} /> Voir
           </button>
 
+          <button onClick={() => onEditer?.(lecon)}
+            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl
+                       bg-violet-50 text-violet-700 text-xs font-semibold border border-violet-200
+                       hover:bg-violet-100 transition-colors">
+            <Edit2 size={13} /> Modifier
+          </button>
+
           {!estPubliee && (
             <button onClick={() => onValider(lecon._id)}
               className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl
@@ -319,6 +471,7 @@ export function GestionLecons() {
   const [leconsPubliees,setLeconsPubliees]= useState([]);
   const [chargement,    setChargement]    = useState(false);
   const [apercu,        setApercu]        = useState(null);
+  const [leconEdition,  setLeconEdition]  = useState(null); // leçon en cours d'édition
   const [confirmSupp,   setConfirmSupp]   = useState(null); // {id, titre} en attente de confirmation
 
   // ── Charger les leçons publiées ──────────────────────────────
@@ -476,6 +629,7 @@ export function GestionLecons() {
               onValider={handleValider}
               onMasquer={handleMasquer}
               onSupprimer={handleSupprimer}
+              onEditer={(l) => setLeconEdition(l)}
             />
           ))}
         </div>
@@ -491,6 +645,18 @@ export function GestionLecons() {
             onValider={handleValider}
             onMasquer={handleMasquer}
             onSupprimer={handleSupprimer}
+            onEditer={(l) => { setApercu(null); setLeconEdition(l); }}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Modal édition contenu */}
+      <AnimatePresence>
+        {leconEdition && (
+          <ModalEditer
+            lecon={leconEdition}
+            onClose={() => setLeconEdition(null)}
+            onSaved={() => { chargerLeconsEnAttente(); chargerPubliees(); }}
           />
         )}
       </AnimatePresence>

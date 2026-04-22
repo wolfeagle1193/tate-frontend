@@ -381,8 +381,11 @@ function ModalDetailEleve({ eleve, onClose }) {
           <div className="bg-tate-creme rounded-2xl p-3 space-y-1.5">
             <p className="text-xs font-bold text-tate-terre/40 uppercase tracking-wide mb-2">Infos compte</p>
             <p className="text-xs text-tate-terre/60">📧 {eleve.email}</p>
-            {eleve.dernierAt && (
+            {eleve.totalSessions > 0 && eleve.dernierAt && (
               <p className="text-xs text-tate-terre/60">🕐 Dernier exercice : {dateLongFr(eleve.dernierAt)}</p>
+            )}
+            {eleve.derniereConnexion && (
+              <p className="text-xs text-tate-terre/60">🔗 Dernière connexion : {dateLongFr(eleve.derniereConnexion)}</p>
             )}
           </div>
 
@@ -609,8 +612,12 @@ function CarteEleve({ eleve, onClick }) {
     : null;
 
   const statutActivite = (() => {
-    if (!eleve.dernierAt) return { label: 'Jamais actif', color: 'text-tate-terre/30', dot: 'bg-gray-200' };
-    const diffJ = Math.floor((new Date() - new Date(eleve.dernierAt)) / (1000 * 60 * 60 * 24));
+    // Utiliser la date la plus récente entre dernière session ET dernière connexion
+    const d1 = eleve.dernierAt        ? new Date(eleve.dernierAt)        : null;
+    const d2 = eleve.derniereConnexion ? new Date(eleve.derniereConnexion) : null;
+    const ref = d1 && d2 ? (d1 > d2 ? d1 : d2) : d1 ?? d2;
+    if (!ref) return { label: 'Jamais actif', color: 'text-tate-terre/30', dot: 'bg-gray-200' };
+    const diffJ = Math.floor((new Date() - ref) / (1000 * 60 * 60 * 24));
     if (diffJ <= 1)  return { label: 'Actif récemment', color: 'text-succes',    dot: 'bg-succes'    };
     if (diffJ <= 7)  return { label: `Il y a ${diffJ}j`,   color: 'text-amber-500', dot: 'bg-amber-400' };
     if (diffJ <= 30) return { label: `Il y a ${diffJ}j`,   color: 'text-alerte',    dot: 'bg-alerte'    };
@@ -709,15 +716,19 @@ export function SuiviEleves({ Layout }) {
       if (search && !e.nom.toLowerCase().includes(search.toLowerCase())) return false;
       if (filtreNiveau && e.niveau !== filtreNiveau) return false;
       if (filtreStatut === 'actifs') {
-        if (!e.dernierAt) return false;
-        const diffJ = Math.floor((new Date() - new Date(e.dernierAt)) / (1000 * 60 * 60 * 24));
-        return diffJ <= 7;
+        const d1 = e.dernierAt        ? new Date(e.dernierAt)        : null;
+        const d2 = e.derniereConnexion ? new Date(e.derniereConnexion) : null;
+        const ref = d1 && d2 ? (d1 > d2 ? d1 : d2) : d1 ?? d2;
+        if (!ref) return false;
+        return Math.floor((new Date() - ref) / (1000 * 60 * 60 * 24)) <= 7;
       }
       if (filtreStatut === 'difficultés') return e.chapitresEnDifficulte?.length > 0;
       if (filtreStatut === 'inactifs') {
-        if (!e.dernierAt) return true;
-        const diffJ = Math.floor((new Date() - new Date(e.dernierAt)) / (1000 * 60 * 60 * 24));
-        return diffJ > 14;
+        const d1 = e.dernierAt        ? new Date(e.dernierAt)        : null;
+        const d2 = e.derniereConnexion ? new Date(e.derniereConnexion) : null;
+        const ref = d1 && d2 ? (d1 > d2 ? d1 : d2) : d1 ?? d2;
+        if (!ref) return true;
+        return Math.floor((new Date() - ref) / (1000 * 60 * 60 * 24)) > 14;
       }
       return true;
     })
@@ -726,15 +737,20 @@ export function SuiviEleves({ Layout }) {
       if (triPar === 'score')    return (b.scoreMoyen ?? -1) - (a.scoreMoyen ?? -1);
       if (triPar === 'nom')      return a.nom.localeCompare(b.nom, 'fr');
       if (triPar === 'recent') {
-        return new Date(b.dernierAt || 0) - new Date(a.dernierAt || 0);
+        const refA = Math.max(new Date(a.dernierAt || 0), new Date(a.derniereConnexion || 0));
+        const refB = Math.max(new Date(b.dernierAt || 0), new Date(b.derniereConnexion || 0));
+        return refB - refA;
       }
       return 0;
     });
 
   // ── Stats globales ──
   const totalActifs  = eleves.filter(e => {
-    if (!e.dernierAt) return false;
-    return Math.floor((new Date() - new Date(e.dernierAt)) / (1000 * 60 * 60 * 24)) <= 7;
+    const d1 = e.dernierAt        ? new Date(e.dernierAt)        : null;
+    const d2 = e.derniereConnexion ? new Date(e.derniereConnexion) : null;
+    const ref = d1 && d2 ? (d1 > d2 ? d1 : d2) : d1 ?? d2;
+    if (!ref) return false;
+    return Math.floor((new Date() - ref) / (1000 * 60 * 60 * 24)) <= 7;
   }).length;
   const totalEnDiff  = eleves.filter(e => e.chapitresEnDifficulte?.length > 0).length;
   const scoreMoyenGlobal = eleves.filter(e => e.scoreMoyen !== null).length > 0
