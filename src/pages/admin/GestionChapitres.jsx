@@ -57,7 +57,13 @@ const SectionLabel = ({ icone, titre, sous }) => (
 function ModalChapitre({ matieres, chapitres, initial, onClose, onSave,
                          onUploadDocs, onSupprimerDoc }) {
   const isEdit = !!initial;
-  const [form, setForm] = useState(initial || {
+  // Normaliser matiereId → toujours un string (l'ID), même si le store renvoie l'objet peuplé
+  const normalizeMatiereId = (v) => (v && typeof v === 'object' ? v._id?.toString() || v.toString() : v || matieres[0]?._id || '');
+  const [form, setForm] = useState(initial ? {
+    ...initial,
+    matiereId:  normalizeMatiereId(initial.matiereId),
+    sectionFr:  initial.sectionFr || '',
+  } : {
     matiereId: matieres[0]?._id || '',
     titre: '', niveau: 'CM1', objectif: '',
     ordre: 1, promptSupplement: '', formatExercices: '', prerequis: '',
@@ -127,6 +133,8 @@ function ModalChapitre({ matieres, chapitres, initial, onClose, onSave,
     try {
       const payload = {
         ...form,
+        // S'assurer que matiereId est toujours un string (ObjectId), pas un objet peuplé
+        matiereId:       normalizeMatiereId(form.matiereId),
         niveau:          isLangue ? null : form.niveau,
         prerequis:       form.prerequis || undefined,
         formatExercices: form.formatExercices || '',

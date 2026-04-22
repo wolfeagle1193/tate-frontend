@@ -134,6 +134,47 @@ function GraphiqueSemaine({ data }) {
   );
 }
 
+// ── Donut SVG chart ───────────────────────────────────────────
+function DonutChart({ segments, size = 120, strokeWidth = 18, children }) {
+  const r = (size - strokeWidth) / 2;
+  const circ = 2 * Math.PI * r;
+  const cx = size / 2, cy = size / 2;
+
+  // Build arcs from segments [{value, color}]
+  const total = segments.reduce((s, seg) => s + seg.value, 0) || 1;
+  let cumul = 0;
+
+  return (
+    <div className="relative flex items-center justify-center" style={{ width: size, height: size }}>
+      <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
+        {/* Track */}
+        <circle cx={cx} cy={cy} r={r} fill="none"
+          stroke="#F3F4F6" strokeWidth={strokeWidth} />
+        {segments.map((seg, i) => {
+          const pct    = seg.value / total;
+          const dash   = pct * circ;
+          const gap    = circ - dash;
+          const offset = -(cumul / total) * circ;
+          cumul += seg.value;
+          return (
+            <circle key={i} cx={cx} cy={cy} r={r} fill="none"
+              stroke={seg.color} strokeWidth={strokeWidth}
+              strokeDasharray={`${dash} ${gap}`}
+              strokeDashoffset={offset}
+              strokeLinecap="round"
+              style={{ transition: 'stroke-dasharray 0.8s ease' }}
+            />
+          );
+        })}
+      </svg>
+      {/* Centre */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        {children}
+      </div>
+    </div>
+  );
+}
+
 // ── Badge niveau ──────────────────────────────────────────────
 function BadgeNiveau({ niveau }) {
   const colors = {
@@ -189,6 +230,27 @@ export function StatsAdmin() {
         return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
       })
     : [];
+
+  // Couleurs hex pour le donut (correspondant aux classes TW)
+  const COULEURS_HEX = {
+    CM1:'#F97316', CM2:'#FBBF24',
+    '6eme':'#3B82F6', '5eme':'#60A5FA',
+    '4eme':'#A855F7', '3eme':'#EC4899',
+    Seconde:'#10B981', Premiere:'#14B8A6', Terminale:'#06B6D4',
+  };
+
+  // Segments donut niveau
+  const segmentsNiveau = niveauxTriés.map(n => ({
+    value: n.count,
+    color: COULEURS_HEX[n._id] || '#9CA3AF',
+    label: n._id,
+  }));
+
+  // Segments donut réussite
+  const segmentsReussite = data ? [
+    { value: data.sessionsReussies,                              color: '#10B981' },
+    { value: Math.max(0, data.totalSessions - data.sessionsReussies), color: '#FEE2E2' },
+  ] : [];
 
   // ── Action refresh ──
   const BtnRefresh = (
@@ -255,7 +317,7 @@ export function StatsAdmin() {
                 <GraphiqueSemaine data={data.sessionsParJour} />
               </div>
 
-              {/* Répartition niveaux */}
+              {/* Répartition niveaux — donut + barres */}
               <div className="card">
                 <h2 className="font-serif font-bold text-tate-terre mb-4 flex items-center gap-2">
                   <GraduationCap size={17} className="text-tate-soleil" />
@@ -264,20 +326,86 @@ export function StatsAdmin() {
                 {niveauxTriés.length === 0 ? (
                   <p className="text-sm text-tate-terre/40 text-center py-8">Aucun élève inscrit</p>
                 ) : (
-                  niveauxTriés.map(n => (
-                    <BarreProgression
-                      key={n._id}
-                      label={n._id || 'Sans niveau'}
-                      value={n.count}
-                      max={maxEleves}
-                      couleur={COULEURS_NIVEAU[n._id] || 'bg-tate-soleil'}
-                      right={`${n.count} élève${n.count > 1 ? 's' : ''}`}
-                    />
-                  ))
+                  <>
+                    {/* Donut + légende */}
+                    <div className="flex items-center gap-4 mb-4">
+                      <DonutChart segments={segmentsNiveau} size={96} strokeWidth={15}>
+                        <div className="text-center">
+                          <p className="text-lg font-bold text-tate-terre leading-none">{data.totalEleves}</p>
+                          <p className="text-[9px] text-tate-terre/40">élèves</p>
+                        </div>
+                      </DonutChart>
+                      <div className="flex-1 flex flex-wrap gap-x-3 gap-y-1">
+                        {segmentsNiveau.map(s => (
+                          <div key={s.label} className="flex items-center gap-1">
+                            <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: s.color }} />
+                            <span className="text-xs text-tate-terre/60">{s.label} <strong>{s.value}</strong></span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    {/* Barres */}
+                    {niveauxTriés.map(n => (
+                      <BarreProgression
+                        key={n._id}
+                        label={n._id || 'Sans niveau'}
+                        value={n.count}
+                        max={maxEleves}
+                        couleur={COULEURS_NIVEAU[n._id] || 'bg-tate-soleil'}
+                        right={`${n.count} élève${n.count > 1 ? 's' : ''}`}
+                      />
+                    ))}
+                  </>
                 )}
               </div>
 
             </div>
+
+            {/* ── Ligne 2b : donut réussite (si sessions > 0) ── */}
+            {data.totalSessions > 0 && (
+              <div className="grid sm:grid-cols-2 gap-6 mb-6">
+                <div className="card flex items-center gap-5">
+                  <DonutChart segments={segmentsReussite} size={110} strokeWidth={18}>
+                    <div className="text-center">
+                      <p className="text-2xl font-bold text-tate-terre leading-none">{data.tauxReussite}%</p>
+                      <p className="text-[10px] text-tate-terre/40">réussite</p>
+                    </div>
+                  </DonutChart>
+                  <div>
+                    <h2 className="font-serif font-bold text-tate-terre mb-3">Taux de réussite</h2>
+                    <div className="space-y-1.5">
+                      <div className="flex items-center gap-2">
+                        <span className="w-3 h-3 rounded-full bg-succes flex-shrink-0" />
+                        <span className="text-sm text-tate-terre/70">{data.sessionsReussies} maîtrisé{data.sessionsReussies > 1 ? 's' : ''}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="w-3 h-3 rounded-full bg-red-200 flex-shrink-0" />
+                        <span className="text-sm text-tate-terre/70">{data.totalSessions - data.sessionsReussies} non maîtrisés</span>
+                      </div>
+                      <p className="text-xs text-tate-terre/40 mt-1">{data.totalSessions} session{data.totalSessions > 1 ? 's' : ''} au total</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="card flex items-center gap-5">
+                  <DonutChart
+                    segments={[
+                      { value: data.sessionsAujourd, color: '#F97316' },
+                      { value: Math.max(0, data.totalSessions - data.sessionsAujourd), color: '#F3F4F6' },
+                    ]}
+                    size={110} strokeWidth={18}>
+                    <div className="text-center">
+                      <p className="text-2xl font-bold text-tate-terre leading-none">{data.sessionsAujourd}</p>
+                      <p className="text-[10px] text-tate-terre/40">aujourd'hui</p>
+                    </div>
+                  </DonutChart>
+                  <div>
+                    <h2 className="font-serif font-bold text-tate-terre mb-3">Sessions du jour</h2>
+                    <p className="text-sm text-tate-terre/60">{data.sessionsAujourd} exercice{data.sessionsAujourd > 1 ? 's' : ''} fait{data.sessionsAujourd > 1 ? 's' : ''}</p>
+                    <p className="text-xs text-tate-terre/40 mt-1">sur {data.totalSessions} au total</p>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* ── Ligne 3 : top chapitres + top élèves ── */}
             <div className="grid lg:grid-cols-2 gap-6 mb-6">
