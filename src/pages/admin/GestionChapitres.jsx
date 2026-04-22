@@ -466,11 +466,13 @@ export function GestionChapitres() {
   };
 
   const handleSave = async (payload) => {
+    // Supprimer _id et documentsRef du payload pour éviter l'erreur MongoDB "Mod on _id not allowed"
+    const { _id, documentsRef, ...cleanPayload } = payload;
     if (chapEdit?._id) {
-      await modifierChapitre(chapEdit._id, payload);
+      await modifierChapitre(chapEdit._id, cleanPayload);
       return chapEdit; // en édition, on renvoie l'objet existant (pas besoin de l'ID pour l'upload)
     } else {
-      const chap = await creerChapitre(payload);
+      const chap = await creerChapitre(cleanPayload);
       return chap; // renvoie le nouveau chapitre avec son _id pour l'upload des docs
     }
   };

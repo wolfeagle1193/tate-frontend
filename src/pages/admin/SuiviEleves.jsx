@@ -700,7 +700,12 @@ export function SuiviEleves({ Layout }) {
     setLoading(true);
     try {
       const { data } = await axios.get(`${API}/stats/tous-eleves`, { headers: hdrs() });
-      setEleves(data.data || []);
+      const fresh = data.data || [];
+      setEleves(fresh);
+      // Synchroniser le modal avec les données fraîches si un élève est affiché
+      setEleveModal(prev =>
+        prev ? (fresh.find(e => e._id?.toString() === prev._id?.toString()) || prev) : null
+      );
     } catch (e) {
       toast.error(e.response?.data?.error || 'Erreur de chargement');
     } finally {
