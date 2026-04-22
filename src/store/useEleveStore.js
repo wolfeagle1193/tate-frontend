@@ -11,6 +11,24 @@ export const useEleveStore = create((set, get) => ({
   leconActive:  null,
   chargement:   false,
 
+  // ── Persistance de l'état exercice (réponses cochées) ────────
+  exerciceState: {}, // { [chapitreId]: { phase: 'cours'|'exercices', answers: {[name]: value} } }
+
+  sauvegarderEtatExercice: (chapitreId, phase, answers) =>
+    set(s => ({
+      exerciceState: {
+        ...s.exerciceState,
+        [chapitreId]: { phase, answers: answers || {} },
+      },
+    })),
+
+  effacerEtatExercice: (chapitreId) =>
+    set(s => {
+      const next = { ...s.exerciceState };
+      delete next[chapitreId];
+      return { exerciceState: next };
+    }),
+
   // ── Charger les chapitres ─────────────────────────────────
   chargerChapitres: async (niveau, matiereCode) => {
     try {
@@ -72,7 +90,16 @@ export const useEleveStore = create((set, get) => ({
   },
 
   // ── Retourner à la liste ──────────────────────────────────
-  retourAccueil: () => set({ leconActive: null, chapitreActif: null }),
+  retourAccueil: () => {
+    const { chapitreActif, exerciceState } = get();
+    if (chapitreActif) {
+      const next = { ...exerciceState };
+      delete next[chapitreActif._id];
+      set({ leconActive: null, chapitreActif: null, exerciceState: next });
+    } else {
+      set({ leconActive: null, chapitreActif: null });
+    }
+  },
 
   // ── Charger le QCM actif d'un chapitre ───────────────────
   chargerQCMChapitre: async (chapitreId) => {

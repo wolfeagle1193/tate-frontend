@@ -311,6 +311,25 @@ export function GestionUsers() {
   const [profModal,  setProfModal]  = useState(null);
   const [loadingBadge, setLoadingBadge] = useState({});
 
+  // ── Suppression utilisateur ───────────────────────────────
+  const [confirmDelete, setConfirmDelete] = useState(null);
+  const [loadingDelete, setLoadingDelete] = useState(false);
+
+  const supprimerUser = async () => {
+    if (!confirmDelete) return;
+    setLoadingDelete(true);
+    try {
+      await axios.delete(`${API}/users/${confirmDelete._id}`,
+        { headers: { Authorization: `Bearer ${getToken()}` } }
+      );
+      toast.success(`✅ Compte de ${confirmDelete.nom} supprimé`);
+      setConfirmDelete(null);
+      chargerUsers();
+    } catch (e) {
+      toast.error(e.response?.data?.error || 'Erreur lors de la suppression');
+    } finally { setLoadingDelete(false); }
+  };
+
   // ── Abonnements en attente ─────────────────────────────────
   const [abonnementsEnAttente, setAbonnementsEnAttente] = useState([]);
   const [loadingAbo,           setLoadingAbo]           = useState(false);
@@ -693,6 +712,13 @@ export function GestionUsers() {
                             title={u.actif ? 'Désactiver' : 'Activer'}>
                             {u.actif ? <ToggleRight size={20} /> : <ToggleLeft size={20} />}
                           </button>
+                          {(u.role === 'eleve' || u.role === 'prof') && (
+                            <button onClick={() => setConfirmDelete(u)}
+                              className="p-1.5 rounded-lg transition-colors text-tate-terre/20 hover:text-alerte hover:bg-red-50"
+                              title="Supprimer définitivement">
+                              <Trash2 size={16} />
+                            </button>
+                          )}
                         </div>
                       </td>
                     </motion.tr>
@@ -814,6 +840,42 @@ export function GestionUsers() {
             onClose={() => setModalParent(null)}
             onLier={lierParent}
           />
+        )}
+      </AnimatePresence>
+
+      {/* Modal confirmation suppression */}
+      <AnimatePresence>
+        {confirmDelete && (
+          <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+               onClick={() => !loadingDelete && setConfirmDelete(null)}>
+            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={e => e.stopPropagation()}
+              className="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl">
+              <div className="text-center mb-5">
+                <div className="w-14 h-14 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-3">
+                  <Trash2 size={24} className="text-alerte" />
+                </div>
+                <h2 className="font-serif font-bold text-tate-terre text-lg">Supprimer ce compte ?</h2>
+                <p className="text-sm text-tate-terre/60 mt-1">
+                  Le compte de <strong>{confirmDelete.nom}</strong> ({confirmDelete.role}) sera définitivement supprimé. Cette action est irréversible.
+                </p>
+              </div>
+              <div className="flex gap-3">
+                <button onClick={() => setConfirmDelete(null)} disabled={loadingDelete}
+                  className="flex-1 py-3 rounded-2xl border-2 border-tate-border text-tate-terre font-semibold text-sm hover:bg-tate-doux transition-all disabled:opacity-50">
+                  Annuler
+                </button>
+                <button onClick={supprimerUser} disabled={loadingDelete}
+                  className="flex-1 py-3 rounded-2xl bg-alerte text-white font-bold text-sm hover:bg-red-600 transition-all disabled:opacity-60 flex items-center justify-center gap-2">
+                  {loadingDelete
+                    ? <><span className="animate-spin">⏳</span> Suppression…</>
+                    : <><Trash2 size={15} /> Supprimer</>
+                  }
+                </button>
+              </div>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
     </LayoutAdmin>

@@ -14,9 +14,29 @@ import toast from 'react-hot-toast';
 const API = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 const getToken = () => localStorage.getItem('accessToken');
 
-// ── Accès libre pour TOUS les élèves (pas de verrou)
-function verifierAcces(_user) {
-  return true; // Accès complet à toute la plateforme sans restriction
+// ── Vérifier si l'élève a accès à la plateforme
+function verifierAcces(user) {
+  if (!user) return false;
+  // Premium illimité (suivi domicile)
+  if (user.abonnement === 'premium' && !user.abonnementExpiry) return true;
+  // Premium avec date d'expiry
+  if (user.abonnement === 'premium' && user.abonnementExpiry) {
+    return new Date(user.abonnementExpiry) > new Date();
+  }
+  // Essai gratuit : 5 jours depuis la création du compte
+  if (user.createdAt) {
+    const msEcoules = Date.now() - new Date(user.createdAt).getTime();
+    const joursEcoules = msEcoules / (1000 * 60 * 60 * 24);
+    return joursEcoules <= 5;
+  }
+  return false;
+}
+
+// ── Jours restants dans l'essai gratuit
+function joursFreemiumRestants(user) {
+  if (!user?.createdAt) return 0;
+  const joursEcoules = (Date.now() - new Date(user.createdAt).getTime()) / (1000 * 60 * 60 * 24);
+  return Math.max(0, Math.ceil(5 - joursEcoules));
 }
 
 // ── Type de badge à afficher
@@ -337,6 +357,10 @@ const IFRAME_CSS = `
   [class*="meta-cours"], [class*="entete-cours"],
   [class*="header-cours"], [class*="chapitre-info"],
   [id*="info-cours"], [id*="course-info"], [id*="meta-cours"],
+  /* Signature, auteur, crédits générés par l'IA */
+  footer, .footer, .signature, .auteur, .author, .credits,
+  [class*="signature"], [class*="auteur"], [class*="footer"],
+  [class*="credits"], [class*="pied-de-page"], [class*="pied_de_page"],
   /* Div avec fond orange/ambre inline (pattern IA commun) */
   [style*="background: #FFF3E0"],
   [style*="background-color: #FFF3E0"],
@@ -346,6 +370,11 @@ const IFRAME_CSS = `
   [style*="background: orange"],
   [style*="background-color: orange"] {
     display: none !important;
+  }
+
+  /* Assurer que le dernier élément visible ne colle pas au bas */
+  body > *:last-child {
+    margin-bottom: 16px;
   }
 
   /* ══════════════════════════════════════
@@ -1403,41 +1432,90 @@ function splitCourseExercices(html) {
 // Phase 'exercices' : affiche uniquement les exercices + validation
 // ─────────────────────────────────────────────
 function PageCoursHTML() {
-  const { leconActive, chapitreActif, retourAccueil, soumettreScore } = useEleveStore();
-  const iframeRef = useRef(null);
+  const {
+    leconActive, chapitreActif, retourAccueil, soumettreScore,
+    exerciceState, sauvegarderEtatExercice, effacerEtatExercice,
+  } = useEleveStore();
+
+  const iframeCoursRef = useRef(null);
+  const iframeExoRef   = useRef(null);
   const groupesResultatRef = useRef(null); // stocke les résultats pour la correction
 
-  const [phaseHTML,      setPhaseHTML]      = useState('cours'); // 'cours' | 'exercices'
-  const [scoreOverlay,   setScoreOverlay]   = useState(null);
-  const [submitting,     setSubmitting]     = useState(false);
-  const [erreur,         setErreur]         = useState('');
-  const [aDesQCM,        setADesQCM]        = useState(null);
-  const [correctionMode, setCorrectionMode] = useState(false); // affiche la correction dans l'iframe
-
   // ── Scinder le HTML en cours + exercices ──────────────────────
-  // (hook appelé avant le early return pour respecter les règles des hooks)
   const { coursHTML, exercicesHTML, aExercices } = useMemo(
     () => splitCourseExercices(leconActive?.contenuHTML || ''),
     [leconActive?.contenuHTML]
   );
 
-  if (!leconActive || !chapitreActif) return null;
+  // Restaurer la phase depuis le store (persistance entre navigations)
+  const savedState = chapitreActif ? exerciceState[chapitreActif._id] : null;
 
-  // HTML affiché dans l'iframe selon la phase
-  const htmlAffiche = phaseHTML === 'cours' ? coursHTML : exercicesHTML;
+  const [phaseHTML,      setPhaseHTML]      = useState(savedState?.phase || 'cours');
+  const [scoreOverlay,   setScoreOverlay]   = useState(null);
+  const [submitting,     setSubmitting]     = useState(false);
+  const [erreur,         setErreur]         = useState('');
+  const [aDesQCM,        setADesQCM]        = useState(null);
+  const [correctionMode, setCorrectionMode] = useState(false);
 
-  const onIframeLoad = () => {
-    const iframe = iframeRef.current;
+  // ── Sauvegarder les réponses cochées dans le store ────────────
+  // (tous les hooks AVANT le early return)
+  const chapId = chapitreActif?._id;
+  const saveAnswersFromIframe = useCallback(() => {
+    const iframe = iframeExoRef.current;
     if (!iframe) return;
     const iDoc = iframe.contentDocument || iframe.contentWindow?.document;
     if (!iDoc) return;
+    const answers = {};
+    iDoc.querySelectorAll('input[type="radio"]:checked').forEach(r => {
+      if (r.name) answers[r.name] = r.value;
+    });
+    sauvegarderEtatExercice(chapId, 'exercices', answers);
+  }, [chapId, sauvegarderEtatExercice]);
+
+  // ── Restaurer les réponses sauvegardées dans l'iframe ────────
+  const savedAnswers = exerciceState[chapId]?.answers;
+  const restoreAnswers = useCallback((iDoc) => {
+    if (!savedAnswers || !iDoc) return;
+    Object.entries(savedAnswers).forEach(([name, value]) => {
+      try {
+        const radio = iDoc.querySelector(
+          `input[name="${CSS.escape(name)}"][value="${CSS.escape(value)}"]`
+        );
+        if (radio) radio.checked = true;
+      } catch (_) {}
+    });
+  }, [savedAnswers]);
+
+  // ── Chargement iframe cours ───────────────────────────────────
+  const onCoursLoad = useCallback(() => {
+    // Rien de spécial — le cours n'a pas de QCM
+  }, []);
+
+  // ── Chargement iframe exercices ───────────────────────────────
+  const onExoLoad = useCallback(() => {
+    const iframe = iframeExoRef.current;
+    if (!iframe) return;
+    const iDoc = iframe.contentDocument || iframe.contentWindow?.document;
+    if (!iDoc) return;
+
+    // Détecter si QCM existe
     const radios = iDoc.querySelectorAll('input[type="radio"][data-correct="true"]');
     setADesQCM(radios.length > 0);
-  };
+
+    // Restaurer les réponses sauvegardées
+    restoreAnswers(iDoc);
+
+    // Écouter les changements pour les sauvegarder
+    iDoc.querySelectorAll('input[type="radio"]').forEach(input => {
+      input.addEventListener('change', saveAnswersFromIframe);
+    });
+  }, [restoreAnswers, saveAnswersFromIframe]);
+
+  if (!leconActive || !chapitreActif) return null;
 
   const detecterEtValider = async () => {
     setErreur('');
-    const iframe = iframeRef.current;
+    const iframe = iframeExoRef.current;
     if (!iframe) return;
     const iDoc = iframe.contentDocument || iframe.contentWindow?.document;
     if (!iDoc) { setErreur("Impossible d'accéder au contenu."); return; }
@@ -1512,17 +1590,22 @@ function PageCoursHTML() {
     setCorrectionMode(false);
     groupesResultatRef.current = null;
     setPhaseHTML('cours'); // recommencer depuis le cours
-    const iframe = iframeRef.current;
-    if (!iframe) return;
-    const iDoc = iframe.contentDocument || iframe.contentWindow?.document;
-    if (!iDoc) return;
-    iDoc.querySelectorAll('input[type="radio"]').forEach(i => { i.checked = false; });
-    iframe.contentWindow?.scrollTo({ top: 0, behavior: 'smooth' });
+    // Effacer les réponses sauvegardées
+    effacerEtatExercice(chapitreActif._id);
+    // Réinitialiser les radios dans l'iframe exercices si elle est montée
+    const iframe = iframeExoRef.current;
+    if (iframe) {
+      const iDoc = iframe.contentDocument || iframe.contentWindow?.document;
+      if (iDoc) {
+        iDoc.querySelectorAll('input[type="radio"]').forEach(i => { i.checked = false; });
+        iframe.contentWindow?.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
   };
 
-  // Afficher la correction dans l'iframe (injecter les styles)
+  // Afficher la correction dans l'iframe exercices (injecter les styles)
   const afficherCorrectionIframe = () => {
-    const iframe = iframeRef.current;
+    const iframe = iframeExoRef.current;
     if (!iframe) return;
     const iDoc = iframe.contentDocument || iframe.contentWindow?.document;
     if (!iDoc) return;
@@ -1579,11 +1662,28 @@ function PageCoursHTML() {
     setPhaseHTML('exercices');
     setADesQCM(null);
     setErreur('');
+    // Sauvegarder la phase exercices (les réponses seront sauvegardées via les listeners)
+    const currentAnswers = exerciceState[chapitreActif._id]?.answers || {};
+    sauvegarderEtatExercice(chapitreActif._id, 'exercices', currentAnswers);
   };
 
   const revenirAuCours = () => {
     setPhaseHTML('cours');
     setErreur('');
+    // Capturer les réponses actuelles de l'iframe exercices avant de changer de phase
+    const iframe = iframeExoRef.current;
+    const answers = {};
+    if (iframe) {
+      try {
+        const iDoc = iframe.contentDocument || iframe.contentWindow?.document;
+        if (iDoc) {
+          iDoc.querySelectorAll('input[type="radio"]:checked').forEach(r => {
+            if (r.name) answers[r.name] = r.value;
+          });
+        }
+      } catch (_) {}
+    }
+    sauvegarderEtatExercice(chapitreActif._id, 'cours', answers);
   };
 
   /* Indicateur de phase */
@@ -1651,24 +1751,39 @@ function PageCoursHTML() {
         )}
       </div>
 
-      {/* ── Iframe plein écran ──────────────────────────────── */}
+      {/* ── Iframes plein écran — cours et exercices pré-chargés ── */}
+      {/* Iframe COURS — toujours montée, affichée/masquée selon la phase */}
       <iframe
-        key={phaseHTML}
-        ref={iframeRef}
-        srcDoc={IFRAME_CSS + htmlAffiche}
-        title={chapitreActif.titre}
-        onLoad={onIframeLoad}
+        ref={iframeCoursRef}
+        srcDoc={IFRAME_CSS + coursHTML}
+        title={`${chapitreActif.titre} — cours`}
+        onLoad={onCoursLoad}
         className="absolute border-none"
         style={{
-          top: 54,
-          left: 0,
-          right: 0,
+          top: 54, left: 0, right: 0,
           width: '100%',
           height: 'calc(100% - 54px - 68px)',
-          display: 'block',
+          display: phaseHTML === 'cours' ? 'block' : 'none',
         }}
         sandbox="allow-scripts allow-same-origin"
       />
+      {/* Iframe EXERCICES — montée une seule fois quand il y a des exercices */}
+      {aExercices && (
+        <iframe
+          ref={iframeExoRef}
+          srcDoc={IFRAME_CSS + exercicesHTML}
+          title={`${chapitreActif.titre} — exercices`}
+          onLoad={onExoLoad}
+          className="absolute border-none"
+          style={{
+            top: 54, left: 0, right: 0,
+            width: '100%',
+            height: 'calc(100% - 54px - 68px)',
+            display: phaseHTML === 'exercices' ? 'block' : 'none',
+          }}
+          sandbox="allow-scripts allow-same-origin"
+        />
+      )}
 
       {/* ── Barre du bas moderne ───────────────────────────── */}
       <div className="absolute bottom-0 left-0 right-0 z-10 px-4"
@@ -2137,36 +2252,41 @@ function FrancaisOnglets({ chapitres, isValide, matiere, onDemarrer }) {
 // ─────────────────────────────────────────────────────────────────
 function CarteMatiere({ matiere, nbChapitres, nbValides, onClick }) {
   const pct = nbChapitres > 0 ? Math.round((nbValides / nbChapitres) * 100) : 0;
+  const nbRestants = Math.max(0, nbChapitres - nbValides);
   return (
     <motion.button
-      whileTap={{ scale: 0.96 }}
+      whileTap={{ scale: 0.95 }}
       onClick={onClick}
-      className="w-full text-left bg-white rounded-3xl border-2 border-tate-border overflow-hidden shadow-card hover:shadow-tate transition-all hover:border-tate-soleil/40 active:scale-[0.97]">
-      {/* Bande couleur top */}
-      <div className={`h-1.5 w-full bg-gradient-to-r ${matiere.gradient}`} />
-      <div className="p-4">
-        <div className="flex items-center gap-3 mb-3">
-          <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${matiere.gradient} flex items-center justify-center text-2xl shadow-sm flex-shrink-0`}>
+      className="w-full text-left bg-white rounded-2xl border-2 border-tate-border overflow-hidden shadow-card hover:shadow-tate transition-all hover:border-tate-soleil/40 active:scale-[0.96]">
+      {/* Bande couleur fine */}
+      <div className={`h-1 w-full bg-gradient-to-r ${matiere.gradient}`} />
+      <div className="p-3">
+        {/* Ligne principale : icône + nom + % */}
+        <div className="flex items-center gap-2 mb-2">
+          <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${matiere.gradient} flex items-center justify-center text-lg shadow-sm flex-shrink-0`}>
             {matiere.icone}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="font-bold text-tate-terre text-base leading-tight">{matiere.nom}</p>
-            <p className="text-xs text-tate-terre/50 mt-0.5">{nbChapitres} chapitre{nbChapitres !== 1 ? 's' : ''}</p>
+            <p className="font-bold text-tate-terre text-sm leading-tight truncate">{matiere.nom}</p>
+            <p className="text-[10px] text-tate-terre/45 mt-0.5">
+              {nbChapitres > 0 ? `${nbChapitres} chap.` : '—'}
+            </p>
           </div>
-          <div className={`text-lg font-bold ${pct === 100 ? 'text-succes' : pct > 0 ? 'text-tate-soleil' : 'text-tate-terre/20'}`}>
+          <span className={`text-xs font-black flex-shrink-0 ${pct === 100 ? 'text-succes' : pct > 0 ? 'text-tate-soleil' : 'text-tate-terre/20'}`}>
             {pct === 100 ? '✅' : pct > 0 ? `${pct}%` : '→'}
-          </div>
+          </span>
         </div>
-        {/* Barre progression */}
-        <div className="h-2 bg-tate-doux rounded-full overflow-hidden">
+        {/* Barre progression fine */}
+        <div className="h-1.5 bg-tate-doux rounded-full overflow-hidden">
           <motion.div
             initial={{ width: 0 }} animate={{ width: `${pct}%` }}
             transition={{ duration: 0.7, ease: 'easeOut' }}
             className={`h-full rounded-full bg-gradient-to-r ${matiere.gradient}`} />
         </div>
-        <div className="flex justify-between text-[10px] text-tate-terre/40 mt-1.5">
-          <span>{nbValides} validé{nbValides !== 1 ? 's' : ''}</span>
-          <span>{nbChapitres - nbValides} restant{(nbChapitres - nbValides) !== 1 ? 's' : ''}</span>
+        {/* Compteurs compacts */}
+        <div className="flex justify-between text-[9px] text-tate-terre/40 mt-1 font-medium">
+          <span className="text-succes/80">{nbValides} ✓</span>
+          <span>{nbRestants > 0 ? `${nbRestants} restants` : 'Terminé !'}</span>
         </div>
       </div>
     </motion.button>
@@ -2309,6 +2429,7 @@ export function AccueilEleve() {
   const [progression,    setProgression]    = useState([]);
   const [showAllProg,    setShowAllProg]    = useState(false);
   const [devoirs,        setDevoirs]        = useState([]); // planning admin
+  const [allChapitres,   setAllChapitres]   = useState([]); // tous les chapitres du niveau
 
   useEffect(() => {
     const token = getToken();
@@ -2332,12 +2453,88 @@ export function AccueilEleve() {
       .catch(() => {});
   }, []);
 
+  // Charger tous les chapitres du niveau pour les stats par matière
+  useEffect(() => {
+    if (!user?.niveau) return;
+    const token = getToken();
+    if (!token) return;
+    axios.get(`${API}/chapitres?niveau=${encodeURIComponent(user.niveau)}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(({ data }) => setAllChapitres(data.data || []))
+      .catch(() => setAllChapitres([]));
+  }, [user?.niveau]);
+
+  // ── Calculs dérivés — AVANT le early return (règle des hooks) ──
+  const chapitresValides = user?.chapitresValides || [];
+
+  // Nombre de chapitres par matière (depuis allChapitres)
+  const nbChapitresParMat = useMemo(() => {
+    const map = {};
+    allChapitres.forEach(ch => {
+      const code = ch.matiereId?.code || ch.matiereCode;
+      if (code) map[code] = (map[code] || 0) + 1;
+    });
+    return map;
+  }, [allChapitres]);
+
+  // Nombre de chapitres validés par matière
+  const nbValidesParMat = useMemo(() => {
+    const map = {};
+    chapitresValides.forEach(cv => {
+      const chapId = cv.chapitreId?._id || cv.chapitreId;
+      const chap = allChapitres.find(ch => ch._id === chapId || ch._id === cv.chapitreId);
+      if (chap) {
+        const code = chap.matiereId?.code || chap.matiereCode;
+        if (code) map[code] = (map[code] || 0) + 1;
+      }
+    });
+    return map;
+  }, [allChapitres, chapitresValides]);
+
+  const handleSelectMatiere = useCallback((mat) => {
+    setMatiereActive(mat.id);
+    setErreurCours('');
+    chargerChapitres(user?.niveau, mat.code);
+  }, [chargerChapitres, user?.niveau]);
+
   if (leconActive) return <PageCours />;
 
   const aAcces = verifierAcces(user);
   const badge  = typeBadge(user);
 
-  const chapitresValides = user?.chapitresValides || [];
+  // ── Essai gratuit expiré → page bloquante ────────────────
+  if (!aAcces) {
+    return (
+      <LayoutEleve activeTab="cours">
+        <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }}
+          className="flex flex-col items-center justify-center py-12 text-center px-4">
+          <div className="w-20 h-20 rounded-3xl bg-amber-50 border-2 border-amber-200 flex items-center justify-center mb-5">
+            <span className="text-4xl">⏰</span>
+          </div>
+          <h2 className="font-serif font-bold text-tate-terre text-2xl mb-2">
+            {badge === 'expire' ? 'Abonnement expiré' : 'Essai gratuit terminé'}
+          </h2>
+          <p className="text-sm text-tate-terre/60 mb-6 leading-relaxed max-w-xs">
+            {badge === 'expire'
+              ? 'Votre abonnement premium a expiré. Renouvelez pour retrouver un accès complet à la plateforme.'
+              : 'Votre période d\'essai de 5 jours est écoulée. Abonnez-vous pour continuer à apprendre.'}
+          </p>
+          <button
+            onClick={() => setShowPaywall(true)}
+            className="btn-tate px-8 py-4 text-base font-bold rounded-2xl mb-3"
+            style={{ boxShadow: '0 6px 24px rgba(249,115,22,0.4)' }}>
+            ⭐ S'abonner — {PRIX_ABONNEMENT.toLocaleString('fr-FR')} FCFA/mois
+          </button>
+          <p className="text-xs text-tate-terre/40">Paiement Wave ou Orange Money</p>
+        </motion.div>
+        <AnimatePresence>
+          {showPaywall && <ModalAbonnement onClose={() => setShowPaywall(false)} motif="general" />}
+        </AnimatePresence>
+      </LayoutEleve>
+    );
+  }
+
   const isValide = (id) => chapitresValides.some(c => c.chapitreId === id || c.chapitreId?._id === id);
   const nbValidesMat  = chapitresValides.length;
 
@@ -2347,12 +2544,6 @@ export function AccueilEleve() {
   ).length;
 
   const afficherSectionsFr = matiereActive === 'FR';
-
-  const handleSelectMatiere = useCallback((mat) => {
-    setMatiereActive(mat.id);
-    setErreurCours('');
-    chargerChapitres(user?.niveau, mat.code);
-  }, [chargerChapitres, user?.niveau]);
 
   const handleDemarrer = async (chap) => {
     if (!aAcces) {
@@ -2441,11 +2632,19 @@ export function AccueilEleve() {
                 {badge === 'abonne' && (
                   <span className="text-xs bg-succes/10 text-succes font-semibold px-2 py-0.5 rounded-full border border-succes/20">⭐ Premium</span>
                 )}
-                {(badge === 'aucun' || badge === 'expire') && (
-                  <span className="text-xs bg-tate-doux text-tate-terre/60 font-medium px-2 py-0.5 rounded-full">
-                    {badge === 'expire' ? '⚠️ Abonnement expiré' : 'Compte gratuit'}
+                {badge === 'expire' && (
+                  <span className="text-xs bg-red-50 text-alerte font-semibold px-2 py-0.5 rounded-full border border-alerte/20">
+                    ⚠️ Abonnement expiré
                   </span>
                 )}
+                {badge === 'aucun' && (() => {
+                  const j = joursFreemiumRestants(user);
+                  return j > 0 ? (
+                    <span className="text-xs bg-blue-50 text-blue-700 font-semibold px-2 py-0.5 rounded-full border border-blue-200">
+                      ⏰ {j}j restant{j > 1 ? 's' : ''}
+                    </span>
+                  ) : null;
+                })()}
               </div>
             </div>
 
@@ -2599,8 +2798,43 @@ export function AccueilEleve() {
               </div>
             )}
 
-            {/* Bannière premium si pas d'accès */}
-            {!aAcces && (
+            {/* ── Bannière selon le statut d'accès ── */}
+            {(badge === 'domicile' || badge === 'abonne') ? (
+              /* Premium actif → bannière verte */
+              <motion.div initial={{ opacity:0, y:-4 }} animate={{ opacity:1, y:0 }}
+                className="mb-5 rounded-2xl border-2 border-emerald-200 bg-gradient-to-r from-emerald-50 to-green-50 px-4 py-3 flex items-center gap-3 shadow-sm">
+                <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                  <span className="text-xl">⭐</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-bold text-emerald-800 text-sm">Accès Premium actif</p>
+                  <p className="text-xs text-emerald-700/70 mt-0.5 truncate">
+                    {badge === 'domicile'
+                      ? 'Suivi à domicile — accès illimité à toute la plateforme'
+                      : `Abonnement valide jusqu'au ${new Date(user.abonnementExpiry).toLocaleDateString('fr-FR')}`}
+                  </p>
+                </div>
+              </motion.div>
+            ) : aAcces ? (
+              /* Essai gratuit en cours → compteur */
+              <motion.div initial={{ opacity:0, y:-4 }} animate={{ opacity:1, y:0 }}
+                className="mb-5 rounded-2xl border-2 border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50 px-4 py-3 flex items-center gap-3 shadow-sm">
+                <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0">
+                  <span className="text-xl">⏰</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-bold text-blue-800 text-sm">
+                    Essai gratuit — {joursFreemiumRestants(user)} jour{joursFreemiumRestants(user) > 1 ? 's' : ''} restant{joursFreemiumRestants(user) > 1 ? 's' : ''}
+                  </p>
+                  <p className="text-xs text-blue-700/60 mt-0.5">Abonnez-vous pour conserver votre accès</p>
+                </div>
+                <button onClick={() => { setMotifPaywall('general'); setShowPaywall(true); }}
+                  className="bg-blue-700 text-white text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-blue-800 transition-all whitespace-nowrap flex-shrink-0">
+                  S'abonner
+                </button>
+              </motion.div>
+            ) : (
+              /* Accès expiré → CTA s'abonner */
               <motion.div initial={{ opacity:0, y:-4 }} animate={{ opacity:1, y:0 }}
                 className="mb-5 rounded-2xl overflow-hidden border-2 border-amber-300 shadow-sm">
                 <div className="bg-gradient-to-r from-tate-soleil to-amber-400 px-4 py-3 flex items-center justify-between gap-3">
@@ -2609,7 +2843,7 @@ export function AccueilEleve() {
                       {badge === 'expire' ? '⚠️ Abonnement expiré' : '⭐ Accès complet à Taté'}
                     </p>
                     <p className="text-xs text-tate-terre/70 mt-0.5">
-                      {PRIX_ABONNEMENT.toLocaleString('fr-FR')} FCFA/mois · Tous niveaux · BFEM & BAC
+                      {PRIX_ABONNEMENT.toLocaleString('fr-FR')} FCFA/mois · Tous niveaux
                     </p>
                   </div>
                   <button onClick={() => { setMotifPaywall('general'); setShowPaywall(true); }}
@@ -2633,30 +2867,44 @@ export function AccueilEleve() {
                 <CarteMatiere
                   key={mat.id}
                   matiere={mat}
-                  nbChapitres={0}
-                  nbValides={0}
+                  nbChapitres={nbChapitresParMat[mat.code] || 0}
+                  nbValides={nbValidesParMat[mat.code] || 0}
                   onClick={() => handleSelectMatiere(mat)}
                 />
               ))}
             </div>
 
-            {/* BFEM ou BAC */}
-            {(user?.niveau === '3eme' || user?.niveau === 'Terminale') && (
+            {/* Bouton examen officiel selon le niveau (CM2→CFEE, 3ème→BFEM, Terminale→BAC) */}
+            {(user?.niveau === 'CM2' || user?.niveau === '3eme' || user?.niveau === 'Terminale') && (
               <button onClick={() => navigate('/eleve/epreuves')}
-                className={`w-full mb-4 rounded-2xl overflow-hidden border-2 transition-all hover:shadow-md group
-                  ${user.niveau === '3eme' ? 'border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50 hover:border-blue-400' : 'border-purple-200 bg-gradient-to-r from-purple-50 to-pink-50 hover:border-purple-400'}`}>
+                className={`w-full mb-4 rounded-2xl overflow-hidden border-2 transition-all hover:shadow-md group ${
+                  user.niveau === 'CM2'      ? 'border-green-200  bg-gradient-to-r from-green-50  to-emerald-50 hover:border-green-400'  :
+                  user.niveau === '3eme'     ? 'border-blue-200   bg-gradient-to-r from-blue-50   to-indigo-50  hover:border-blue-400'   :
+                                               'border-purple-200 bg-gradient-to-r from-purple-50 to-pink-50    hover:border-purple-400'
+                }`}>
                 <div className="px-4 py-3.5 flex items-center gap-3">
-                  <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0
-                    ${user.niveau === '3eme' ? 'bg-blue-100 group-hover:bg-blue-200' : 'bg-purple-100 group-hover:bg-purple-200'} transition-all`}>
-                    <GraduationCap size={20} className={user.niveau === '3eme' ? 'text-blue-700' : 'text-purple-700'} />
+                  <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 transition-all ${
+                    user.niveau === 'CM2'  ? 'bg-green-100  group-hover:bg-green-200'  :
+                    user.niveau === '3eme' ? 'bg-blue-100   group-hover:bg-blue-200'   :
+                                             'bg-purple-100 group-hover:bg-purple-200'
+                  }`}>
+                    <GraduationCap size={20} className={
+                      user.niveau === 'CM2'  ? 'text-green-700'  :
+                      user.niveau === '3eme' ? 'text-blue-700'   :
+                                               'text-purple-700'
+                    } />
                   </div>
                   <div className="text-left flex-1">
                     <p className="text-sm font-bold text-tate-terre">
-                      {user.niveau === '3eme' ? 'Épreuves BFEM 🎓' : 'Épreuves BAC 🎓'}
+                      {user.niveau === 'CM2' ? 'Épreuves CFEE 🎓' : user.niveau === '3eme' ? 'Épreuves BFEM 🎓' : 'Épreuves BAC 🎓'}
                     </p>
                     <p className="text-xs text-tate-terre/50 mt-0.5">Sujets officiels · Corrigés détaillés</p>
                   </div>
-                  <ChevronRight size={16} className={user.niveau === '3eme' ? 'text-blue-400' : 'text-purple-400'} />
+                  <ChevronRight size={16} className={
+                    user.niveau === 'CM2'  ? 'text-green-400'  :
+                    user.niveau === '3eme' ? 'text-blue-400'   :
+                                             'text-purple-400'
+                  } />
                 </div>
               </button>
             )}

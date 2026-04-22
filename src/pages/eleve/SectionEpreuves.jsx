@@ -264,18 +264,22 @@ export function SectionEpreuves() {
   const [epreuveActive,  setEpreuveActive]  = useState(null);
 
   const estPremium = user?.abonnement === 'premium'
-    && user?.abonnementExpiry
-    && new Date(user.abonnementExpiry) > new Date();
+    && (!user?.abonnementExpiry || new Date(user.abonnementExpiry) > new Date());
 
-  const typeExamen = user?.niveau === 'Terminale' ? 'BAC' : 'BFEM';
+  // Examen officiel selon le niveau
+  const typeExamen = user?.niveau === 'Terminale' ? 'BAC'
+                   : user?.niveau === 'CM2'       ? 'CFEE'
+                   :                                'BFEM';
 
   useEffect(() => {
     const charger = async () => {
       setLoading(true);
       try {
         const params = new URLSearchParams();
+        // Filtrer par type selon le niveau de l'élève
         if (user?.niveau === '3eme')      params.set('type', 'BFEM');
         if (user?.niveau === 'Terminale') params.set('type', 'BAC');
+        if (user?.niveau === 'CM2')       params.set('type', 'CFEE');
         const { data } = await axios.get(`${API}/epreuves?${params}`,
           { headers: { Authorization: `Bearer ${getToken()}` } });
         setEpreuves(data.data || []);
@@ -324,7 +328,14 @@ export function SectionEpreuves() {
           </div>
         </div>
 
-        {!estPremium && (
+        {estPremium ? (
+          <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-3 mt-3 flex items-center gap-3">
+            <span className="text-base flex-shrink-0">⭐</span>
+            <p className="text-xs text-emerald-800 font-medium">
+              <strong>Accès Premium actif</strong> — sujets et corrections détaillées disponibles.
+            </p>
+          </div>
+        ) : (
           <div className="bg-amber-50 border border-tate-soleil/50 rounded-2xl p-3 mt-3 flex items-center gap-3">
             <Lock size={16} className="text-tate-soleil flex-shrink-0" />
             <p className="text-xs text-tate-terre/70">
@@ -334,14 +345,14 @@ export function SectionEpreuves() {
         )}
       </div>
 
-      {/* Filtres */}
+      {/* Filtres — n'afficher que le type pertinent pour ce niveau */}
       <div className="flex gap-2 mb-4 flex-wrap">
-        {['tous','BFEM','BAC'].map(t => (
+        {['tous', typeExamen].map(t => (
           <button key={t} onClick={() => setFiltreType(t)}
             className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
               filtreType === t ? 'bg-tate-soleil text-tate-terre shadow-tate' : 'bg-white border border-tate-border text-tate-terre/60'
             }`}>
-            {t === 'tous' ? 'Tout' : t}
+            {t === 'tous' ? 'Toutes' : t}
           </button>
         ))}
         <select
