@@ -361,7 +361,7 @@ const IFRAME_CSS = `
   footer, .footer, .signature, .auteur, .author, .credits,
   [class*="signature"], [class*="auteur"], [class*="footer"],
   [class*="credits"], [class*="pied-de-page"], [class*="pied_de_page"],
-  /* Div avec fond orange/ambre inline (pattern IA commun) */
+  /* Div avec fond ambre clair inline (pattern IA commun) */
   [style*="background: #FFF3E0"],
   [style*="background-color: #FFF3E0"],
   [style*="background: #FFFBF0"],
@@ -372,9 +372,35 @@ const IFRAME_CSS = `
     display: none !important;
   }
 
+  /* ══════════════════════════════════════
+     ESPACEMENT — blocs de fin de cours à fond orange vif (badge matière)
+     L'IA génère souvent un encadré de résumé avec background #F97316 ou similaire
+     → on l'affiche mais avec une marge suffisante au-dessus
+  ══════════════════════════════════════ */
+  [style*="background: #F97316"],
+  [style*="background-color: #F97316"],
+  [style*="background: #EA580C"],
+  [style*="background-color: #EA580C"],
+  [style*="background: #F59E0B"],
+  [style*="background-color: #F59E0B"],
+  [style*="background: rgb(249"],
+  [style*="background: rgba(249"],
+  [style*="background-color: rgb(249"],
+  [style*="background-color: rgba(249"] {
+    margin-top: 40px !important;
+    border-radius: 18px !important;
+  }
+
   /* Assurer que le dernier élément visible ne colle pas au bas */
   body > *:last-child {
-    margin-bottom: 16px;
+    margin-bottom: 24px;
+  }
+
+  /* Espacement entre les cartes/exemples et l'élément suivant */
+  .card, .exemple, .exemple-card, .encadre, .encadré,
+  [class*="card"], [class*="exemple"], [class*="encadre"],
+  [class*="box"], [class*="bloc"] {
+    margin-bottom: 20px !important;
   }
 
   /* ══════════════════════════════════════
@@ -2420,7 +2446,10 @@ function VueChapitresFr({ matiere, chapitres, isValide, nbValides, chargement, o
 export function AccueilEleve() {
   const { user, rafraichirUser } = useAuthStore();
   const navigate = useNavigate();
-  const { chapitres, chargerChapitres, ouvrirChapitre, leconActive, chargement } = useEleveStore();
+  const {
+    chapitres, chargerChapitres, ouvrirChapitre, leconActive, chargement,
+    matiereRetour, setMatiereRetour, clearMatiereRetour,
+  } = useEleveStore();
 
   const [matiereActive,  setMatiereActive]  = useState(null);
   const [showPaywall,    setShowPaywall]    = useState(false);
@@ -2498,6 +2527,21 @@ export function AccueilEleve() {
     chargerChapitres(user?.niveau, mat.code);
   }, [chargerChapitres, user?.niveau]);
 
+  // ── Restaurer la matière quand on revient d'un chapitre ──
+  const hadLeconRef = useRef(false);
+  useEffect(() => {
+    if (leconActive) {
+      hadLeconRef.current = true;
+    } else if (hadLeconRef.current) {
+      hadLeconRef.current = false;
+      // Si matiereActive a été perdu, le restaurer depuis le store
+      if (matiereRetour) {
+        setMatiereActive(matiereRetour);
+        clearMatiereRetour();
+      }
+    }
+  }, [leconActive, matiereRetour, clearMatiereRetour]);
+
   if (leconActive) return <PageCours />;
 
   const aAcces = verifierAcces(user);
@@ -2552,6 +2596,8 @@ export function AccueilEleve() {
       return;
     }
     setErreurCours('');
+    // Sauvegarder la matière courante pour pouvoir y revenir après le chapitre
+    if (matiereActive) setMatiereRetour(matiereActive);
     try {
       await ouvrirChapitre(chap);
     } catch (e) {
@@ -2679,12 +2725,15 @@ export function AccueilEleve() {
                         <button
                           onClick={() => {
                             if (d.chapitreId) {
-                              // Si aucune matière active, la définir depuis le devoir
-                              // pour que le bouton retour ramène à la liste des chapitres
                               const mCode = d.chapitreId.matiereId?.code;
-                              if (mCode && !matiereActive) {
-                                setMatiereActive(mCode);
-                                chargerChapitres(user?.niveau, mCode);
+                              // Définir la matière depuis le devoir si pas déjà définie
+                              if (mCode) {
+                                if (!matiereActive) {
+                                  setMatiereActive(mCode);
+                                  chargerChapitres(user?.niveau, mCode);
+                                }
+                                // Toujours sauvegarder le code matière pour le retour
+                                setMatiereRetour(mCode);
                               }
                               handleDemarrer(d.chapitreId);
                             }

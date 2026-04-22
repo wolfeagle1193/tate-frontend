@@ -10,6 +10,8 @@ export const useEleveStore = create((set, get) => ({
   chapitreActif: null,
   leconActive:  null,
   chargement:   false,
+  // ── Code matière à restaurer quand on revient d'un chapitre ──
+  matiereRetour: null,
 
   // ── Persistance de l'état exercice (réponses cochées) ────────
   exerciceState: {}, // { [chapitreId]: { phase: 'cours'|'exercices', answers: {[name]: value} } }
@@ -88,6 +90,10 @@ export const useEleveStore = create((set, get) => ({
 
     return data.data;
   },
+
+  // ── Sauvegarder la matière active pour le retour ─────────
+  setMatiereRetour: (code) => set({ matiereRetour: code }),
+  clearMatiereRetour: () => set({ matiereRetour: null }),
 
   // ── Retourner à la liste ──────────────────────────────────
   retourAccueil: () => {
