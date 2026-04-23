@@ -114,8 +114,89 @@ function ModalDetailEleve({ eleve, onClose }) {
   const [chapSelected, setChapSelected] = useState('');
   const [planSubmitting, setPlanSubmitting] = useState(false);
 
-  const tauxMaitrise = eleve.totalSessions > 0
-    ? Math.round((eleve.maitrises / eleve.totalSessions) * 100)
+  // ── Stats fraîches chargées à l'ouverture du modal ───────────
+  const [liveStats, setLiveStats] = useState({
+    totalSessions:        eleve.totalSessions        || 0,
+    maitrises:            eleve.maitrises            || 0,
+    scoreMoyen:           eleve.scoreMoyen           ?? null,
+    sessions:             eleve.sessions             || [],
+    chapitresEnDifficulte: eleve.chapitresEnDifficulte || [],
+    chapitresMaitrises:   eleve.chapitresMaitrises   || [],
+    dernierAt:            eleve.dernierAt            || null,
+  });
+  const [refreshingStats, setRefreshingStats] = useState(true);
+
+  // Charger les données fraîches depuis l'API dès l'ouverture
+  useEffect(() => {
+    const fetchFreshStats = async () => {
+      setRefreshingStats(true);
+      try {
+        const { data } = await axios.get(
+          `${API}/resultats/eleve/${eleve._id}`,
+          { headers: hdrs() }
+        );
+        const resultats = data.data || [];
+        const totalSessions = resultats.length;
+        const maitrises = resultats.filter(r => r.maitrise).length;
+        const scoreMoyen = totalSessions > 0
+          ? Math.round(resultats.reduce((acc, r) => acc + r.score, 0) / totalSessions)
+          : null;
+
+        const sessions = resultats.slice(0, 30).map(r => ({
+          chapitreTitre:  r.chapitreId?.titre  || 'Chapitre',
+          chapitreNiveau: r.chapitreId?.niveau || '—',
+          scorePct:       r.score,
+          maitrise:       r.maitrise,
+          completedAt:    r.completedAt,
+        }));
+
+        // Calculer chapitres en difficulté et maîtrisés
+        const chapStats = {};
+        resultats.forEach(r => {
+          const cid = (r.chapitreId?._id || r.chapitreId)?.toString();
+          if (!cid) return;
+          if (!chapStats[cid]) {
+            chapStats[cid] = {
+              titre:   r.chapitreId?.titre  || 'Chapitre',
+              niveau:  r.chapitreId?.niveau || '—',
+              scores:  [],
+              maitrise: false,
+            };
+          }
+          chapStats[cid].scores.push(r.score);
+          if (r.maitrise) chapStats[cid].maitrise = true;
+        });
+
+        const chapitresEnDifficulte = Object.values(chapStats)
+          .filter(c => !c.maitrise && c.scores.length > 0)
+          .map(c => ({ ...c, moyennePct: Math.round(c.scores.reduce((a,b)=>a+b,0)/c.scores.length) }))
+          .sort((a, b) => a.moyennePct - b.moyennePct)
+          .slice(0, 5);
+
+        const chapitresMaitrises = Object.values(chapStats)
+          .filter(c => c.maitrise)
+          .map(c => ({ titre: c.titre, niveau: c.niveau }));
+
+        setLiveStats({
+          totalSessions,
+          maitrises,
+          scoreMoyen,
+          sessions,
+          chapitresEnDifficulte,
+          chapitresMaitrises,
+          dernierAt: resultats[0]?.completedAt || eleve.dernierAt || null,
+        });
+      } catch {
+        // Silencieux : on garde les données initiales du parent
+      } finally {
+        setRefreshingStats(false);
+      }
+    };
+    fetchFreshStats();
+  }, [eleve._id]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const tauxMaitrise = liveStats.totalSessions > 0
+    ? Math.round((liveStats.maitrises / liveStats.totalSessions) * 100)
     : 0;
 
   const chargerProgression = useCallback(async () => {
@@ -228,9 +309,9 @@ function ModalDetailEleve({ eleve, onClose }) {
           {/* Métriques clés */}
           <div className="grid grid-cols-3 gap-3 mt-4">
             {[
-              { label: 'Sessions', value: eleve.totalSessions, icon: BookOpen, color: 'text-savoir' },
-              { label: 'Maîtrisés', value: eleve.maitrises, icon: CheckCircle, color: 'text-succes' },
-              { label: 'Score moy.', value: eleve.scoreMoyen !== null ? `${eleve.scoreMoyen}%` : '—', icon: Target, color: couleurScore(eleve.scoreMoyen) },
+              { label: 'Sessions',   value: refreshingStats ? '…' : liveStats.totalSessions,                                         icon: BookOpen,   color: 'text-savoir' },
+              { label: 'Maîtrisés', value: refreshingStats ? '…' : liveStats.maitrises,                                              icon: CheckCircle, color: 'text-succes' },
+              { label: 'Score moy.', value: refreshingStats ? '…' : (liveStats.scoreMoyen !== null ? `${liveStats.scoreMoyen}%` : '—'), icon: Target,     color: couleurScore(liveStats.scoreMoyen) },
             ].map(({ label, value, icon: Icon, color }) => (
               <div key={label} className="bg-white rounded-2xl p-3 text-center shadow-card">
                 <Icon size={16} className={`mx-auto mb-1 ${color}`} />
@@ -266,7 +347,7 @@ function ModalDetailEleve({ eleve, onClose }) {
           {onglet === 'apercu' && <>
 
           {/* Taux de maîtrise */}
-          {eleve.totalSessions > 0 && (
+          {liveStats.totalSessions > 0 && (
             <div>
               <div className="flex items-center justify-between mb-2">
                 <p className="text-xs font-bold text-tate-terre/60 uppercase tracking-wide">Taux de maîtrise</p>
@@ -274,19 +355,19 @@ function ModalDetailEleve({ eleve, onClose }) {
               </div>
               <Barre pct={tauxMaitrise} color={tauxMaitrise >= 70 ? 'bg-succes' : tauxMaitrise >= 50 ? 'bg-amber-400' : 'bg-alerte'} />
               <p className="text-xs text-tate-terre/40 mt-1">
-                {eleve.maitrises} chapitre{eleve.maitrises > 1 ? 's' : ''} maîtrisé{eleve.maitrises > 1 ? 's' : ''} sur {eleve.totalSessions} tentative{eleve.totalSessions > 1 ? 's' : ''}
+                {liveStats.maitrises} chapitre{liveStats.maitrises > 1 ? 's' : ''} maîtrisé{liveStats.maitrises > 1 ? 's' : ''} sur {liveStats.totalSessions} tentative{liveStats.totalSessions > 1 ? 's' : ''}
               </p>
             </div>
           )}
 
           {/* Historique graphique */}
-          {eleve.sessions?.length > 0 && (
+          {liveStats.sessions?.length > 0 && (
             <div>
               <p className="text-xs font-bold text-tate-terre/60 uppercase tracking-wide mb-2">
                 Évolution des scores (12 dernières sessions)
               </p>
               <div className="bg-tate-creme rounded-2xl p-3">
-                <GrapheScores sessions={eleve.sessions} />
+                <GrapheScores sessions={liveStats.sessions} />
                 <div className="flex items-center gap-4 mt-2 justify-center">
                   <span className="flex items-center gap-1 text-xs text-tate-terre/50">
                     <span className="w-3 h-2 rounded bg-succes inline-block" /> ≥ 80%
@@ -303,16 +384,16 @@ function ModalDetailEleve({ eleve, onClose }) {
           )}
 
           {/* Chapitres en difficulté */}
-          {eleve.chapitresEnDifficulte?.length > 0 && (
+          {liveStats.chapitresEnDifficulte?.length > 0 && (
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <AlertTriangle size={14} className="text-alerte" />
                 <p className="text-xs font-bold text-alerte uppercase tracking-wide">
-                  Chapitres en difficulté ({eleve.chapitresEnDifficulte.length})
+                  Chapitres en difficulté ({liveStats.chapitresEnDifficulte.length})
                 </p>
               </div>
               <div className="space-y-2">
-                {eleve.chapitresEnDifficulte.map((c, i) => (
+                {liveStats.chapitresEnDifficulte.map((c, i) => (
                   <div key={i} className={`rounded-xl border p-3 flex items-center gap-3 ${bgScore(c.moyennePct)}`}>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold text-tate-terre truncate">{c.titre}</p>
@@ -328,16 +409,16 @@ function ModalDetailEleve({ eleve, onClose }) {
           )}
 
           {/* Chapitres maîtrisés */}
-          {eleve.chapitresMaitrises?.length > 0 && (
+          {liveStats.chapitresMaitrises?.length > 0 && (
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <CheckCircle size={14} className="text-succes" />
                 <p className="text-xs font-bold text-succes uppercase tracking-wide">
-                  Chapitres maîtrisés ({eleve.chapitresMaitrises.length})
+                  Chapitres maîtrisés ({liveStats.chapitresMaitrises.length})
                 </p>
               </div>
               <div className="flex flex-wrap gap-2">
-                {eleve.chapitresMaitrises.map((c, i) => (
+                {liveStats.chapitresMaitrises.map((c, i) => (
                   <span key={i} className="bg-green-50 border border-green-200 text-green-700 text-xs font-medium px-2.5 py-1 rounded-full">
                     ✓ {c.titre}
                   </span>
@@ -347,13 +428,13 @@ function ModalDetailEleve({ eleve, onClose }) {
           )}
 
           {/* Historique sessions récentes */}
-          {eleve.sessions?.length > 0 && (
+          {liveStats.sessions?.length > 0 && (
             <div>
               <p className="text-xs font-bold text-tate-terre/60 uppercase tracking-wide mb-3">
                 Dernières sessions
               </p>
               <div className="space-y-2">
-                {eleve.sessions.slice(0, 10).map((s, i) => (
+                {liveStats.sessions.slice(0, 10).map((s, i) => (
                   <div key={i} className="flex items-center gap-3 py-2 border-b border-tate-border/40 last:border-0">
                     <div className={`w-2 h-2 rounded-full flex-shrink-0 ${s.maitrise ? 'bg-succes' : 'bg-alerte'}`} />
                     <div className="flex-1 min-w-0">
@@ -370,10 +451,17 @@ function ModalDetailEleve({ eleve, onClose }) {
             </div>
           )}
 
-          {eleve.totalSessions === 0 && (
+          {/* Message "aucun exercice" seulement si les stats sont chargées et vraiment vides */}
+          {!refreshingStats && liveStats.totalSessions === 0 && (
             <div className="text-center py-8">
               <p className="text-4xl mb-2">📚</p>
               <p className="text-sm text-tate-terre/50">Cet élève n'a pas encore fait d'exercices</p>
+            </div>
+          )}
+          {refreshingStats && (
+            <div className="flex items-center justify-center py-6 gap-2">
+              <div className="w-5 h-5 rounded-full border-2 border-tate-soleil border-t-transparent animate-spin" />
+              <p className="text-xs text-tate-terre/40">Chargement des statistiques…</p>
             </div>
           )}
 
@@ -381,8 +469,8 @@ function ModalDetailEleve({ eleve, onClose }) {
           <div className="bg-tate-creme rounded-2xl p-3 space-y-1.5">
             <p className="text-xs font-bold text-tate-terre/40 uppercase tracking-wide mb-2">Infos compte</p>
             <p className="text-xs text-tate-terre/60">📧 {eleve.email}</p>
-            {eleve.totalSessions > 0 && eleve.dernierAt && (
-              <p className="text-xs text-tate-terre/60">🕐 Dernier exercice : {dateLongFr(eleve.dernierAt)}</p>
+            {liveStats.totalSessions > 0 && liveStats.dernierAt && (
+              <p className="text-xs text-tate-terre/60">🕐 Dernier exercice : {dateLongFr(liveStats.dernierAt)}</p>
             )}
             {eleve.derniereConnexion && (
               <p className="text-xs text-tate-terre/60">🔗 Dernière connexion : {dateLongFr(eleve.derniereConnexion)}</p>

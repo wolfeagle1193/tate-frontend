@@ -2451,7 +2451,9 @@ export function AccueilEleve() {
     matiereRetour, setMatiereRetour, clearMatiereRetour,
   } = useEleveStore();
 
-  const [matiereActive,  setMatiereActive]  = useState(null);
+  // Initialiser la matière depuis le store : si on revient d'un chapitre,
+  // matiereRetour est défini dans le store Zustand (persisté même après démontage du composant)
+  const [matiereActive,  setMatiereActive]  = useState(() => useEleveStore.getState().matiereRetour || null);
   const [showPaywall,    setShowPaywall]    = useState(false);
   const [motifPaywall,   setMotifPaywall]   = useState('general');
   const [erreurCours,    setErreurCours]    = useState('');
@@ -2463,6 +2465,16 @@ export function AccueilEleve() {
   useEffect(() => {
     const token = getToken();
     if (!token) return;
+
+    // Si on revient d'un chapitre : nettoyer matiereRetour et recharger les chapitres
+    const storedMatiereRetour = useEleveStore.getState().matiereRetour;
+    if (storedMatiereRetour) {
+      clearMatiereRetour();
+      // Recharger les chapitres pour s'assurer que la liste est à jour
+      if (user?.niveau) {
+        chargerChapitres(user.niveau, storedMatiereRetour);
+      }
+    }
 
     // Rafraîchir le profil complet (chapitresValides à jour)
     rafraichirUser().catch(() => {});
@@ -2528,19 +2540,9 @@ export function AccueilEleve() {
   }, [chargerChapitres, user?.niveau]);
 
   // ── Restaurer la matière quand on revient d'un chapitre ──
-  const hadLeconRef = useRef(false);
-  useEffect(() => {
-    if (leconActive) {
-      hadLeconRef.current = true;
-    } else if (hadLeconRef.current) {
-      hadLeconRef.current = false;
-      // Si matiereActive a été perdu, le restaurer depuis le store
-      if (matiereRetour) {
-        setMatiereActive(matiereRetour);
-        clearMatiereRetour();
-      }
-    }
-  }, [leconActive, matiereRetour, clearMatiereRetour]);
+  // Note : AccueilEleve est démonté par RouterEleve (App.jsx) quand un chapitre est ouvert.
+  // La restauration de matiereActive se fait via l'initialisation du useState ci-dessus
+  // et le useEffect de montage — pas besoin de surveiller leconActive ici.
 
   if (leconActive) return <PageCours />;
 
