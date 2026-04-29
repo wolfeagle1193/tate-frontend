@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Users, GraduationCap, BookOpen, TrendingUp,
   CheckCircle, Calendar, Award, Globe2,
-  RefreshCw, ChevronUp, ChevronDown, Minus,
+  RefreshCw, ChevronUp, ChevronDown, Minus, BarChart2,
 } from 'lucide-react';
 import { LayoutAdmin } from './LayoutAdmin';
 import axios from 'axios';
@@ -171,6 +171,71 @@ function DonutChart({ segments, size = 120, strokeWidth = 18, children }) {
       <div className="absolute inset-0 flex items-center justify-center">
         {children}
       </div>
+    </div>
+  );
+}
+
+// ── Graphique par matière ─────────────────────────────────────
+const COULEURS_MATIERE = {
+  FR: '#F97316', MA: '#3B82F6', AN: '#10B981',
+  HI: '#8B5CF6', GE: '#14B8A6', SC: '#EC4899',
+  PC: '#F59E0B', SVT:'#22C55E', PH: '#6366F1',
+};
+
+function GraphiqueMatiere({ data }) {
+  if (!data || data.length === 0) {
+    return <p className="text-sm text-tate-terre/40 text-center py-8">Aucune session enregistrée</p>;
+  }
+  const maxVal = Math.max(...data.map(d => d.total), 1);
+
+  return (
+    <div className="space-y-3 mt-2">
+      {data.map((mat, i) => {
+        const pct      = Math.round((mat.total / maxVal) * 100);
+        const reussite = mat.total > 0 ? Math.round((mat.maitrises / mat.total) * 100) : 0;
+        const couleur  = COULEURS_MATIERE[mat.code] || '#9CA3AF';
+        return (
+          <div key={i}>
+            <div className="flex justify-between text-xs mb-1">
+              <span className="font-semibold text-tate-terre flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: couleur }} />
+                {mat._id || '—'}
+              </span>
+              <span className="text-tate-terre/50">
+                {mat.total} sessions &nbsp;·&nbsp;
+                <span className={reussite >= 70 ? 'text-succes font-semibold' : reussite >= 50 ? 'text-amber-600' : 'text-alerte'}>
+                  {reussite}% réussite
+                </span>
+              </span>
+            </div>
+            {/* Barre double : total + maîtrisées */}
+            <div className="relative h-5 bg-tate-doux rounded-lg overflow-hidden">
+              {/* Barre totale */}
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${pct}%` }}
+                transition={{ duration: 0.7, delay: i * 0.07, ease: 'easeOut' }}
+                className="absolute inset-y-0 left-0 rounded-lg opacity-30"
+                style={{ background: couleur }}
+              />
+              {/* Barre maîtrisées */}
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${Math.round((mat.maitrises / maxVal) * 100)}%` }}
+                transition={{ duration: 0.7, delay: i * 0.07 + 0.2, ease: 'easeOut' }}
+                className="absolute inset-y-0 left-0 rounded-lg"
+                style={{ background: couleur }}
+              />
+              {/* Valeur */}
+              <div className="absolute inset-0 flex items-center px-2.5">
+                <span className="text-[10px] font-bold text-white drop-shadow-sm">
+                  {mat.maitrises} maîtrisées
+                </span>
+              </div>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -484,6 +549,21 @@ export function StatsAdmin() {
               </div>
 
             </div>
+
+            {/* ── Ligne 3b : sessions par matière ── */}
+            {data.sessionsParMatiere && data.sessionsParMatiere.length > 0 && (
+              <div className="card mb-6">
+                <h2 className="font-serif font-bold text-tate-terre mb-1 flex items-center gap-2">
+                  <BarChart2 size={17} className="text-tate-soleil" />
+                  Sessions par matière
+                </h2>
+                <p className="text-xs text-tate-terre/40 mb-4">
+                  <span className="inline-block w-3 h-2 rounded opacity-30 bg-tate-soleil mr-1 align-middle" />sessions totales &nbsp;
+                  <span className="inline-block w-3 h-2 rounded bg-tate-soleil mr-1 align-middle" />maîtrisées
+                </p>
+                <GraphiqueMatiere data={data.sessionsParMatiere} />
+              </div>
+            )}
 
             {/* ── Ligne 4 : activité langues + sessions récentes ── */}
             <div className="grid lg:grid-cols-2 gap-6">

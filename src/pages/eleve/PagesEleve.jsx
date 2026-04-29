@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   CheckCircle, Star, Flame, GraduationCap,
   Copy, Clock, X, LogOut, RotateCcw, Home,
-  ChevronLeft, BookOpen, Trophy, Zap, ChevronRight, Eye,
+  ChevronLeft, BookOpen, Trophy, Zap, ChevronRight, Eye, Lock,
 } from 'lucide-react';
 import { useEleveStore }  from '../../store/useEleveStore';
 import { useAuthStore }   from '../../store/useAuthStore';
@@ -716,11 +716,259 @@ function FeuDArtifice({ actif }) {
 }
 
 // ─────────────────────────────────────────────────────────────────
+// CELEBRATION GRANDIOSE — 60 s de feux d'artifice + prénom + adjectifs
+// ─────────────────────────────────────────────────────────────────
+const ADJECTIFS_CELEBRATION = [
+  'TU ES BRILLANT·E !', 'QUEL TALENT !', 'INCROYABLE !',
+  'TU ES CHAMPION·NE !', 'MAGNIFIQUE !', 'TU ES FANTASTIQUE !',
+  'GÉNIAL·E !', 'REMARQUABLE !', 'IMBATTABLE !',
+  'TU ES EXTRAORDINAIRE !', 'SURDOUÉ·E !', 'FORMIDABLE !',
+  'ÉPOUSTOUFLANT·E !', 'TU DÉCHIRES TOUT !', 'PHÉNOMÉNAL·E !',
+];
+
+function CelebrationGrandiose({ actif, onTermine }) {
+  const { user }     = useAuthStore();
+  const prenom       = (user?.nom || 'Toi').split(' ')[0];
+  const canvasRef    = useRef(null);
+  const animRef      = useRef(null);
+  const stateRef     = useRef({ rockets: [], particles: [], nextRocket: 0 });
+  const onTermineRef = useRef(onTermine);
+  useEffect(() => { onTermineRef.current = onTermine; }, [onTermine]);
+
+  const [secondes,   setSecondes]   = useState(60);
+  const [lettres,    setLettres]    = useState(0);
+  const [adjIdx,     setAdjIdx]     = useState(0);
+  const [phaseTexte, setPhaseTexte] = useState('intro');
+
+  // ── Canvas fireworks ─────────────────────────────────────────
+  useEffect(() => {
+    if (!actif) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+    resize();
+    window.addEventListener('resize', resize);
+
+    const COLS = ['#F97316','#10B981','#F59E0B','#3B82F6','#EF4444','#8B5CF6','#EC4899','#14B8A6','#FBBF24','#34D399','#FFFFFF','#FF6B6B','#FFD700'];
+    const st = stateRef.current;
+    st.rockets = []; st.particles = []; st.nextRocket = 0;
+    let startTs = null;
+
+    const explode = (r) => {
+      const n = 45 + Math.floor(Math.random() * 30);
+      for (let k = 0; k < n; k++) {
+        const angle = (k / n) * Math.PI * 2 + Math.random() * 0.4;
+        const speed = 1.5 + Math.random() * 7;
+        st.particles.push({
+          x: r.x, y: r.y,
+          vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed - 0.8,
+          color: Math.random() > 0.2 ? r.color : COLS[Math.floor(Math.random() * COLS.length)],
+          alpha: 1, decay: 0.009 + Math.random() * 0.013,
+          size: 1.5 + Math.random() * 4,
+          grav: 0.04 + Math.random() * 0.09,
+          glitter: Math.random() > 0.5,
+        });
+      }
+    };
+
+    const draw = (ts) => {
+      animRef.current = requestAnimationFrame(draw);
+      if (!startTs) startTs = ts;
+      const elapsed = (ts - startTs) / 1000;
+
+      ctx.fillStyle = 'rgba(0,0,0,0.15)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      if (ts >= st.nextRocket) {
+        const count = elapsed < 8 ? 4 : elapsed < 30 ? 3 : elapsed < 50 ? 2 : 1;
+        for (let n = 0; n < count; n++) {
+          st.rockets.push({
+            x: canvas.width * (0.05 + Math.random() * 0.9),
+            y: canvas.height + 10,
+            targetY: canvas.height * (0.06 + Math.random() * 0.38),
+            vx: (Math.random() - 0.5) * 3,
+            vy: -(13 + Math.random() * 10),
+            color: COLS[Math.floor(Math.random() * COLS.length)],
+            trail: [],
+          });
+        }
+        st.nextRocket = ts + 380 + Math.random() * 320;
+      }
+
+      for (let i = st.rockets.length - 1; i >= 0; i--) {
+        const r = st.rockets[i];
+        r.trail.push({ x: r.x, y: r.y });
+        if (r.trail.length > 10) r.trail.shift();
+        r.x += r.vx; r.y += r.vy; r.vy += 0.38;
+        r.trail.forEach((pt, j) => {
+          ctx.globalAlpha = (j / r.trail.length) * 0.6;
+          ctx.fillStyle = r.color;
+          ctx.beginPath(); ctx.arc(pt.x, pt.y, 1.5, 0, Math.PI * 2); ctx.fill();
+        });
+        ctx.globalAlpha = 1;
+        ctx.shadowBlur = 10; ctx.shadowColor = r.color;
+        ctx.fillStyle = '#fff';
+        ctx.beginPath(); ctx.arc(r.x, r.y, 2.5, 0, Math.PI * 2); ctx.fill();
+        ctx.shadowBlur = 0;
+        if (r.y <= r.targetY) { explode(r); st.rockets.splice(i, 1); }
+      }
+
+      for (let i = st.particles.length - 1; i >= 0; i--) {
+        const p = st.particles[i];
+        p.x += p.vx; p.y += p.vy; p.vy += p.grav; p.vx *= 0.98;
+        p.alpha -= p.decay;
+        if (p.alpha <= 0) { st.particles.splice(i, 1); continue; }
+        ctx.globalAlpha = p.alpha;
+        ctx.shadowBlur = p.glitter ? 10 : 4;
+        ctx.shadowColor = p.color;
+        ctx.fillStyle = p.glitter ? '#fff' : p.color;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+      ctx.globalAlpha = 1;
+    };
+
+    animRef.current = requestAnimationFrame(draw);
+    return () => { cancelAnimationFrame(animRef.current); window.removeEventListener('resize', resize); };
+  }, [actif]);
+
+  // ── Compte à rebours 60 s ────────────────────────────────────
+  useEffect(() => {
+    if (!actif) return;
+    const iv = setInterval(() => {
+      setSecondes(s => {
+        if (s <= 1) { clearInterval(iv); onTermineRef.current?.(); return 0; }
+        return s - 1;
+      });
+    }, 1000);
+    return () => clearInterval(iv);
+  }, [actif]);
+
+  // ── Phases texte ─────────────────────────────────────────────
+  useEffect(() => {
+    if (!actif) return;
+    const t1 = setTimeout(() => setPhaseTexte('nom'),      350);
+    const t2 = setTimeout(() => setPhaseTexte('adjectif'), 3200);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, [actif]);
+
+  // ── Révélation lettre par lettre ─────────────────────────────
+  useEffect(() => {
+    if (phaseTexte !== 'nom' || lettres >= prenom.length) return;
+    const t = setTimeout(() => setLettres(l => l + 1), 105);
+    return () => clearTimeout(t);
+  }, [phaseTexte, lettres, prenom.length]);
+
+  // ── Rotation adjectifs ───────────────────────────────────────
+  useEffect(() => {
+    if (phaseTexte !== 'adjectif') return;
+    const iv = setInterval(() => setAdjIdx(i => (i + 1) % ADJECTIFS_CELEBRATION.length), 2100);
+    return () => clearInterval(iv);
+  }, [phaseTexte]);
+
+  if (!actif) return null;
+
+  return (
+    <div className="fixed inset-0 overflow-hidden select-none" style={{ zIndex: 200, background: 'rgba(0,0,0,0.94)' }}>
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
+
+      <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none px-4">
+
+        <motion.p
+          initial={{ opacity: 0, y: -24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1, type: 'spring', bounce: 0.5 }}
+          className="text-white/55 text-xs font-bold tracking-[0.32em] uppercase mb-4">
+          🎉 Félicitations 🎉
+        </motion.p>
+
+        {/* Prénom lettre par lettre */}
+        <div className="flex justify-center flex-wrap gap-0.5 mb-5 max-w-sm">
+          {prenom.toUpperCase().split('').map((lettre, i) => (
+            <motion.span key={i}
+              initial={{ opacity: 0, y: 60, scale: 0, rotate: -25 }}
+              animate={i < lettres
+                ? { opacity: 1, y: 0, scale: 1, rotate: 0 }
+                : { opacity: 0, y: 60, scale: 0, rotate: -25 }}
+              transition={{ type: 'spring', bounce: 0.75, duration: 0.45 }}
+              style={{
+                fontSize: 'clamp(2.8rem, 12vw, 5.5rem)',
+                fontFamily: 'Georgia, serif',
+                fontWeight: 900,
+                lineHeight: 1.05,
+                color: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
+                textShadow: `0 0 20px ${CONFETTI_COLORS[i % CONFETTI_COLORS.length]}, 0 0 55px ${CONFETTI_COLORS[i % CONFETTI_COLORS.length]}99, 0 4px 24px rgba(0,0,0,0.6)`,
+              }}>
+              {lettre}
+            </motion.span>
+          ))}
+        </div>
+
+        {/* Adjectif rotatif */}
+        <div className="h-14 flex items-center justify-center mb-1">
+          <AnimatePresence mode="wait">
+            {phaseTexte === 'adjectif' && (
+              <motion.p key={adjIdx}
+                initial={{ opacity: 0, scale: 0.55, y: 24 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 1.2, y: -18 }}
+                transition={{ duration: 0.32, type: 'spring', bounce: 0.5 }}
+                className="text-xl sm:text-3xl font-black text-white text-center px-2"
+                style={{ textShadow: '0 0 45px rgba(249,115,22,0.95), 0 2px 24px rgba(0,0,0,0.7)', letterSpacing: '0.05em' }}>
+                {ADJECTIFS_CELEBRATION[adjIdx]}
+              </motion.p>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* 3 étoiles pulsantes */}
+        <motion.div
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.2 }}
+          className="flex gap-4 mt-3">
+          {[0, 1, 2].map(i => (
+            <motion.div key={i}
+              animate={{ scale: [1, 1.45, 1], rotate: [0, 22, -22, 0] }}
+              transition={{ duration: 1.9, repeat: Infinity, delay: i * 0.38, ease: 'easeInOut' }}>
+              <Star size={32} className="fill-tate-soleil text-tate-soleil"
+                style={{ filter: 'drop-shadow(0 0 18px rgba(249,115,22,0.95))' }} />
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Barre countdown */}
+        <motion.div
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}
+          className="mt-9 w-44">
+          <div className="h-1 bg-white/10 rounded-full overflow-hidden">
+            <motion.div
+              className="h-full rounded-full"
+              style={{ background: 'linear-gradient(90deg, #F97316, #F59E0B, #34D399)' }}
+              animate={{ width: `${(secondes / 60) * 100}%` }}
+              transition={{ duration: 1, ease: 'linear' }}
+            />
+          </div>
+          <p className="text-white/28 text-xs text-center mt-1.5 tabular-nums">{secondes}s</p>
+        </motion.div>
+      </div>
+
+      {/* Bouton passer */}
+      <button
+        onClick={() => onTermineRef.current?.()}
+        className="absolute bottom-8 right-6 text-white/30 hover:text-white/65 text-sm transition-colors duration-200 px-4 py-2.5 rounded-xl border border-white/12 hover:border-white/30 pointer-events-auto">
+        Passer →
+      </button>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────
 // SCORE OVERLAY — résultat QCM + vue correction + célébration
 // ─────────────────────────────────────────────────────────────────
-function ScoreOverlay({ overlay, onRetour, onReessayer, onVoirCorrection }) {
+function ScoreOverlay({ overlay, onRetour, onReessayer, onVoirCorrection, prochainChap }) {
   // Hooks AVANT tout early return
-  const [phaseOverlay, setPhaseOverlay] = useState('score'); // 'score'
+  const [phaseOverlay, setPhaseOverlay] = useState('score');
+  const [montrerScore, setMontrerScore] = useState(false); // true après la célébration (ou direct si échec)
 
   const nbErreurs = overlay ? (overlay.nbErreurs ?? (overlay.nbTotal - overlay.nbCorrectes)) : 0;
   const valide    = !!(overlay?.maitrise && overlay?.avecQCM);
@@ -755,19 +1003,30 @@ function ScoreOverlay({ overlay, onRetour, onReessayer, onVoirCorrection }) {
     };
   }, [overlay, nbErreurs]);
 
-  // Réinitialiser la phase quand overlay change
-  useEffect(() => { if (overlay) setPhaseOverlay('score'); }, [overlay]);
+  // Réinitialiser la phase et décider : célébration d'abord (victoire) ou score direct (échec)
+  useEffect(() => {
+    if (!overlay) { setMontrerScore(false); return; }
+    setPhaseOverlay('score');
+    const isVal = !!(overlay.maitrise && overlay.avecQCM);
+    setMontrerScore(!isVal); // victoire → célébration first ; échec/cours → score direct
+  }, [overlay]);
 
   if (!overlay) return null;
 
   return (
     <>
-      {/* Feux d'artifice + Confettis */}
-      <ConfettiPluie actif={valide && phaseOverlay === 'score'} />
-      <FeuDArtifice  actif={valide && phaseOverlay === 'score'} />
+      {/* ── Célébration grandiose 60 s — uniquement sur victoire ── */}
+      <CelebrationGrandiose
+        actif={valide && !montrerScore}
+        onTermine={() => setMontrerScore(true)}
+      />
+
+      {/* ── Confettis + score card — affichés après la célébration ── */}
+      <ConfettiPluie actif={valide && montrerScore && phaseOverlay === 'score'} />
+      <FeuDArtifice  actif={valide && montrerScore && phaseOverlay === 'score'} />
 
       <AnimatePresence>
-        {overlay && (
+        {overlay && montrerScore && (
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-3"
@@ -876,6 +1135,24 @@ function ScoreOverlay({ overlay, onRetour, onReessayer, onVoirCorrection }) {
                         </span>
                       )}
                     </motion.div>
+
+                    {/* Badge "prochain chapitre débloqué" */}
+                    {prochainChap && (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.8, y: 10 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        transition={{ delay: 1.5, type: 'spring', bounce: 0.5 }}
+                        className="mt-3 mx-auto inline-flex items-center gap-2 bg-white/80 border-2 border-tate-soleil/50 rounded-2xl px-4 py-2">
+                        <motion.span
+                          animate={{ rotate: [0, 15, -10, 5, 0] }}
+                          transition={{ delay: 1.8, duration: 0.6 }}
+                          className="text-lg">🔓</motion.span>
+                        <div className="text-left">
+                          <p className="text-[10px] font-bold text-tate-soleil uppercase tracking-wide">Débloqué !</p>
+                          <p className="text-xs font-semibold text-tate-terre leading-tight">{prochainChap}</p>
+                        </div>
+                      </motion.div>
+                    )}
                   </div>
 
                   {/* Boutons */}
@@ -1461,6 +1738,7 @@ function PageCoursHTML() {
   const {
     leconActive, chapitreActif, retourAccueil, soumettreScore,
     exerciceState, sauvegarderEtatExercice, effacerEtatExercice,
+    chapitres,
   } = useEleveStore();
 
   const iframeCoursRef = useRef(null);
@@ -1537,6 +1815,54 @@ function PageCoursHTML() {
     });
   }, [restoreAnswers, saveAnswersFromIframe]);
 
+  // ── Timer chronomètre ─────────────────────────────────────────
+  const dureeMin  = leconActive?.dureeExercices || null; // minutes, ou null
+  const [timerGo,       setTimerGo]       = useState(false);  // GO appuyé ?
+  const [tempsRestant,  setTempsRestant]  = useState(dureeMin ? dureeMin * 60 : 0);
+  const timerRef         = useRef(null);
+  const soumisAutoRef    = useRef(false);
+  const detecterRef      = useRef(null); // sera assigné après la déclaration de detecterEtValider
+
+  // Démarre le compte à rebours quand timerGo = true
+  useEffect(() => {
+    if (!timerGo || !dureeMin) return;
+    setTempsRestant(dureeMin * 60);
+    soumisAutoRef.current = false;
+    timerRef.current = setInterval(() => {
+      setTempsRestant(t => {
+        if (t <= 1) {
+          clearInterval(timerRef.current);
+          if (!soumisAutoRef.current) {
+            soumisAutoRef.current = true;
+          }
+          return 0;
+        }
+        return t - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timerRef.current);
+  }, [timerGo]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Auto-submit quand tempsRestant tombe à 0
+  useEffect(() => {
+    if (timerGo && dureeMin && tempsRestant === 0 && soumisAutoRef.current) {
+      const t = setTimeout(() => {
+        if (detecterRef.current) detecterRef.current();
+      }, 400);
+      return () => clearTimeout(t);
+    }
+  }, [tempsRestant, timerGo]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Arrêter le timer si on quitte la phase exercices
+  useEffect(() => {
+    if (phaseHTML !== 'exercices') {
+      clearInterval(timerRef.current);
+      setTimerGo(false);
+      setTempsRestant(dureeMin ? dureeMin * 60 : 0);
+      soumisAutoRef.current = false;
+    }
+  }, [phaseHTML]); // eslint-disable-line react-hooks/exhaustive-deps
+
   if (!leconActive || !chapitreActif) return null;
 
   const detecterEtValider = async () => {
@@ -1609,6 +1935,9 @@ function PageCoursHTML() {
       setSubmitting(false);
     }
   };
+
+  // Mettre la ref à jour pour l'auto-submit timer (évite le problème de closure)
+  detecterRef.current = detecterEtValider;
 
   const reessayer = () => {
     setScoreOverlay(null);
@@ -1753,6 +2082,27 @@ function PageCoursHTML() {
           </div>
         </div>
 
+        {/* Chronomètre actif */}
+        {phaseHTML === 'exercices' && timerGo && dureeMin && !correctionMode && (
+          (() => {
+            const mm = String(Math.floor(tempsRestant / 60)).padStart(2, '0');
+            const ss = String(tempsRestant % 60).padStart(2, '0');
+            const critique = tempsRestant <= 30;
+            const alerte   = tempsRestant <= 60 && tempsRestant > 30;
+            return (
+              <motion.div
+                animate={critique ? { scale: [1, 1.06, 1] } : {}}
+                transition={{ duration: 0.6, repeat: critique ? Infinity : 0 }}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black flex-shrink-0 ${
+                  critique ? 'bg-red-100 text-red-600' : alerte ? 'bg-amber-100 text-amber-700' : 'bg-tate-doux text-tate-terre'
+                }`}>
+                <Clock size={13} />
+                {mm}:{ss}
+              </motion.div>
+            );
+          })()
+        )}
+
         {/* Pills cours / exercices */}
         {aExercices && (
           <div className="flex rounded-xl overflow-hidden flex-shrink-0"
@@ -1810,6 +2160,66 @@ function PageCoursHTML() {
           sandbox="allow-scripts allow-same-origin"
         />
       )}
+
+      {/* ── Écran GO — affiché avant les exercices chronométrés ── */}
+      <AnimatePresence>
+        {phaseHTML === 'exercices' && dureeMin && !timerGo && !correctionMode && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute z-20 flex flex-col items-center justify-center px-6"
+            style={{ top: 54, left: 0, right: 0, bottom: 68, background: '#FFFBF5' }}>
+
+            {/* Icône animée */}
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: 'spring', bounce: 0.5, delay: 0.1 }}
+              className="text-6xl mb-5">⏱️</motion.div>
+
+            <motion.h2
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.25 }}
+              className="font-serif font-bold text-tate-terre text-3xl mb-2 text-center">
+              Exercice chronométré
+            </motion.h2>
+
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="text-tate-terre/60 text-sm text-center mb-2 max-w-xs">
+              Tu auras <strong className="text-tate-terre">{dureeMin} minute{dureeMin > 1 ? 's' : ''}</strong> pour répondre à toutes les questions.
+            </motion.p>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+              className="text-tate-terre/40 text-xs text-center mb-8">
+              Le formulaire sera envoyé automatiquement à la fin du temps imparti.
+            </motion.p>
+
+            {/* Bouton GO */}
+            <motion.button
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.55, type: 'spring', bounce: 0.5 }}
+              whileHover={{ scale: 1.05, boxShadow: '0 12px 40px rgba(249,115,22,0.5)' }}
+              whileTap={{ scale: 0.96 }}
+              onClick={() => setTimerGo(true)}
+              className="w-36 h-36 rounded-full font-black text-4xl text-tate-terre flex items-center justify-center"
+              style={{
+                background: 'linear-gradient(135deg, #F97316, #EA580C)',
+                boxShadow: '0 8px 32px rgba(249,115,22,0.45)',
+                letterSpacing: '-0.02em',
+              }}>
+              GO !
+            </motion.button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ── Barre du bas moderne ───────────────────────────── */}
       <div className="absolute bottom-0 left-0 right-0 z-10 px-4"
@@ -1943,6 +2353,12 @@ function PageCoursHTML() {
         onRetour={retourAccueil}
         onReessayer={reessayer}
         onVoirCorrection={groupesResultatRef.current ? afficherCorrectionIframe : null}
+        prochainChap={(() => {
+          if (!scoreOverlay?.maitrise || !chapitreActif || !chapitres?.length) return null;
+          const idx = chapitres.findIndex(ch => ch._id === chapitreActif._id);
+          if (idx >= 0 && idx + 1 < chapitres.length) return chapitres[idx + 1].titre;
+          return null;
+        })()}
       />
     </div>
   );
@@ -2154,50 +2570,96 @@ function ModalAbonnement({ onClose, motif }) {
 // ─────────────────────────────────────────────────────────────────
 // Carte chapitre — nouvelle version visuelle
 // ─────────────────────────────────────────────────────────────────
-function CarteChapitreBeauty({ chap, index, isValide, matiere, onClick }) {
+function CarteChapitreBeauty({ chap, index, isValide, matiere, onClick, verrouille, frontiere }) {
   const valide = isValide(chap._id);
+
+  const handleClick = () => {
+    if (verrouille) {
+      toast('🔒 Valide le chapitre précédent pour débloquer celui-ci !', {
+        icon: null,
+        style: { background: '#FFF3E0', border: '1px solid #F4C775', color: '#3D1C00' },
+      });
+      return;
+    }
+    onClick();
+  };
+
   return (
-    <motion.button
+    <motion.div
       initial={{ opacity:0, y:10 }}
       animate={{ opacity:1, y:0 }}
-      transition={{ delay: index * 0.04 }}
-      onClick={onClick}
-      className={`w-full text-left rounded-2xl border-2 p-4 transition-all group
-        hover:shadow-md active:scale-[0.98]
-        ${valide
-          ? 'border-succes/30 bg-green-50/60 hover:border-succes/60'
-          : `bg-white hover:border-${matiere?.dot?.replace('bg-','') || 'tate-soleil'} hover:bg-tate-doux/30`
-        }
-      `}
-      style={{ borderColor: valide ? undefined : undefined }}>
-      <div className="flex items-center gap-3">
-        {/* Numéro / check */}
-        <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-sm transition-all
-          ${valide
-            ? 'bg-succes text-white'
-            : `bg-gradient-to-br ${matiere?.gradient || 'from-tate-soleil to-amber-500'} text-white`
-          }`}>
-          {valide ? <CheckCircle size={18} /> : <span>{index + 1}</span>}
-        </div>
+      transition={{ delay: index * 0.04 }}>
+      {/* Halo "débloqué / prochaine étape" */}
+      {frontiere && !verrouille && !valide && (
+        <motion.div
+          animate={{ opacity: [0.4, 0.9, 0.4] }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute inset-0 rounded-2xl pointer-events-none"
+          style={{ boxShadow: '0 0 0 2px rgba(249,115,22,0.5), 0 0 18px rgba(249,115,22,0.2)', zIndex: 1 }}
+        />
+      )}
+      <button
+        onClick={handleClick}
+        className={`relative w-full text-left rounded-2xl border-2 p-4 transition-all group
+          ${verrouille
+            ? 'border-gray-200 bg-gray-50/80 cursor-not-allowed opacity-70'
+            : valide
+            ? 'border-succes/30 bg-green-50/60 hover:border-succes/60 hover:shadow-md active:scale-[0.98]'
+            : frontiere
+            ? 'border-tate-soleil/60 bg-white hover:border-tate-soleil hover:bg-tate-doux/30 hover:shadow-md active:scale-[0.98]'
+            : 'border-tate-border bg-white hover:border-tate-border/80 hover:bg-tate-doux/20 hover:shadow-md active:scale-[0.98]'
+          }
+        `}>
+        <div className="flex items-center gap-3">
+          {/* Numéro / check / lock */}
+          <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-sm transition-all
+            ${verrouille
+              ? 'bg-gray-100 text-gray-400'
+              : valide
+              ? 'bg-succes text-white'
+              : `bg-gradient-to-br ${matiere?.gradient || 'from-tate-soleil to-amber-500'} text-white`
+            }`}>
+            {verrouille
+              ? <Lock size={16} />
+              : valide
+              ? <CheckCircle size={18} />
+              : <span>{index + 1}</span>
+            }
+          </div>
 
-        {/* Titre + objectif */}
-        <div className="flex-1 min-w-0">
-          <p className={`font-semibold text-sm leading-snug mb-0.5 ${valide ? 'text-succes' : 'text-tate-terre'}`}>
-            {chap.titre}
-          </p>
-          {chap.objectif && (
-            <p className="text-xs text-tate-terre/50 truncate leading-tight">{chap.objectif}</p>
+          {/* Titre + objectif */}
+          <div className="flex-1 min-w-0">
+            <p className={`font-semibold text-sm leading-snug mb-0.5 ${
+              verrouille ? 'text-gray-400' : valide ? 'text-succes' : 'text-tate-terre'
+            }`}>
+              {chap.titre}
+            </p>
+            {!verrouille && chap.objectif && (
+              <p className="text-xs text-tate-terre/50 truncate leading-tight">{chap.objectif}</p>
+            )}
+            {verrouille && (
+              <p className="text-xs text-gray-400 leading-tight">Chapitre verrouillé</p>
+            )}
+            {frontiere && !verrouille && !valide && (
+              <p className="text-xs text-tate-soleil font-semibold leading-tight">👉 Prochaine étape</p>
+            )}
+          </div>
+
+          {/* Flèche / verrou */}
+          {verrouille ? (
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-gray-100">
+              <Lock size={13} className="text-gray-300" />
+            </div>
+          ) : (
+            <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 transition-all
+              group-hover:translate-x-0.5
+              ${valide ? 'bg-succes/10 text-succes' : 'bg-tate-doux text-tate-terre/40 group-hover:bg-tate-soleil/20 group-hover:text-tate-terre'}`}>
+              <ChevronRight size={14} />
+            </div>
           )}
         </div>
-
-        {/* Flèche */}
-        <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 transition-all
-          group-hover:translate-x-0.5
-          ${valide ? 'bg-succes/10 text-succes' : 'bg-tate-doux text-tate-terre/40 group-hover:bg-tate-soleil/20 group-hover:text-tate-terre'}`}>
-          <ChevronRight size={14} />
-        </div>
-      </div>
-    </motion.button>
+      </button>
+    </motion.div>
   );
 }
 
@@ -2206,7 +2668,7 @@ function CarteChapitreBeauty({ chap, index, isValide, matiere, onClick }) {
 // ─────────────────────────────────────────────────────────────────
 const SEC_TOUS = { key: '__tous__', label: 'Tous', icone: '📚', couleur: 'border-tate-soleil bg-tate-doux text-tate-terre', bar: 'bg-tate-soleil' };
 
-function FrancaisOnglets({ chapitres, isValide, matiere, onDemarrer }) {
+function FrancaisOnglets({ chapitres, isValide, isVerrouille, matiere, onDemarrer }) {
   const [onglet, setOnglet] = useState('__tous__');
 
   // Chapitres sans section définie
@@ -2261,10 +2723,23 @@ function FrancaisOnglets({ chapitres, isValide, matiere, onDemarrer }) {
             </div>
           ) : (
             <div className="space-y-2.5">
-              {chapsOnglet.map((chap, i) => (
-                <CarteChapitreBeauty key={chap._id} chap={chap} index={i}
-                  isValide={isValide} matiere={matiere} onClick={() => onDemarrer(chap)} />
-              ))}
+              {chapsOnglet.map((chap, i) => {
+                // Index in the global chapitres array for lock logic
+                const globalIdx = chapitres.findIndex(c => c._id === chap._id);
+                const verr = isVerrouille ? isVerrouille(globalIdx) : false;
+                // Frontier = first non-validated, non-locked in the global list
+                const frontierGlobalIdx = chapitres.findIndex((c, gi) =>
+                  !isValide(c._id) && !(isVerrouille ? isVerrouille(gi) : false)
+                );
+                return (
+                  <CarteChapitreBeauty key={chap._id} chap={chap} index={globalIdx}
+                    isValide={isValide} matiere={matiere}
+                    onClick={() => onDemarrer(chap)}
+                    verrouille={verr}
+                    frontiere={globalIdx === frontierGlobalIdx}
+                  />
+                );
+              })}
             </div>
           )}
         </motion.div>
@@ -2322,7 +2797,7 @@ function CarteMatiere({ matiere, nbChapitres, nbValides, onClick }) {
 // ─────────────────────────────────────────────────────────────────
 // Vue chapitres pour une matière sélectionnée
 // ─────────────────────────────────────────────────────────────────
-function VueChapitres({ matiere, chapitres, isValide, nbValides, chargement, onDemarrer, onRetour }) {
+function VueChapitres({ matiere, chapitres, isValide, isVerrouille, nbValides, chargement, onDemarrer, onRetour }) {
   return (
     <motion.div initial={{ opacity:0, x:20 }} animate={{ opacity:1, x:0 }} exit={{ opacity:0, x:-20 }}
       transition={{ duration:0.2 }}>
@@ -2371,10 +2846,19 @@ function VueChapitres({ matiere, chapitres, isValide, nbValides, chargement, onD
         </div>
       ) : (
         <div className="space-y-2.5">
-          {chapitres.map((chap, i) => (
-            <CarteChapitreBeauty key={chap._id} chap={chap} index={i}
-              isValide={isValide} matiere={matiere} onClick={() => onDemarrer(chap)} />
-          ))}
+          {(() => {
+            const frontierIdx = chapitres.findIndex((ch, i) =>
+              !isValide(ch._id) && !(isVerrouille ? isVerrouille(i) : false)
+            );
+            return chapitres.map((chap, i) => (
+              <CarteChapitreBeauty key={chap._id} chap={chap} index={i}
+                isValide={isValide} matiere={matiere}
+                onClick={() => onDemarrer(chap)}
+                verrouille={isVerrouille ? isVerrouille(i) : false}
+                frontiere={i === frontierIdx}
+              />
+            ));
+          })()}
         </div>
       )}
     </motion.div>
@@ -2384,7 +2868,7 @@ function VueChapitres({ matiere, chapitres, isValide, nbValides, chargement, onD
 // ─────────────────────────────────────────────────────────────────
 // Vue chapitres Français avec sections
 // ─────────────────────────────────────────────────────────────────
-function VueChapitresFr({ matiere, chapitres, isValide, nbValides, chargement, onDemarrer, onRetour }) {
+function VueChapitresFr({ matiere, chapitres, isValide, isVerrouille, nbValides, chargement, onDemarrer, onRetour }) {
   return (
     <motion.div initial={{ opacity:0, x:20 }} animate={{ opacity:1, x:0 }} exit={{ opacity:0, x:-20 }}
       transition={{ duration:0.2 }}>
@@ -2432,6 +2916,7 @@ function VueChapitresFr({ matiere, chapitres, isValide, nbValides, chargement, o
         <FrancaisOnglets
           chapitres={chapitres}
           isValide={isValide}
+          isVerrouille={isVerrouille}
           matiere={matiere}
           onDemarrer={onDemarrer}
         />
@@ -2582,6 +3067,13 @@ export function AccueilEleve() {
   }
 
   const isValide = (id) => chapitresValides.some(c => c.chapitreId === id || c.chapitreId?._id === id);
+
+  // Verrouillage progressif : le chapitre i est verrouillé si le chapitre i-1 n'est pas validé
+  const isVerrouille = useCallback((index) => {
+    if (index <= 0) return false;
+    const prev = chapitres[index - 1];
+    return prev ? !isValide(prev._id) : false;
+  }, [chapitres, chapitresValides]); // eslint-disable-line react-hooks/exhaustive-deps
   const nbValidesMat  = chapitresValides.length;
 
   const matiereObj = MATIERES.find(m => m.id === matiereActive);
@@ -2634,6 +3126,7 @@ export function AccueilEleve() {
                 matiere={matiereObj}
                 chapitres={chapitres}
                 isValide={isValide}
+                isVerrouille={isVerrouille}
                 nbValides={nbValidesMatiere}
                 chargement={chargement}
                 onDemarrer={handleDemarrer}
@@ -2644,6 +3137,7 @@ export function AccueilEleve() {
                 matiere={matiereObj}
                 chapitres={chapitres}
                 isValide={isValide}
+                isVerrouille={isVerrouille}
                 nbValides={nbValidesMatiere}
                 chargement={chargement}
                 onDemarrer={handleDemarrer}

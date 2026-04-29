@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   GraduationCap, ChevronDown, ChevronUp, Eye, EyeOff,
-  BookOpen, ArrowLeft, Filter, Lock, Star,
+  BookOpen, ArrowLeft, Filter, Lock, Star, FileText,
 } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useNavigate } from 'react-router-dom';
@@ -182,6 +182,8 @@ function DetailEpreuve({ epreuve, estPremium, onBack }) {
   };
 
   const src = epreuveComplete || epreuve;
+  const aContenuHTML    = !!(src.contenuHTML    && src.contenuHTML.trim());
+  const aCorrectionHTML = !!(src.correctionHTML && src.correctionHTML.trim());
 
   return (
     <div className="space-y-4">
@@ -202,8 +204,8 @@ function DetailEpreuve({ epreuve, estPremium, onBack }) {
           <span className="text-2xl font-serif font-bold text-tate-soleil">{src.annee}</span>
         </div>
 
-        {/* Énoncé */}
-        {src.enonce && (
+        {/* Énoncé texte si pas de HTML */}
+        {src.enonce && !aContenuHTML && (
           <div className="bg-tate-doux rounded-xl p-3 text-sm text-tate-terre/80 leading-relaxed mb-3">
             {src.enonce}
           </div>
@@ -223,8 +225,8 @@ function DetailEpreuve({ epreuve, estPremium, onBack }) {
             {loading
               ? 'Chargement des corrections…'
               : estPremium
-              ? <><Eye size={14} /> Afficher toutes les corrections</>
-              : <><Lock size={14} /> Corrections disponibles avec Premium</>
+              ? <><Eye size={14} /> Afficher la correction</>
+              : <><Lock size={14} /> Correction disponible avec Premium</>
             }
           </button>
         ) : (
@@ -233,22 +235,72 @@ function DetailEpreuve({ epreuve, estPremium, onBack }) {
             className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm
                        font-semibold bg-green-50 text-succes hover:bg-green-100 transition-all"
           >
-            <EyeOff size={14} /> Masquer les corrections
+            <EyeOff size={14} /> Masquer la correction
           </button>
         )}
       </div>
 
-      {/* Questions */}
-      <div className="space-y-3">
-        {(src.questions || []).map((q, i) => (
-          <QuestionEpreuve
-            key={q._id || i}
-            q={q}
-            index={i}
-            estPremium={estPremium}
+      {/* ── Rendu HTML de l'épreuve ── */}
+      {aContenuHTML && (
+        <div className="rounded-2xl overflow-hidden border border-tate-border shadow-card">
+          <div className="bg-tate-doux px-4 py-2 flex items-center gap-2">
+            <BookOpen size={14} className="text-tate-terre/60" />
+            <span className="text-xs font-bold text-tate-terre/60 uppercase tracking-wide">Sujet</span>
+          </div>
+          <iframe
+            srcDoc={src.contenuHTML}
+            title={`Sujet — ${src.titre}`}
+            className="w-full border-none"
+            style={{ height: '70vh', minHeight: 400 }}
+            sandbox="allow-scripts allow-same-origin"
           />
-        ))}
-      </div>
+        </div>
+      )}
+
+      {/* ── Rendu HTML de la correction (Premium) ── */}
+      {corrActive && aCorrectionHTML && (
+        <div className="rounded-2xl overflow-hidden border-2 border-succes/30 shadow-card">
+          <div className="bg-green-50 px-4 py-2 flex items-center gap-2">
+            <Star size={14} className="text-succes fill-succes" />
+            <span className="text-xs font-bold text-succes uppercase tracking-wide">Correction officielle</span>
+          </div>
+          <iframe
+            srcDoc={src.correctionHTML}
+            title={`Correction — ${src.titre}`}
+            className="w-full border-none"
+            style={{ height: '70vh', minHeight: 400 }}
+            sandbox="allow-scripts allow-same-origin"
+          />
+        </div>
+      )}
+
+      {/* ── Questions (ancien format, si pas de HTML) ── */}
+      {!aContenuHTML && (src.questions || []).length > 0 && (
+        <div className="space-y-3">
+          {(src.questions || []).map((q, i) => (
+            <QuestionEpreuve
+              key={q._id || i}
+              q={q}
+              index={i}
+              estPremium={estPremium}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* ── Correction questions (ancien format, si pas de HTML) ── */}
+      {corrActive && !aCorrectionHTML && (src.questions || []).length > 0 && (
+        <div className="space-y-3">
+          {(src.questions || []).map((q, i) => (
+            <QuestionEpreuve
+              key={q._id || i}
+              q={q}
+              index={i}
+              estPremium={true}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -266,20 +318,17 @@ export function SectionEpreuves() {
   const estPremium = user?.abonnement === 'premium'
     && (!user?.abonnementExpiry || new Date(user.abonnementExpiry) > new Date());
 
-  // Examen officiel selon le niveau
-  const typeExamen = user?.niveau === 'Terminale' ? 'BAC'
-                   : user?.niveau === 'CM2'       ? 'CFEE'
-                   :                                'BFEM';
+  // Seuls 3ème (BFEM) et Terminale (BAC) ont des épreuves officielles
+  const niveauSupporte = user?.niveau === '3eme' || user?.niveau === 'Terminale';
+  const typeExamen     = user?.niveau === 'Terminale' ? 'BAC' : 'BFEM';
 
   useEffect(() => {
+    if (!niveauSupporte) { setLoading(false); return; }
     const charger = async () => {
       setLoading(true);
       try {
         const params = new URLSearchParams();
-        // Filtrer par type selon le niveau de l'élève
-        if (user?.niveau === '3eme')      params.set('type', 'BFEM');
-        if (user?.niveau === 'Terminale') params.set('type', 'BAC');
-        if (user?.niveau === 'CM2')       params.set('type', 'CFEE');
+        params.set('type', typeExamen); // BFEM pour 3ème, BAC pour Terminale
         const { data } = await axios.get(`${API}/epreuves?${params}`,
           { headers: { Authorization: `Bearer ${getToken()}` } });
         setEpreuves(data.data || []);
@@ -345,81 +394,96 @@ export function SectionEpreuves() {
         )}
       </div>
 
-      {/* Filtres — n'afficher que le type pertinent pour ce niveau */}
-      <div className="flex gap-2 mb-4 flex-wrap">
-        {['tous', typeExamen].map(t => (
-          <button key={t} onClick={() => setFiltreType(t)}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
-              filtreType === t ? 'bg-tate-soleil text-tate-terre shadow-tate' : 'bg-white border border-tate-border text-tate-terre/60'
-            }`}>
-            {t === 'tous' ? 'Toutes' : t}
-          </button>
-        ))}
-        <select
-          value={filtreMatiere}
-          onChange={e => setFiltreMatiere(e.target.value)}
-          className="px-3 py-1.5 rounded-xl text-xs font-semibold border border-tate-border bg-white text-tate-terre/70"
-        >
-          <option value="toutes">Toutes matières</option>
-          {matieres.map(m => <option key={m} value={m}>{m}</option>)}
-        </select>
-      </div>
-
-      {/* Liste épreuves */}
-      {loading ? (
-        <div className="text-center py-16 text-tate-terre/40 text-sm animate-pulse">
-          Chargement des épreuves…
-        </div>
-      ) : filtrees.length === 0 ? (
+      {/* Message si niveau sans épreuves officielles */}
+      {!niveauSupporte ? (
         <div className="card text-center py-12">
           <GraduationCap size={36} className="text-tate-terre/20 mx-auto mb-3" />
-          <p className="font-semibold text-tate-terre">Aucune épreuve disponible</p>
-          <p className="text-sm text-tate-terre/50 mt-1">Les épreuves seront ajoutées prochainement</p>
+          <p className="font-semibold text-tate-terre">Pas d'épreuves officielles pour votre niveau</p>
+          <p className="text-sm text-tate-terre/50 mt-1">
+            Les épreuves BFEM sont pour les élèves de 3ème,<br />les épreuves BAC pour les Terminales.
+          </p>
         </div>
       ) : (
-        <div className="space-y-3">
-          {filtrees.map(ep => (
-            <motion.button
-              key={ep._id}
-              whileHover={{ y: -1 }}
-              onClick={() => setEpreuveActive(ep)}
-              className="w-full card text-left hover:border-tate-soleil transition-all"
+        <>
+          {/* Filtres — matière uniquement (type déjà fixé par niveau) */}
+          <div className="flex gap-2 mb-4 flex-wrap items-center">
+            <span className="text-xs font-bold text-tate-terre/40 uppercase tracking-wide">
+              {typeExamen}
+            </span>
+            <select
+              value={filtreMatiere}
+              onChange={e => setFiltreMatiere(e.target.value)}
+              className="px-3 py-1.5 rounded-xl text-xs font-semibold border border-tate-border bg-white text-tate-terre/70"
             >
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1 flex-wrap">
-                    <BadgeType type={ep.type} />
-                    <span className="text-xs text-tate-terre/50">{ep.matiere}</span>
-                    {ep.session !== 'Normale' && (
-                      <span className="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full">
-                        {ep.session}
-                      </span>
-                    )}
+              <option value="toutes">Toutes matières</option>
+              {matieres.map(m => <option key={m} value={m}>{m}</option>)}
+            </select>
+          </div>
+
+          {/* Liste épreuves */}
+          {loading ? (
+            <div className="text-center py-16 text-tate-terre/40 text-sm animate-pulse">
+              Chargement des épreuves…
+            </div>
+          ) : filtrees.length === 0 ? (
+            <div className="card text-center py-12">
+              <GraduationCap size={36} className="text-tate-terre/20 mx-auto mb-3" />
+              <p className="font-semibold text-tate-terre">Aucune épreuve disponible</p>
+              <p className="text-sm text-tate-terre/50 mt-1">Les épreuves seront ajoutées prochainement</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {filtrees.map(ep => (
+                <motion.button
+                  key={ep._id}
+                  whileHover={{ y: -1 }}
+                  onClick={() => setEpreuveActive(ep)}
+                  className="w-full card text-left hover:border-tate-soleil transition-all"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1 flex-wrap">
+                        <BadgeType type={ep.type} />
+                        <span className="text-xs text-tate-terre/50">{ep.matiere}</span>
+                        {ep.session !== 'Normale' && (
+                          <span className="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full">
+                            {ep.session}
+                          </span>
+                        )}
+                        {ep.contenuHTML && (
+                          <span className="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full flex items-center gap-1">
+                            <FileText size={10} /> Sujet complet
+                          </span>
+                        )}
+                      </div>
+                      <p className="font-semibold text-tate-terre">{ep.titre}</p>
+                      <div className="flex items-center gap-3 mt-1.5">
+                        {!ep.contenuHTML && (
+                          <span className="text-xs text-tate-terre/40">
+                            {ep.questions?.length || 0} question{ep.questions?.length !== 1 ? 's' : ''}
+                          </span>
+                        )}
+                        {ep.duree && (
+                          <span className="text-xs text-tate-terre/40">⏱ {ep.duree}</span>
+                        )}
+                        {ep.coefficient > 1 && (
+                          <span className="text-xs text-tate-terre/40">Coeff. {ep.coefficient}</span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="text-right flex-shrink-0">
+                      <p className="text-xl font-serif font-bold text-tate-soleil">{ep.annee}</p>
+                      {estPremium
+                        ? <Star size={12} className="text-succes fill-succes ml-auto mt-1" />
+                        : <Lock size={12} className="text-tate-terre/30 ml-auto mt-1" />
+                      }
+                    </div>
                   </div>
-                  <p className="font-semibold text-tate-terre">{ep.titre}</p>
-                  <div className="flex items-center gap-3 mt-1.5">
-                    <span className="text-xs text-tate-terre/40">
-                      {ep.questions?.length || 0} question{ep.questions?.length !== 1 ? 's' : ''}
-                    </span>
-                    {ep.duree && (
-                      <span className="text-xs text-tate-terre/40">⏱ {ep.duree}</span>
-                    )}
-                    {ep.coefficient > 1 && (
-                      <span className="text-xs text-tate-terre/40">Coeff. {ep.coefficient}</span>
-                    )}
-                  </div>
-                </div>
-                <div className="text-right flex-shrink-0">
-                  <p className="text-xl font-serif font-bold text-tate-soleil">{ep.annee}</p>
-                  {estPremium
-                    ? <Star size={12} className="text-succes fill-succes ml-auto mt-1" />
-                    : <Lock size={12} className="text-tate-terre/30 ml-auto mt-1" />
-                  }
-                </div>
-              </div>
-            </motion.button>
-          ))}
-        </div>
+                </motion.button>
+              ))}
+            </div>
+          )}
+        </>
       )}
     </LayoutEleve>
   );

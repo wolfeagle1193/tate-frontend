@@ -367,6 +367,7 @@ function CreateurHTML({ onSauvegarder, loading }) {
   const [iaOuverte,        setIaOuverte]        = useState(false);
   const [modifierHtmlIA,   setModifierHtmlIA]   = useState(false);
   const [instructionsHTML, setInstructionsHTML] = useState('');
+  const [dureeExercices,   setDureeExercices]   = useState('');
 
   // ── Gestion des blocs QCM (mode séparé) ──────────────────────
   const ajouterQcmBloc  = ()          => setQcmBlocs(b => [...b, '']);
@@ -397,6 +398,7 @@ function CreateurHTML({ onSauvegarder, loading }) {
     onSauvegarder({
       contenuHTML:      getHtmlFinal(),
       instructionsHTML: modifierHtmlIA ? instructionsHTML : '',
+      dureeExercices:   dureeExercices ? parseInt(dureeExercices) : null,
     });
   };
 
@@ -587,6 +589,28 @@ function CreateurHTML({ onSauvegarder, loading }) {
           )}
         </AnimatePresence>
       </div>
+
+      {/* ── Durée limite des exercices (optionnel) ─────────────── */}
+      {html.trim() && (
+        <div className="flex items-center gap-3 bg-amber-50 border border-amber-200 rounded-2xl px-4 py-3">
+          <span className="text-xl">⏱️</span>
+          <div className="flex-1">
+            <p className="text-xs font-bold text-amber-800">Durée limite des exercices (optionnel)</p>
+            <p className="text-xs text-amber-700/70 mt-0.5">Si définie, l'élève verra un chronomètre et l'exercice s'enverra automatiquement.</p>
+          </div>
+          <div className="flex items-center gap-1.5 flex-shrink-0">
+            <input
+              type="number"
+              value={dureeExercices}
+              onChange={e => setDureeExercices(e.target.value)}
+              placeholder="—"
+              min="1" max="120"
+              className="input-tate w-16 text-center text-sm py-1.5"
+            />
+            <span className="text-xs text-amber-700 font-semibold">min</span>
+          </div>
+        </div>
+      )}
 
       {/* ── Bouton sauvegarder ─────────────────────────────────── */}
       {html.trim() && (
@@ -910,11 +934,11 @@ export function PreparerCours() {
   };
 
   // ── Soumission mode E (HTML) ──
-  const handleSauvegarderHTML = async ({ contenuHTML, exercices, instructionsHTML, instructionsExos, genererExos }) => {
+  const handleSauvegarderHTML = async ({ contenuHTML, exercices, instructionsHTML, instructionsExos, genererExos, dureeExercices }) => {
     const cId = await resolveChapitreId();
     if (!cId) return;
     try {
-      const res = await preparerCoursHTML({ chapitreId: cId, contenuHTML, exercices, instructionsHTML, instructionsExos, genererExos });
+      const res = await preparerCoursHTML({ chapitreId: cId, contenuHTML, exercices, instructionsHTML, instructionsExos, genererExos, dureeExercices });
       const nbIA  = res?.nbIA  || 0;
       const nbMan = res?.nbManuels || 0;
       if (genererExos && nbIA > 0) {

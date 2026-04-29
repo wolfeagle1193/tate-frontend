@@ -1,7 +1,9 @@
 import axios from 'axios';
 
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
+  baseURL: BASE_URL,
   headers: { 'Content-Type': 'application/json' },
 });
 
@@ -21,64 +23,90 @@ const onRefreshed = (token) => {
   refreshSubscribers = [];
 };
 
+const doRefresh = async () => {
+  const refresh = localStorage.getItem('refreshToken');
+  if (!refresh) throw new Error('Pas de refresh token');
+  const { data } = await axios.post(`${BASE_URL}/auth/refresh`, { refreshToken: refresh });
+  const newAccess  = data.data.accessToken;
+  const newRefresh = data.data.refreshToken;
+  localStorage.setItem('accessToken',  newAccess);
+  localStorage.setItem('refreshToken', newRefresh);
+  return newAccess;
+};
+
 api.interceptors.response.use(
   res => res,
   async err => {
     const original = err.config;
 
-    // Seulement si TOKEN_EXPIRED côté serveur, pas pour d'autres 401
-    const isTokenExpired = err.response?.status === 401 &&
-      err.response?.data?.code === 'TOKEN_EXPIRED';
+    // Déclencher le refresh sur TOKEN_EXPIRED OU tout 401 sauf la route login/refresh elle-même
+    const status = err.response?.status;
+    const code   = err.response?.data?.code;
+    const url    = original?.url || '';
+    const isAuthRoute = url.includes('/auth/login') || url.includes('/auth/refresh');
 
-    if (isTokenExpired && !original._retry) {
+    const shouldRefresh = status === 401 && !isAuthRoute && !original._retry;
+
+    if (shouldRefresh) {
       original._retry = true;
 
-      // Éviter les rafraîchissements simultanés (multiples requêtes en parallèle)
       if (isRefreshing) {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
           refreshSubscribers.push((token) => {
-            original.headers.Authorization = `Bearer ${token}`;
-            resolve(api(original));
+            if (token) {
+              original.headers.Authorization = `Bearer ${token}`;
+              resolve(api(original));
+            } else {
+              reject(err);
+            }
           });
         });
       }
 
       isRefreshing = true;
       try {
-        const refresh = localStorage.getItem('refreshToken');
-        if (!refresh) throw new Error('Pas de refresh token');
-
-        const { data } = await axios.post(
-          `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/auth/refresh`,
-          { refreshToken: refresh }
-        );
-
-        const newAccess  = data.data.accessToken;
-        const newRefresh = data.data.refreshToken;
-
-        localStorage.setItem('accessToken',  newAccess);
-        localStorage.setItem('refreshToken', newRefresh);
-
-        original.headers.Authorization = `Bearer ${newAccess}`;
-        onRefreshed(newAccess);
-
+        const newToken = await doRefresh();
+        original.headers.Authorization = `Bearer ${newToken}`;
+        onRefreshed(newToken);
         return api(original);
       } catch (refreshErr) {
-        // Le refresh a VRAIMENT échoué (token invalide ou expiré depuis > 30j)
+        // Le refresh a échoué — déconnecter proprement
         refreshSubscribers = [];
+        onRefreshed(null);
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
         localStorage.removeItem('user');
-        window.location.href = '/login';
+        // Rediriger vers login uniquement si on n'y est pas déjà
+        if (!window.location.pathname.includes('/login')) {
+          window.location.href = '/login';
+        }
         return Promise.reject(refreshErr);
       } finally {
         isRefreshing = false;
       }
     }
 
-    // Pour les autres erreurs 401 (mauvais password, user inactif...), ne pas toucher au localStorage
     return Promise.reject(err);
   }
 );
+
+// ── Vérification proactive au démarrage de l'app ──────────────
+// Décode le JWT localement pour voir s'il expire dans les 3 prochains jours
+// Si oui, on rafraîchit silencieusement sans attendre une erreur 401
+export const proactiveTokenRefresh = async () => {
+  try {
+    const token = localStorage.getItem('accessToken');
+    if (!token) return;
+    // Décoder le payload (sans vérification de signature, juste pour lire exp)
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const expiresIn = payload.exp * 1000 - Date.now(); // ms restantes
+    // Rafraîchir si moins de 3 jours restants
+    if (expiresIn < 3 * 24 * 60 * 60 * 1000) {
+      await doRefresh();
+    }
+  } catch {
+    // Silencieux — le rafraîchissement proactif n'est pas critique
+  }
+};
 
 export default api;

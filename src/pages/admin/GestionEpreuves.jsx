@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Plus, X, CheckCircle, XCircle, Eye, EyeOff, Trash2,
   Edit3, GraduationCap, ChevronDown, ChevronUp, Globe, Lock,
+  FileText, Upload, AlertCircle,
 } from 'lucide-react';
 import { LayoutAdmin } from './LayoutAdmin';
 import axios from 'axios';
@@ -25,17 +26,22 @@ const SESSIONS  = ['Normale','Remplacement','Rattrapage'];
 function ModalEpreuve({ epreuve, onClose, onSave }) {
   const isEdit = !!epreuve?._id;
   const [form, setForm] = useState({
-    type:        epreuve?.type        || 'BFEM',
-    niveau:      epreuve?.niveau      || '3eme',
-    matiere:     epreuve?.matiere     || 'Français',
-    annee:       epreuve?.annee       || new Date().getFullYear(),
-    session:     epreuve?.session     || 'Normale',
-    titre:       epreuve?.titre       || '',
-    duree:       epreuve?.duree       || '',
-    coefficient: epreuve?.coefficient || 1,
-    enonce:      epreuve?.enonce      || '',
-    questions:   epreuve?.questions   || [],
+    type:           epreuve?.type           || 'BFEM',
+    niveau:         epreuve?.niveau         || '3eme',
+    matiere:        epreuve?.matiere        || 'Français',
+    annee:          epreuve?.annee          || new Date().getFullYear(),
+    session:        epreuve?.session        || 'Normale',
+    titre:          epreuve?.titre          || '',
+    duree:          epreuve?.duree          || '',
+    coefficient:    epreuve?.coefficient    || 1,
+    enonce:         epreuve?.enonce         || '',
+    questions:      epreuve?.questions      || [],
+    contenuHTML:    epreuve?.contenuHTML    || '',
+    correctionHTML: epreuve?.correctionHTML || '',
   });
+  const [onglet, setOnglet] = useState(
+    (epreuve?.contenuHTML) ? 'html' : 'questions'
+  );
   const [saving, setSaving] = useState(false);
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
@@ -48,6 +54,15 @@ function ModalEpreuve({ epreuve, onClose, onSave }) {
   };
 
   // ── Questions helpers ──────────────────────
+  // ── Lecture d'un fichier HTML ──────────────
+  const lireFichierHTML = (e, champ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => set(champ, ev.target.result);
+    reader.readAsText(file, 'utf-8');
+  };
+
   const ajouterQuestion = () => {
     set('questions', [...form.questions, {
       numero:       form.questions.length + 1,
@@ -189,89 +204,204 @@ function ModalEpreuve({ epreuve, onClose, onSave }) {
               className="input-tate resize-none" />
           </div>
 
-          {/* ── Questions ──────────────────────── */}
+          {/* ── Onglets : HTML (recommandé) ou Questions manuelles ── */}
           <div>
-            <div className="flex items-center justify-between mb-3">
-              <label className="text-xs font-semibold text-tate-terre/60 uppercase tracking-wide">
-                Questions ({form.questions.length})
-              </label>
-              <button type="button" onClick={ajouterQuestion}
-                className="flex items-center gap-1.5 text-xs font-semibold text-tate-terre
-                           bg-tate-soleil/20 hover:bg-tate-soleil/40 px-3 py-1.5 rounded-xl transition-all">
-                <Plus size={12} /> Ajouter une question
+            <div className="flex gap-1 bg-tate-doux rounded-2xl p-1 mb-4">
+              <button type="button"
+                onClick={() => setOnglet('html')}
+                className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold transition-all ${
+                  onglet === 'html'
+                    ? 'bg-white text-tate-terre shadow-sm'
+                    : 'text-tate-terre/50 hover:text-tate-terre'
+                }`}>
+                <FileText size={12} /> Format HTML <span className="bg-tate-soleil/60 text-tate-terre px-1.5 py-0.5 rounded-md text-[10px]">Recommandé</span>
+              </button>
+              <button type="button"
+                onClick={() => setOnglet('questions')}
+                className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold transition-all ${
+                  onglet === 'questions'
+                    ? 'bg-white text-tate-terre shadow-sm'
+                    : 'text-tate-terre/50 hover:text-tate-terre'
+                }`}>
+                <Plus size={12} /> Questions manuelles
               </button>
             </div>
 
-            <div className="space-y-4">
-              {form.questions.map((q, qIdx) => (
-                <div key={qIdx}
-                  className="border-2 border-tate-border rounded-2xl p-4 space-y-3 bg-tate-creme/50">
-                  {/* En-tête question */}
-                  <div className="flex items-center gap-2">
-                    <span className="w-7 h-7 rounded-full bg-tate-soleil flex items-center justify-center
-                                     text-xs font-bold text-tate-terre flex-shrink-0">
-                      {q.numero}
-                    </span>
-                    <input
-                      value={q.intitule}
-                      onChange={e => majQuestion(qIdx, 'intitule', e.target.value)}
-                      placeholder="Intitulé de la question…"
-                      className="input-tate flex-1 text-sm"
-                    />
-                    <input type="number" value={q.points}
-                      onChange={e => majQuestion(qIdx, 'points', parseFloat(e.target.value) || 0)}
-                      placeholder="pts" min="0" step="0.5"
-                      className="input-tate w-20 text-sm text-center"
-                    />
-                    <button type="button" onClick={() => supprimerQuestion(qIdx)}
-                      className="p-1.5 rounded-lg hover:bg-red-50 text-alerte transition-colors">
-                      <Trash2 size={14} />
-                    </button>
-                  </div>
+            {onglet === 'html' && (
+              <div className="space-y-4">
+                <div className="bg-blue-50 border border-blue-200 rounded-2xl p-3 flex items-start gap-2">
+                  <AlertCircle size={14} className="text-blue-500 flex-shrink-0 mt-0.5" />
+                  <p className="text-xs text-blue-700">
+                    Importez des fichiers HTML pour le sujet et la correction. Le contenu HTML prend le dessus sur le format questions manuelles.
+                  </p>
+                </div>
 
-                  {/* Correction question */}
-                  <div>
-                    <label className="block text-xs font-semibold text-succes/70 mb-1">
-                      ✅ Correction détaillée
+                {/* Sujet HTML */}
+                <div>
+                  <label className="block text-xs font-semibold text-tate-terre/60 mb-2">
+                    📄 Sujet — fichier HTML
+                  </label>
+                  <div className="flex gap-2">
+                    <label className="flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-dashed
+                                      border-tate-border bg-white hover:border-tate-soleil cursor-pointer
+                                      transition-colors text-xs font-semibold text-tate-terre/60">
+                      <Upload size={14} />
+                      {form.contenuHTML ? '✅ Fichier chargé — remplacer' : 'Choisir un fichier HTML'}
+                      <input type="file" accept=".html,.htm" className="hidden"
+                        onChange={e => lireFichierHTML(e, 'contenuHTML')} />
                     </label>
-                    <textarea
-                      value={q.correction}
-                      onChange={e => majQuestion(qIdx, 'correction', e.target.value)}
-                      rows={3} placeholder="Correction détaillée de cette question…"
-                      className="input-tate resize-none text-sm bg-green-50 border-succes/30"
-                    />
+                    {form.contenuHTML && (
+                      <button type="button" onClick={() => set('contenuHTML', '')}
+                        className="p-2.5 rounded-xl bg-red-50 text-alerte hover:bg-red-100 transition-colors">
+                        <X size={14} />
+                      </button>
+                    )}
                   </div>
-
-                  {/* Sous-questions */}
-                  {q.sousQuestions?.map((sq, sIdx) => (
-                    <div key={sIdx} className="pl-4 border-l-2 border-tate-soleil/40 space-y-2">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-bold text-tate-terre/60 w-5">{sq.lettre})</span>
-                        <input value={sq.intitule}
-                          onChange={e => majSousQ(qIdx, sIdx, 'intitule', e.target.value)}
-                          placeholder="Sous-question…" className="input-tate flex-1 text-sm" />
-                        <input type="number" value={sq.points}
-                          onChange={e => majSousQ(qIdx, sIdx, 'points', parseFloat(e.target.value) || 0)}
-                          placeholder="pts" min="0" step="0.5"
-                          className="input-tate w-16 text-sm text-center" />
-                        <button type="button" onClick={() => supprimerSousQ(qIdx, sIdx)}
-                          className="p-1 rounded-lg hover:bg-red-50 text-alerte/70">
-                          <X size={12} />
-                        </button>
+                  {form.contenuHTML && (
+                    <div className="mt-2 rounded-xl overflow-hidden border border-tate-border">
+                      <div className="bg-tate-doux px-3 py-1.5 text-xs text-tate-terre/60 font-semibold">
+                        Aperçu sujet
                       </div>
-                      <textarea value={sq.correction}
-                        onChange={e => majSousQ(qIdx, sIdx, 'correction', e.target.value)}
-                        rows={2} placeholder="Correction de cette sous-question…"
-                        className="input-tate resize-none text-xs bg-green-50 border-succes/30 w-full" />
+                      <iframe srcDoc={form.contenuHTML} className="w-full border-none"
+                        style={{ height: 200 }} sandbox="allow-scripts allow-same-origin" />
                     </div>
-                  ))}
-                  <button type="button" onClick={() => ajouterSousQ(qIdx)}
-                    className="text-xs text-tate-terre/40 hover:text-tate-terre transition-colors pl-4">
-                    + Ajouter une sous-question
+                  )}
+                  {/* Ou coller directement le HTML */}
+                  <div className="mt-3">
+                    <label className="block text-xs text-tate-terre/40 mb-1">ou coller le code HTML directement</label>
+                    <textarea value={form.contenuHTML}
+                      onChange={e => set('contenuHTML', e.target.value)}
+                      rows={4} placeholder="<html>…</html>"
+                      className="input-tate resize-none text-xs font-mono bg-gray-50" />
+                  </div>
+                </div>
+
+                {/* Correction HTML */}
+                <div>
+                  <label className="block text-xs font-semibold text-succes/70 mb-2">
+                    ✅ Correction officielle — fichier HTML (Premium)
+                  </label>
+                  <div className="flex gap-2">
+                    <label className="flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-dashed
+                                      border-succes/30 bg-green-50 hover:border-succes cursor-pointer
+                                      transition-colors text-xs font-semibold text-succes/70">
+                      <Upload size={14} />
+                      {form.correctionHTML ? '✅ Fichier chargé — remplacer' : 'Choisir un fichier HTML'}
+                      <input type="file" accept=".html,.htm" className="hidden"
+                        onChange={e => lireFichierHTML(e, 'correctionHTML')} />
+                    </label>
+                    {form.correctionHTML && (
+                      <button type="button" onClick={() => set('correctionHTML', '')}
+                        className="p-2.5 rounded-xl bg-red-50 text-alerte hover:bg-red-100 transition-colors">
+                        <X size={14} />
+                      </button>
+                    )}
+                  </div>
+                  {form.correctionHTML && (
+                    <div className="mt-2 rounded-xl overflow-hidden border border-succes/30">
+                      <div className="bg-green-50 px-3 py-1.5 text-xs text-succes font-semibold">
+                        Aperçu correction
+                      </div>
+                      <iframe srcDoc={form.correctionHTML} className="w-full border-none"
+                        style={{ height: 200 }} sandbox="allow-scripts allow-same-origin" />
+                    </div>
+                  )}
+                  <div className="mt-3">
+                    <label className="block text-xs text-tate-terre/40 mb-1">ou coller le code HTML directement</label>
+                    <textarea value={form.correctionHTML}
+                      onChange={e => set('correctionHTML', e.target.value)}
+                      rows={4} placeholder="<html>…</html>"
+                      className="input-tate resize-none text-xs font-mono bg-green-50 border-succes/30" />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {onglet === 'questions' && (
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <label className="text-xs font-semibold text-tate-terre/60 uppercase tracking-wide">
+                    Questions ({form.questions.length})
+                  </label>
+                  <button type="button" onClick={ajouterQuestion}
+                    className="flex items-center gap-1.5 text-xs font-semibold text-tate-terre
+                               bg-tate-soleil/20 hover:bg-tate-soleil/40 px-3 py-1.5 rounded-xl transition-all">
+                    <Plus size={12} /> Ajouter une question
                   </button>
                 </div>
-              ))}
-            </div>
+
+                <div className="space-y-4">
+                  {form.questions.map((q, qIdx) => (
+                    <div key={qIdx}
+                      className="border-2 border-tate-border rounded-2xl p-4 space-y-3 bg-tate-creme/50">
+                      {/* En-tête question */}
+                      <div className="flex items-center gap-2">
+                        <span className="w-7 h-7 rounded-full bg-tate-soleil flex items-center justify-center
+                                         text-xs font-bold text-tate-terre flex-shrink-0">
+                          {q.numero}
+                        </span>
+                        <input
+                          value={q.intitule}
+                          onChange={e => majQuestion(qIdx, 'intitule', e.target.value)}
+                          placeholder="Intitulé de la question…"
+                          className="input-tate flex-1 text-sm"
+                        />
+                        <input type="number" value={q.points}
+                          onChange={e => majQuestion(qIdx, 'points', parseFloat(e.target.value) || 0)}
+                          placeholder="pts" min="0" step="0.5"
+                          className="input-tate w-20 text-sm text-center"
+                        />
+                        <button type="button" onClick={() => supprimerQuestion(qIdx)}
+                          className="p-1.5 rounded-lg hover:bg-red-50 text-alerte transition-colors">
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+
+                      {/* Correction question */}
+                      <div>
+                        <label className="block text-xs font-semibold text-succes/70 mb-1">
+                          ✅ Correction détaillée
+                        </label>
+                        <textarea
+                          value={q.correction}
+                          onChange={e => majQuestion(qIdx, 'correction', e.target.value)}
+                          rows={3} placeholder="Correction détaillée de cette question…"
+                          className="input-tate resize-none text-sm bg-green-50 border-succes/30"
+                        />
+                      </div>
+
+                      {/* Sous-questions */}
+                      {q.sousQuestions?.map((sq, sIdx) => (
+                        <div key={sIdx} className="pl-4 border-l-2 border-tate-soleil/40 space-y-2">
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs font-bold text-tate-terre/60 w-5">{sq.lettre})</span>
+                            <input value={sq.intitule}
+                              onChange={e => majSousQ(qIdx, sIdx, 'intitule', e.target.value)}
+                              placeholder="Sous-question…" className="input-tate flex-1 text-sm" />
+                            <input type="number" value={sq.points}
+                              onChange={e => majSousQ(qIdx, sIdx, 'points', parseFloat(e.target.value) || 0)}
+                              placeholder="pts" min="0" step="0.5"
+                              className="input-tate w-16 text-sm text-center" />
+                            <button type="button" onClick={() => supprimerSousQ(qIdx, sIdx)}
+                              className="p-1 rounded-lg hover:bg-red-50 text-alerte/70">
+                              <X size={12} />
+                            </button>
+                          </div>
+                          <textarea value={sq.correction}
+                            onChange={e => majSousQ(qIdx, sIdx, 'correction', e.target.value)}
+                            rows={2} placeholder="Correction de cette sous-question…"
+                            className="input-tate resize-none text-xs bg-green-50 border-succes/30 w-full" />
+                        </div>
+                      ))}
+                      <button type="button" onClick={() => ajouterSousQ(qIdx)}
+                        className="text-xs text-tate-terre/40 hover:text-tate-terre transition-colors pl-4">
+                        + Ajouter une sous-question
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Boutons */}
@@ -412,9 +542,14 @@ export function GestionEpreuves() {
                     ? <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">Publiée</span>
                     : <span className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">Brouillon</span>
                   }
+                  {ep.contenuHTML && (
+                    <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full flex items-center gap-1">
+                      <FileText size={10} /> HTML
+                    </span>
+                  )}
                 </div>
                 <p className="text-xs text-tate-terre/50 mt-0.5">
-                  {ep.niveau} • {ep.questions?.length || 0} question{ep.questions?.length !== 1 ? 's' : ''}
+                  {ep.niveau} • {ep.contenuHTML ? 'Sujet HTML' : `${ep.questions?.length || 0} question${ep.questions?.length !== 1 ? 's' : ''}`}
                   {ep.duree && ` • ${ep.duree}`}
                 </p>
               </div>

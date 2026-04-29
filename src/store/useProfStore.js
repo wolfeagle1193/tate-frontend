@@ -77,12 +77,14 @@ export const useProfStore = create((set, get) => ({
   preparerCoursHTML: async ({
     chapitreId, contenuHTML, exercices,
     instructionsHTML = '', instructionsExos = '', genererExos = false,
+    dureeExercices = null,
   }) => {
     set({ loadingIA: true, preparation: null });
     try {
       const { data } = await api.post('/lecons/creer-html', {
         chapitreId, contenuHTML, exercices,
         instructionsHTML, instructionsExos, genererExos,
+        dureeExercices,
       });
       set({ preparation: { ...data.data, source: 'html' }, loadingIA: false });
       return data.data;

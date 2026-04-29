@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { useAuthStore }  from './store/useAuthStore';
 import { useEleveStore } from './store/useEleveStore';
+import { proactiveTokenRefresh } from './lib/api';
 import { InstallPWA } from './components/InstallPWA';
 
 import { Login }          from './pages/Login';
@@ -72,8 +73,13 @@ function AuthInit() {
   const { user, rafraichirUser } = useAuthStore();
   useEffect(() => {
     if (user && localStorage.getItem('accessToken')) {
-      // Rafraîchit en arrière-plan sans bloquer l'interface
-      rafraichirUser().catch(() => {});
+      // 1. Rafraîchir le token proactivement si < 3 jours restants
+      proactiveTokenRefresh().then(() => {
+        // 2. Puis rafraîchir le profil utilisateur (chapitresValides, etc.)
+        rafraichirUser().catch(() => {});
+      }).catch(() => {
+        rafraichirUser().catch(() => {});
+      });
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
   return null;
