@@ -2304,45 +2304,51 @@ function PageCoursHTML() {
                 <ChevronLeft size={17} />
               </button>
 
-              {erreur ? (
-                <div className="flex-1 flex items-center gap-2 rounded-xl px-3 py-2"
-                     style={{ background: '#FFF7ED', border: '1.5px solid #FED7AA' }}>
-                  <span className="text-xs text-orange-700 flex-1">⚠️ {erreur}</span>
-                  <button onClick={() => setErreur('')} className="text-orange-400 hover:text-orange-600 flex-shrink-0">
-                    <X size={14} />
+              <div className="flex-1 flex flex-col gap-1.5">
+                {/* Avertissement questions non répondues — affiché AU-DESSUS du bouton, pas à la place */}
+                {erreur && (
+                  <div className="flex items-center gap-2 rounded-xl px-3 py-1.5"
+                       style={{ background: '#FFF7ED', border: '1.5px solid #FED7AA' }}>
+                    <span className="text-xs text-orange-700 flex-1">⚠️ {erreur}</span>
+                    <button onClick={() => setErreur('')} className="text-orange-400 hover:text-orange-600 flex-shrink-0">
+                      <X size={13} />
+                    </button>
+                  </div>
+                )}
+
+                {/* Bouton de validation — toujours visible */}
+                {aDesQCM === false ? (
+                  <button
+                    onClick={terminerSansQCM}
+                    disabled={submitting}
+                    className="h-11 rounded-2xl font-bold text-sm transition-all
+                               flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-60"
+                    style={{
+                      background: 'linear-gradient(135deg, #10B981, #059669)',
+                      color: 'white',
+                      boxShadow: '0 4px 16px rgba(16,185,129,0.30)',
+                    }}>
+                    {submitting
+                      ? <><span className="animate-spin inline-block">⏳</span> Enregistrement…</>
+                      : <>✅ Exercices terminés</>}
                   </button>
-                </div>
-              ) : aDesQCM === false ? (
-                <button
-                  onClick={terminerSansQCM}
-                  disabled={submitting}
-                  className="flex-1 h-11 rounded-2xl font-bold text-sm transition-all
-                             flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-60"
-                  style={{
-                    background: 'linear-gradient(135deg, #10B981, #059669)',
-                    color: 'white',
-                    boxShadow: '0 4px 16px rgba(16,185,129,0.30)',
-                  }}>
-                  {submitting
-                    ? <><span className="animate-spin inline-block">⏳</span> Enregistrement…</>
-                    : <>✅ Exercices terminés</>}
-                </button>
-              ) : (
-                <button
-                  onClick={detecterEtValider}
-                  disabled={submitting}
-                  className="flex-1 h-11 rounded-2xl font-bold text-sm transition-all
-                             flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-60"
-                  style={{
-                    background: 'linear-gradient(135deg, #1C0A00, #3D1500)',
-                    color: 'white',
-                    boxShadow: '0 4px 16px rgba(28,10,0,0.25)',
-                  }}>
-                  {submitting
-                    ? <><span className="animate-spin inline-block">⏳</span> Calcul du score…</>
-                    : <>✅ Valider mes réponses</>}
-                </button>
-              )}
+                ) : (
+                  <button
+                    onClick={detecterEtValider}
+                    disabled={submitting}
+                    className="h-11 rounded-2xl font-bold text-sm transition-all
+                               flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-60"
+                    style={{
+                      background: 'linear-gradient(135deg, #1C0A00, #3D1500)',
+                      color: 'white',
+                      boxShadow: '0 4px 16px rgba(28,10,0,0.25)',
+                    }}>
+                    {submitting
+                      ? <><span className="animate-spin inline-block">⏳</span> Calcul du score…</>
+                      : <>✅ Valider mes réponses</>}
+                  </button>
+                )}
+              </div>
             </>
           )}
         </div>
