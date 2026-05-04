@@ -70,16 +70,24 @@ api.interceptors.response.use(
         onRefreshed(newToken);
         return api(original);
       } catch (refreshErr) {
-        // Le refresh a échoué — déconnecter proprement
         refreshSubscribers = [];
         onRefreshed(null);
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        localStorage.removeItem('user');
-        // Rediriger vers login uniquement si on n'y est pas déjà
-        if (!window.location.pathname.includes('/login')) {
-          window.location.href = '/login';
+
+        // Ne déconnecter que si le serveur a explicitement rejeté le refresh token
+        // (401 de l'endpoint /auth/refresh) — PAS pour des erreurs réseau ou rate limit
+        const refreshStatus = refreshErr?.response?.status;
+        const isHardLogout = refreshStatus === 401 || refreshStatus === 403;
+
+        if (isHardLogout) {
+          localStorage.removeItem('accessToken');
+          localStorage.removeItem('refreshToken');
+          localStorage.removeItem('user');
+          if (!window.location.pathname.includes('/login')) {
+            window.location.href = '/login';
+          }
         }
+        // Sinon : erreur réseau/timeout/rate-limit → on garde la session locale
+        // L'élève reste connecté et réessaiera automatiquement
         return Promise.reject(refreshErr);
       } finally {
         isRefreshing = false;
@@ -100,8 +108,8 @@ export const proactiveTokenRefresh = async () => {
     // Décoder le payload (sans vérification de signature, juste pour lire exp)
     const payload = JSON.parse(atob(token.split('.')[1]));
     const expiresIn = payload.exp * 1000 - Date.now(); // ms restantes
-    // Rafraîchir si moins de 3 jours restants
-    if (expiresIn < 3 * 24 * 60 * 60 * 1000) {
+    // Rafraîchir si moins de 7 jours restants (marge généreuse pour les élèves)
+    if (expiresIn < 7 * 24 * 60 * 60 * 1000) {
       await doRefresh();
     }
   } catch {
