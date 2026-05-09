@@ -65,9 +65,42 @@ const STATUT_DEVOIR = {
 function LayoutParent({ children }) {
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    setLoggingOut(true);
+    // Laisser l'animation se jouer 700ms puis déconnecter
+    await new Promise(r => setTimeout(r, 700));
+    await logout();
+    navigate('/login');
+  };
 
   return (
     <div className="min-h-screen bg-tate-creme">
+      {/* ── Overlay de déconnexion ── */}
+      <AnimatePresence>
+        {loggingOut && (
+          <motion.div
+            key="logout-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="fixed inset-0 z-50 flex flex-col items-center justify-center"
+            style={{ background: 'linear-gradient(135deg,#F97316,#EA580C)' }}>
+            <motion.div
+              initial={{ scale: 0.7, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.1, type: 'spring', stiffness: 260, damping: 20 }}
+              className="flex flex-col items-center gap-4">
+              <div className="w-16 h-16 rounded-3xl bg-white/20 flex items-center justify-center shadow-lg">
+                <LogOut size={28} className="text-white" />
+              </div>
+              <p className="text-white font-serif font-bold text-xl">À bientôt !</p>
+              <p className="text-white/70 text-sm">Déconnexion en cours…</p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <header className="bg-white border-b border-tate-border px-4 py-3
                          flex items-center justify-between sticky top-0 z-10 shadow-card">
         <div className="flex items-center gap-2">
@@ -80,8 +113,8 @@ function LayoutParent({ children }) {
         </div>
         <div className="flex items-center gap-3">
           <span className="text-sm text-tate-terre/60 hidden sm:block">{user?.nom}</span>
-          <button onClick={async () => { await logout(); navigate('/login'); }}
-            className="p-2 rounded-xl hover:bg-red-50 text-tate-terre/50 hover:text-red-500 transition-colors">
+          <button onClick={handleLogout} disabled={loggingOut}
+            className="p-2 rounded-xl hover:bg-red-50 text-tate-terre/50 hover:text-red-500 transition-colors disabled:opacity-40">
             <LogOut size={18} />
           </button>
         </div>
@@ -98,30 +131,92 @@ function CarteEnfant({ enfant, actif, onClick, nbChapTotal }) {
   const pct         = clamp((chapValides / total) * 100);
 
   return (
-    <motion.button whileHover={{ y:-2 }} onClick={onClick}
-      className={`w-full card text-left transition-all ${actif ? 'border-tate-soleil shadow-tate' : 'hover:border-tate-soleil/50'}`}>
-      <div className="flex items-center gap-4">
-        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-tate-soleil to-orange-600 flex items-center justify-center
-                        font-bold text-white text-xl flex-shrink-0 shadow-tate">
-          {enfant.nom?.[0]?.toUpperCase()}
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="font-serif font-bold text-tate-terre text-base">{enfant.nom}</p>
-          <p className="text-xs text-tate-terre/50 mb-2">{enfant.niveau} · {enfant.email}</p>
-          <div className="h-2 bg-tate-doux rounded-full overflow-hidden">
-            <motion.div className="h-full bg-tate-soleil rounded-full"
-              initial={{ width:0 }} animate={{ width:`${pct}%` }} transition={{ duration:0.8, ease:'easeOut' }} />
+    <motion.button
+      whileHover={actif ? {} : { y: -2, scale: 1.01 }}
+      whileTap={{ scale: 0.98 }}
+      onClick={onClick}
+      layout
+      className={`w-full text-left rounded-2xl border-2 transition-all duration-300 overflow-hidden ${
+        actif
+          ? 'border-tate-soleil shadow-tate'
+          : 'border-tate-border bg-white hover:border-tate-soleil/40 opacity-60 hover:opacity-80'
+      }`}
+      style={actif ? { background: 'linear-gradient(135deg,#FFF7ED,#FFF3E8)' } : {}}>
+
+      {/* Bandeau "En cours de consultation" si actif */}
+      <AnimatePresence>
+        {actif && (
+          <motion.div
+            key="active-banner"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="overflow-hidden">
+            <div className="flex items-center gap-1.5 px-4 py-1.5"
+                 style={{ background: 'linear-gradient(135deg,#F97316,#EA580C)' }}>
+              <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+              <p className="text-[10px] font-bold text-white tracking-wide uppercase">
+                Progression en cours de consultation
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className="flex items-center gap-4 p-4">
+        {/* Avatar */}
+        <motion.div
+          animate={{ scale: actif ? 1.1 : 1 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 22 }}
+          className="flex-shrink-0">
+          <div className={`rounded-2xl flex items-center justify-center font-bold text-white text-xl shadow-tate
+                          ${actif ? 'w-16 h-16' : 'w-12 h-12 text-lg'}`}
+               style={{ background: 'linear-gradient(135deg,#F97316,#EA580C)' }}>
+            {enfant.nom?.[0]?.toUpperCase()}
           </div>
-          <p className="text-xs text-tate-terre/40 mt-1">
+        </motion.div>
+
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <p className={`font-serif font-bold text-tate-terre ${actif ? 'text-lg' : 'text-base'}`}>
+              {enfant.nom}
+            </p>
+            {actif && (
+              <motion.span
+                initial={{ scale: 0 }} animate={{ scale: 1 }}
+                className="text-[10px] font-bold bg-tate-soleil text-white px-2 py-0.5 rounded-full">
+                ✓ Sélectionné
+              </motion.span>
+            )}
+          </div>
+          <p className={`text-xs mb-2 ${actif ? 'text-tate-terre/60' : 'text-tate-terre/40'}`}>
+            {enfant.niveau}
+          </p>
+          <div className={`rounded-full overflow-hidden ${actif ? 'h-2.5 bg-tate-soleil/20' : 'h-1.5 bg-tate-doux'}`}>
+            <motion.div
+              className={`h-full rounded-full ${actif ? 'bg-tate-soleil' : 'bg-tate-terre/20'}`}
+              initial={{ width: 0 }}
+              animate={{ width: `${pct}%` }}
+              transition={{ duration: 0.9, ease: 'easeOut' }} />
+          </div>
+          <p className={`text-xs mt-1 ${actif ? 'text-tate-terre/60 font-medium' : 'text-tate-terre/30'}`}>
             {chapValides} chapitre{chapValides > 1 ? 's' : ''} maîtrisé{chapValides > 1 ? 's' : ''}
           </p>
         </div>
-        {enfant.streak > 0 && (
-          <div className="flex items-center gap-1 flex-shrink-0 bg-amber-50 border border-amber-200 rounded-full px-2 py-1">
-            <Flame size={13} className="text-alerte" />
-            <span className="text-xs font-bold text-tate-terre">{enfant.streak}j</span>
-          </div>
-        )}
+
+        {/* Streak + flèche */}
+        <div className="flex flex-col items-end gap-2 flex-shrink-0">
+          {enfant.streak > 0 && (
+            <div className="flex items-center gap-1 bg-amber-50 border border-amber-200 rounded-full px-2 py-1">
+              <Flame size={12} className="text-alerte" />
+              <span className="text-xs font-bold text-tate-terre">{enfant.streak}j</span>
+            </div>
+          )}
+          {!actif && (
+            <ChevronDown size={16} className="text-tate-terre/30 -rotate-90" />
+          )}
+        </div>
       </div>
     </motion.button>
   );
