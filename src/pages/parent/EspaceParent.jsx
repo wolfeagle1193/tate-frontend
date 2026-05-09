@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Star, TrendingUp, AlertTriangle, CheckCircle, BookOpen,
-  Flame, Trophy, LogOut, ChevronDown, ChevronUp,
-  Calendar, Clock, Target, BarChart2, Award, Zap,
+  TrendingUp, AlertTriangle, CheckCircle,
+  Flame, LogOut, ChevronDown,
+  Calendar, Clock,
   KeyRound, Eye, EyeOff,
 } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
@@ -140,435 +140,542 @@ function MiniBar({ pct, color = 'bg-tate-soleil' }) {
 }
 
 // ─── Détail complet enfant ─────────────────────────────────────
-function DetailEnfant({ enfant, sessions, progression, devoirs, nbChapTotal }) {
-  const chapValides     = enfant.chapitresValides || [];
-  const [onglet, setOnglet] = useState('apercu');
-  const [chapExpanded, setChapExpanded] = useState({});
+function DetailEnfant({ enfant, sessions, progression, devoirs }) {
+  const [onglet, setOnglet] = useState('bilan');
 
-  // ── Calculs analytiques ──
-  const scoresValides   = sessions.filter(s => s.scorePct != null).map(s => clamp(s.scorePct));
-  const scoreMoyen      = scoresValides.length > 0
-    ? clamp(scoresValides.reduce((a,b) => a+b, 0) / scoresValides.length)
+  // ── Nom de matière depuis un chapitre ──
+  const getMat = (chap) => {
+    const mid = chap.chapitreId?.matiereId;
+    if (!mid) return { nom: 'Autre matière', code: '?' };
+    if (typeof mid === 'object') return { nom: mid.nom || 'Autre matière', code: mid.code || '?' };
+    return { nom: 'Autre matière', code: '?' };
+  };
+
+  // ── Toutes les dates de travail (calendrier) ──
+  const allDates = progression
+    .flatMap(c => c.tentatives.map(t => t.completedAt))
+    .filter(Boolean)
+    .map(d => new Date(d).toISOString().slice(0, 10));
+  const activeDays = new Set(allDates);
+
+  // ── Calendrier 28 derniers jours ──
+  const last28 = Array.from({ length: 28 }, (_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - (27 - i));
+    return d.toISOString().slice(0, 10);
+  });
+  const actifCetteSemaine = last28.slice(-7).filter(d => activeDays.has(d)).length;
+  const actifCeMois       = last28.filter(d => activeDays.has(d)).length;
+
+  // ── Statistiques par matière ──
+  const matiereMap = {};
+  for (const chap of progression) {
+    const { nom, code } = getMat(chap);
+    if (!matiereMap[nom]) {
+      matiereMap[nom] = { nom, code, chapitres: [], maitrises: 0, scores: [] };
+    }
+    matiereMap[nom].chapitres.push(chap);
+    matiereMap[nom].scores.push(clamp(chap.meilleurScore));
+    if (chap.maitrise) matiereMap[nom].maitrises++;
+  }
+  const matieres = Object.values(matiereMap)
+    .map(m => ({
+      ...m,
+      scoreMoyen: m.scores.length > 0
+        ? clamp(m.scores.reduce((a, b) => a + b, 0) / m.scores.length)
+        : 0,
+    }))
+    .sort((a, b) => b.scoreMoyen - a.scoreMoyen);
+
+  // ── Chapitres en difficulté (≥ 3 tentatives sans maîtrise) ──
+  const chapDiff = progression
+    .filter(c => !c.maitrise && c.tentatives.length >= 3)
+    .sort((a, b) => b.tentatives.length - a.tentatives.length);
+
+  // ── Chapitres maîtrisés (triés du plus récent) ──
+  const chapMaitrises = progression
+    .filter(c => c.maitrise)
+    .sort((a, b) => new Date(b.derniereAt || 0) - new Date(a.derniereAt || 0));
+
+  // ── Score moyen global (basé sur meilleur score par chapitre) ──
+  const scoresValides = progression.map(c => clamp(c.meilleurScore)).filter(s => s > 0);
+  const scoreMoyen = scoresValides.length > 0
+    ? clamp(scoresValides.reduce((a, b) => a + b, 0) / scoresValides.length)
     : null;
+  const niv = scoreMoyen != null ? niveauLabel(scoreMoyen) : null;
 
-  // Tendance : comparer les 3 dernières sessions vs les 3 précédentes
+  // ── Tendance (3 dernières sessions vs 3 précédentes) ──
+  const allScoresChron = progression
+    .flatMap(c => c.tentatives.map(t => ({ score: clamp(t.score || 0), date: t.completedAt })))
+    .filter(t => t.date)
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .map(t => t.score);
   const tendance = (() => {
-    if (scoresValides.length < 4) return null;
-    const recent   = scoresValides.slice(0, 3).reduce((a,b) => a+b, 0) / 3;
-    const precedent = scoresValides.slice(3, 6).reduce((a,b) => a+b, 0) / Math.min(3, scoresValides.slice(3,6).length);
+    if (allScoresChron.length < 4) return null;
+    const recent    = allScoresChron.slice(0, 3).reduce((a, b) => a + b, 0) / 3;
+    const precedent = allScoresChron.slice(3, 6).reduce((a, b) => a + b, 0) / Math.min(3, allScoresChron.slice(3, 6).length);
     const diff = recent - precedent;
-    if (diff > 5)  return { label:'En hausse',  color:'text-emerald-600', emoji:'↑' };
-    if (diff < -5) return { label:'En baisse',  color:'text-red-500',     emoji:'↓' };
-    return           { label:'Stable',       color:'text-amber-500',    emoji:'→' };
+    if (diff > 5)  return { label: 'En hausse', color: 'text-emerald-600', emoji: '↑' };
+    if (diff < -5) return { label: 'En baisse',  color: 'text-red-500',    emoji: '↓' };
+    return           { label: 'Stable',       color: 'text-amber-500',   emoji: '→' };
   })();
 
-  const niveau     = scoreMoyen != null ? niveauLabel(scoreMoyen) : null;
-  const enDiff     = progression.filter(c => !c.maitrise && c.meilleurScore < 70);
-  const points_forts = progression.filter(c => c.maitrise && c.meilleurScore >= 80);
-
-  // Devoirs en attente / à venir
   const devoirsActifs  = devoirs.filter(d => d.statut === 'en_attente' || d.statut === 'en_cours');
   const devoirsValides = devoirs.filter(d => d.statut === 'valide');
   const devoirsExpires = devoirs.filter(d => d.statut === 'expire');
 
+  const prenom = enfant.nom?.split(' ')[0] || enfant.nom;
+
   const ONGLETS = [
-    { id:'apercu',    icon:BarChart2, label:'Bilan'       },
-    { id:'chapitres', icon:Target,    label:'QCM'          },
-    { id:'devoirs',   icon:Calendar,  label:'Devoirs', badge: devoirsActifs.length || 0 },
+    { id: 'bilan',    label: '📊 Bilan' },
+    { id: 'matieres', label: '📚 Matières' },
+    { id: 'devoirs',  label: '📅 Devoirs', badge: devoirsActifs.length || 0 },
   ];
 
   return (
-    <motion.div initial={{ opacity:0, y:8 }} animate={{ opacity:1, y:0 }} className="space-y-4 mt-4">
+    <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 mt-4">
 
-      {/* ── Niveau global ── */}
-      {niveau && (
-        <div className={`border rounded-2xl p-4 flex items-center gap-4 ${niveau.bg}`}>
-          <span className="text-3xl">{niveau.emoji}</span>
-          <div className="flex-1">
-            <p className="font-bold text-sm text-tate-terre">Niveau global : <span className={niveau.color}>{niveau.txt}</span></p>
-            <p className="text-xs text-tate-terre/60 mt-0.5">
-              Score moyen : <strong className={couleurScore(scoreMoyen)}>{scoreMoyen}%</strong>
-              {tendance && <span className={`ml-2 ${tendance.color} font-semibold`}>{tendance.emoji} {tendance.label}</span>}
-            </p>
+      {/* ── Bannière niveau global ── */}
+      {niv && (
+        <div className={`border-2 rounded-2xl p-4 ${niv.bg}`}>
+          <div className="flex items-center gap-4">
+            <span className="text-4xl">{niv.emoji}</span>
+            <div className="flex-1">
+              <p className="font-bold text-tate-terre">
+                Niveau global : <span className={`${niv.color} text-base`}>{niv.txt}</span>
+                {tendance && (
+                  <span className={`ml-3 text-sm font-semibold ${tendance.color}`}>
+                    {tendance.emoji} {tendance.label}
+                  </span>
+                )}
+              </p>
+              <p className="text-sm text-tate-terre/60 mt-0.5">
+                Meilleur score moyen tous chapitres : <strong className={couleurScore(scoreMoyen)}>{scoreMoyen}%</strong>
+              </p>
+            </div>
           </div>
         </div>
       )}
 
-      {/* ── Stats rapides ── */}
-      <div className="grid grid-cols-3 gap-3">
-        <div className="card text-center py-4">
-          <Flame size={20} className="text-alerte mx-auto mb-1" />
-          <p className="text-xl font-bold text-tate-terre">{enfant.streak || 0}</p>
-          <p className="text-xs text-tate-terre/50">Jours de suite</p>
-        </div>
-        <div className="card text-center py-4">
-          <Trophy size={20} className="text-tate-soleil mx-auto mb-1" />
-          <p className="text-xl font-bold text-tate-terre">{chapValides.length}</p>
-          <p className="text-xs text-tate-terre/50">Validés</p>
-        </div>
-        <div className="card text-center py-4">
-          <Zap size={20} className="text-violet-500 mx-auto mb-1" />
-          <p className="text-xl font-bold text-tate-terre">{sessions.length}</p>
-          <p className="text-xs text-tate-terre/50">Sessions</p>
-        </div>
+      {/* ── Métriques clés 4 cases ── */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        {[
+          {
+            val: chapMaitrises.length,
+            label: 'Chapitres maîtrisés',
+            color: 'text-emerald-600',
+          },
+          {
+            val: progression.length,
+            label: 'Chapitres tentés',
+            color: 'text-tate-terre',
+          },
+          {
+            val: `${actifCetteSemaine}/7`,
+            label: 'Jours actifs (semaine)',
+            color: actifCetteSemaine >= 4 ? 'text-emerald-600' : actifCetteSemaine >= 2 ? 'text-amber-500' : 'text-red-500',
+          },
+          {
+            val: chapDiff.length,
+            label: 'Chapitres en difficulté',
+            color: chapDiff.length === 0 ? 'text-emerald-600' : chapDiff.length <= 2 ? 'text-amber-500' : 'text-red-500',
+          },
+        ].map(({ val, label, color }, i) => (
+          <div key={i} className="card text-center py-3">
+            <p className={`text-2xl font-bold ${color}`}>{val}</p>
+            <p className="text-xs text-tate-terre/50 mt-0.5 leading-tight">{label}</p>
+          </div>
+        ))}
       </div>
 
       {/* ── Onglets ── */}
       <div className="flex rounded-2xl bg-tate-doux p-1 gap-1">
-        {ONGLETS.map(tab => {
-          const Icon = tab.icon;
-          return (
-            <button key={tab.id} onClick={() => setOnglet(tab.id)}
-              className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
-                onglet === tab.id ? 'bg-white shadow text-tate-terre' : 'text-tate-terre/50 hover:text-tate-terre/70'
-              }`}>
-              <Icon size={13} />
-              {tab.label}
-              {tab.badge > 0 && (
-                <span className="w-4 h-4 rounded-full bg-alerte text-white text-[9px] font-bold flex items-center justify-center">
-                  {tab.badge}
-                </span>
-              )}
-            </button>
-          );
-        })}
+        {ONGLETS.map(tab => (
+          <button key={tab.id} onClick={() => setOnglet(tab.id)}
+            className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+              onglet === tab.id ? 'bg-white shadow text-tate-terre' : 'text-tate-terre/50 hover:text-tate-terre/70'
+            }`}>
+            {tab.label}
+            {tab.badge > 0 && (
+              <span className="w-4 h-4 rounded-full bg-alerte text-white text-[9px] font-bold flex items-center justify-center">
+                {tab.badge}
+              </span>
+            )}
+          </button>
+        ))}
       </div>
 
-      {/* ══════════════ BILAN ══════════════ */}
       <AnimatePresence mode="wait">
-      {onglet === 'apercu' && (
-        <motion.div key="apercu" initial={{opacity:0,y:6}} animate={{opacity:1,y:0}} exit={{opacity:0}} className="space-y-4">
 
-          {/* Points nécessitant attention */}
-          {enDiff.length > 0 && (
-            <div className="bg-red-50 border border-red-200 rounded-2xl p-4">
-              <div className="flex items-center gap-2 mb-3">
-                <AlertTriangle size={15} className="text-alerte flex-shrink-0" />
-                <p className="text-sm font-bold text-red-700">Points à renforcer ({enDiff.length})</p>
-              </div>
-              <div className="space-y-2">
-                {enDiff.slice(0, 4).map((c, i) => (
-                  <div key={i} className="flex items-center gap-3">
-                    <p className="text-xs text-tate-terre/70 flex-1 truncate">• {c.titre}</p>
-                    <div className="flex items-center gap-2 flex-shrink-0">
-                      <MiniBar pct={clamp(c.meilleurScore)} color="bg-red-400" />
-                      <span className={`text-xs font-bold w-9 text-right ${couleurScore(clamp(c.meilleurScore))}`}>
-                        {clamp(c.meilleurScore)}%
-                      </span>
-                    </div>
-                  </div>
+        {/* ══════════════ ONGLET BILAN ══════════════ */}
+        {onglet === 'bilan' && (
+          <motion.div key="bilan" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-4">
+
+            {/* Régularité — calendrier 28 jours */}
+            <div className="card">
+              <h3 className="font-serif font-bold text-tate-terre mb-3 flex items-center gap-2">
+                <Calendar size={15} className="text-tate-soleil" />
+                Régularité de travail — 28 derniers jours
+              </h3>
+              <div className="grid grid-cols-7 gap-1 mb-3">
+                {['L','M','M','J','V','S','D'].map((j, i) => (
+                  <p key={i} className="text-center text-[9px] text-tate-terre/30 font-semibold">{j}</p>
                 ))}
-              </div>
-            </div>
-          )}
-
-          {/* Points forts */}
-          {points_forts.length > 0 && (
-            <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4">
-              <div className="flex items-center gap-2 mb-3">
-                <Award size={15} className="text-emerald-600 flex-shrink-0" />
-                <p className="text-sm font-bold text-emerald-700">Points forts ({points_forts.length})</p>
-              </div>
-              <div className="space-y-2">
-                {points_forts.slice(0, 4).map((c, i) => (
-                  <div key={i} className="flex items-center gap-3">
-                    <p className="text-xs text-tate-terre/70 flex-1 truncate">• {c.titre}</p>
-                    <div className="flex items-center gap-2 flex-shrink-0">
-                      <MiniBar pct={clamp(c.meilleurScore)} color="bg-emerald-400" />
-                      <span className="text-xs font-bold text-emerald-700 w-9 text-right">
-                        {clamp(c.meilleurScore)}%
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Activité récente */}
-          <div className="card">
-            <h3 className="font-serif font-bold text-tate-terre mb-3 flex items-center gap-2">
-              <BookOpen size={15} className="text-tate-soleil" /> Activité récente
-            </h3>
-            {sessions.length === 0 ? (
-              <p className="text-sm text-tate-terre/40 text-center py-4">Aucune session enregistrée</p>
-            ) : (
-              <div className="space-y-2">
-                {sessions.slice(0, 8).map((s, i) => {
-                  const score = clamp(s.scorePct);
+                {/* Remplir les cases vides avant le premier jour si nécessaire */}
+                {(() => {
+                  const firstDay = new Date(last28[0] + 'T00:00:00');
+                  const dow = (firstDay.getDay() + 6) % 7; // lundi=0
+                  return Array.from({ length: dow }, (_, i) => (
+                    <div key={`empty-${i}`} />
+                  ));
+                })()}
+                {last28.map((day, i) => {
+                  const isActive = activeDays.has(day);
+                  const isToday  = day === new Date().toISOString().slice(0, 10);
+                  const dayNum   = new Date(day + 'T00:00:00').getDate();
                   return (
-                    <div key={i} className="flex items-center gap-3 py-2 border-b border-tate-border/40 last:border-0">
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm text-tate-terre truncate">{s.chapitreId?.titre || s.chapitreTitre}</p>
-                        <p className="text-xs text-tate-terre/40">
-                          {dateFr(s.completedAt || s.createdAt)}
-                          {s.serie && ` · Série ${s.serie}`}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-2 flex-shrink-0">
-                        <MiniBar pct={score} color={score >= 80 ? 'bg-emerald-400' : score >= 60 ? 'bg-amber-400' : 'bg-red-400'} />
-                        <span className={`text-sm font-bold w-10 text-right ${couleurScore(score)}`}>{score}%</span>
-                        {s.maitrise && <Star size={12} className="fill-tate-soleil text-tate-soleil flex-shrink-0" />}
-                      </div>
+                    <div key={i} title={day}
+                      className={`aspect-square rounded-lg flex items-center justify-center text-[10px] font-bold transition-all ${
+                        isActive
+                          ? 'bg-tate-soleil text-white shadow-sm'
+                          : isToday
+                          ? 'bg-tate-border border-2 border-tate-soleil/40 text-tate-terre/40'
+                          : 'bg-tate-doux text-tate-terre/20'
+                      }`}>
+                      {dayNum}
                     </div>
                   );
                 })}
               </div>
-            )}
-          </div>
-
-          {/* Chapitres maîtrisés */}
-          {chapValides.length > 0 && (
-            <div className="card">
-              <h3 className="font-serif font-bold text-tate-terre mb-3 flex items-center gap-2">
-                <CheckCircle size={15} className="text-emerald-500" /> Chapitres maîtrisés ({chapValides.length})
-              </h3>
-              <div className="space-y-1.5">
-                {chapValides.map((c, i) => (
-                  <div key={i} className="flex items-center gap-2 py-1.5 border-b border-tate-border/30 last:border-0">
-                    <CheckCircle size={13} className="text-emerald-500 flex-shrink-0" />
-                    <p className="text-sm text-tate-terre flex-1 truncate">{c.chapitreId?.titre || 'Chapitre'}</p>
-                    <div className="flex gap-0.5">
-                      {[1,2,3].map(n => (
-                        <Star key={n} size={11}
-                          className={n <= (c.etoiles || 1) ? 'fill-tate-soleil text-tate-soleil' : 'text-tate-doux'} />
-                      ))}
-                    </div>
-                    {c.valideAt && (
-                      <span className="text-[10px] text-tate-terre/30 ml-1 flex-shrink-0">{dateFr(c.valideAt)}</span>
-                    )}
-                  </div>
-                ))}
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-tate-terre/50">
+                  Cette semaine :
+                  <span className={`ml-1 font-bold ${actifCetteSemaine >= 4 ? 'text-emerald-600' : actifCetteSemaine >= 2 ? 'text-amber-500' : 'text-red-500'}`}>
+                    {actifCetteSemaine} jour{actifCetteSemaine > 1 ? 's' : ''}
+                  </span>
+                </span>
+                <span className="text-tate-terre/50">
+                  Ce mois :
+                  <span className="ml-1 font-bold text-tate-terre">{actifCeMois} jour{actifCeMois > 1 ? 's' : ''}</span>
+                </span>
               </div>
+              {actifCetteSemaine === 0 && (
+                <p className="text-xs text-red-600 font-medium mt-2 bg-red-50 border border-red-100 rounded-xl px-3 py-2">
+                  ⚠️ {prenom} n'a pas travaillé sur Taté cette semaine. Un rappel serait utile !
+                </p>
+              )}
+              {actifCetteSemaine >= 5 && (
+                <p className="text-xs text-emerald-700 font-medium mt-2 bg-emerald-50 border border-emerald-100 rounded-xl px-3 py-2">
+                  🌟 Excellente régularité ! {prenom} a travaillé {actifCetteSemaine} jours cette semaine.
+                </p>
+              )}
             </div>
-          )}
 
-          {/* Badges */}
-          {enfant.badges?.length > 0 && (
-            <div className="card">
-              <h3 className="font-serif font-bold text-tate-terre mb-3">Badges obtenus 🏅</h3>
-              <div className="flex gap-2 flex-wrap">
-                {enfant.badges.map((b, i) => (
-                  <span key={i} className="px-3 py-1 rounded-full bg-tate-doux text-tate-terre border border-tate-border text-xs font-semibold">{b}</span>
-                ))}
-              </div>
-            </div>
-          )}
-        </motion.div>
-      )}
-
-      {/* ══════════════ PROGRESSION QCM ══════════════ */}
-      {onglet === 'chapitres' && (
-        <motion.div key="chapitres" initial={{opacity:0,y:6}} animate={{opacity:1,y:0}} exit={{opacity:0}} className="space-y-3">
-          {progression.length === 0 ? (
-            <div className="card text-center py-10">
-              <p className="text-3xl mb-2">📊</p>
-              <p className="text-sm text-tate-terre/50">Aucun exercice QCM effectué pour le moment</p>
-            </div>
-          ) : (
-            progression
-              .sort((a, b) => new Date(b.derniereAt || 0) - new Date(a.derniereAt || 0))
-              .map((chap, i) => {
-                const isOpen  = !!chapExpanded[i];
-                const best    = clamp(Math.max(...chap.tentatives.map(t => t.score || 0)));
-                const lastErr = chap.tentatives[chap.tentatives.length - 1]?.nbErreurs ?? 0;
-                return (
-                  <div key={i} className={`rounded-2xl border-2 overflow-hidden ${
-                    chap.maitrise ? 'border-emerald-200 bg-emerald-50/20' : 'border-tate-border bg-white'
-                  }`}>
-                    <button onClick={() => setChapExpanded(p => ({ ...p, [i]: !p[i] }))}
-                      className="w-full flex items-center gap-3 px-4 py-3 text-left">
-                      <span className="text-xl flex-shrink-0">
-                        {chap.maitrise ? (lastErr === 0 ? '🥇' : lastErr === 1 ? '🏆' : '⭐') : (best >= 60 ? '💪' : '📚')}
-                      </span>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-tate-terre text-sm truncate">{chap.titre}</p>
-                        <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-                          <span className="text-xs text-tate-terre/40">
-                            {chap.tentatives.length} tentative{chap.tentatives.length > 1 ? 's' : ''}
-                          </span>
-                          {chap.maitrise && <span className="text-xs text-emerald-600 font-semibold">✓ Maîtrisé</span>}
-                          {!chap.maitrise && best < 70 && <span className="text-xs text-red-500 font-semibold">⚠ À travailler</span>}
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2 flex-shrink-0">
-                        <div className="text-right">
-                          <p className={`text-base font-bold ${couleurScore(best)}`}>{best}%</p>
-                          <p className="text-[10px] text-tate-terre/30">meilleur</p>
-                        </div>
-                        {isOpen ? <ChevronUp size={14} className="text-tate-terre/30" /> : <ChevronDown size={14} className="text-tate-terre/30" />}
-                      </div>
-                    </button>
-
-                    {isOpen && (
-                      <div className="border-t border-tate-border/40 px-4 py-3 space-y-2 bg-white/50">
-                        {chap.tentatives.map((t, j) => {
-                          const sc   = clamp(t.score || 0);
-                          const nbErr = t.nbErreurs ?? (t.nbTotal - t.nbCorrectes);
-                          return (
-                            <div key={j} className="flex items-center gap-2 text-xs">
-                              <span className="text-tate-terre/30 w-5 flex-shrink-0 text-center">#{t.tentative}</span>
-                              <div className={`w-5 h-5 rounded-lg flex items-center justify-center text-[10px] font-bold flex-shrink-0 ${
-                                t.maitrise ? 'bg-emerald-500 text-white' : 'bg-red-100 text-red-600'
-                              }`}>
-                                {t.maitrise ? '✓' : '✗'}
-                              </div>
-                              <div className="flex-1 h-2 bg-tate-doux rounded-full overflow-hidden">
-                                <div className={`h-full rounded-full ${t.maitrise ? 'bg-emerald-400' : sc >= 60 ? 'bg-amber-400' : 'bg-red-400'}`}
-                                  style={{ width:`${sc}%` }} />
-                              </div>
-                              <span className={`font-bold w-9 text-right ${couleurScore(sc)}`}>{sc}%</span>
-                              <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold border ${
-                                nbErr === 0 ? 'bg-green-50 text-green-700 border-green-200'
-                                : nbErr <= 2 ? 'bg-amber-50 text-amber-700 border-amber-200'
-                                : 'bg-red-50 text-red-700 border-red-200'
-                              }`}>
-                                {nbErr} ✗
+            {/* Chapitres en difficulté (≥ 3 tentatives sans maîtrise) */}
+            {chapDiff.length > 0 && (
+              <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <AlertTriangle size={15} className="text-alerte flex-shrink-0" />
+                  <p className="text-sm font-bold text-red-700">
+                    Chapitres qui posent problème ({chapDiff.length})
+                  </p>
+                </div>
+                <p className="text-xs text-red-600/80 mb-3">
+                  3 tentatives ou plus sans maîtrise — {prenom} a besoin d'un accompagnement sur ces points.
+                </p>
+                <div className="space-y-2">
+                  {chapDiff.map((c, i) => {
+                    const mat  = getMat(c);
+                    const best = clamp(c.meilleurScore);
+                    return (
+                      <div key={i} className="bg-white rounded-xl p-3 border border-red-100">
+                        <div className="flex items-start gap-2 mb-2">
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-semibold text-tate-terre">{c.titre}</p>
+                            <p className="text-xs mt-0.5">
+                              <span className="font-bold text-red-600">{mat.nom}</span>
+                              <span className="text-tate-terre/40 ml-2">
+                                {c.tentatives.length} essais · meilleur score : {best}%
                               </span>
-                              <span className="text-tate-terre/30 text-[10px] w-10 flex-shrink-0">{dateFr(t.completedAt)}</span>
+                            </p>
+                          </div>
+                          <span className="text-xs font-bold bg-red-100 text-red-700 px-2 py-0.5 rounded-full flex-shrink-0 whitespace-nowrap">
+                            {c.tentatives.length} tentatives
+                          </span>
+                        </div>
+                        <MiniBar pct={best} color="bg-red-400" />
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Chapitres maîtrisés avec matière */}
+            {chapMaitrises.length > 0 && (
+              <div className="card">
+                <div className="flex items-center gap-2 mb-3">
+                  <CheckCircle size={15} className="text-emerald-500" />
+                  <p className="text-sm font-bold text-emerald-700">
+                    Chapitres maîtrisés ({chapMaitrises.length})
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  {chapMaitrises.slice(0, 8).map((c, i) => {
+                    const mat     = getMat(c);
+                    const best    = clamp(c.meilleurScore);
+                    const nbTent  = c.tentatives.length;
+                    const medal   = nbTent === 1 ? '🥇' : nbTent === 2 ? '🏆' : '⭐';
+                    return (
+                      <div key={i} className="flex items-center gap-3 py-2 border-b border-tate-border/30 last:border-0">
+                        <span className="text-xl flex-shrink-0">{medal}</span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-tate-terre truncate">{c.titre}</p>
+                          <p className="text-xs text-tate-terre/40">
+                            <span className="text-emerald-600 font-medium">{mat.nom}</span>
+                            <span className="mx-1">·</span>
+                            {nbTent === 1 ? 'Réussi du premier coup !' : `En ${nbTent} tentative${nbTent > 1 ? 's' : ''}`}
+                          </p>
+                        </div>
+                        <span className={`text-sm font-bold flex-shrink-0 ${couleurScore(best)}`}>{best}%</span>
+                      </div>
+                    );
+                  })}
+                  {chapMaitrises.length > 8 && (
+                    <p className="text-xs text-tate-terre/40 text-center pt-1">
+                      + {chapMaitrises.length - 8} autres chapitres maîtrisés
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Message de synthèse */}
+            <div className="bg-tate-doux border border-tate-border rounded-2xl p-4 text-center">
+              <p className="text-sm text-tate-terre leading-relaxed">
+                {chapDiff.length === 0 && chapMaitrises.length > 0
+                  ? `🌟 ${prenom} maîtrise tous les chapitres travaillés — continuez à l'encourager !`
+                  : chapDiff.length > 2
+                  ? `💪 ${prenom} rencontre des difficultés sur ${chapDiff.length} chapitres. N'hésitez pas à contacter le professeur.`
+                  : actifCetteSemaine >= 5
+                  ? `🔥 ${prenom} a été très actif(ve) cette semaine — félicitez-le/la !`
+                  : actifCetteSemaine === 0
+                  ? `⏰ ${prenom} n'a pas travaillé cette semaine. Un petit encouragement peut faire la différence !`
+                  : `💙 Encouragez ${prenom} à travailler régulièrement sur Taté pour progresser !`
+                }
+              </p>
+            </div>
+
+          </motion.div>
+        )}
+
+        {/* ══════════════ ONGLET PAR MATIÈRE ══════════════ */}
+        {onglet === 'matieres' && (
+          <motion.div key="matieres" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-3">
+
+            {matieres.length === 0 ? (
+              <div className="card text-center py-10">
+                <p className="text-3xl mb-2">📚</p>
+                <p className="text-sm text-tate-terre/50">Aucun exercice effectué pour le moment</p>
+              </div>
+            ) : (
+              <>
+                {/* Bandeaux résumé */}
+                {matieres[0]?.scoreMoyen >= 70 && (
+                  <div className="bg-emerald-50 border border-emerald-200 rounded-2xl px-4 py-3 flex items-center gap-3">
+                    <span className="text-2xl">🏆</span>
+                    <p className="text-sm text-emerald-700">
+                      Meilleure matière : <strong>{matieres[0].nom}</strong>
+                      <span className="text-emerald-600 ml-1">({matieres[0].scoreMoyen}% de moyenne · {matieres[0].maitrises}/{matieres[0].chapitres.length} maîtrisés)</span>
+                    </p>
+                  </div>
+                )}
+                {matieres.length > 1 && matieres[matieres.length - 1].scoreMoyen < 65 && (
+                  <div className="bg-red-50 border border-red-200 rounded-2xl px-4 py-3 flex items-center gap-3">
+                    <span className="text-2xl">💪</span>
+                    <p className="text-sm text-red-700">
+                      À renforcer : <strong>{matieres[matieres.length - 1].nom}</strong>
+                      <span className="text-red-600 ml-1">({matieres[matieres.length - 1].scoreMoyen}% de moyenne)</span>
+                    </p>
+                  </div>
+                )}
+
+                {/* Carte par matière */}
+                {matieres.map((mat, idx) => {
+                  const statut = mat.scoreMoyen >= 80
+                    ? { txt: 'Forte', cls: 'bg-emerald-100 text-emerald-700', border: 'border-emerald-200', bg: 'bg-emerald-50/30' }
+                    : mat.scoreMoyen >= 65
+                    ? { txt: 'Correcte', cls: 'bg-amber-100 text-amber-700', border: 'border-amber-200', bg: 'bg-amber-50/20' }
+                    : { txt: 'À soutenir', cls: 'bg-red-100 text-red-700', border: 'border-red-200', bg: 'bg-red-50/20' };
+                  const emoji = mat.scoreMoyen >= 80 ? '🌟' : mat.scoreMoyen >= 65 ? '👍' : '⚠️';
+
+                  return (
+                    <div key={idx} className={`rounded-2xl border-2 overflow-hidden ${statut.border} ${statut.bg}`}>
+                      {/* En-tête matière */}
+                      <div className="flex items-center gap-3 px-4 py-3">
+                        <span className="text-2xl flex-shrink-0">{emoji}</span>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-bold text-tate-terre text-base">{mat.nom}</p>
+                          <p className="text-xs text-tate-terre/50 mt-0.5">
+                            {mat.maitrises} maîtrisé{mat.maitrises > 1 ? 's' : ''} sur {mat.chapitres.length} chapitre{mat.chapitres.length > 1 ? 's' : ''} tentés
+                          </p>
+                        </div>
+                        <div className="text-right flex-shrink-0">
+                          <p className={`text-2xl font-bold ${couleurScore(mat.scoreMoyen)}`}>{mat.scoreMoyen}%</p>
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${statut.cls}`}>{statut.txt}</span>
+                        </div>
+                      </div>
+
+                      {/* Barre globale matière */}
+                      <div className="px-4 pb-3">
+                        <MiniBar pct={mat.scoreMoyen}
+                          color={mat.scoreMoyen >= 80 ? 'bg-emerald-400' : mat.scoreMoyen >= 65 ? 'bg-amber-400' : 'bg-red-400'} />
+                      </div>
+
+                      {/* Liste des chapitres de cette matière */}
+                      <div className="border-t border-tate-border/20 bg-white/50 px-4 py-2 space-y-1.5">
+                        {mat.chapitres.map((chap, j) => {
+                          const best    = clamp(chap.meilleurScore);
+                          const nbTent  = chap.tentatives.length;
+                          const enDiff  = !chap.maitrise && nbTent >= 3;
+                          const iconChap = chap.maitrise
+                            ? (nbTent === 1 ? '🥇' : nbTent === 2 ? '🏆' : '⭐')
+                            : enDiff ? '⚠️' : '📖';
+                          return (
+                            <div key={j} className="flex items-center gap-2 text-xs py-1 border-b border-tate-border/10 last:border-0">
+                              <span className="flex-shrink-0">{iconChap}</span>
+                              <p className={`flex-1 truncate ${enDiff ? 'text-red-600 font-medium' : chap.maitrise ? 'text-emerald-700 font-medium' : 'text-tate-terre/70'}`}>
+                                {chap.titre}
+                              </p>
+                              <span className="text-tate-terre/30 flex-shrink-0 whitespace-nowrap">
+                                {nbTent} essai{nbTent > 1 ? 's' : ''}
+                              </span>
+                              <span className={`font-bold w-9 text-right flex-shrink-0 ${couleurScore(best)}`}>{best}%</span>
                             </div>
                           );
                         })}
                       </div>
-                    )}
-                  </div>
-                );
-              })
-          )}
-        </motion.div>
-      )}
+                    </div>
+                  );
+                })}
+              </>
+            )}
+          </motion.div>
+        )}
 
-      {/* ══════════════ DEVOIRS ══════════════ */}
-      {onglet === 'devoirs' && (
-        <motion.div key="devoirs" initial={{opacity:0,y:6}} animate={{opacity:1,y:0}} exit={{opacity:0}} className="space-y-4">
+        {/* ══════════════ ONGLET DEVOIRS ══════════════ */}
+        {onglet === 'devoirs' && (
+          <motion.div key="devoirs" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-4">
 
-          {devoirs.length === 0 ? (
-            <div className="card text-center py-10">
-              <Calendar size={32} className="text-tate-terre/20 mx-auto mb-3" />
-              <p className="font-semibold text-tate-terre">Aucun devoir programmé</p>
-              <p className="text-sm text-tate-terre/40 mt-1">
-                L'enseignant n'a pas encore programmé de devoirs
-              </p>
-            </div>
-          ) : (
-            <>
-              {/* Devoirs actifs */}
-              {devoirsActifs.length > 0 && (
-                <div>
-                  <p className="text-xs font-bold text-tate-terre/50 uppercase tracking-wider mb-2">
-                    📌 À faire ({devoirsActifs.length})
-                  </p>
-                  <div className="space-y-3">
-                    {devoirsActifs.map((d, i) => {
-                      const dateP   = new Date(d.dateProgrammee);
-                      const depasse = dateP < new Date();
-                      const type    = TYPE_DEVOIR[d.type] || { label:d.type, bg:'bg-gray-50 text-gray-700 border-gray-200' };
-                      const statut  = STATUT_DEVOIR[d.statut] || { label:d.statut, dot:'bg-gray-400' };
-                      return (
-                        <div key={i} className={`rounded-2xl border-2 p-4 ${
-                          depasse ? 'border-red-200 bg-red-50/30' : 'border-tate-border bg-white'
-                        }`}>
-                          <div className="flex items-start gap-3">
-                            <div className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${statut.dot}`} />
-                            <div className="flex-1 min-w-0">
-                              <p className="font-semibold text-tate-terre text-sm">
-                                {d.chapitreId?.titre || 'Chapitre'}
-                              </p>
-                              <div className="flex items-center gap-2 mt-1 flex-wrap">
-                                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${type.bg}`}>
-                                  {type.label}
-                                </span>
-                                <span className="text-xs text-tate-terre/50 flex items-center gap-1">
-                                  <Clock size={10} /> {dateLong(d.dateProgrammee)}
-                                </span>
+            {devoirs.length === 0 ? (
+              <div className="card text-center py-10">
+                <Calendar size={32} className="text-tate-terre/20 mx-auto mb-3" />
+                <p className="font-semibold text-tate-terre">Aucun devoir programmé</p>
+                <p className="text-sm text-tate-terre/40 mt-1">
+                  L'enseignant n'a pas encore programmé de devoirs pour {prenom}
+                </p>
+              </div>
+            ) : (
+              <>
+                {devoirsActifs.length > 0 && (
+                  <div>
+                    <p className="text-xs font-bold text-tate-terre/50 uppercase tracking-wider mb-2">
+                      📌 À faire ({devoirsActifs.length})
+                    </p>
+                    <div className="space-y-3">
+                      {devoirsActifs.map((d, i) => {
+                        const dateP   = new Date(d.dateProgrammee);
+                        const depasse = dateP < new Date();
+                        const type    = TYPE_DEVOIR[d.type] || { label: d.type, bg: 'bg-gray-50 text-gray-700 border-gray-200' };
+                        const statut  = STATUT_DEVOIR[d.statut] || { dot: 'bg-gray-400' };
+                        const matNom  = d.chapitreId?.matiereId?.nom;
+                        return (
+                          <div key={i} className={`rounded-2xl border-2 p-4 ${depasse ? 'border-red-200 bg-red-50/30' : 'border-tate-border bg-white'}`}>
+                            <div className="flex items-start gap-3">
+                              <div className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${statut.dot}`} />
+                              <div className="flex-1 min-w-0">
+                                <p className="font-semibold text-tate-terre text-sm">{d.chapitreId?.titre || 'Chapitre'}</p>
+                                {matNom && <p className="text-xs text-tate-soleil font-medium mt-0.5">{matNom}</p>}
+                                <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${type.bg}`}>{type.label}</span>
+                                  <span className="text-xs text-tate-terre/40 flex items-center gap-1">
+                                    <Clock size={10} /> {dateLong(d.dateProgrammee)}
+                                  </span>
+                                </div>
+                                {d.noteAdmin && (
+                                  <p className="text-xs text-tate-terre/60 mt-2 italic bg-tate-doux rounded-lg px-3 py-1.5">
+                                    💬 {d.noteAdmin}
+                                  </p>
+                                )}
+                                {depasse && (
+                                  <p className="text-xs text-red-600 font-semibold mt-1.5">
+                                    ⚠️ Date dépassée — non encore effectué
+                                  </p>
+                                )}
                               </div>
-                              {d.noteAdmin && (
-                                <p className="text-xs text-tate-terre/60 mt-2 italic bg-tate-doux rounded-lg px-3 py-1.5">
-                                  💬 {d.noteAdmin}
-                                </p>
-                              )}
-                              {depasse && (
-                                <p className="text-xs text-red-600 font-semibold mt-1.5">
-                                  ⚠️ Date dépassée — non encore effectué
-                                </p>
-                              )}
                             </div>
                           </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              {/* Devoirs validés */}
-              {devoirsValides.length > 0 && (
-                <div>
-                  <p className="text-xs font-bold text-tate-terre/50 uppercase tracking-wider mb-2">
-                    ✅ Réalisés ({devoirsValides.length})
-                  </p>
-                  <div className="space-y-2">
-                    {devoirsValides.map((d, i) => (
-                      <div key={i} className="rounded-2xl border border-emerald-200 bg-emerald-50/30 px-4 py-3 flex items-center gap-3">
-                        <CheckCircle size={15} className="text-emerald-500 flex-shrink-0" />
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm text-tate-terre truncate">{d.chapitreId?.titre}</p>
-                          <p className="text-xs text-tate-terre/40">{dateFr(d.updatedAt)}</p>
+                {devoirsValides.length > 0 && (
+                  <div>
+                    <p className="text-xs font-bold text-tate-terre/50 uppercase tracking-wider mb-2">
+                      ✅ Réalisés ({devoirsValides.length})
+                    </p>
+                    <div className="space-y-2">
+                      {devoirsValides.map((d, i) => (
+                        <div key={i} className="rounded-2xl border border-emerald-200 bg-emerald-50/30 px-4 py-3 flex items-center gap-3">
+                          <CheckCircle size={15} className="text-emerald-500 flex-shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm text-tate-terre font-medium truncate">{d.chapitreId?.titre}</p>
+                            {d.chapitreId?.matiereId?.nom && (
+                              <p className="text-xs text-tate-terre/40">{d.chapitreId.matiereId.nom}</p>
+                            )}
+                          </div>
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border flex-shrink-0 ${TYPE_DEVOIR[d.type]?.bg || 'bg-gray-50 text-gray-600 border-gray-200'}`}>
+                            {TYPE_DEVOIR[d.type]?.label || d.type}
+                          </span>
                         </div>
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${TYPE_DEVOIR[d.type]?.bg || 'bg-gray-50 text-gray-600 border-gray-200'}`}>
-                          {TYPE_DEVOIR[d.type]?.label || d.type}
-                        </span>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              {/* Devoirs expirés */}
-              {devoirsExpires.length > 0 && (
-                <div>
-                  <p className="text-xs font-bold text-tate-terre/50 uppercase tracking-wider mb-2">
-                    ⏰ Expirés ({devoirsExpires.length})
-                  </p>
-                  <div className="space-y-2">
-                    {devoirsExpires.map((d, i) => (
-                      <div key={i} className="rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 flex items-center gap-3 opacity-70">
-                        <Clock size={14} className="text-gray-400 flex-shrink-0" />
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm text-gray-500 truncate">{d.chapitreId?.titre}</p>
-                          <p className="text-xs text-gray-400">Prévu le {dateLong(d.dateProgrammee)}</p>
+                {devoirsExpires.length > 0 && (
+                  <div>
+                    <p className="text-xs font-bold text-tate-terre/50 uppercase tracking-wider mb-2">
+                      ⏰ Expirés ({devoirsExpires.length})
+                    </p>
+                    <div className="space-y-2">
+                      {devoirsExpires.map((d, i) => (
+                        <div key={i} className="rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 flex items-center gap-3 opacity-70">
+                          <Clock size={14} className="text-gray-400 flex-shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm text-gray-500 truncate">{d.chapitreId?.titre}</p>
+                            {d.chapitreId?.matiereId?.nom && (
+                              <p className="text-xs text-gray-400">{d.chapitreId.matiereId.nom}</p>
+                            )}
+                          </div>
+                          <p className="text-xs text-gray-400 flex-shrink-0">{dateLong(d.dateProgrammee)}</p>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
-            </>
-          )}
-        </motion.div>
-      )}
+                )}
+              </>
+            )}
+          </motion.div>
+        )}
+
       </AnimatePresence>
-
-      {/* Message motivant */}
-      <div className="bg-tate-doux border border-tate-border rounded-2xl p-4 text-center">
-        <p className="text-sm text-tate-terre leading-relaxed">
-          {chapValides.length >= 10
-            ? `🌟 Félicitez ${enfant.nom?.split(' ')[0]} — performances exceptionnelles !`
-            : niveau?.txt === 'Excellent'
-            ? `🌟 ${enfant.nom?.split(' ')[0]} est en excellente progression. Continuez ainsi !`
-            : enfant.streak >= 5
-            ? `🔥 ${enfant.nom?.split(' ')[0]} travaille ${enfant.streak} jours de suite — c'est remarquable !`
-            : enDiff.length > 0
-            ? `💪 Encouragez ${enfant.nom?.split(' ')[0]} sur : ${enDiff[0]?.titre?.slice(0,30) || 'les chapitres difficiles'}`
-            : `💙 Encouragez ${enfant.nom?.split(' ')[0]} à travailler régulièrement sur Taté !`
-          }
-        </p>
-      </div>
     </motion.div>
   );
 }
 
-// ─── PAGE PRINCIPALE ───────────────────────────────────────────
 // ─── Section changement de mot de passe ───────────────────────
 function SectionMotDePasse() {
   const [ouvert,       setOuvert]       = useState(false);
