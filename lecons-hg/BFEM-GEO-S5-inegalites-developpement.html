@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BFEM Géographie – S5 : Les inégalités de développement dans le monde</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:#EEF4FB;color:#0d2137;line-height:1.7;font-size:clamp(.93em,2.2vw,1em)}
+  .header{background:linear-gradient(135deg,#154360,#2E86C1);color:#fff;padding:28px 20px;text-align:center}
+  .header .badge{display:inline-block;background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.5);border-radius:30px;padding:6px 22px;font-size:.85em;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+  .header h1{font-size:clamp(1.2em,4vw,1.65em);font-weight:800}
+  .header p{font-size:.95em;opacity:.9}
+  .container{max-width:860px;margin:30px auto;padding:0 14px}
+  .section{background:#fff;border-radius:12px;padding:22px 20px;margin-bottom:22px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+  .section-title{font-size:1.05em;font-weight:700;color:#fff;background:linear-gradient(90deg,#154360,#2E86C1);padding:10px 16px;border-radius:8px;margin-bottom:18px}
+  .contexte-box{background:#EAF4FE;border:1px solid #AED6F1;border-radius:8px;padding:13px 16px;margin-bottom:12px;font-style:italic;color:#154360}
+  .consigne-box{background:#D6EAF8;border-left:4px solid #2E86C1;padding:11px 15px;border-radius:0 8px 8px 0;font-weight:600;color:#154360;margin-bottom:14px}
+  .doc-box{background:#f5f9ff;border:1px solid #AED6F1;border-radius:8px;padding:14px 18px;margin-bottom:14px}
+  .doc-title{font-weight:700;color:#154360;margin-bottom:8px}
+  .doc-source{text-align:right;font-size:.82em;color:#666;margin-top:8px;font-style:italic}
+  .souligné{text-decoration:underline;font-weight:600}
+  .table-wrapper{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:10px 0;border-radius:8px;border:1px solid #ddd}
+  .table-wrapper table{min-width:520px;width:100%;border-collapse:collapse;font-size:.88em}
+  .table-wrapper th{background:#154360;color:#fff;padding:8px 10px;text-align:center}
+  .table-wrapper td{border:1px solid #ddd;padding:7px 10px;text-align:center}
+  .table-wrapper tr:nth-child(even){background:#f0f6ff}
+  .scroll-hint{font-size:.75em;color:#888;text-align:right;margin-top:3px;display:none}
+  @media(max-width:600px){.scroll-hint{display:block}}
+  .q-block{background:#EAF4FE;border-radius:8px;padding:13px 15px;margin-bottom:14px}
+  .q-num{display:inline-block;background:#2E86C1;color:#fff;font-weight:700;width:26px;height:26px;border-radius:50%;text-align:center;line-height:26px;font-size:.85em;margin-right:8px;flex-shrink:0}
+  .q-text{font-weight:600;color:#154360;display:flex;align-items:flex-start;gap:6px}
+  .pts-badge{font-size:.78em;background:#154360;color:#fff;border-radius:12px;padding:1px 9px;font-weight:700;margin-left:6px;white-space:nowrap}
+  .btn-correction{display:flex;align-items:center;gap:8px;margin-top:12px;padding:10px 16px;border:2px solid #27AE60;background:#fff;color:#1A6632;border-radius:10px;cursor:pointer;font-weight:700;font-size:.88em;transition:.2s;width:100%}
+  .btn-correction:hover{background:#f0fff4}
+  .btn-correction.open{background:#f0fff4}
+  .btn-correction .arrow{transition:transform .25s;font-style:normal}
+  .btn-correction.open .arrow{transform:rotate(180deg)}
+  .corr-wrap{display:none;border-left:4px solid #27AE60;border-radius:0 10px 10px 0;background:#f0fff8;padding:16px 18px;font-size:.91em;line-height:1.85;margin-top:6px}
+  .corr-wrap.visible{display:block}
+  .corr-wrap h4{color:#1A6632;font-size:.95em;margin:12px 0 5px;border-bottom:1px solid #c3e6cb;padding-bottom:3px}
+  .corr-wrap h4:first-child{margin-top:0}
+  .corr-wrap p{margin-bottom:9px;text-align:justify}
+  .canvas-zone{border:2px dashed #AED6F1;border-radius:8px;padding:12px;margin-top:10px;text-align:center;background:#f9fcff;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .canvas-zone canvas{max-width:100%;height:auto}
+  .timer-box{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:#fff;border-radius:10px;padding:12px 18px;box-shadow:0 2px 8px rgba(0,0,0,.08);margin-bottom:22px}
+  .timer-display{font-size:1.5em;font-weight:800;color:#2E86C1;min-width:88px}
+  .btn{padding:9px 20px;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:.88em}
+  .btn-start{background:#154360;color:#fff}
+  .btn-reset{background:#ddd;color:#333}
+  .points{float:right;background:#154360;color:#fff;border-radius:20px;padding:2px 12px;font-size:.78em;font-weight:700}
+  footer{text-align:center;padding:24px;color:#888;font-size:.82em}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="badge">📝 Sujet BFEM — Géographie</div>
+  <h1>Les inégalités de développement dans le monde</h1>
+  <p>Chapitre III – La Terre divisée · 3<sup>e</sup> · Histoire-Géographie</p>
+</div>
+
+<div class="container">
+  <div class="timer-box">
+    <strong style="color:#154360">⏱ Durée :</strong>
+    <span class="timer-display" id="timer">1:30:00</span>
+    <button class="btn btn-start" onclick="startTimer()">Démarrer</button>
+    <button class="btn btn-reset" onclick="resetTimer()">Réinitialiser</button>
+  </div>
+
+  <!-- DISSERTATION -->
+  <div class="section">
+    <div class="section-title">✍️ Partie 1 – Dissertation <span class="points">10 pts</span></div>
+    <div class="contexte-box">
+      « Jamais le monde n'a produit autant de richesses. Et jamais les inégalités entre pays riches et pays pauvres n'ont été aussi criantes. »
+    </div>
+    <div class="consigne-box">
+      Consigne : Caractérise les inégalités de développement entre le Nord et le Sud, puis analyse deux causes de ces inégalités.
+    </div>
+
+    <button class="btn-correction" onclick="toggleCorr('corr-diss')">
+      <span>📝 Voir la correction – Dissertation complète</span>
+      <span class="arrow" style="margin-left:auto">▼</span>
+    </button>
+    <div class="corr-wrap" id="corr-diss">
+      <h4>Introduction</h4>
+      <p>En 2021, selon le Programme des Nations Unies pour le Développement (PNUD), les 1 % les plus riches de la planète possèdent autant de richesses que les 50 % les plus pauvres réunis. Cette statistique révèle l'ampleur des inégalités de développement qui divisent notre monde en deux blocs aux réalités radicalement différentes : le Nord riche et le Sud pauvre.</p>
+      <p>Le développement désigne le processus d'amélioration durable des conditions de vie économiques, sociales et humaines d'une population. Il se mesure notamment à travers l'Indice de Développement Humain (IDH), de 0 à 1, qui intègre le PIB par habitant, l'espérance de vie et le niveau d'instruction. Le « Nord » désigne les pays développés dont l'IDH est supérieur à 0,800, principalement en Europe occidentale, en Amérique du Nord et au Japon. Le « Sud » désigne les pays en développement, dont l'IDH est inférieur à 0,800, situés principalement en Afrique, en Asie du Sud et en Amérique latine.</p>
+      <p><strong>Problématique :</strong> Comment se manifestent les inégalités de développement entre le Nord et le Sud, et quelles en sont les principales causes ?</p>
+      <p><strong>Plan :</strong> Nous décrirons d'abord les inégalités de développement qui séparent le Nord et le Sud, puis nous analyserons deux causes majeures de ces inégalités.</p>
+
+      <h4>I. Les inégalités de développement entre le Nord et le Sud</h4>
+      <p><strong>A. Des écarts économiques abyssaux</strong><br>
+      Les inégalités économiques entre pays riches et pays pauvres sont considérables et multidimensionnelles. Sur le plan du revenu, le PIB par habitant aux États-Unis dépasse 65 000 dollars, tandis qu'il tombe à 575 dollars au Niger, soit un rapport de 1 à 113. La Triade — regroupant les États-Unis, l'Europe occidentale et le Japon — concentre environ 70 % du PIB mondial avec seulement 15 % de la population mondiale. À l'inverse, l'Afrique subsaharienne, qui abrite plus de 15 % de la population mondiale, ne produit que 2 à 3 % du PIB mondial. Le Sénégal, avec un IDH de 0,511 en 2022, se situe dans la catégorie « développement humain faible ».</p>
+      <p><strong>B. Des inégalités sociales et humaines profondes</strong><br>
+      Les inégalités ne sont pas seulement économiques : elles se mesurent aussi en vies humaines. L'espérance de vie atteint 83 ans au Japon ou en Suisse, mais tombe à 54 ans en Sierra Leone ou à 61 ans au Niger. Le taux de mortalité infantile illustre encore plus crûment ces écarts : il est de 2 pour 1 000 en Suède, mais dépasse 70 pour 1 000 au Mali et en République Centrafricaine — ce qui signifie que 7 enfants sur 100 meurent avant l'âge de 5 ans dans ces pays. L'accès à l'éducation est universel en Europe avec un taux de scolarisation de près de 100 %, tandis qu'il reste inférieur à 50 % dans certains pays sahéliens. L'accès à l'eau potable et à l'électricité — éléments de base de la dignité humaine — est garanti en Europe mais fait encore défaut pour des dizaines de millions d'Africains.</p>
+
+      <h4>II. Deux causes des inégalités de développement</h4>
+      <p><strong>A. L'héritage du colonialisme</strong><br>
+      La première cause des inégalités de développement est historique : l'héritage du colonialisme. Du XVe au XXe siècle, les puissances européennes (Royaume-Uni, France, Portugal, Belgique, Allemagne) ont colonisé l'Afrique, l'Asie et l'Amérique latine, pillant leurs ressources naturelles (or, diamants, caoutchouc, ivoire, arachide, coton) et les intégrant dans une économie de traite orientée uniquement vers l'exportation. Lors de la Conférence de Berlin (1884-1885), les puissances européennes ont procédé au partage de l'Afrique en traçant des frontières artificielles qui découpaient des ethnies et des nations sans tenir compte des réalités locales, créant ainsi des États fragilisés et des sources de conflits durables.</p>
+      <p>À l'indépendance (années 1960), les pays africains se retrouvèrent avec des économies mono-exportatrices (production d'une seule matière première), peu ou pas d'industries de transformation, peu de cadres formés et des infrastructures insuffisantes. Ces handicaps structurels hérités de la colonisation ont pesé lourdement sur leurs capacités de développement.</p>
+
+      <p><strong>B. Les échanges commerciaux inégaux et la dette extérieure</strong><br>
+      La deuxième cause est structurelle et contemporaine : les termes de l'échange défavorables et la dette extérieure. Les pays du Sud exportent principalement des matières premières brutes (cacao, café, pétrole, minerais, coton) à des prix relativement bas et importent des produits manufacturés à haute valeur ajoutée (machines, médicaments, véhicules, technologies) à des prix élevés. Cette relation commerciale asymétrique maintient les pays pauvres dans un état de dépendance et d'appauvrissement relatif, car les termes de l'échange leur sont structurellement défavorables.</p>
+      <p>S'ajoute à cela le poids écrasant de la dette extérieure. Pour financer leur développement dans les années 1970-1980, de nombreux pays africains ont contracté d'importants emprunts auprès du FMI, de la Banque mondiale et des banques privées occidentales. Incapables de rembourser ces dettes lorsque les taux d'intérêt ont fortement augmenté, ils se sont retrouvés piégés dans une spirale d'endettement. Le remboursement de la dette absorbe une part considérable des budgets nationaux, réduisant d'autant les investissements dans l'éducation, la santé et les infrastructures. Les plans d'ajustement structurel (PAS) imposés par le FMI dans les années 1980-1990 en échange de l'aide financière ont aggravé la situation en forçant des réductions des dépenses publiques sociales.</p>
+
+      <h4>Conclusion</h4>
+      <p>Les inégalités de développement entre le Nord et le Sud sont profondes et multidimensionnelles : elles s'expriment dans les écarts de revenus, d'espérance de vie, d'accès aux services de base et aux droits fondamentaux. Elles sont le résultat d'une combinaison de causes historiques — l'héritage du colonialisme — et de causes structurelles contemporaines — les échanges inégaux et la dette. Des solutions existent : réformer le commerce international pour le rendre plus équitable, annuler ou alléger les dettes des pays pauvres, développer l'aide publique au développement et promouvoir la transformation locale des matières premières. Mais elles nécessitent une volonté politique mondiale que l'on peine encore à mobiliser.</p>
+    </div>
+  </div>
+
+  <!-- COMMENTAIRE -->
+  <div class="section">
+    <div class="section-title">📊 Partie 2 – Commentaire de documents <span class="points">10 pts</span></div>
+
+    <div class="doc-box">
+      <div class="doc-title">Document 1. Indicateurs de développement comparés (2022)</div>
+      <div class="table-wrapper">
+        <table>
+          <tr><th>Pays</th><th>PIB/hab. ($)</th><th>IDH</th><th>Espérance de vie (ans)</th><th>Mortalité infantile (‰)</th><th>Taux d'alphabétisation (%)</th></tr>
+          <tr><td><strong>Norvège</strong></td><td>89 200</td><td>0,961</td><td>83</td><td>2,1</td><td>99</td></tr>
+          <tr><td><strong>Sénégal</strong></td><td>1 650</td><td>0,511</td><td>67</td><td>35</td><td>52</td></tr>
+          <tr><td><strong>Niger</strong></td><td>575</td><td>0,394</td><td>61</td><td>68</td><td>35</td></tr>
+          <tr><td><strong>Chine</strong></td><td>12 550</td><td>0,768</td><td>77</td><td>6,8</td><td>97</td></tr>
+        </table>
+      </div>
+      <div class="scroll-hint">← Faire glisser pour voir tout le tableau →</div>
+      <div class="doc-source">Source : PNUD, <em>Rapport sur le développement humain 2022</em>.</div>
+    </div>
+
+    <div class="doc-box">
+      <div class="doc-title">Document 2. Les causes des inégalités de développement</div>
+      <div style="font-size:.93em;line-height:1.85;text-align:justify;margin-top:6px">
+        « Les inégalités de <span class="souligné">développement</span> entre le Nord et le Sud s'expliquent par une combinaison de facteurs historiques et structurels. Le <span class="souligné">colonialisme</span> a durablement orienté les économies africaines et asiatiques vers l'exportation de matières premières brutes, sans permettre l'industrialisation. Aujourd'hui encore, les <span class="souligné">termes de l'échange</span> restent défavorables aux pays du Sud : les prix des matières premières qu'ils exportent (café, cacao, minerais, coton) stagnent ou baissent, tandis que les produits manufacturés qu'ils importent coûtent de plus en plus cher. La <span class="souligné">dette extérieure</span>, contractée pour financer le développement, absorbe une part considérable des budgets nationaux, réduisant les investissements dans l'éducation et la santé. »
+      </div>
+      <div class="doc-source">Source : adapté du <em>Rapport Mondial sur le Développement Humain</em>, PNUD, 2022.</div>
+    </div>
+
+    <!-- Question 1 -->
+    <div class="q-block">
+      <div class="q-text"><span class="q-num">1</span><span><strong>Définis les termes soulignés dans le document 2 :</strong> <em>développement, colonialisme, termes de l'échange, dette extérieure</em> <span class="pts-badge">4 pts</span></span></div>
+      <button class="btn-correction" onclick="toggleCorr('corr-q1')">
+        <span>✅ Voir la correction</span>
+        <span class="arrow" style="margin-left:auto">▼</span>
+      </button>
+      <div class="corr-wrap" id="corr-q1">
+        <p><strong>Développement :</strong> Le développement est un processus d'amélioration durable et globale des conditions de vie d'une population, prenant en compte les dimensions économique (augmentation du PIB et du niveau de vie), sociale (accès à la santé, à l'éducation, à l'eau potable, à l'emploi) et humaine (libertés individuelles, égalité hommes-femmes, participation citoyenne). Il se mesure notamment par l'Indice de Développement Humain (IDH), qui varie de 0 à 1 et intègre le PIB par habitant, l'espérance de vie et la durée moyenne de scolarisation. Le « développement durable » ajoute une dimension environnementale : se développer aujourd'hui sans compromettre les ressources des générations futures.</p>
+        <p><strong>Colonialisme :</strong> Le colonialisme désigne le système de domination politique, économique et culturelle exercé par des puissances européennes sur des territoires étrangers qu'elles ont conquis et colonisés. Ce phénomène s'est développé à partir du XVe siècle avec les grandes découvertes, et a atteint son apogée au XIXe siècle avec le partage de l'Afrique (Conférence de Berlin, 1884-1885), qui a soumis la quasi-totalité du continent africain à la domination européenne (France, Royaume-Uni, Belgique, Portugal, Allemagne). Le colonialisme a structuré les économies colonisées autour de l'exportation de matières premières au profit des métropoles, empêchant toute industrialisation locale et laissant des économies dépendantes à l'indépendance.</p>
+        <p><strong>Termes de l'échange :</strong> Les termes de l'échange désignent le rapport entre les prix des exportations d'un pays et les prix de ses importations. Lorsque les termes de l'échange sont défavorables, cela signifie que le pays vend ses produits à bas prix (matières premières : café, cacao, pétrole, minerais) et achète cher les produits qu'il importe (produits manufacturés, médicaments, technologies). Cette asymétrie des échanges commerciaux appauvrit structurellement les pays du Sud, dont les revenus à l'exportation stagnent ou diminuent, tandis que leurs dépenses à l'importation augmentent. Cela crée un déficit commercial chronique et une dépendance économique vis-à-vis des pays riches.</p>
+        <p><strong>Dette extérieure :</strong> La dette extérieure désigne l'ensemble des sommes empruntées par un État auprès de créanciers étrangers — autres États, institutions financières internationales (FMI, Banque mondiale) ou banques privées — pour financer ses investissements ou combler ses déficits budgétaires. Ces emprunts doivent être remboursés avec des intérêts. Dans les années 1970-1980, de nombreux pays africains ont contracté des dettes importantes. Incapables de les rembourser, ils ont dû accepter les conditions strictes du FMI (réduction des dépenses publiques, privatisations). Le remboursement de la dette absorbe aujourd'hui des ressources précieuses qui manquent pour financer l'éducation, la santé et les infrastructures.</p>
+      </div>
+    </div>
+
+    <!-- Question 2 -->
+    <div class="q-block">
+      <div class="q-text"><span class="q-num">2</span><span><strong>À l'aide du document 1, construis un diagramme à barres comparant le PIB/habitant des quatre pays. Interprète ce graphique.</strong> <span class="pts-badge">3 pts</span></span></div>
+      <div class="canvas-zone">
+        <canvas id="chartPIB" width="660" height="210"></canvas>
+        <p style="font-size:.83em;color:#555;margin-top:6px">Histogramme interactif · Reproduis sur ta copie avec axes, titre, unités et couleurs différentes</p>
+      </div>
+      <button class="btn-correction" onclick="toggleCorr('corr-q2')">
+        <span>✅ Voir l'interprétation du graphique</span>
+        <span class="arrow" style="margin-left:auto">▼</span>
+      </button>
+      <div class="corr-wrap" id="corr-q2">
+        <h4>Comment construire le graphique</h4>
+        <p>Trace un axe vertical (ordonnée) gradué de 0 à 100 000 dollars par habitant, et un axe horizontal (abscisse) avec les quatre pays (Norvège, Sénégal, Niger, Chine). Utilise une couleur différente pour chaque pays. Trace les barres à la hauteur correspondante. Donne un titre : « PIB par habitant en dollars américains (2022) ».</p>
+        <h4>Interprétation du graphique</h4>
+        <p>Le diagramme met en évidence des inégalités économiques absolument considérables entre les quatre pays représentés. La Norvège, avec 89 200 dollars par habitant, domine très largement le graphique. Seule sa barre est vraiment visible ; les autres semblent minuscules en comparaison. La Chine se situe à 12 550 dollars par habitant — loin derrière la Norvège mais dans une position intermédiaire. Le Sénégal (1 650 $/hab.) et le Niger (575 $/hab.) présentent des barres presque invisibles à cette échelle.</p>
+        <p>Pour mesurer l'ampleur des écarts : la Norvège a un PIB par habitant 153 fois supérieur à celui du Niger, et 54 fois supérieur à celui du Sénégal. Autrement dit, un Norvégien produit en moyenne en un jour ce qu'un Nigérien produit en 5 mois. Ce graphique illustre de façon saisissante la fracture Nord-Sud et confirme les données de l'IDH : la Norvège (IDH 0,961) est au sommet du développement humain mondial, tandis que le Niger (IDH 0,394) figure parmi les pays les moins avancés. La Chine (IDH 0,768), avec une croissance soutenue depuis 30 ans, illustre le phénomène des pays émergents qui réduisent progressivement l'écart avec les pays développés.</p>
+      </div>
+    </div>
+
+    <!-- Question 3 -->
+    <div class="q-block">
+      <div class="q-text"><span class="q-num">3</span><span><strong>À l'aide des deux documents et de tes connaissances, explique pourquoi le Sénégal peine à se développer malgré ses ressources naturelles.</strong> <span class="pts-badge">3 pts</span></span></div>
+      <button class="btn-correction" onclick="toggleCorr('corr-q3')">
+        <span>✅ Voir la correction</span>
+        <span class="arrow" style="margin-left:auto">▼</span>
+      </button>
+      <div class="corr-wrap" id="corr-q3">
+        <p>Le Sénégal est un pays doté de ressources naturelles significatives : phosphates (quatrième réserve mondiale), ressources halieutiques abondantes (côtes de l'Atlantique parmi les plus poissonneuses d'Afrique), terres agricoles cultivables (arachide, coton, mil, riz), ressources minières (or, zircon) et, plus récemment, des gisements de pétrole et de gaz offshore découverts dans les années 2010. Pourtant, malgré ces atouts, le Sénégal présente en 2022 un IDH de 0,511, une espérance de vie de 67 ans, un taux de mortalité infantile de 35 ‰ et un taux d'alphabétisation de seulement 52 % (Doc. 1). Comment expliquer ce paradoxe ?</p>
+        <h4>L'héritage du colonialisme et la dépendance structurelle</h4>
+        <p>Le premier facteur est historique. Le document 2 souligne que le colonialisme « a durablement orienté les économies africaines vers l'exportation de matières premières brutes, sans permettre l'industrialisation ». Le cas du Sénégal est emblématique : pendant la colonisation française, l'économie sénégalaise a été structurée autour de la monoculture de l'arachide — destinée à être exportée brute vers les huileries de Rouen en France. Les Français ont construit un réseau ferroviaire (Dakar-Saint-Louis, Thiès-Kaolack) uniquement pour faciliter l'acheminement de l'arachide vers le port de Dakar. Aucune industrie de transformation locale n'a été développée, aucune formation de cadres ne correspondait aux besoins d'un État indépendant. À l'indépendance en 1960, le Sénégal hérite d'une économie extravertie, dépendante d'un seul produit et d'un seul marché.</p>
+        <h4>Les termes de l'échange défavorables</h4>
+        <p>Le deuxième facteur est économique et structurel. Le document 2 indique que « les termes de l'échange restent défavorables aux pays du Sud ». Le Sénégal exporte ses ressources sous forme brute : du poisson frais ou séché, des phosphates non transformés, des arachides décortiquées — à des prix faibles et instables sur les marchés internationaux. En retour, il importe des produits manufacturés chers : des engrais chimiques, des équipements agricoles, des médicaments, des technologies. Cette asymétrie commerciale crée un déficit chronique de la balance commerciale. Par exemple, les phosphates sénégalais sont exportés bruts et transformés à l'étranger en engrais qui sont ensuite réimportés au Sénégal à un prix bien plus élevé. Si le Sénégal transformait lui-même ses matières premières, il créerait de la valeur ajoutée, des emplois et des revenus supplémentaires.</p>
+        <h4>La dette extérieure et les politiques imposées</h4>
+        <p>Enfin, comme l'indique le document 2, la dette extérieure absorbe une part importante du budget national sénégalais, réduisant les ressources disponibles pour financer l'éducation (taux d'alphabétisation de seulement 52 % — Doc. 1), la santé (mortalité infantile de 35 ‰) et les infrastructures. Dans les années 1980-1990, les plans d'ajustement structurel (PAS) imposés par le FMI ont contraint le Sénégal à privatiser des entreprises publiques, à réduire les subventions agricoles et à diminuer les dépenses sociales, aggravant la pauvreté. Pour sortir de ce cercle vicieux, le Sénégal doit développer des industries de transformation, diversifier ses exportations, renforcer son système éducatif et profiter de ses nouvelles ressources pétrolières et gazières pour financer son propre développement endogène.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>BFEM · Histoire-Géographie 3e · Taté — Plateforme éducative sénégalaise</footer>
+
+<script>
+function toggleCorr(id){
+  const el=document.getElementById(id);
+  const btn=el.previousElementSibling;
+  const isOpen=el.classList.contains('visible');
+  el.classList.toggle('visible',!isOpen);
+  btn.classList.toggle('open',!isOpen);
+  btn.querySelector('.arrow').textContent=isOpen?'▼':'▲';
+  if(!isOpen)setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'nearest'}),50);
+}
+
+window.onload=function(){
+  const c=document.getElementById('chartPIB');if(!c)return;
+  const dpr=window.devicePixelRatio||1;
+  const dW=Math.min(c.parentElement.clientWidth-28,660);
+  const dH=210;
+  c.style.width=dW+'px';c.style.height=dH+'px';
+  c.width=dW*dpr;c.height=dH*dpr;
+  const ctx=c.getContext('2d');ctx.scale(dpr,dpr);
+  const W=dW,H=dH;
+  const pays=['Norvège','Sénégal','Niger','Chine'];
+  const vals=[89200,1650,575,12550];
+  const colors=['#1A5276','#2E86C1','#E74C3C','#F39C12'];
+  const pad={left:65,right:16,top:28,bottom:50};
+  const cW=W-pad.left-pad.right,cH=H-pad.top-pad.bottom;
+  const maxV=100000,bW=cW/pays.length*0.44;
+  ctx.strokeStyle='#154360';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(pad.left,pad.top);ctx.lineTo(pad.left,H-pad.bottom);ctx.lineTo(W-pad.right,H-pad.bottom);ctx.stroke();
+  for(let v=0;v<=100000;v+=25000){
+    const y=H-pad.bottom-(v/maxV)*cH;
+    ctx.fillStyle='#333';ctx.font='10px sans-serif';ctx.textAlign='right';
+    ctx.fillText((v/1000)+'k',pad.left-4,y+4);
+    ctx.strokeStyle='#eee';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(pad.left,y);ctx.lineTo(W-pad.right,y);ctx.stroke();
+  }
+  pays.forEach((p,i)=>{
+    const x=pad.left+(i+0.5)*(cW/pays.length)-bW/2;
+    const bH=(vals[i]/maxV)*cH;
+    const y=H-pad.bottom-bH;
+    const g=ctx.createLinearGradient(0,y,0,H-pad.bottom);
+    g.addColorStop(0,colors[i]);g.addColorStop(1,colors[i]+'aa');
+    ctx.fillStyle=g;ctx.fillRect(x,y,bW,Math.max(bH,2));
+    ctx.fillStyle='#333';ctx.font='bold 10px sans-serif';ctx.textAlign='center';
+    if(bH>14){ctx.fillStyle='#fff';ctx.fillText((vals[i]/1000).toFixed(0)+'k',x+bW/2,y+14);}
+    else{ctx.fillStyle=colors[i];ctx.fillText((vals[i]/1000).toFixed(1)+'k$',x+bW/2,y-5);}
+    ctx.fillStyle='#333';ctx.font='10px sans-serif';
+    ctx.fillText(p,x+bW/2,H-pad.bottom+18);
+  });
+  ctx.fillStyle='#154360';ctx.font='bold 12px sans-serif';ctx.textAlign='center';
+  ctx.fillText('PIB par habitant (en dollars américains, 2022)',W/2,15);
+};
+
+let ts=5400,iv=null;
+const te=document.getElementById('timer');
+function fmt(s){return`${Math.floor(s/3600)}:${String(Math.floor((s%3600)/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;}
+function startTimer(){if(iv)return;iv=setInterval(()=>{if(ts<=0){clearInterval(iv);te.style.color='#e53935';return;}ts--;te.textContent=fmt(ts);if(ts<=300)te.style.color='#e53935';},1000);}
+function resetTimer(){clearInterval(iv);iv=null;ts=5400;te.textContent=fmt(ts);te.style.color='#2E86C1';}
+</script>
+</body>
+</html>

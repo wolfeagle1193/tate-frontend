@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BFEM Histoire – S5 : Décolonisation et Guerre Froide</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#FDF6EC;color:#2c1a00;line-height:1.75;font-size:16px}
+.header{background:linear-gradient(135deg,#7B4100,#C27A00);color:#fff;padding:24px 16px;text-align:center}
+.header .badge{display:inline-block;background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.5);border-radius:30px;padding:5px 18px;font-size:.78em;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.header h1{font-size:clamp(1.1em,4.5vw,1.65em);font-weight:800;line-height:1.3}
+.header p{font-size:.88em;opacity:.9;margin-top:5px}
+.container{max-width:860px;margin:22px auto;padding:0 14px}
+.timer-box{display:flex;align-items:center;gap:12px;background:#fff;border-radius:12px;padding:12px 16px;box-shadow:0 2px 8px rgba(0,0,0,.09);margin-bottom:18px;flex-wrap:wrap}
+.timer-label{font-weight:700;color:#7B4100;white-space:nowrap;font-size:.9em}
+.timer-display{font-size:1.5em;font-weight:800;color:#C27A00;min-width:78px;font-variant-numeric:tabular-nums}
+.btn{padding:8px 16px;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:.85em;transition:.15s}
+.btn-start{background:#7B4100;color:#fff}.btn-reset{background:#ede8df;color:#7B4100}
+.methode-box{background:#fff8e1;border:1.5px dashed #F9A825;border-radius:10px;padding:14px 18px;margin-bottom:18px;font-size:.88em;color:#5a3800}
+.methode-box strong{display:block;margin-bottom:6px;font-size:.95em;color:#7B4100}
+.section{background:#fff;border-radius:14px;padding:20px 20px 14px;margin-bottom:20px;box-shadow:0 2px 10px rgba(0,0,0,.08)}
+.section-title{font-size:1em;font-weight:800;color:#fff;background:linear-gradient(90deg,#7B4100,#C27A00);padding:9px 16px;border-radius:8px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px}
+.points{background:rgba(255,255,255,.25);border-radius:20px;padding:2px 10px;font-size:.78em;font-weight:700;white-space:nowrap}
+.contexte-box{background:#FFF8E1;border:1px solid #F9A825;border-radius:8px;padding:12px 16px;margin-bottom:12px;font-style:italic;color:#4a3000;font-size:.92em;line-height:1.7}
+.consigne-box{background:#FFF3CD;border-left:4px solid #C27A00;padding:11px 15px;border-radius:0 8px 8px 0;font-weight:700;color:#4a3000;margin-bottom:16px;font-size:.93em;line-height:1.6}
+.doc-box{background:#fdf8f0;border:1px solid #e8d8b8;border-radius:10px;padding:14px 16px;margin-bottom:14px}
+.doc-title{font-weight:700;color:#7B4100;margin-bottom:8px;font-size:.9em}
+.doc-text{font-size:.91em;line-height:1.85;text-align:justify}
+.doc-source{text-align:right;font-size:.78em;color:#888;margin-top:8px;font-style:italic}
+.souligné{text-decoration:underline;font-weight:600;color:#a04000}
+.questions-list{list-style:none;padding:0;counter-reset:qnum}
+.questions-list>li{counter-increment:qnum;display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:10px;margin-bottom:12px;background:#FFF8E1}
+.questions-list>li::before{content:counter(qnum);background:#C27A00;color:#fff;font-weight:800;width:28px;height:28px;min-width:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.82em;margin-top:1px}
+.q-inner{width:100%}
+.q-texte{font-size:.92em;font-weight:600;color:#4a2000;line-height:1.6}
+.reponse{width:100%;min-height:100px;border:1.5px solid #e8d8b8;border-radius:8px;padding:10px 12px;font-size:.9em;resize:vertical;font-family:inherit;background:#fffdf8;margin-top:8px;color:#2c1a00}
+.reponse:focus{outline:none;border-color:#C27A00;background:#fff}
+.btn-correction{display:flex;align-items:center;gap:8px;margin-top:14px;padding:11px 18px;border:2px solid #27AE60;background:#fff;color:#1A6632;border-radius:10px;cursor:pointer;font-weight:700;font-size:.9em;transition:.2s;width:100%}
+.btn-correction:hover{background:#f0fff4}
+.btn-correction .arrow{transition:transform .25s;display:inline-block}
+.btn-correction.open{background:#f0fff4}
+.btn-correction.open .arrow{transform:rotate(180deg)}
+.corr-wrap{display:none;margin-top:0;border-left:4px solid #27AE60;border-radius:0 10px 10px 0;background:#f0fff8;padding:18px 20px;font-size:.92em;line-height:1.85;color:#0d2b1a}
+.corr-wrap.visible{display:block}
+.corr-wrap h3{color:#1A5276;font-size:1em;font-weight:800;margin:16px 0 6px;padding-bottom:4px;border-bottom:1px solid #bee3cc}
+.corr-wrap h3:first-child{margin-top:0}
+.corr-wrap h4{color:#1A6632;font-size:.93em;font-weight:700;margin:12px 0 4px}
+.corr-wrap p{margin-bottom:10px;text-align:justify}
+.corr-wrap p:last-child{margin-bottom:0}
+.corr-wrap .note-methodo{background:#e8f8f0;border:1px solid #a9dfbf;border-radius:6px;padding:9px 13px;margin-bottom:10px;font-size:.88em;color:#1A5276;font-style:italic}
+.corr-badge{display:inline-flex;align-items:center;gap:6px;background:#27AE60;color:#fff;border-radius:20px;padding:4px 14px;font-size:.8em;font-weight:700;margin-bottom:14px}
+footer{text-align:center;padding:28px 16px;color:#888;font-size:.8em}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="badge">📝 Sujet BFEM — Histoire</div>
+  <h1>Décolonisation et Guerre Froide</h1>
+  <p>Décolonisation · Guerre Froide · 3<sup>e</sup> · Histoire-Géographie · Année 2023 – Session Remplacement</p>
+</div>
+<div class="container">
+  <div class="timer-box">
+    <span class="timer-label">⏱ Durée :</span>
+    <span class="timer-display" id="timer">1:30:00</span>
+    <button class="btn btn-start" onclick="startTimer()">▶ Démarrer</button>
+    <button class="btn btn-reset" onclick="resetTimer()">↺ Réinitialiser</button>
+  </div>
+  <div class="methode-box">
+    <strong>📐 Rappel méthodologique — La dissertation (BFEM)</strong>
+    <strong>Introduction :</strong> Amorce → Définition des termes → Problématique → Plan annoncé.<br>
+    <strong>Développement :</strong> 2 ou 3 parties avec sous-parties A/B, chaque argument appuyé sur un exemple précis (date, acteur, lieu).<br>
+    <strong>Conclusion :</strong> Synthèse → Réponse à la problématique → Ouverture.
+  </div>
+
+  <!-- PARTIE 1 -->
+  <div class="section">
+    <div class="section-title">✍️ Partie 1 – Dissertation <span class="points">10 pts</span></div>
+    <div class="contexte-box">La fin de la Deuxième Guerre Mondiale annonce la Guerre Froide mais, en même temps, elle voit l'accélération de la décolonisation.</div>
+    <div class="consigne-box">Consigne : Après avoir décrit les origines de la Guerre Froide et de la décolonisation, analyse à l'aide de deux exemples précis leurs influences réciproques.</div>
+    <textarea class="reponse" style="min-height:220px" placeholder="Rédigez votre dissertation ici…"></textarea>
+    <button class="btn-correction" onclick="toggleCorr('corr-diss')">
+      <span>✅</span><span style="flex:1;text-align:left">Voir la correction complète — Dissertation</span><span class="arrow">▼</span>
+    </button>
+    <div id="corr-diss" class="corr-wrap">
+      <div class="corr-badge">✅ Correction modèle — niveau BFEM</div>
+      <div class="note-methodo">💡 Copie modèle intégrale. Compare avec ta rédaction pour identifier tes points d'amélioration.</div>
+
+      <h3>INTRODUCTION</h3>
+      <p>L'année 1945 voit la fin de la Deuxième Guerre Mondiale et l'effondrement des anciens équilibres. Deux phénomènes majeurs dominent alors la scène internationale : d'un côté, la Guerre Froide, cette confrontation indirecte entre les États-Unis et l'URSS ; de l'autre, la décolonisation, ce mouvement par lequel les peuples d'Asie et d'Afrique arrachent leur indépendance aux puissances coloniales européennes. La Guerre Froide désigne l'état de tension permanente qui oppose les États-Unis (bloc occidental capitaliste) et l'URSS (bloc communiste) sans conflit armé direct entre les deux superpuissances, de 1947 à 1991. La décolonisation désigne le processus par lequel les colonies accèdent à l'indépendance et à la souveraineté. Comment ces deux phénomènes sont-ils apparus, et comment se sont-ils mutuellement influencés ? Nous décrirons d'abord les origines de ces deux grands mouvements, avant d'analyser leurs influences réciproques à travers deux exemples précis.</p>
+
+      <h3>DÉVELOPPEMENT</h3>
+      <h4>I. LES ORIGINES DE LA GUERRE FROIDE ET DE LA DÉCOLONISATION</h4>
+      <h4>A. Les origines de la Guerre Froide</h4>
+      <p>La Guerre Froide naît de la méfiance croissante entre les États-Unis et l'URSS dès la fin de la Deuxième Guerre Mondiale. À la conférence de Yalta (février 1945), les deux superpuissances divisent le monde en zones d'influence. Mais dès 1946, les tensions s'aggravent : Churchill parle de « rideau de fer » qui coupe l'Europe en deux. En mars 1947, le président Truman prononce son discours devant le Congrès américain et affirme que « les États-Unis doivent soutenir les peuples libres qui résistent à des tentatives d'asservissement » — c'est la naissance de la doctrine Truman qui engage les États-Unis à contenir l'expansion communiste dans le monde entier. En riposte, l'URSS de Staline renforce son emprise sur les démocraties populaires d'Europe orientale. L'Europe est coupée en deux blocs antagonistes, et cette division s'étend rapidement au monde entier.</p>
+      <h4>B. Les origines de la décolonisation</h4>
+      <p>La décolonisation trouve ses origines dans plusieurs facteurs convergents. Premièrement, l'affaiblissement des puissances coloniales : la France et le Royaume-Uni, épuisés par la guerre, n'ont plus les moyens militaires et financiers de maintenir leurs empires coloniaux. Deuxièmement, les idéaux de la Charte de l'Atlantique (1941) et de la Charte des Nations Unies (1945) qui proclament le droit des peuples à disposer d'eux-mêmes constituent un puissant argument pour les indépendantistes. Troisièmement, les mouvements nationalistes se renforcent partout : le Congrès National Africain (ANC) en Afrique du Sud, le FLN en Algérie, le Viet-Minh de Hô Chi Minh en Indochine. Enfin, la participation des soldats africains et asiatiques à la guerre a éveillé leur conscience politique, et ils rentrent chez eux déterminés à réclamer l'égalité de droits.</p>
+
+      <h4>II. INFLUENCES RÉCIPROQUES DE LA GUERRE FROIDE ET DE LA DÉCOLONISATION</h4>
+      <h4>Exemple 1 : La guerre d'Indochine et du Viêt Nam (1946-1975)</h4>
+      <p>La guerre d'Indochine illustre parfaitement l'imbrication de la décolonisation et de la Guerre Froide. Le mouvement indépendantiste de Hô Chi Minh (Viet-Minh) combat d'abord la France coloniale. La victoire de Diên Biên Phu (7 mai 1954) contraint la France à signer les Accords de Genève qui partagent le Viêt Nam en deux : le Nord communiste (allié de l'URSS et de la Chine) et le Sud pro-occidental. Les États-Unis, appliquant la doctrine Truman, s'engagent militairement au Sud pour « contenir » le communisme. Ainsi, ce qui était à l'origine une guerre de décolonisation contre la France devient un conflit de Guerre Froide entre les États-Unis et le bloc communiste. La guerre du Viêt Nam (1965-1975) fera 2 millions de morts civils vietnamiens et 58 000 soldats américains, pour s'achever par la réunification du Viêt Nam sous régime communiste en 1975.</p>
+      <h4>Exemple 2 : L'indépendance des pays africains</h4>
+      <p>La Guerre Froide a également accéléré les indépendances africaines. Les États-Unis, désireux de se distinguer des « colonisateurs » européens pour rallier les peuples du Tiers-Monde à leur camp, ont exercé une pression sur la France et le Royaume-Uni pour qu'ils accordent l'indépendance à leurs colonies. L'URSS, de son côté, soutenait les mouvements nationalistes africains pour étendre son influence. Ces deux pressions ont contribué à la vague d'indépendances africaines de 1960 (« Année de l'Afrique » : 17 pays indépendants en une seule année). Le Sénégal, par exemple, obtient son indépendance le 20 août 1960. Cependant, une fois indépendants, ces pays deviennent des enjeux de la Guerre Froide : chaque superpuissance cherche à les rallier à son camp en leur offrant aide économique et militaire.</p>
+
+      <h3>CONCLUSION</h3>
+      <p>La Guerre Froide et la décolonisation, nées toutes deux de la Deuxième Guerre Mondiale, ne sont pas des phénomènes parallèles mais profondément liés. La Guerre Froide a accéléré les indépendances en incitant les États-Unis et l'URSS à soutenir les mouvements anticoloniaux pour séduire le Tiers-Monde. En retour, la décolonisation a transformé de nombreuses guerres d'indépendance en conflits de Guerre Froide par procuration, comme le montrent les exemples du Viêt Nam et de l'Angola. Ces interactions ont redessiné le visage de la planète au cours du XX<sup>e</sup> siècle.</p>
+    </div>
+  </div>
+
+  <!-- PARTIE 2 -->
+  <div class="section">
+    <div class="section-title">📄 Partie 2 – Commentaire historique <span class="points">10 pts</span></div>
+    <div class="doc-box">
+      <div class="doc-title">Document — La décolonisation de l'Afrique noire française</div>
+      <div class="doc-text">
+        « L'émancipation de l'Afrique noire se fait progressivement. En 1946, la constitution de la IV<sup>e</sup> République accorde à ces territoires un début d'autonomie et le droit d'élire leurs représentants dans les assemblées françaises. La loi-cadre Defferre accorde en 1956 une large autonomie interne aux territoires africains. En 1958, le général de Gaulle les laisse choisir entre l'indépendance et l'appartenance à la Communauté française. À l'exception de la Guinée, toutes les colonies de l'Afrique noire française optent pour la seconde solution. Elles jouissent désormais d'une large autonomie interne. Peu à peu, toutes ces colonies demandent à la France le transfert des compétences. »
+      </div>
+      <div class="doc-source">Source : http://www.cvce.eu/fr</div>
+    </div>
+
+    <ol class="questions-list">
+      <li>
+        <div class="q-inner">
+          <div class="q-texte">Décris le contexte historique des faits relatés dans le document. <span style="font-size:.8em;color:#C27A00;font-weight:400">(3 pts)</span></div>
+          <textarea class="reponse" style="min-height:90px" placeholder="Votre réponse…"></textarea>
+          <button class="btn-correction" onclick="toggleCorr('corr-q1')">
+            <span>✅</span><span style="flex:1;text-align:left">Voir la correction — Question 1</span><span class="arrow">▼</span>
+          </button>
+          <div id="corr-q1" class="corr-wrap">
+            <div class="corr-badge">✅ Correction complète</div>
+            <p>Ce document s'inscrit dans le contexte de l'après-Deuxième Guerre Mondiale et de la décolonisation de l'Afrique noire française. Après 1945, la France est affaiblie économiquement et moralement par l'occupation allemande et par sa défaite militaire. Elle ne peut plus maintenir son empire colonial par la seule force. Simultanément, les élites africaines — en partie formées en France et revenues chez elles après la guerre — réclament de plus en plus fortement l'égalité des droits et l'autonomie politique. Sur la scène internationale, la Guerre Froide pousse les États-Unis et l'URSS à soutenir les mouvements anticoloniaux pour gagner l'appui du Tiers-Monde. La Conférence de Bandoeng (1955), réunissant 29 pays afro-asiatiques, renforce les aspirations indépendantistes africaines en condamnant le colonialisme. C'est dans ce contexte que la France concède progressivement des réformes, tentant de conserver son influence tout en accordant une autonomie croissante à ses colonies.</p>
+          </div>
+        </div>
+      </li>
+      <li>
+        <div class="q-inner">
+          <div class="q-texte">Relève les différentes réformes réalisées par la France en faveur de ses colonies africaines. <span style="font-size:.8em;color:#C27A00;font-weight:400">(3 pts)</span></div>
+          <textarea class="reponse" style="min-height:100px" placeholder="Votre réponse…"></textarea>
+          <button class="btn-correction" onclick="toggleCorr('corr-q2')">
+            <span>✅</span><span style="flex:1;text-align:left">Voir la correction — Question 2</span><span class="arrow">▼</span>
+          </button>
+          <div id="corr-q2" class="corr-wrap">
+            <div class="corr-badge">✅ Correction complète</div>
+            <p>Le document mentionne trois grandes réformes réalisées par la France en faveur de ses colonies africaines, qui constituent autant d'étapes vers l'indépendance :</p>
+            <h4>1. La Constitution de la IV<sup>e</sup> République (1946)</h4>
+            <p>La nouvelle constitution française de 1946 instaure l'Union française, qui remplace formellement l'empire colonial. Elle accorde aux territoires africains un début d'autonomie institutionnelle et leur reconnaît le droit d'élire des représentants qui siègent dans les assemblées françaises (Assemblée nationale, Assemblée de l'Union française). Des personnalités comme Léopold Sédar Senghor (Sénégal) et Félix Houphouët-Boigny (Côte d'Ivoire) siègent alors à Paris. La loi Lamine Guèye (1946) accorde la citoyenneté française à tous les ressortissants de l'Union française.</p>
+            <h4>2. La Loi-cadre Defferre (1956)</h4>
+            <p>La loi-cadre Defferre, du nom du ministre de la France d'Outre-Mer Gaston Defferre, est adoptée le 23 juin 1956. Elle accorde une large autonomie interne à chaque territoire africain, qui obtient son propre gouvernement local (conseil de gouvernement) et son propre Assemblée territoriale, élus au suffrage universel. Cette loi est une étape décisive car elle dote les territoires d'institutions politiques fonctionnelles, préparant ainsi leur future indépendance.</p>
+            <h4>3. Le référendum de 1958 et la Communauté française</h4>
+            <p>En 1958, le général de Gaulle, revenu au pouvoir, propose à toutes les colonies de choisir par référendum entre l'indépendance immédiate et l'adhésion à la Communauté française. Cette communauté accorde une large autonomie interne tout en maintenant des liens avec la France (défense, politique étrangère, monnaie). À l'exception de la Guinée de Sékou Touré, qui dit « non » et choisit l'indépendance immédiate, toutes les colonies d'Afrique noire française votent « oui ». Cette réforme ouvre la voie aux indépendances formelles de 1960.</p>
+          </div>
+        </div>
+      </li>
+      <li>
+        <div class="q-inner">
+          <div class="q-texte">Explique les conséquences de ces réformes sur la marche à l'indépendance du Sénégal. <span style="font-size:.8em;color:#C27A00;font-weight:400">(4 pts)</span></div>
+          <textarea class="reponse" style="min-height:110px" placeholder="Votre réponse…"></textarea>
+          <button class="btn-correction" onclick="toggleCorr('corr-q3')">
+            <span>✅</span><span style="flex:1;text-align:left">Voir la correction — Question 3</span><span class="arrow">▼</span>
+          </button>
+          <div id="corr-q3" class="corr-wrap">
+            <div class="corr-badge">✅ Correction complète</div>
+            <p>Ces réformes ont eu des conséquences décisives et directes sur la marche du Sénégal vers l'indépendance.</p>
+            <h4>Les réformes de 1946 forment les cadres politiques sénégalais</h4>
+            <p>La constitution de 1946 et la loi Lamine Guèye permettent à des personnalités sénégalaises de siéger à l'Assemblée nationale française. Léopold Sédar Senghor est élu député en 1945 et 1946. Cette présence au cœur du pouvoir politique français permet aux élites sénégalaises de se former à la politique parlementaire et de nouer des alliances importantes. En 1948, Senghor fonde le Bloc Démocratique Sénégalais (BDS), premier grand parti politique sénégalais à s'affranchir de la tutelle des partis français.</p>
+            <h4>La Loi-cadre de 1956 crée les institutions de la future indépendance</h4>
+            <p>La Loi-cadre Defferre de 1956 permet au Sénégal de se doter de ses premières institutions gouvernementales autonomes : un Conseil de gouvernement avec un président du Conseil. Cette expérience du gouvernement autonome est essentielle pour préparer les cadres politiques sénégalais à gérer un État souverain. Mamadou Dia devient président du Conseil du gouvernement sénégalais en 1957.</p>
+            <h4>Le référendum de 1958 et la proclamation de l'indépendance</h4>
+            <p>En 1958, le Sénégal vote « oui » à la Communauté française lors du référendum de Gaulle. En janvier 1959, le Sénégal et le Soudan français s'unissent pour former la Fédération du Mali. Le 4 avril 1960, la Fédération du Mali accède à l'indépendance. Cependant, des tensions entre Senghor et le dirigeant soudanais Modibo Keïta aboutissent à l'éclatement de la Fédération le 20 août 1960 : le Sénégal proclame unilatéralement son indépendance. Léopold Sédar Senghor devient le premier président de la République du Sénégal, et Mamadou Dia son Premier ministre. L'indépendance du Sénégal est ainsi le fruit direct de ces réformes progressives qui, en vingt ans (1946-1966), ont formé les hommes et les institutions nécessaires à la construction d'un État souverain.</p>
+          </div>
+        </div>
+      </li>
+    </ol>
+  </div>
+</div>
+<footer>BFEM · Histoire-Géographie 3<sup>e</sup> · © Taté — Plateforme éducative sénégalaise</footer>
+<script>
+function toggleCorr(id){const el=document.getElementById(id);const btn=el.previousElementSibling;const isOpen=el.classList.contains('visible');el.classList.toggle('visible',!isOpen);btn.classList.toggle('open',!isOpen);btn.querySelector('.arrow').textContent=isOpen?'▼':'▲';if(!isOpen)setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'nearest'}),50);}
+let tSec=5400,iv=null;const timerEl=document.getElementById('timer');
+const fmt=s=>`${Math.floor(s/3600)}:${String(Math.floor((s%3600)/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+function startTimer(){if(iv)return;iv=setInterval(()=>{if(tSec<=0){clearInterval(iv);timerEl.style.color='#E74C3C';return;}tSec--;timerEl.textContent=fmt(tSec);if(tSec<=300)timerEl.style.color='#E74C3C';},1000);}
+function resetTimer(){clearInterval(iv);iv=null;tSec=5400;timerEl.textContent=fmt(tSec);timerEl.style.color='#C27A00';}
+</script>
+</body>
+</html>

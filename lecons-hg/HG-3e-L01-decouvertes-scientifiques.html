@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 15px; color: #1a1a1a; background: #fff; padding: 16px; line-height: 1.7; }
+  .partie-badge { background: #7B4F2E; color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 10px; }
+  h1 { font-size: 1.35rem; font-weight: 800; color: #7B4F2E; border-bottom: 3px solid #C9A96E; padding-bottom: 8px; margin-bottom: 18px; }
+  .essentiel { background: linear-gradient(135deg, #FFF8F0, #FFF3E0); border-left: 5px solid #C9A96E; border-radius: 10px; padding: 16px 18px; margin-bottom: 22px; }
+  .essentiel-titre { font-size: 1rem; font-weight: 800; color: #7B4F2E; text-align: center; margin-bottom: 10px; letter-spacing: .05em; }
+  .essentiel p { font-weight: 600; color: #5D3A1A; font-size: 14px; }
+  h2 { font-size: 1.05rem; font-weight: 800; color: #7B4F2E; margin: 22px 0 10px; border-left: 4px solid #C9A96E; padding-left: 10px; }
+  h3 { font-size: .95rem; font-weight: 700; color: #5D3A1A; margin: 14px 0 6px; font-style: italic; }
+  p { margin-bottom: 10px; }
+  .tableau { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 13px; }
+  .tableau th { background: #7B4F2E; color: #fff; padding: 8px 10px; text-align: left; }
+  .tableau td { padding: 7px 10px; border-bottom: 1px solid #E8D5C0; }
+  .tableau tr:nth-child(even) td { background: #FFF8F0; }
+  .conclusion { background: #FFF3E0; border: 1.5px solid #C9A96E; border-radius: 8px; padding: 12px 16px; margin: 18px 0; }
+  .conclusion p { font-weight: 700; color: #7B4F2E; margin: 0; font-size: 14px; }
+
+  /* QCM */
+  .qcm-section { margin-top: 30px; border-top: 3px solid #C9A96E; padding-top: 20px; }
+  .qcm-titre { font-size: 1.1rem; font-weight: 800; color: #fff; background: #7B4F2E; padding: 10px 16px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
+  .question-bloc { background: #FAFAFA; border: 1.5px solid #E8D5C0; border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; }
+  .question-texte { font-weight: 700; color: #1a1a1a; margin-bottom: 10px; font-size: 14px; }
+  .question-num { color: #C9A96E; font-weight: 800; }
+  .option { display: flex; align-items: flex-start; gap: 10px; padding: 7px 10px; border-radius: 7px; margin-bottom: 4px; cursor: pointer; transition: background .15s; border: 1.5px solid transparent; }
+  .option:hover { background: #FFF3E0; border-color: #C9A96E; }
+  .option input[type="radio"] { margin-top: 2px; accent-color: #7B4F2E; flex-shrink: 0; width: 16px; height: 16px; }
+  .option label { cursor: pointer; font-size: 14px; color: #333; }
+</style>
+</head>
+<body>
+
+<div class="partie-badge">Partie 1 — Histoire</div>
+<h1>Leçon 1 — Les découvertes scientifiques et les mutations économiques</h1>
+
+<div class="essentiel">
+  <div class="essentiel-titre">📌 L'essentiel à retenir</div>
+  <p>La Révolution industrielle désigne le passage d'une économie agraire et artisanale à une économie industrielle. Essentiellement fondée sur des progrès techniques, des découvertes scientifiques et l'utilisation du pétrole et de l'électricité, elle entraîne la transformation des grands secteurs de l'économie.</p>
+</div>
+
+<h2>I. Les découvertes scientifiques et techniques</h2>
+
+<p>Les découvertes scientifiques désignent les innombrables inventions réalisées dans divers domaines :</p>
+<ul style="margin-left:18px; margin-bottom:10px;">
+  <li>En <strong>Physique</strong> : Faraday (théorie électromagnétique), Hertz (ondes), Röntgen (rayons X), Pierre et Marie Curie (radium actif), Carnot (thermodynamique), Einstein</li>
+  <li>En <strong>Biologie</strong> : Pasteur (microbiologie)</li>
+  <li>En <strong>Chimie</strong> : Mendeleïev (Tableau de classification des éléments chimiques), Berthelot (synthèse des matières organiques)</li>
+</ul>
+
+<p>Les progrès scientifiques et techniques sont surtout favorisés par la foi en la science, l'essor de la recherche expérimentale, la création de laboratoires, la spécialisation des chercheurs et la vulgarisation de la recherche.</p>
+
+<table class="tableau">
+  <thead><tr><th>Date</th><th>Inventeur</th><th>Invention</th><th>Domaine</th><th>Pays</th></tr></thead>
+  <tbody>
+    <tr><td>1785</td><td>WATT</td><td>Machine à vapeur améliorée</td><td>Énergie</td><td>Royaume-Uni</td></tr>
+    <tr><td>1882</td><td>DEPREZ</td><td>Transport énergie électrique</td><td>Énergie</td><td>France</td></tr>
+    <tr><td>1785</td><td>CARTWRIGHT</td><td>Métier à tisser</td><td>Textile</td><td>Royaume-Uni</td></tr>
+    <tr><td>1885</td><td>HEROULT</td><td>Électrométallurgie</td><td>Métallurgie</td><td>France</td></tr>
+    <tr><td>1878</td><td>DAIMLER</td><td>Moteur à explosion</td><td>Transports</td><td>Allemagne</td></tr>
+    <tr><td>1893</td><td>DIESEL</td><td>Moteur à huile lourde</td><td>Transports</td><td>Allemagne</td></tr>
+    <tr><td>1867</td><td>NOBEL</td><td>Dynamite</td><td>Chimie</td><td>Suède</td></tr>
+    <tr><td>1899</td><td>BAYER</td><td>Aspirine</td><td>Chimie</td><td>Allemagne</td></tr>
+  </tbody>
+</table>
+
+<h2>II. Les mutations économiques</h2>
+
+<p>Les applications des différentes découvertes transforment les secteurs de l'économie :</p>
+
+<h3>L'agriculture se modernise</h3>
+<p>Grâce à la <strong>mécanisation</strong> (moissonneuses, batteuses), l'utilisation des engrais chimiques et des semences sélectionnées qui augmentent les rendements. L'agriculture devient intensive, commerciale et spécialisée.</p>
+
+<h3>L'industrie se développe</h3>
+<p>Grâce aux nouvelles techniques (four martin, procédé Bessemer), aux nouvelles formes d'organisation du travail (<strong>taylorisation</strong>, <strong>standardisation</strong>) et à l'exploitation des nouvelles sources d'énergie (pétrole, électricité). Les entreprises se concentrent :</p>
+<ul style="margin-left:18px; margin-bottom:10px;">
+  <li><strong>Techniquement</strong> : concentration horizontale et verticale</li>
+  <li><strong>Financièrement</strong> : ententes, trusts et cartels (Standard Oil Company de Rockefeller, Krupp, Carnegie)</li>
+  <li><strong>Géographiquement</strong> : installation près des gisements et voies de communication</li>
+</ul>
+
+<h3>La révolution des transports</h3>
+<p>Les nouvelles machines et sources d'énergie favorisent la <strong>révolution des transports</strong> : navires à vapeur (paquebots, cargos), ouverture du canal de Suez (1869) et du canal de Panama (1914). Le <strong>chemin de fer</strong> est la grande innovation du XIXe siècle, avec des lignes transcontinentales comme le Transsibérien (Moscou–Vladivostok) et la liaison Atlantique–Pacifique aux États-Unis.</p>
+
+<div class="conclusion">
+  <p>💡 La Deuxième révolution industrielle a révolutionné l'agriculture, l'industrie et les échanges. Elle va favoriser la mise en place d'un nouveau système économique : le capitalisme.</p>
+</div>
+
+<!-- ═══════════════ QCM ═══════════════ -->
+<div class="qcm-section">
+  <div class="qcm-titre">✏️ Exercices — Vérifie ta compréhension</div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">1.</span> La Révolution industrielle désigne :</div>
+    <div class="option"><input type="radio" name="q1" value="a"> <label>Le passage d'une économie agraire et artisanale à une économie industrielle</label></div>
+    <div class="option"><input type="radio" name="q1" value="b" data-correct="true"> <label>Le passage d'une économie agraire et artisanale à une économie industrielle fondée sur les progrès techniques et scientifiques</label></div>
+    <div class="option"><input type="radio" name="q1" value="c"> <label>Une révolution politique qui a renversé les monarchies en Europe</label></div>
+    <div class="option"><input type="radio" name="q1" value="d"> <label>La transformation de l'agriculture uniquement</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">2.</span> Quelles sont les deux nouvelles sources d'énergie qui caractérisent la 2e Révolution industrielle ?</div>
+    <div class="option"><input type="radio" name="q2" value="a"> <label>Le charbon et l'eau</label></div>
+    <div class="option"><input type="radio" name="q2" value="b"> <label>Le gaz et le vent</label></div>
+    <div class="option"><input type="radio" name="q2" value="c" data-correct="true"> <label>Le pétrole et l'électricité</label></div>
+    <div class="option"><input type="radio" name="q2" value="d"> <label>Le bois et la vapeur</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">3.</span> Dans quel domaine scientifique Pierre et Marie Curie ont-ils fait leurs découvertes ?</div>
+    <div class="option"><input type="radio" name="q3" value="a"> <label>La chimie (synthèse des matières organiques)</label></div>
+    <div class="option"><input type="radio" name="q3" value="b"> <label>La biologie (microbiologie)</label></div>
+    <div class="option"><input type="radio" name="q3" value="c" data-correct="true"> <label>La physique (radium actif)</label></div>
+    <div class="option"><input type="radio" name="q3" value="d"> <label>Les mathématiques (calcul différentiel)</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">4.</span> Qui a inventé le moteur à explosion et en quelle année ?</div>
+    <div class="option"><input type="radio" name="q4" value="a"> <label>Diesel en 1893</label></div>
+    <div class="option"><input type="radio" name="q4" value="b" data-correct="true"> <label>Daimler en 1878</label></div>
+    <div class="option"><input type="radio" name="q4" value="c"> <label>Watt en 1785</label></div>
+    <div class="option"><input type="radio" name="q4" value="d"> <label>Nobel en 1867</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">5.</span> Quel canal, ouvert en 1869, a révolutionné le transport maritime ?</div>
+    <div class="option"><input type="radio" name="q5" value="a"> <label>Le canal de Panama</label></div>
+    <div class="option"><input type="radio" name="q5" value="b" data-correct="true"> <label>Le canal de Suez</label></div>
+    <div class="option"><input type="radio" name="q5" value="c"> <label>Le canal de Kiel</label></div>
+    <div class="option"><input type="radio" name="q5" value="d"> <label>Le canal de Corinthe</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">6.</span> La taylorisation est une forme d'organisation du travail basée sur :</div>
+    <div class="option"><input type="radio" name="q6" value="a"> <label>La réduction des salaires des ouvriers</label></div>
+    <div class="option"><input type="radio" name="q6" value="b"> <label>La concentration des entreprises dans une même région</label></div>
+    <div class="option"><input type="radio" name="q6" value="c" data-correct="true"> <label>La spécialisation et la standardisation des tâches pour augmenter la productivité</label></div>
+    <div class="option"><input type="radio" name="q6" value="d"> <label>Le retour aux méthodes artisanales</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">7.</span> Pasteur est célèbre pour ses découvertes dans le domaine de :</div>
+    <div class="option"><input type="radio" name="q7" value="a"> <label>La physique (théorie des ondes)</label></div>
+    <div class="option"><input type="radio" name="q7" value="b"> <label>La chimie (classification des éléments)</label></div>
+    <div class="option"><input type="radio" name="q7" value="c" data-correct="true"> <label>La biologie (microbiologie)</label></div>
+    <div class="option"><input type="radio" name="q7" value="d"> <label>Les transports (moteur à vapeur)</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">8.</span> Qui a inventé la dynamite en 1867 ?</div>
+    <div class="option"><input type="radio" name="q8" value="a"> <label>Bayer (Allemagne)</label></div>
+    <div class="option"><input type="radio" name="q8" value="b"> <label>Berthelot (France)</label></div>
+    <div class="option"><input type="radio" name="q8" value="c" data-correct="true"> <label>Nobel (Suède)</label></div>
+    <div class="option"><input type="radio" name="q8" value="d"> <label>Mendeleïev (Russie)</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">9.</span> Le Transsibérien relie :</div>
+    <div class="option"><input type="radio" name="q9" value="a"> <label>Paris à Moscou</label></div>
+    <div class="option"><input type="radio" name="q9" value="b" data-correct="true"> <label>Moscou à Vladivostok</label></div>
+    <div class="option"><input type="radio" name="q9" value="c"> <label>Berlin à Pékin</label></div>
+    <div class="option"><input type="radio" name="q9" value="d"> <label>Londres à Saint-Pétersbourg</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">10.</span> Mendeleïev est célèbre pour :</div>
+    <div class="option"><input type="radio" name="q10" value="a"> <label>L'invention du moteur électrique</label></div>
+    <div class="option"><input type="radio" name="q10" value="b"> <label>La découverte des rayons X</label></div>
+    <div class="option"><input type="radio" name="q10" value="c" data-correct="true"> <label>Le tableau de classification des éléments chimiques</label></div>
+    <div class="option"><input type="radio" name="q10" value="d"> <label>La synthèse des matières organiques</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">11.</span> Comment l'agriculture évolue-t-elle à l'époque de la Révolution industrielle ?</div>
+    <div class="option"><input type="radio" name="q11" value="a"> <label>Elle redevient une agriculture de subsistance</label></div>
+    <div class="option"><input type="radio" name="q11" value="b" data-correct="true"> <label>Elle devient intensive, commerciale et spécialisée grâce à la mécanisation et aux engrais chimiques</label></div>
+    <div class="option"><input type="radio" name="q11" value="c"> <label>Elle disparaît au profit de l'industrie</label></div>
+    <div class="option"><input type="radio" name="q11" value="d"> <label>Elle reste identique aux siècles précédents</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">12.</span> La concentration financière des entreprises se fait à travers :</div>
+    <div class="option"><input type="radio" name="q12" value="a"> <label>L'installation des usines près des gisements</label></div>
+    <div class="option"><input type="radio" name="q12" value="b"> <label>La fusion verticale et horizontale des entreprises</label></div>
+    <div class="option"><input type="radio" name="q12" value="c" data-correct="true"> <label>Les ententes, trusts et cartels comme Standard Oil Company, Krupp, Carnegie</label></div>
+    <div class="option"><input type="radio" name="q12" value="d"> <label>La création d'universités et de laboratoires</label></div>
+  </div>
+
+</div>
+</body>
+</html>

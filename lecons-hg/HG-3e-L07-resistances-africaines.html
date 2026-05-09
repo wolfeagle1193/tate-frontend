@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 15px; color: #1a1a1a; background: #fff; padding: 16px; line-height: 1.7; }
+  .partie-badge { background: #1A5276; color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 10px; }
+  h1 { font-size: 1.35rem; font-weight: 800; color: #1A5276; border-bottom: 3px solid #2E86C1; padding-bottom: 8px; margin-bottom: 18px; }
+  .essentiel { background: linear-gradient(135deg, #EBF5FB, #D6EAF8); border-left: 5px solid #2E86C1; border-radius: 10px; padding: 16px 18px; margin-bottom: 22px; }
+  .essentiel-titre { font-size: 1rem; font-weight: 800; color: #1A5276; text-align: center; margin-bottom: 10px; }
+  .essentiel p { font-weight: 600; color: #1A5276; font-size: 14px; }
+  h2 { font-size: 1.05rem; font-weight: 800; color: #1A5276; margin: 22px 0 10px; border-left: 4px solid #2E86C1; padding-left: 10px; }
+  h3 { font-size: .95rem; font-weight: 700; color: #154360; margin: 14px 0 6px; }
+  p { margin-bottom: 10px; }
+  ul { margin-left: 18px; margin-bottom: 10px; }
+  li { margin-bottom: 5px; }
+  .hero-card { border-radius: 12px; padding: 14px 18px; margin: 14px 0; border: 2px solid; }
+  .hero-arme { background: linear-gradient(135deg, #FDEDEC, #FADBD8); border-color: #E74C3C; }
+  .hero-pacif { background: linear-gradient(135deg, #E9F7EF, #D5F5E3); border-color: #27AE60; }
+  .hero-nom { font-size: 1rem; font-weight: 800; margin-bottom: 4px; }
+  .hero-arme .hero-nom { color: #C0392B; }
+  .hero-pacif .hero-nom { color: #1E8449; }
+  .hero-dates { font-size: 12px; font-weight: 600; opacity: 0.7; margin-bottom: 8px; }
+  .frise-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 6px; font-size: 13px; }
+  .frise-date { border-radius: 6px; padding: 2px 8px; font-weight: 700; white-space: nowrap; flex-shrink: 0; color: #fff; }
+  .date-rouge { background: #E74C3C; }
+  .date-vert { background: #27AE60; }
+  .bilan-box { background: #F8F9FA; border: 1.5px solid #BDC3C7; border-radius: 10px; padding: 14px 16px; margin: 14px 0; }
+  .bilan-titre { font-weight: 800; color: #1A5276; margin-bottom: 10px; font-size: 14px; }
+  .bilan-neg { background: #FDEDEC; border-left: 4px solid #E74C3C; border-radius: 6px; padding: 8px 12px; margin-bottom: 8px; font-size: 13px; }
+  .bilan-pos { background: #E9F7EF; border-left: 4px solid #27AE60; border-radius: 6px; padding: 8px 12px; margin-bottom: 8px; font-size: 13px; }
+  .qcm-section { margin-top: 30px; border-top: 3px solid #2E86C1; padding-top: 20px; }
+  .qcm-titre { font-size: 1.1rem; font-weight: 800; color: #fff; background: #1A5276; padding: 10px 16px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
+  .question-bloc { background: #FAFAFA; border: 1.5px solid #AED6F1; border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; }
+  .question-texte { font-weight: 700; color: #1a1a1a; margin-bottom: 10px; font-size: 14px; }
+  .question-num { color: #2E86C1; font-weight: 800; }
+  .option { display: flex; align-items: flex-start; gap: 10px; padding: 7px 10px; border-radius: 7px; margin-bottom: 4px; cursor: pointer; border: 1.5px solid transparent; }
+  .option:hover { background: #EBF5FB; border-color: #2E86C1; }
+  .option input[type="radio"] { margin-top: 2px; accent-color: #1A5276; flex-shrink: 0; width: 16px; height: 16px; }
+  .option label { cursor: pointer; font-size: 14px; color: #333; }
+</style>
+</head>
+<body>
+
+<div class="partie-badge">Partie 2 — L'impérialisme en Afrique</div>
+<h1>Leçon 7 — Les résistances à la colonisation : formes, exemples et bilan</h1>
+
+<div class="essentiel">
+  <div class="essentiel-titre">📌 L'essentiel à retenir</div>
+  <p>Face à la conquête coloniale européenne, les peuples africains n'ont pas accepté passivement leur domination. Ils ont résisté sous deux formes : la résistance armée (guerre) et la résistance non armée (résistance spirituelle, culturelle). Ces résistances illustrent le refus de la domination étrangère.</p>
+</div>
+
+<h2>I. Les résistances armées</h2>
+
+<h3>A. Lat Dior Diop (Sénégal)</h3>
+
+<div class="hero-card hero-arme">
+  <div class="hero-nom">⚔️ Lat Dior Diop — Damel du Cayor</div>
+  <div class="hero-dates">vers 1842 — 26 octobre 1886 (Dékhélé)</div>
+  <ul style="font-size:13px;">
+    <li><strong>1862</strong> : Intronisé Damel (roi) du Cayor.</li>
+    <li>S'allie à <strong>Maba Diakhou Ba</strong> pour renforcer sa résistance contre les Français.</li>
+    <li><strong>1865</strong> : Bat les Français à la bataille de <strong>Pathé Badiane</strong>.</li>
+    <li><strong>1870</strong> : Redevient Damel du Cayor après avoir été exilé.</li>
+    <li><strong>1879</strong> : S'oppose farouchement à la construction de la ligne de chemin de fer <strong>Dakar–Saint-Louis</strong> qui traverserait le Cayor sans son accord.</li>
+    <li><strong>26 octobre 1886</strong> : Meurt au combat à <strong>Dékhélé</strong> en refusant de fuir, préférant mourir libre. Symbole suprême de la résistance sénégalaise.</li>
+  </ul>
+</div>
+
+<h3>B. Samory Touré (Guinée/Mali)</h3>
+
+<div class="hero-card hero-arme">
+  <div class="hero-nom">⚔️ Samory Touré — L'Almami du Wassoulou</div>
+  <div class="hero-dates">vers 1830 — 1900 (Gabon)</div>
+  <ul style="font-size:13px;">
+    <li>Né vers <strong>1830</strong> en Haute-Guinée, il fonde l'empire du <strong>Wassoulou</strong>.</li>
+    <li>Crée une armée disciplinée et s'approvisionne en armes modernes.</li>
+    <li><strong>1887</strong> : Signe le traité de <strong>Bissandougou</strong> avec les Français, délimitant les zones d'influence.</li>
+    <li><strong>1889</strong> : Signe le traité de <strong>Nyako</strong>. Mais continue sa résistance en se repliant vers l'est.</li>
+    <li><strong>1898</strong> : Capturé par les Français, déporté au <strong>Gabon</strong>.</li>
+    <li>Meurt en déportation deux ans après sa capture, en <strong>1900</strong>. Son empire a tenu pendant plus de 15 ans face aux Français.</li>
+  </ul>
+</div>
+
+<h2>II. Les résistances non armées (pacifiques)</h2>
+
+<h3>A. Cheikh Ahmadou Bamba (Sénégal)</h3>
+
+<div class="hero-card hero-pacif">
+  <div class="hero-nom">🕌 Cheikh Ahmadou Bamba — Fondateur du Mouridisme</div>
+  <div class="hero-dates">vers 1852 (Mbacké-Baol) — 19 juillet 1927</div>
+  <ul style="font-size:13px;">
+    <li>Né vers <strong>1852</strong> à <strong>Mbacké-Baol</strong>, dans une famille de marabouts.</li>
+    <li>Fonde la confrérie <strong>mouride</strong> prônant le travail, la prière et la résistance spirituelle.</li>
+    <li>Son influence croissante inquiète les Français qui le perçoivent comme une menace.</li>
+    <li><strong>1895-1902</strong> : Premier exil au <strong>Gabon</strong> (7 ans).</li>
+    <li><strong>1903-1907</strong> : Deuxième exil en <strong>Mauritanie</strong>.</li>
+    <li>Rentre au Sénégal en 1907. Son enseignement se poursuit malgré les persécutions.</li>
+    <li><strong>19 juillet 1927</strong> : Décède à Diourbel. Il est vénéré comme une figure de résistance spirituelle et d'indépendance morale.</li>
+  </ul>
+</div>
+
+<h3>B. Aline Sitoé Diatta (Casamance)</h3>
+
+<div class="hero-card hero-pacif">
+  <div class="hero-nom">🌟 Aline Sitoé Diatta — La Reine de Cabrousse</div>
+  <div class="hero-dates">1920 (Cabrousse) — 1944 (Tombouctou)</div>
+  <ul style="font-size:13px;">
+    <li>Née en <strong>1920</strong> à <strong>Cabrousse</strong>, en Basse-Casamance.</li>
+    <li>Chef spirituel et politique de son peuple, les Diola, elle appelle à la résistance non-violente contre les exigences coloniales françaises (impôts, travail forcé, fournitures de riz).</li>
+    <li><strong>1943</strong> : Arrêtée par les autorités coloniales françaises.</li>
+    <li>Déportée au <strong>Mali</strong>, puis à <strong>Tombouctou</strong>.</li>
+    <li><strong>1944</strong> : Meurt en déportation à Tombouctou, à seulement 24 ans. Elle reste une figure héroïque de la Casamance.</li>
+  </ul>
+</div>
+
+<h2>III. Bilan des résistances</h2>
+
+<div class="bilan-box">
+  <div class="bilan-titre">⚖️ Bilan : des défaites militaires mais un héritage durable</div>
+  <div class="bilan-neg">
+    <strong>❌ Raisons des échecs militaires :</strong><br>
+    • <strong>Divisions africaines</strong> : les chefs africains ne s'unissaient pas face à l'ennemi commun.<br>
+    • <strong>Supériorité technique</strong> des Européens : armes à feu modernes contre lances et épées.<br>
+    • Isolement des résistances : chaque résistance était locale et n'avait pas de coordination régionale.
+  </div>
+  <div class="bilan-pos">
+    <strong>✅ Héritage positif :</strong><br>
+    • Préservation du <strong>patrimoine culturel</strong> et des identités africaines.<br>
+    • Sauvegarde des <strong>religions</strong> et traditions locales.<br>
+    • Transmission d'un <strong>esprit de refus</strong> de la domination qui inspirera les mouvements d'indépendance du XXe siècle.<br>
+    • Ces résistants sont devenus des <strong>héros nationaux</strong> dans leurs pays respectifs.
+  </div>
+</div>
+
+<!-- ===== QCM ===== -->
+<div class="qcm-section">
+  <div class="qcm-titre">🎯 Évalue tes connaissances — 24 questions</div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">1.</span> En quelle année Lat Dior Diop a-t-il été intronisé Damel du Cayor pour la première fois ?</div>
+    <div class="option"><input type="radio" name="q1" value="a"><label>1879</label></div>
+    <div class="option"><input type="radio" name="q1" value="b" data-correct="true"><label>1862</label></div>
+    <div class="option"><input type="radio" name="q1" value="c"><label>1870</label></div>
+    <div class="option"><input type="radio" name="q1" value="d"><label>1886</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">2.</span> À quelle bataille Lat Dior a-t-il battu les Français en 1865 ?</div>
+    <div class="option"><input type="radio" name="q2" value="a"><label>Bataille de Dékhélé</label></div>
+    <div class="option"><input type="radio" name="q2" value="b"><label>Bataille de Dakar</label></div>
+    <div class="option"><input type="radio" name="q2" value="c" data-correct="true"><label>Bataille de Pathé Badiane</label></div>
+    <div class="option"><input type="radio" name="q2" value="d"><label>Bataille de Saint-Louis</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">3.</span> Contre quel projet Lat Dior s'est-il particulièrement opposé en 1879 ?</div>
+    <div class="option"><input type="radio" name="q3" value="a"><label>La construction d'une école française au Cayor</label></div>
+    <div class="option"><input type="radio" name="q3" value="b" data-correct="true"><label>La construction de la ligne de chemin de fer Dakar–Saint-Louis</label></div>
+    <div class="option"><input type="radio" name="q3" value="c"><label>L'installation d'une garnison française à Thiès</label></div>
+    <div class="option"><input type="radio" name="q3" value="d"><label>La construction d'un port à Dakar</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">4.</span> Comment Lat Dior est-il mort le 26 octobre 1886 ?</div>
+    <div class="option"><input type="radio" name="q4" value="a"><label>Il est mort en exil au Gabon</label></div>
+    <div class="option"><input type="radio" name="q4" value="b"><label>Il a été exécuté par les Français</label></div>
+    <div class="option"><input type="radio" name="q4" value="c" data-correct="true"><label>Il est mort au combat à Dékhélé en refusant de fuir</label></div>
+    <div class="option"><input type="radio" name="q4" value="d"><label>Il est mort de maladie à Saint-Louis</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">5.</span> Avec quel chef religieux Lat Dior s'est-il allié dans sa résistance contre les Français ?</div>
+    <div class="option"><input type="radio" name="q5" value="a"><label>Cheikh Ahmadou Bamba</label></div>
+    <div class="option"><input type="radio" name="q5" value="b" data-correct="true"><label>Maba Diakhou Ba</label></div>
+    <div class="option"><input type="radio" name="q5" value="c"><label>Samory Touré</label></div>
+    <div class="option"><input type="radio" name="q5" value="d"><label>El Hadj Omar Tall</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">6.</span> Quel titre portait Samory Touré dans son empire ?</div>
+    <div class="option"><input type="radio" name="q6" value="a"><label>Damel</label></div>
+    <div class="option"><input type="radio" name="q6" value="b"><label>Sultan</label></div>
+    <div class="option"><input type="radio" name="q6" value="c" data-correct="true"><label>Almami</label></div>
+    <div class="option"><input type="radio" name="q6" value="d"><label>Bour</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">7.</span> Comment s'appelait l'empire fondé par Samory Touré ?</div>
+    <div class="option"><input type="radio" name="q7" value="a"><label>L'empire mandingue</label></div>
+    <div class="option"><input type="radio" name="q7" value="b"><label>L'empire du Mali</label></div>
+    <div class="option"><input type="radio" name="q7" value="c" data-correct="true"><label>L'empire du Wassoulou</label></div>
+    <div class="option"><input type="radio" name="q7" value="d"><label>L'empire de Guinée</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">8.</span> Quel traité Samory Touré a-t-il signé avec les Français en 1887 ?</div>
+    <div class="option"><input type="radio" name="q8" value="a"><label>Le traité de Nyako</label></div>
+    <div class="option"><input type="radio" name="q8" value="b" data-correct="true"><label>Le traité de Bissandougou</label></div>
+    <div class="option"><input type="radio" name="q8" value="c"><label>Le traité de Conakry</label></div>
+    <div class="option"><input type="radio" name="q8" value="d"><label>Le traité de Bamako</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">9.</span> En quelle année Samory Touré a-t-il été capturé et déporté au Gabon ?</div>
+    <div class="option"><input type="radio" name="q9" value="a"><label>1887</label></div>
+    <div class="option"><input type="radio" name="q9" value="b"><label>1889</label></div>
+    <div class="option"><input type="radio" name="q9" value="c" data-correct="true"><label>1898</label></div>
+    <div class="option"><input type="radio" name="q9" value="d"><label>1900</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">10.</span> Combien de temps après sa capture Samory Touré est-il décédé en déportation ?</div>
+    <div class="option"><input type="radio" name="q10" value="a"><label>6 mois après</label></div>
+    <div class="option"><input type="radio" name="q10" value="b" data-correct="true"><label>2 ans après (en 1900)</label></div>
+    <div class="option"><input type="radio" name="q10" value="c"><label>10 ans après</label></div>
+    <div class="option"><input type="radio" name="q10" value="d"><label>Il n'est jamais décédé en déportation</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">11.</span> Où est né Cheikh Ahmadou Bamba ?</div>
+    <div class="option"><input type="radio" name="q11" value="a"><label>Dakar</label></div>
+    <div class="option"><input type="radio" name="q11" value="b"><label>Touba</label></div>
+    <div class="option"><input type="radio" name="q11" value="c" data-correct="true"><label>Mbacké-Baol</label></div>
+    <div class="option"><input type="radio" name="q11" value="d"><label>Saint-Louis</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">12.</span> Quelle confrérie religieuse Cheikh Ahmadou Bamba a-t-il fondée ?</div>
+    <div class="option"><input type="radio" name="q12" value="a"><label>La confrérie tidiane</label></div>
+    <div class="option"><input type="radio" name="q12" value="b"><label>La confrérie qadiriyya</label></div>
+    <div class="option"><input type="radio" name="q12" value="c" data-correct="true"><label>La confrérie mouride</label></div>
+    <div class="option"><input type="radio" name="q12" value="d"><label>La confrérie layène</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">13.</span> Lors de son premier exil (1895-1902), où Cheikh Ahmadou Bamba a-t-il été déporté ?</div>
+    <div class="option"><input type="radio" name="q13" value="a"><label>En Mauritanie</label></div>
+    <div class="option"><input type="radio" name="q13" value="b" data-correct="true"><label>Au Gabon</label></div>
+    <div class="option"><input type="radio" name="q13" value="c"><label>En Côte d'Ivoire</label></div>
+    <div class="option"><input type="radio" name="q13" value="d"><label>Au Mali</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">14.</span> Lors de son deuxième exil (1903-1907), où Cheikh Ahmadou Bamba a-t-il été déporté ?</div>
+    <div class="option"><input type="radio" name="q14" value="a"><label>Au Gabon</label></div>
+    <div class="option"><input type="radio" name="q14" value="b" data-correct="true"><label>En Mauritanie</label></div>
+    <div class="option"><input type="radio" name="q14" value="c"><label>Au Maroc</label></div>
+    <div class="option"><input type="radio" name="q14" value="d"><label>Au Mali</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">15.</span> En quelle année Cheikh Ahmadou Bamba est-il décédé ?</div>
+    <div class="option"><input type="radio" name="q15" value="a"><label>1907</label></div>
+    <div class="option"><input type="radio" name="q15" value="b"><label>1920</label></div>
+    <div class="option"><input type="radio" name="q15" value="c" data-correct="true"><label>1927</label></div>
+    <div class="option"><input type="radio" name="q15" value="d"><label>1930</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">16.</span> D'où est originaire Aline Sitoé Diatta ?</div>
+    <div class="option"><input type="radio" name="q16" value="a"><label>Dakar</label></div>
+    <div class="option"><input type="radio" name="q16" value="b" data-correct="true"><label>Cabrousse (Basse-Casamance)</label></div>
+    <div class="option"><input type="radio" name="q16" value="c"><label>Ziguinchor</label></div>
+    <div class="option"><input type="radio" name="q16" value="d"><label>Kolda</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">17.</span> En quelle année Aline Sitoé Diatta a-t-elle été arrêtée par les autorités coloniales ?</div>
+    <div class="option"><input type="radio" name="q17" value="a"><label>1940</label></div>
+    <div class="option"><input type="radio" name="q17" value="b" data-correct="true"><label>1943</label></div>
+    <div class="option"><input type="radio" name="q17" value="c"><label>1944</label></div>
+    <div class="option"><input type="radio" name="q17" value="d"><label>1920</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">18.</span> Où Aline Sitoé Diatta est-elle décédée en déportation ?</div>
+    <div class="option"><input type="radio" name="q18" value="a"><label>Dakar</label></div>
+    <div class="option"><input type="radio" name="q18" value="b"><label>Bamako</label></div>
+    <div class="option"><input type="radio" name="q18" value="c" data-correct="true"><label>Tombouctou</label></div>
+    <div class="option"><input type="radio" name="q18" value="d"><label>Conakry</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">19.</span> Quel peuple Aline Sitoé Diatta représentait-elle dans sa résistance ?</div>
+    <div class="option"><input type="radio" name="q19" value="a"><label>Les Wolofs</label></div>
+    <div class="option"><input type="radio" name="q19" value="b"><label>Les Peuls</label></div>
+    <div class="option"><input type="radio" name="q19" value="c" data-correct="true"><label>Les Diola</label></div>
+    <div class="option"><input type="radio" name="q19" value="d"><label>Les Mandingues</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">20.</span> Quelle est la principale différence entre la résistance armée et la résistance non armée à la colonisation ?</div>
+    <div class="option"><input type="radio" name="q20" value="a"><label>La résistance armée était plus efficace</label></div>
+    <div class="option"><input type="radio" name="q20" value="b" data-correct="true"><label>La résistance armée utilise la guerre, la non-armée utilise la religion, la culture et la désobéissance civile</label></div>
+    <div class="option"><input type="radio" name="q20" value="c"><label>La résistance non armée était interdite par les Français</label></div>
+    <div class="option"><input type="radio" name="q20" value="d"><label>Il n'y a pas de différence réelle entre les deux</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">21.</span> Quelle est l'une des principales raisons de l'échec des résistances armées africaines face aux Européens ?</div>
+    <div class="option"><input type="radio" name="q21" value="a"><label>Le manque de courage des résistants africains</label></div>
+    <div class="option"><input type="radio" name="q21" value="b" data-correct="true"><label>La supériorité technique des armes européennes et les divisions entre chefs africains</label></div>
+    <div class="option"><input type="radio" name="q21" value="c"><label>L'absence de ressources naturelles en Afrique</label></div>
+    <div class="option"><input type="radio" name="q21" value="d"><label>Le refus des populations africaines de soutenir leurs chefs</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">22.</span> Quel est l'héritage positif des résistances africaines à la colonisation ?</div>
+    <div class="option"><input type="radio" name="q22" value="a"><label>Elles ont complètement arrêté la colonisation européenne</label></div>
+    <div class="option"><input type="radio" name="q22" value="b" data-correct="true"><label>Elles ont préservé le patrimoine culturel, les religions et transmis un esprit de refus qui inspirera les indépendances</label></div>
+    <div class="option"><input type="radio" name="q22" value="c"><label>Elles ont permis la création d'États africains indépendants au XIXe siècle</label></div>
+    <div class="option"><input type="radio" name="q22" value="d"><label>Elles n'ont eu aucun héritage positif</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">23.</span> Quelle est la forme de résistance qu'a principalement utilisée Cheikh Ahmadou Bamba contre la colonisation ?</div>
+    <div class="option"><input type="radio" name="q23" value="a"><label>La résistance armée par la guerre sainte</label></div>
+    <div class="option"><input type="radio" name="q23" value="b" data-correct="true"><label>La résistance spirituelle et culturelle à travers l'islam et le mouridisme</label></div>
+    <div class="option"><input type="radio" name="q23" value="c"><label>La fuite vers un pays voisin</label></div>
+    <div class="option"><input type="radio" name="q23" value="d"><label>La diplomatie internationale</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">24.</span> Quelle phrase résume le mieux la mort de Lat Dior à Dékhélé ?</div>
+    <div class="option"><input type="radio" name="q24" value="a"><label>Il a capitulé face à la supériorité française</label></div>
+    <div class="option"><input type="radio" name="q24" value="b"><label>Il a fui au Gabon pour continuer la résistance</label></div>
+    <div class="option"><input type="radio" name="q24" value="c" data-correct="true"><label>Il a choisi de mourir au combat plutôt que de fuir ou de se soumettre</label></div>
+    <div class="option"><input type="radio" name="q24" value="d"><label>Il a été tué par trahison d'un de ses alliés</label></div>
+  </div>
+
+</div>
+</body>
+</html>

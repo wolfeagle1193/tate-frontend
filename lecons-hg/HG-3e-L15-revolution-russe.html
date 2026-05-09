@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 15px; color: #1a1a1a; background: #fff; padding: 16px; line-height: 1.7; }
+  .partie-badge { background: #B7410E; color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 10px; }
+  h1 { font-size: 1.35rem; font-weight: 800; color: #B7410E; border-bottom: 3px solid #E67E22; padding-bottom: 8px; margin-bottom: 18px; }
+  .essentiel { background: linear-gradient(135deg, #FEF9E7, #FDEBD0); border-left: 5px solid #E67E22; border-radius: 10px; padding: 16px 18px; margin-bottom: 22px; }
+  .essentiel-titre { font-size: 1rem; font-weight: 800; color: #B7410E; text-align: center; margin-bottom: 10px; }
+  .essentiel p { font-weight: 600; color: #B7410E; font-size: 14px; }
+  h2 { font-size: 1.05rem; font-weight: 800; color: #B7410E; margin: 22px 0 10px; border-left: 4px solid #E67E22; padding-left: 10px; }
+  h3 { font-size: .95rem; font-weight: 700; color: #922B21; margin: 14px 0 6px; }
+  p { margin-bottom: 10px; }
+  ul { margin-left: 18px; margin-bottom: 10px; }
+  li { margin-bottom: 5px; }
+  .cause-card { background: #F8F9FA; border-left: 4px solid #E67E22; border-radius: 6px; padding: 10px 14px; margin: 8px 0; font-size: 13px; }
+  .cause-titre { font-weight: 800; color: #B7410E; margin-bottom: 4px; }
+  .decret-card { border-radius: 10px; padding: 12px 16px; margin: 10px 0; border-left: 5px solid #E67E22; background: #FEF9E7; }
+  .decret-titre { font-weight: 800; font-size: 14px; color: #B7410E; margin-bottom: 5px; }
+  .etape-card { border-radius: 10px; padding: 12px 16px; margin: 10px 0; border-left: 5px solid; }
+  .e1 { background: #FEF9E7; border-color: #F39C12; }
+  .e2 { background: #FDEDEC; border-color: #E74C3C; }
+  .e3 { background: #E9F7EF; border-color: #27AE60; }
+  .e4 { background: #EBF5FB; border-color: #2980B9; }
+  .etape-titre { font-weight: 800; font-size: 14px; margin-bottom: 5px; }
+  .e1 .etape-titre { color: #D68910; }
+  .e2 .etape-titre { color: #C0392B; }
+  .e3 .etape-titre { color: #1E8449; }
+  .e4 .etape-titre { color: #1A5276; }
+  .personnage-box { background: #F5EEF8; border: 1.5px solid #AF7AC5; border-radius: 8px; padding: 12px 14px; margin: 8px 0; font-size: 13px; }
+  .personnage-titre { font-weight: 800; color: #6C3483; margin-bottom: 6px; }
+  .frise { background: #F8F9FA; border: 1.5px solid #BDC3C7; border-radius: 10px; padding: 14px 16px; margin: 14px 0; }
+  .frise-titre { font-weight: 800; color: #B7410E; margin-bottom: 10px; font-size: 14px; }
+  .frise-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 6px; font-size: 13px; }
+  .frise-date { background: #E67E22; color: #fff; border-radius: 6px; padding: 2px 8px; font-weight: 700; white-space: nowrap; flex-shrink: 0; }
+  .qcm-section { margin-top: 30px; border-top: 3px solid #E67E22; padding-top: 20px; }
+  .qcm-titre { font-size: 1.1rem; font-weight: 800; color: #fff; background: #B7410E; padding: 10px 16px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
+  .question-bloc { background: #FAFAFA; border: 1.5px solid #FDEBD0; border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; }
+  .question-texte { font-weight: 700; color: #1a1a1a; margin-bottom: 10px; font-size: 14px; }
+  .question-num { color: #E67E22; font-weight: 800; }
+  .option { display: flex; align-items: flex-start; gap: 10px; padding: 7px 10px; border-radius: 7px; margin-bottom: 4px; cursor: pointer; border: 1.5px solid transparent; }
+  .option:hover { background: #FEF9E7; border-color: #E67E22; }
+  .option input[type="radio"] { margin-top: 2px; accent-color: #B7410E; flex-shrink: 0; width: 16px; height: 16px; }
+  .option label { cursor: pointer; font-size: 14px; color: #333; }
+</style>
+</head>
+<body>
+
+<div class="partie-badge">Partie 4 — Conflits et révolutions au XXe siècle</div>
+<h1>Leçon 15 — La révolution russe et la consolidation du régime (1917–1928)</h1>
+
+<div class="essentiel">
+  <div class="essentiel-titre">📌 L'essentiel à retenir</div>
+  <p>En 1917, deux révolutions successives renversent le régime tsariste en Russie. Les Bolcheviks menés par Lénine prennent le pouvoir en octobre et instaurent le premier État socialiste du monde. Après une guerre civile et une période de transition, Staline prend les rênes du pouvoir en 1927 et lance une politique de transformation radicale de la société.</p>
+</div>
+
+<h2>I. Les causes de la révolution russe</h2>
+
+<h3>A. Les causes économiques et sociales</h3>
+
+<div class="cause-card">
+  <div class="cause-titre">🌾 Une société agraire arriérée</div>
+  La Russie est un pays à <strong>85% agricole</strong>. La paysannerie est divisée entre les <strong>Koulaks</strong> (paysans riches) et les <strong>Moujiks</strong> (paysans pauvres, quasi serfs). L'industrialisation est limitée à quelques grandes villes.
+</div>
+
+<div class="cause-card">
+  <div class="cause-titre">⚒️ Une classe ouvrière en ébullition</div>
+  Les ouvriers des villes vivent dans des conditions misérables. Des partis révolutionnaires s'organisent : les <strong>Bolcheviks</strong> (majoritaires) menés par Lénine défendent la révolution immédiate, tandis que les <strong>Menchéviks</strong> (minoritaires) prônent une transformation progressive.
+</div>
+
+<h3>B. Les causes politiques</h3>
+
+<div class="cause-card">
+  <div class="cause-titre">👑 Un régime tsariste autoritaire et affaibli</div>
+  Le tsar <strong>Nicolas II</strong> dirige la Russie de façon absolue, refusant toute réforme démocratique. La défaite contre le Japon en <strong>1905</strong> et les troubles dans les villes de Moscou et Petrograd fragilisent le régime. L'entrée en guerre en 1914 aggrave la situation : la Russie subit de lourdes pertes militaires, l'économie s'effondre et la famine menace.
+</div>
+
+<h2>II. Les révolutions de 1917</h2>
+
+<div class="etape-card e1">
+  <div class="etape-titre">🌸 La révolution de Février (mars 1917)</div>
+  En mars 1917 (février selon le calendrier julien), des mutineries, grèves et manifestations éclatent à Petrograd. Le tsar <strong>Nicolas II abdique le 3 mars 1917</strong>. Un gouvernement provisoire se forme, dirigé d'abord par le prince <strong>Lvov</strong>, puis par <strong>Kerenski</strong>. Ce gouvernement décide de poursuivre la guerre, ce qui mécontente le peuple.
+</div>
+
+<div class="etape-card e2">
+  <div class="etape-titre">🔴 La révolution d'Octobre (novembre 1917)</div>
+  Lénine rentre d'exil et prêche la paix immédiate et la révolution. Le <strong>25 octobre 1917</strong> (selon le calendrier julien), les Bolcheviks s'emparent du pouvoir lors d'une insurrection armée à Petrograd. Le <strong>Congrès des Soviets</strong> (assemblées de délégués ouvriers et soldats) légalise la prise de pouvoir et confie le gouvernement aux Bolcheviks.
+</div>
+
+<h2>III. Les premières mesures de Lénine</h2>
+
+<p>Dès la prise du pouvoir, Lénine signe <strong>quatre décrets fondamentaux</strong> :</p>
+
+<div class="decret-card">
+  <div class="decret-titre">📜 Décret sur la paix</div>
+  Appel à une paix immédiate. Négociation avec l'Allemagne : le <strong>traité de Brest-Litovsk (3 mars 1918)</strong> met fin à la participation russe à la Première Guerre mondiale, au prix de lourdes concessions territoriales.
+</div>
+
+<div class="decret-card">
+  <div class="decret-titre">🌾 Décret sur la terre</div>
+  Nationalisation des terres des nobles et de l'Église. Les terres sont redistribuées aux paysans.
+</div>
+
+<div class="decret-card">
+  <div class="decret-titre">🏭 Décret sur l'industrie</div>
+  Nationalisation des usines, des banques et des grandes entreprises. Les travailleurs prennent en charge la gestion.
+</div>
+
+<div class="decret-card">
+  <div class="decret-titre">🌍 Décret sur les nationalités</div>
+  Reconnaissance du droit des peuples à disposer d'eux-mêmes. Les minorités nationales de l'ex-Empire russe peuvent former leurs propres États.
+</div>
+
+<h2>IV. La guerre civile et la consolidation du pouvoir (1919–1921)</h2>
+
+<p>Les Bolcheviks doivent faire face à une <strong>guerre civile</strong> (1919–1921) opposant l'<strong>Armée Rouge</strong> (Bolcheviks, organisée par <strong>Trotski</strong>) aux <strong>Armées Blanches</strong> (contre-révolutionnaires, soutenues par les puissances étrangères). Les Bolcheviks l'emportent finalement.</p>
+
+<p>Pour relancer une économie dévastée, Lénine lance en <strong>1921</strong> la <strong>NEP (Nouvelle Politique Économique)</strong> : il autorise temporairement une économie de marché limitée tout en maintenant les industries clés nationalisées.</p>
+
+<h2>V. De Lénine à Staline</h2>
+
+<div class="personnage-box">
+  <div class="personnage-titre">🏛️ La mort de Lénine et la succession (1924–1927)</div>
+  Lénine meurt en <strong>1924</strong>. Une lutte de succession s'engage entre <strong>Staline</strong> (secrétaire général du Parti) et <strong>Trotski</strong>. Staline remporte cette lutte en <strong>1927</strong> et exile Trotski.
+</div>
+
+<div class="personnage-box">
+  <div class="personnage-titre">🔨 La politique de Staline</div>
+  Staline transforme radicalement l'économie soviétique :
+  <ul>
+    <li><strong>Plans quinquennaux</strong> : industrialisation forcée et accélérée</li>
+    <li><strong>Collectivisation agricole</strong> : regroupement des terres dans des <strong>Kolkhozes</strong> (fermes collectives d'État) et <strong>Sovkhozes</strong> (fermes d'État salariées)</li>
+    <li><strong>Purges politiques</strong> : élimination des opposants réels ou supposés</li>
+  </ul>
+</div>
+
+<div class="frise">
+  <div class="frise-titre">📅 Chronologie de la révolution russe</div>
+  <div class="frise-item"><span class="frise-date">1905</span> Défaite de la Russie contre le Japon ; troubles révolutionnaires</div>
+  <div class="frise-item"><span class="frise-date">3 mars 1917</span> Abdication du tsar Nicolas II — Révolution de Février</div>
+  <div class="frise-item"><span class="frise-date">25 oct. 1917</span> Prise du pouvoir par les Bolcheviks — Révolution d'Octobre</div>
+  <div class="frise-item"><span class="frise-date">3 mars 1918</span> Traité de Brest-Litovsk : sortie de la guerre</div>
+  <div class="frise-item"><span class="frise-date">1919–1921</span> Guerre civile : victoire de l'Armée Rouge</div>
+  <div class="frise-item"><span class="frise-date">1921</span> Lancement de la NEP</div>
+  <div class="frise-item"><span class="frise-date">1924</span> Mort de Lénine ; lutte de succession Staline/Trotski</div>
+  <div class="frise-item"><span class="frise-date">1927</span> Staline remporte la lutte de succession ; Trotski exilé</div>
+  <div class="frise-item"><span class="frise-date">1928+</span> Plans quinquennaux, Kolkhozes, Sovkhozes sous Staline</div>
+</div>
+
+<!-- ==================== QCM ==================== -->
+<div class="qcm-section">
+<div class="qcm-titre">✏️ QCM — Évalue tes connaissances (25 questions)</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">1.</span> Quel pourcentage de la population russe était agricole au début du XXe siècle ?</div>
+  <label class="option"><input type="radio" name="q1" value="A"> <label>A. 45%</label></label>
+  <label class="option"><input type="radio" name="q1" value="B" data-correct="true"> <label>B. 85%</label></label>
+  <label class="option"><input type="radio" name="q1" value="C"> <label>C. 60%</label></label>
+  <label class="option"><input type="radio" name="q1" value="D"> <label>D. 70%</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">2.</span> Comment s'appelaient les paysans riches en Russie ?</div>
+  <label class="option"><input type="radio" name="q2" value="A"> <label>A. Moujiks</label></label>
+  <label class="option"><input type="radio" name="q2" value="B"> <label>B. Menchéviks</label></label>
+  <label class="option"><input type="radio" name="q2" value="C" data-correct="true"> <label>C. Koulaks</label></label>
+  <label class="option"><input type="radio" name="q2" value="D"> <label>D. Bolcheviks</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">3.</span> Quelle faction politique défendait la révolution immédiate en Russie ?</div>
+  <label class="option"><input type="radio" name="q3" value="A"> <label>A. Les Menchéviks</label></label>
+  <label class="option"><input type="radio" name="q3" value="B" data-correct="true"> <label>B. Les Bolcheviks</label></label>
+  <label class="option"><input type="radio" name="q3" value="C"> <label>C. Les Koulaks</label></label>
+  <label class="option"><input type="radio" name="q3" value="D"> <label>D. Les Soviets</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">4.</span> Quel événement militaire a fragilisé le régime du tsar Nicolas II dès 1905 ?</div>
+  <label class="option"><input type="radio" name="q4" value="A"> <label>A. La défaite contre l'Allemagne</label></label>
+  <label class="option"><input type="radio" name="q4" value="B"> <label>B. La défaite contre l'Angleterre</label></label>
+  <label class="option"><input type="radio" name="q4" value="C" data-correct="true"> <label>C. La défaite contre le Japon</label></label>
+  <label class="option"><input type="radio" name="q4" value="D"> <label>D. La défaite contre la Turquie</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">5.</span> À quelle date le tsar Nicolas II a-t-il abdiqué ?</div>
+  <label class="option"><input type="radio" name="q5" value="A"> <label>A. 25 octobre 1917</label></label>
+  <label class="option"><input type="radio" name="q5" value="B"> <label>B. 14 juillet 1917</label></label>
+  <label class="option"><input type="radio" name="q5" value="C" data-correct="true"> <label>C. 3 mars 1917</label></label>
+  <label class="option"><input type="radio" name="q5" value="D"> <label>D. 11 novembre 1918</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">6.</span> Qui dirigeait le gouvernement provisoire après l'abdication du tsar ?</div>
+  <label class="option"><input type="radio" name="q6" value="A"> <label>A. Lénine puis Trotski</label></label>
+  <label class="option"><input type="radio" name="q6" value="B" data-correct="true"> <label>B. Le prince Lvov puis Kerenski</label></label>
+  <label class="option"><input type="radio" name="q6" value="C"> <label>C. Staline puis Trotski</label></label>
+  <label class="option"><input type="radio" name="q6" value="D"> <label>D. Nicolas II puis Kerenski</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">7.</span> Quelle erreur du gouvernement provisoire provoqua la Révolution d'Octobre ?</div>
+  <label class="option"><input type="radio" name="q7" value="A"> <label>A. La redistribution des terres aux nobles</label></label>
+  <label class="option"><input type="radio" name="q7" value="B"> <label>B. La nationalisation des banques</label></label>
+  <label class="option"><input type="radio" name="q7" value="C" data-correct="true"> <label>C. La décision de poursuivre la guerre</label></label>
+  <label class="option"><input type="radio" name="q7" value="D"> <label>D. L'exil de Lénine en Sibérie</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">8.</span> Quand les Bolcheviks prennent-ils le pouvoir lors de la Révolution d'Octobre ?</div>
+  <label class="option"><input type="radio" name="q8" value="A"> <label>A. 3 mars 1917</label></label>
+  <label class="option"><input type="radio" name="q8" value="B"> <label>B. 14 novembre 1917</label></label>
+  <label class="option"><input type="radio" name="q8" value="C" data-correct="true"> <label>C. 25 octobre 1917</label></label>
+  <label class="option"><input type="radio" name="q8" value="D"> <label>D. 7 janvier 1918</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">9.</span> Comment s'appelaient les assemblées de délégués ouvriers et soldats qui légalisèrent la prise de pouvoir bolchevik ?</div>
+  <label class="option"><input type="radio" name="q9" value="A"> <label>A. Les Kolkhozes</label></label>
+  <label class="option"><input type="radio" name="q9" value="B" data-correct="true"> <label>B. Les Soviets</label></label>
+  <label class="option"><input type="radio" name="q9" value="C"> <label>C. Les Koulaks</label></label>
+  <label class="option"><input type="radio" name="q9" value="D"> <label>D. Les Menchéviks</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">10.</span> Quel traité mit fin à la participation russe à la Première Guerre mondiale ?</div>
+  <label class="option"><input type="radio" name="q10" value="A"> <label>A. Le traité de Versailles</label></label>
+  <label class="option"><input type="radio" name="q10" value="B"> <label>B. Le traité de Portsmouth</label></label>
+  <label class="option"><input type="radio" name="q10" value="C" data-correct="true"> <label>C. Le traité de Brest-Litovsk</label></label>
+  <label class="option"><input type="radio" name="q10" value="D"> <label>D. Le traité de Paris</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">11.</span> À quelle date fut signé le traité de Brest-Litovsk ?</div>
+  <label class="option"><input type="radio" name="q11" value="A"> <label>A. 11 novembre 1918</label></label>
+  <label class="option"><input type="radio" name="q11" value="B" data-correct="true"> <label>B. 3 mars 1918</label></label>
+  <label class="option"><input type="radio" name="q11" value="C"> <label>C. 25 octobre 1917</label></label>
+  <label class="option"><input type="radio" name="q11" value="D"> <label>D. 28 juin 1919</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">12.</span> Que prévoyait le décret sur la terre signé par Lénine ?</div>
+  <label class="option"><input type="radio" name="q12" value="A"> <label>A. La vente des terres aux paysans riches</label></label>
+  <label class="option"><input type="radio" name="q12" value="B"> <label>C. La création de fermes collectives</label></label>
+  <label class="option"><input type="radio" name="q12" value="C" data-correct="true"> <label>C. La nationalisation et redistribution des terres des nobles et de l'Église</label></label>
+  <label class="option"><input type="radio" name="q12" value="D"> <label>D. L'exportation des terres vers l'étranger</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">13.</span> Quel décret de Lénine visait les usines et les banques ?</div>
+  <label class="option"><input type="radio" name="q13" value="A"> <label>A. Le décret sur la paix</label></label>
+  <label class="option"><input type="radio" name="q13" value="B"> <label>B. Le décret sur la terre</label></label>
+  <label class="option"><input type="radio" name="q13" value="C" data-correct="true"> <label>C. Le décret sur l'industrie</label></label>
+  <label class="option"><input type="radio" name="q13" value="D"> <label>D. Le décret sur les nationalités</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">14.</span> Que reconnaissait le décret sur les nationalités ?</div>
+  <label class="option"><input type="radio" name="q14" value="A"> <label>A. Le droit des paysans à posséder la terre</label></label>
+  <label class="option"><input type="radio" name="q14" value="B" data-correct="true"> <label>B. Le droit des peuples à disposer d'eux-mêmes</label></label>
+  <label class="option"><input type="radio" name="q14" value="C"> <label>C. L'indépendance des Bolcheviks</label></label>
+  <label class="option"><input type="radio" name="q14" value="D"> <label>D. La suprématie du Parti communiste</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">15.</span> Qui organisa l'Armée Rouge pendant la guerre civile ?</div>
+  <label class="option"><input type="radio" name="q15" value="A"> <label>A. Lénine</label></label>
+  <label class="option"><input type="radio" name="q15" value="B"> <label>B. Staline</label></label>
+  <label class="option"><input type="radio" name="q15" value="C" data-correct="true"> <label>C. Trotski</label></label>
+  <label class="option"><input type="radio" name="q15" value="D"> <label>D. Kerenski</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">16.</span> Quelle était la durée de la guerre civile russe ?</div>
+  <label class="option"><input type="radio" name="q16" value="A"> <label>A. 1917–1918</label></label>
+  <label class="option"><input type="radio" name="q16" value="B" data-correct="true"> <label>B. 1919–1921</label></label>
+  <label class="option"><input type="radio" name="q16" value="C"> <label>C. 1920–1924</label></label>
+  <label class="option"><input type="radio" name="q16" value="D"> <label>D. 1918–1922</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">17.</span> Que signifie NEP ?</div>
+  <label class="option"><input type="radio" name="q17" value="A"> <label>A. Nouvelle Économie Populaire</label></label>
+  <label class="option"><input type="radio" name="q17" value="B" data-correct="true"> <label>B. Nouvelle Politique Économique</label></label>
+  <label class="option"><input type="radio" name="q17" value="C"> <label>C. Nationalisation et Expropriation Paysanne</label></label>
+  <label class="option"><input type="radio" name="q17" value="D"> <label>D. Norme d'Exploitation du Prolétariat</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">18.</span> Quel était le principe de la NEP lancée par Lénine en 1921 ?</div>
+  <label class="option"><input type="radio" name="q18" value="A"> <label>A. La nationalisation totale de tous les secteurs de l'économie</label></label>
+  <label class="option"><input type="radio" name="q18" value="B"> <label>B. L'abandon du régime socialiste</label></label>
+  <label class="option"><input type="radio" name="q18" value="C" data-correct="true"> <label>C. Autoriser une économie de marché limitée tout en maintenant les industries clés nationalisées</label></label>
+  <label class="option"><input type="radio" name="q18" value="D"> <label>D. L'ouverture de l'économie aux capitaux étrangers</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">19.</span> En quelle année Lénine est-il mort ?</div>
+  <label class="option"><input type="radio" name="q19" value="A"> <label>A. 1921</label></label>
+  <label class="option"><input type="radio" name="q19" value="B"> <label>B. 1927</label></label>
+  <label class="option"><input type="radio" name="q19" value="C" data-correct="true"> <label>C. 1924</label></label>
+  <label class="option"><input type="radio" name="q19" value="D"> <label>D. 1928</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">20.</span> Entre quels personnages s'engagea la lutte de succession après la mort de Lénine ?</div>
+  <label class="option"><input type="radio" name="q20" value="A"> <label>A. Kerenski et Staline</label></label>
+  <label class="option"><input type="radio" name="q20" value="B" data-correct="true"> <label>B. Staline et Trotski</label></label>
+  <label class="option"><input type="radio" name="q20" value="C"> <label>C. Lénine et Khrouchtchev</label></label>
+  <label class="option"><input type="radio" name="q20" value="D"> <label>D. Trotski et Kerenski</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">21.</span> En quelle année Staline remporta-t-il la lutte de succession ?</div>
+  <label class="option"><input type="radio" name="q21" value="A"> <label>A. 1924</label></label>
+  <label class="option"><input type="radio" name="q21" value="B"> <label>B. 1925</label></label>
+  <label class="option"><input type="radio" name="q21" value="C" data-correct="true"> <label>C. 1927</label></label>
+  <label class="option"><input type="radio" name="q21" value="D"> <label>D. 1930</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">22.</span> Qu'étaient les Kolkhozes mis en place par Staline ?</div>
+  <label class="option"><input type="radio" name="q22" value="A"> <label>A. Des usines d'armement</label></label>
+  <label class="option"><input type="radio" name="q22" value="B" data-correct="true"> <label>B. Des fermes collectives gérées en commun par les paysans</label></label>
+  <label class="option"><input type="radio" name="q22" value="C"> <label>C. Des fermes d'État à salariés</label></label>
+  <label class="option"><input type="radio" name="q22" value="D"> <label>D. Des coopératives de commerce</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">23.</span> Comment s'appelaient les fermes d'État à salariés instaurées par Staline ?</div>
+  <label class="option"><input type="radio" name="q23" value="A"> <label>A. Les Kolkhozes</label></label>
+  <label class="option"><input type="radio" name="q23" value="B"> <label>B. Les Koulaks</label></label>
+  <label class="option"><input type="radio" name="q23" value="C" data-correct="true"> <label>C. Les Sovkhozes</label></label>
+  <label class="option"><input type="radio" name="q23" value="D"> <label>D. Les Gulag</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">24.</span> À quel outil économique Staline eut-il recours pour industrialiser rapidement l'URSS ?</div>
+  <label class="option"><input type="radio" name="q24" value="A"> <label>A. Les Soviets</label></label>
+  <label class="option"><input type="radio" name="q24" value="B"> <label>C. La NEP</label></label>
+  <label class="option"><input type="radio" name="q24" value="C" data-correct="true"> <label>C. Les plans quinquennaux</label></label>
+  <label class="option"><input type="radio" name="q24" value="D"> <label>D. La Glasnost</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">25.</span> Quel était le rôle de Staline dans le Parti communiste qui lui permit de remporter la lutte de succession ?</div>
+  <label class="option"><input type="radio" name="q25" value="A"> <label>A. Commissaire à la guerre</label></label>
+  <label class="option"><input type="radio" name="q25" value="B"> <label>B. Président du Soviet Suprême</label></label>
+  <label class="option"><input type="radio" name="q25" value="C" data-correct="true"> <label>C. Secrétaire général du Parti</label></label>
+  <label class="option"><input type="radio" name="q25" value="D"> <label>D. Chef de l'Armée Rouge</label></label>
+</div>
+
+</div>
+</body>
+</html>

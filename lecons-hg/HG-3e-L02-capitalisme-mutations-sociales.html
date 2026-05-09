@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 15px; color: #1a1a1a; background: #fff; padding: 16px; line-height: 1.7; }
+  .partie-badge { background: #7B4F2E; color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 10px; }
+  h1 { font-size: 1.35rem; font-weight: 800; color: #7B4F2E; border-bottom: 3px solid #C9A96E; padding-bottom: 8px; margin-bottom: 18px; }
+  .essentiel { background: linear-gradient(135deg, #FFF8F0, #FFF3E0); border-left: 5px solid #C9A96E; border-radius: 10px; padding: 16px 18px; margin-bottom: 22px; }
+  .essentiel-titre { font-size: 1rem; font-weight: 800; color: #7B4F2E; text-align: center; margin-bottom: 10px; letter-spacing: .05em; }
+  .essentiel p { font-weight: 600; color: #5D3A1A; font-size: 14px; }
+  h2 { font-size: 1.05rem; font-weight: 800; color: #7B4F2E; margin: 22px 0 10px; border-left: 4px solid #C9A96E; padding-left: 10px; }
+  h3 { font-size: .95rem; font-weight: 700; color: #5D3A1A; margin: 14px 0 6px; font-style: italic; }
+  p { margin-bottom: 10px; }
+  .classe-card { display: flex; gap: 12px; margin: 14px 0; }
+  .classe-box { flex: 1; border-radius: 10px; padding: 12px 14px; }
+  .bourgeoisie { background: #FFF8DC; border: 2px solid #DAA520; }
+  .proletariat { background: #F0F4FF; border: 2px solid #4A6FA5; }
+  .classe-titre { font-weight: 800; font-size: 14px; margin-bottom: 6px; }
+  .bourgeoisie .classe-titre { color: #B8860B; }
+  .proletariat .classe-titre { color: #4A6FA5; }
+  .conclusion { background: #FFF3E0; border: 1.5px solid #C9A96E; border-radius: 8px; padding: 12px 16px; margin: 18px 0; }
+  .conclusion p { font-weight: 700; color: #7B4F2E; margin: 0; font-size: 14px; }
+  ul { margin-left: 18px; margin-bottom: 10px; }
+  .qcm-section { margin-top: 30px; border-top: 3px solid #C9A96E; padding-top: 20px; }
+  .qcm-titre { font-size: 1.1rem; font-weight: 800; color: #fff; background: #7B4F2E; padding: 10px 16px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
+  .question-bloc { background: #FAFAFA; border: 1.5px solid #E8D5C0; border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; }
+  .question-texte { font-weight: 700; color: #1a1a1a; margin-bottom: 10px; font-size: 14px; }
+  .question-num { color: #C9A96E; font-weight: 800; }
+  .option { display: flex; align-items: flex-start; gap: 10px; padding: 7px 10px; border-radius: 7px; margin-bottom: 4px; cursor: pointer; transition: background .15s; border: 1.5px solid transparent; }
+  .option:hover { background: #FFF3E0; border-color: #C9A96E; }
+  .option input[type="radio"] { margin-top: 2px; accent-color: #7B4F2E; flex-shrink: 0; width: 16px; height: 16px; }
+  .option label { cursor: pointer; font-size: 14px; color: #333; }
+</style>
+</head>
+<body>
+
+<div class="partie-badge">Partie 1 — Histoire</div>
+<h1>Leçon 2 — Le développement du capitalisme et les mutations sociales</h1>
+
+<div class="essentiel">
+  <div class="essentiel-titre">📌 L'essentiel à retenir</div>
+  <p>Le capitalisme, base des progrès scientifiques et techniques, connaît un essor au XIXème siècle. Son développement va engendrer d'importantes transformations dans la société.</p>
+</div>
+
+<h2>I. Le développement du capitalisme</h2>
+
+<p>Le capitalisme est un système politique, économique et social fondé sur :</p>
+<ul>
+  <li>La <strong>propriété privée des moyens de production</strong> (terre, usines, banques…)</li>
+  <li>La recherche du <strong>profit</strong></li>
+  <li>L'<strong>initiative individuelle</strong> et la <strong>liberté d'entreprise</strong></li>
+  <li>La <strong>concurrence</strong></li>
+</ul>
+
+<p>Le capitalisme évolue en trois grandes étapes :</p>
+<ul>
+  <li><strong>XVIe–XVIIIe siècle</strong> : capitalisme <em>mercantile</em> basé sur les activités commerciales</li>
+  <li><strong>XIXe siècle</strong> : capitalisme <em>industriel</em> avec l'apparition de grands groupes industriels, des banques d'affaires, sociétés anonymes par actions, bourses des valeurs, épargne, investissement</li>
+  <li><strong>Fin XIXe siècle</strong> : capitalisme de <em>monopole</em> basé sur le contrôle des marchés par l'État ou les grandes entreprises</li>
+</ul>
+
+<h2>II. Les mutations sociales</h2>
+
+<h3>Une forte explosion démographique, urbaine et migratoire</h3>
+<p>L'augmentation de la production alimentaire, les progrès de la médecine et de l'hygiène, et l'amélioration des conditions de vie entraînent une forte croissance démographique. La population européenne passe de <strong>180 millions en 1800</strong>, à <strong>300 millions en 1870</strong> puis à <strong>400 millions en 1900</strong>. Cette explosion s'accompagne d'une forte <strong>urbanisation</strong>, de l'exode rural et de migrations vers les États-Unis et les pays neufs (Canada, Australie, Nouvelle-Zélande).</p>
+
+<h3>De nouvelles classes sociales</h3>
+<p>Le capitalisme divise la société en deux grandes classes :</p>
+
+<div class="classe-card">
+  <div class="classe-box bourgeoisie">
+    <div class="classe-titre">🎩 La Bourgeoisie</div>
+    <p style="font-size:13px;">La classe dominante : haute bourgeoisie, moyenne et petite bourgeoisie. Elle détient les <strong>moyens de production et d'échanges</strong>. Divisée en haute, moyenne et petite bourgeoisie.</p>
+  </div>
+  <div class="classe-box proletariat">
+    <div class="classe-titre">⚒️ Le Prolétariat</div>
+    <p style="font-size:13px;">La classe ouvrière, les couches défavorisées qui n'ont que leur force de travail. Conditions de vie difficiles : salaires bas, longues journées de travail, travail des enfants.</p>
+  </div>
+</div>
+
+<div class="conclusion">
+  <p>💡 La Révolution industrielle a créé une société profondément divisée entre bourgeois et ouvriers, générant des tensions sociales qui vont donner naissance aux doctrines sociales (syndicalisme et socialisme).</p>
+</div>
+
+<!-- QCM -->
+<div class="qcm-section">
+  <div class="qcm-titre">✏️ Exercices — Vérifie ta compréhension</div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">1.</span> Le capitalisme est fondé sur :</div>
+    <div class="option"><input type="radio" name="q1" value="a"> <label>La propriété collective des moyens de production</label></div>
+    <div class="option"><input type="radio" name="q1" value="b" data-correct="true"> <label>La propriété privée des moyens de production, le profit, la liberté d'entreprise et la concurrence</label></div>
+    <div class="option"><input type="radio" name="q1" value="c"> <label>Le contrôle de l'économie par l'État uniquement</label></div>
+    <div class="option"><input type="radio" name="q1" value="d"> <label>La suppression de la concurrence entre les entreprises</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">2.</span> Le capitalisme mercantile est caractérisé par :</div>
+    <div class="option"><input type="radio" name="q2" value="a" data-correct="true"> <label>Des activités essentiellement commerciales (XVIe–XVIIIe siècle)</label></div>
+    <div class="option"><input type="radio" name="q2" value="b"> <label>Le contrôle des marchés par les grandes entreprises</label></div>
+    <div class="option"><input type="radio" name="q2" value="c"> <label>Le développement des grandes industries</label></div>
+    <div class="option"><input type="radio" name="q2" value="d"> <label>La nationalisation des entreprises</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">3.</span> La population européenne passe à combien d'habitants en 1900 ?</div>
+    <div class="option"><input type="radio" name="q3" value="a"> <label>180 millions</label></div>
+    <div class="option"><input type="radio" name="q3" value="b"> <label>300 millions</label></div>
+    <div class="option"><input type="radio" name="q3" value="c" data-correct="true"> <label>400 millions</label></div>
+    <div class="option"><input type="radio" name="q3" value="d"> <label>500 millions</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">4.</span> Quelle est la principale cause de la croissance démographique au XIXe siècle ?</div>
+    <div class="option"><input type="radio" name="q4" value="a"> <label>L'immigration massive en Europe</label></div>
+    <div class="option"><input type="radio" name="q4" value="b" data-correct="true"> <label>Les progrès de la médecine, de l'hygiène et l'amélioration de l'alimentation qui réduisent la mortalité</label></div>
+    <div class="option"><input type="radio" name="q4" value="c"> <label>L'augmentation du taux de natalité uniquement</label></div>
+    <div class="option"><input type="radio" name="q4" value="d"> <label>Le retour des populations à la campagne</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">5.</span> Le prolétariat se compose de :</div>
+    <div class="option"><input type="radio" name="q5" value="a"> <label>Les grands propriétaires terriens et industriels</label></div>
+    <div class="option"><input type="radio" name="q5" value="b"> <label>La bourgeoisie commerçante et financière</label></div>
+    <div class="option"><input type="radio" name="q5" value="c" data-correct="true"> <label>Les couches défavorisées qui n'ont que leur force de travail</label></div>
+    <div class="option"><input type="radio" name="q5" value="d"> <label>Les fonctionnaires de l'État</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">6.</span> Le capitalisme industriel est caractérisé par l'apparition de :</div>
+    <div class="option"><input type="radio" name="q6" value="a"> <label>La suppression des banques privées</label></div>
+    <div class="option"><input type="radio" name="q6" value="b"> <label>Le retour au troc entre les nations</label></div>
+    <div class="option"><input type="radio" name="q6" value="c" data-correct="true"> <label>Grands groupes industriels, banques d'affaires, sociétés anonymes par actions et bourses des valeurs</label></div>
+    <div class="option"><input type="radio" name="q6" value="d"> <label>La disparition de la propriété privée</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">7.</span> La forte urbanisation du XIXe siècle s'accompagne de :</div>
+    <div class="option"><input type="radio" name="q7" value="a" data-correct="true"> <label>L'exode rural et des migrations vers les États-Unis, le Canada, l'Australie et la Nouvelle-Zélande</label></div>
+    <div class="option"><input type="radio" name="q7" value="b"> <label>Un retour des habitants vers les campagnes</label></div>
+    <div class="option"><input type="radio" name="q7" value="c"> <label>La diminution de la population des villes</label></div>
+    <div class="option"><input type="radio" name="q7" value="d"> <label>La suppression de l'immigration internationale</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">8.</span> La haute bourgeoisie est caractérisée par le fait qu'elle :</div>
+    <div class="option"><input type="radio" name="q8" value="a"> <label>N'a que sa force de travail comme moyen de subsistance</label></div>
+    <div class="option"><input type="radio" name="q8" value="b" data-correct="true"> <label>Détient les moyens de production et d'échanges (usines, banques, terres)</label></div>
+    <div class="option"><input type="radio" name="q8" value="c"> <label>Travaille dans les usines comme ouvriers spécialisés</label></div>
+    <div class="option"><input type="radio" name="q8" value="d"> <label>S'oppose au système capitaliste</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">9.</span> Le capitalisme de monopole est basé sur :</div>
+    <div class="option"><input type="radio" name="q9" value="a"> <label>La libre concurrence entre toutes les entreprises</label></div>
+    <div class="option"><input type="radio" name="q9" value="b"> <label>Le développement des petites et moyennes entreprises</label></div>
+    <div class="option"><input type="radio" name="q9" value="c" data-correct="true"> <label>Le contrôle des marchés par l'État ou les grandes entreprises</label></div>
+    <div class="option"><input type="radio" name="q9" value="d"> <label>La suppression du profit dans l'économie</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">10.</span> Quelle est la conséquence sociale majeure du développement du capitalisme ?</div>
+    <div class="option"><input type="radio" name="q10" value="a"> <label>L'égalité de tous les citoyens devant la loi</label></div>
+    <div class="option"><input type="radio" name="q10" value="b"> <label>La disparition des classes sociales</label></div>
+    <div class="option"><input type="radio" name="q10" value="c" data-correct="true"> <label>La division de la société en deux grandes classes opposées : la bourgeoisie et le prolétariat</label></div>
+    <div class="option"><input type="radio" name="q10" value="d"> <label>L'enrichissement de l'ensemble de la population</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">11.</span> Quelle était la population européenne en 1800 ?</div>
+    <div class="option"><input type="radio" name="q11" value="a" data-correct="true"> <label>180 millions d'habitants</label></div>
+    <div class="option"><input type="radio" name="q11" value="b"> <label>300 millions d'habitants</label></div>
+    <div class="option"><input type="radio" name="q11" value="c"> <label>400 millions d'habitants</label></div>
+    <div class="option"><input type="radio" name="q11" value="d"> <label>100 millions d'habitants</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">12.</span> L'exode rural est le phénomène par lequel :</div>
+    <div class="option"><input type="radio" name="q12" value="a"> <label>Les habitants des villes s'installent dans les campagnes</label></div>
+    <div class="option"><input type="radio" name="q12" value="b" data-correct="true"> <label>Les habitants des campagnes quittent leurs villages pour s'installer dans les villes industrielles</label></div>
+    <div class="option"><input type="radio" name="q12" value="c"> <label>Les paysans refusent de travailler dans les usines</label></div>
+    <div class="option"><input type="radio" name="q12" value="d"> <label>Les États imposent le déplacement forcé des populations</label></div>
+  </div>
+
+</div>
+</body>
+</html>

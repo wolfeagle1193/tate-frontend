@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BFEM Histoire – S3 : L'Impérialisme dans le monde</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#FDF6EC;color:#2c1a00;line-height:1.75;font-size:16px}
+.header{background:linear-gradient(135deg,#7B4100,#C27A00);color:#fff;padding:24px 16px;text-align:center}
+.header .badge{display:inline-block;background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.5);border-radius:30px;padding:5px 18px;font-size:.78em;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.header h1{font-size:clamp(1.1em,4.5vw,1.65em);font-weight:800;line-height:1.3}
+.header p{font-size:.88em;opacity:.9;margin-top:5px}
+.container{max-width:860px;margin:22px auto;padding:0 14px}
+.timer-box{display:flex;align-items:center;gap:12px;background:#fff;border-radius:12px;padding:12px 16px;box-shadow:0 2px 8px rgba(0,0,0,.09);margin-bottom:18px;flex-wrap:wrap}
+.timer-label{font-weight:700;color:#7B4100;white-space:nowrap;font-size:.9em}
+.timer-display{font-size:1.5em;font-weight:800;color:#C27A00;min-width:78px;font-variant-numeric:tabular-nums}
+.btn{padding:8px 16px;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:.85em;transition:.15s}
+.btn-start{background:#7B4100;color:#fff}.btn-reset{background:#ede8df;color:#7B4100}
+.methode-box{background:#fff8e1;border:1.5px dashed #F9A825;border-radius:10px;padding:14px 18px;margin-bottom:18px;font-size:.88em;color:#5a3800}
+.methode-box strong{display:block;margin-bottom:6px;font-size:.95em;color:#7B4100}
+.section{background:#fff;border-radius:14px;padding:20px 20px 14px;margin-bottom:20px;box-shadow:0 2px 10px rgba(0,0,0,.08)}
+.section-title{font-size:1em;font-weight:800;color:#fff;background:linear-gradient(90deg,#7B4100,#C27A00);padding:9px 16px;border-radius:8px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px}
+.points{background:rgba(255,255,255,.25);border-radius:20px;padding:2px 10px;font-size:.78em;font-weight:700;white-space:nowrap}
+.contexte-box{background:#FFF8E1;border:1px solid #F9A825;border-radius:8px;padding:12px 16px;margin-bottom:12px;font-style:italic;color:#4a3000;font-size:.92em;line-height:1.7}
+.consigne-box{background:#FFF3CD;border-left:4px solid #C27A00;padding:11px 15px;border-radius:0 8px 8px 0;font-weight:700;color:#4a3000;margin-bottom:16px;font-size:.93em;line-height:1.6}
+.doc-box{background:#fdf8f0;border:1px solid #e8d8b8;border-radius:10px;padding:14px 16px;margin-bottom:14px}
+.doc-title{font-weight:700;color:#7B4100;margin-bottom:8px;font-size:.9em}
+.doc-text{font-size:.91em;line-height:1.85;text-align:justify}
+.doc-source{text-align:right;font-size:.78em;color:#888;margin-top:8px;font-style:italic}
+.souligné{text-decoration:underline;font-weight:600;color:#a04000}
+.table-wrapper{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:10px 0;border-radius:8px;border:1px solid #ddd}
+.table-wrapper::-webkit-scrollbar{height:5px}
+.table-wrapper::-webkit-scrollbar-thumb{background:#C27A00;border-radius:4px}
+.table-wrapper table{border-collapse:collapse;font-size:.87em;min-width:500px;width:100%}
+.table-wrapper th{background:#7B4100;color:#fff;padding:9px 12px;text-align:left;white-space:nowrap}
+.table-wrapper td{border:1px solid #ddd;padding:7px 11px;vertical-align:top}
+.table-wrapper tr:nth-child(even) td{background:#FFF8E1}
+.scroll-hint{font-size:.75em;color:#C27A00;text-align:right;margin-top:3px;display:none}
+@media(max-width:600px){.scroll-hint{display:block}}
+.questions-list{list-style:none;padding:0;counter-reset:qnum}
+.questions-list>li{counter-increment:qnum;display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:10px;margin-bottom:12px;background:#FFF8E1}
+.questions-list>li::before{content:counter(qnum);background:#C27A00;color:#fff;font-weight:800;width:28px;height:28px;min-width:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.82em;margin-top:1px}
+.q-inner{width:100%}
+.q-texte{font-size:.92em;font-weight:600;color:#4a2000;line-height:1.6}
+.reponse{width:100%;min-height:100px;border:1.5px solid #e8d8b8;border-radius:8px;padding:10px 12px;font-size:.9em;resize:vertical;font-family:inherit;background:#fffdf8;margin-top:8px;color:#2c1a00}
+.reponse:focus{outline:none;border-color:#C27A00;background:#fff}
+.btn-correction{display:flex;align-items:center;gap:8px;margin-top:14px;padding:11px 18px;border:2px solid #27AE60;background:#fff;color:#1A6632;border-radius:10px;cursor:pointer;font-weight:700;font-size:.9em;transition:.2s;width:100%}
+.btn-correction:hover{background:#f0fff4}
+.btn-correction .arrow{transition:transform .25s;display:inline-block}
+.btn-correction.open{background:#f0fff4}
+.btn-correction.open .arrow{transform:rotate(180deg)}
+.corr-wrap{display:none;margin-top:0;border-left:4px solid #27AE60;border-radius:0 10px 10px 0;background:#f0fff8;padding:18px 20px;font-size:.92em;line-height:1.85;color:#0d2b1a}
+.corr-wrap.visible{display:block}
+.corr-wrap h3{color:#1A5276;font-size:1em;font-weight:800;margin:16px 0 6px;padding-bottom:4px;border-bottom:1px solid #bee3cc}
+.corr-wrap h3:first-child{margin-top:0}
+.corr-wrap h4{color:#1A6632;font-size:.93em;font-weight:700;margin:12px 0 4px}
+.corr-wrap p{margin-bottom:10px;text-align:justify}
+.corr-wrap p:last-child{margin-bottom:0}
+.corr-wrap .note-methodo{background:#e8f8f0;border:1px solid #a9dfbf;border-radius:6px;padding:9px 13px;margin-bottom:10px;font-size:.88em;color:#1A5276;font-style:italic}
+.corr-badge{display:inline-flex;align-items:center;gap:6px;background:#27AE60;color:#fff;border-radius:20px;padding:4px 14px;font-size:.8em;font-weight:700;margin-bottom:14px}
+footer{text-align:center;padding:28px 16px;color:#888;font-size:.8em}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="badge">📝 Sujet BFEM — Histoire</div>
+  <h1>L'Impérialisme dans le monde (Asie, Amérique, Japon)</h1>
+  <p>Impérialismes comparés · 3<sup>e</sup> · Histoire-Géographie · Année 2024 – Session Remplacement</p>
+</div>
+<div class="container">
+  <div class="timer-box">
+    <span class="timer-label">⏱ Durée :</span>
+    <span class="timer-display" id="timer">1:30:00</span>
+    <button class="btn btn-start" onclick="startTimer()">▶ Démarrer</button>
+    <button class="btn btn-reset" onclick="resetTimer()">↺ Réinitialiser</button>
+  </div>
+  <div class="methode-box">
+    <strong>📐 Rappel méthodologique — La dissertation comparative (BFEM)</strong>
+    <strong>Structure recommandée :</strong> Pour comparer deux impérialismes, utilise un plan thématique :<br>
+    I. Les causes communes → II. Comparaison des manifestations (points communs et différences).<br>
+    Chaque sous-partie doit s'appuyer sur des exemples précis (date, pays, événement).
+  </div>
+
+  <!-- PARTIE 1 -->
+  <div class="section">
+    <div class="section-title">✍️ Partie 1 – Dissertation <span class="points">10 pts</span></div>
+    <div class="contexte-box">À partir du XIX<sup>e</sup> siècle, les Américains et les Japonais se sont lancés dans la conquête coloniale.</div>
+    <div class="consigne-box">Consigne : Décris deux causes communes à ces deux impérialismes puis compare leurs manifestations.</div>
+    <textarea class="reponse" style="min-height:220px" placeholder="Rédigez votre dissertation ici…"></textarea>
+    <button class="btn-correction" onclick="toggleCorr('corr-diss')">
+      <span>✅</span><span style="flex:1;text-align:left">Voir la correction complète — Dissertation</span><span class="arrow">▼</span>
+    </button>
+    <div id="corr-diss" class="corr-wrap">
+      <div class="corr-badge">✅ Correction modèle — niveau BFEM</div>
+      <div class="note-methodo">💡 Copie modèle intégrale. Compare avec ta rédaction.</div>
+      <h3>INTRODUCTION</h3>
+      <p>À la fin du XIX<sup>e</sup> siècle, la course à la domination mondiale n'est plus l'apanage des seules puissances européennes. Deux nouvelles nations — les États-Unis d'Amérique et le Japon — entrent dans la compétition impérialiste et s'imposent comme de grandes puissances. L'impérialisme désigne la politique par laquelle un État soumet d'autres peuples à sa domination politique, économique et militaire. Quelles causes communes poussent l'Amérique et le Japon à l'expansion coloniale, et comment leurs impérialismes se manifestent-ils ? Nous examinerons d'abord deux causes communes à ces deux impérialismes, avant de comparer leurs manifestations concrètes.</p>
+
+      <h3>DÉVELOPPEMENT</h3>
+      <h4>I. DEUX CAUSES COMMUNES À L'IMPÉRIALISME AMÉRICAIN ET JAPONAIS</h4>
+      <h4>A. Le besoin économique lié à l'industrialisation</h4>
+      <p>La première cause commune est la nécessité économique née de l'industrialisation. Les États-Unis, devenus la première puissance industrielle mondiale à la fin du XIX<sup>e</sup> siècle, ont besoin de marchés extérieurs pour écouler leur surproduction et de matières premières pour alimenter leurs usines. De même, le Japon, après la révolution Meiji de 1868, s'est transformé en quelques décennies en une puissance industrielle moderne qui manque de ressources naturelles sur son territoire insulaire (fer, charbon, pétrole). L'expansion coloniale devient pour les deux pays une nécessité économique vitale pour assurer leur croissance et leur développement.</p>
+      <h4>B. Le nationalisme et la volonté de puissance</h4>
+      <p>La deuxième cause commune est le nationalisme exacerbé et la volonté de s'affirmer comme grande puissance mondiale. Aux États-Unis, la doctrine du « Manifest Destiny » (Destin Manifeste) affirme que la nation américaine a une mission divine d'expansion et de domination sur tout le continent américain puis au-delà. Après la guerre civile (1861-1865), les États-Unis cherchent à affirmer leur puissance sur la scène internationale. Au Japon, la réforme Meiji (1868) a transformé le pays en une puissance militaire moderne, animée d'un fort nationalisme : le Japon veut être reconnu comme l'égal des grandes puissances occidentales et rejeter l'humiliation des traités inégaux qui lui avaient été imposés par l'Occident.</p>
+
+      <h4>II. COMPARAISON DES MANIFESTATIONS DE CES DEUX IMPÉRIALISMES</h4>
+      <h4>A. L'impérialisme américain</h4>
+      <p>L'impérialisme des États-Unis se concentre d'abord sur le continent américain. La doctrine Monroe (1823), « l'Amérique aux Américains », pose dès le départ la zone américaine comme réservée à l'influence des États-Unis. Le président Theodore Roosevelt la renforce en 1904 avec le « Corollaire Roosevelt » (aussi appelé « Big Stick ») : les États-Unis s'arrogent le droit d'intervenir militairement dans n'importe quel pays d'Amérique latine pour défendre leurs intérêts. La guerre hispano-américaine de 1898 est la première grande manifestation de cet impérialisme : les États-Unis battent l'Espagne et s'emparent de Cuba, de Porto Rico, des Philippines et de Guam. Ils s'implantent également à Hawaï (1898) et en Amérique centrale. Cet impérialisme est avant tout économique et stratégique, orienté vers le contrôle des routes commerciales du Pacifique.</p>
+      <h4>B. L'impérialisme japonais</h4>
+      <p>L'impérialisme japonais se tourne vers l'Asie orientale. Après avoir modernisé son armée sur le modèle occidental, le Japon remporte la guerre sino-japonaise (1894-1895) et s'empare de Formose (Taïwan) et des îles Pescadores. En 1905, le Japon inflige une défaite humiliante à la Russie lors de la guerre russo-japonaise, s'emparant de la Corée (annexée définitivement en 1910) et de la Mandchourie du Sud. Le Japon s'impose ainsi comme la première puissance asiatique à défaire une grande puissance européenne, ce qui l'amène à se considérer comme la puissance dominante d'Asie. Contrairement à l'impérialisme américain qui préfère souvent le contrôle économique indirect, l'impérialisme japonais est davantage territorial : il vise à constituer un vaste empire en Asie.</p>
+
+      <h3>CONCLUSION</h3>
+      <p>Les impérialismes américain et japonais partagent deux causes fondamentales : le besoin économique lié à l'industrialisation et le nationalisme expansionniste. Leurs manifestations, bien que géographiquement différentes — l'Amérique latine et le Pacifique pour les États-Unis, l'Asie orientale pour le Japon — témoignent de la même volonté de domination. Ces deux impérialismes vont d'ailleurs se confronter dans le Pacifique, préfigurant les tensions qui aboutiront à la guerre entre les deux pays lors du Second Conflit mondial (1941-1945).</p>
+    </div>
+  </div>
+
+  <!-- PARTIE 2 -->
+  <div class="section">
+    <div class="section-title">📄 Partie 2 – Commentaire historique <span class="points">10 pts</span></div>
+    <div class="doc-box">
+      <div class="doc-title">Document — L'impérialisme étranger en Chine</div>
+      <div class="doc-text">
+        « À l'issue des deux guerres de l'opium, l'ouverture de la Chine paraît accomplie. Les puissances étrangères ont pérennisé leur implantation dans l'empire du Milieu qui se trouve extrêmement affaibli par des révoltes d'une ampleur considérable. Les puissances étrangères maintiennent leur expansion coloniale dans la région. <span class="souligné">L'empire du Milieu est désormais attaqué au nord par la Russie, au sud par la France, à l'est par le Japon.</span> »
+      </div>
+      <div class="doc-source">Source : Encyclopédie d'histoire numérique de l'Europe (ehne.fr)</div>
+    </div>
+
+    <ol class="questions-list">
+      <li>
+        <div class="q-inner">
+          <div class="q-texte">Présente le contexte historique de ce document. <span style="font-size:.8em;color:#C27A00;font-weight:400">(3 pts)</span></div>
+          <textarea class="reponse" style="min-height:90px" placeholder="Votre réponse…"></textarea>
+          <button class="btn-correction" onclick="toggleCorr('corr-q1')">
+            <span>✅</span><span style="flex:1;text-align:left">Voir la correction — Question 1</span><span class="arrow">▼</span>
+          </button>
+          <div id="corr-q1" class="corr-wrap">
+            <div class="corr-badge">✅ Correction complète</div>
+            <p>Ce document s'inscrit dans le contexte de l'impérialisme étranger en Chine au XIX<sup>e</sup> siècle. La Chine, appelée l'« Empire du Milieu », est alors gouvernée par la dynastie Qing (1644-1912), affaiblie par des crises internes et des pressions extérieures. Au cours du XIX<sup>e</sup> siècle, les puissances occidentales cherchent à s'imposer en Chine pour exploiter ses richesses (soie, thé, porcelaine) et ses immenses marchés. Les deux guerres de l'opium constituent le cadre de référence du document : la première guerre (1839-1842) oppose la Chine au Royaume-Uni, qui force la Chine à ouvrir ses ports au commerce occidental et lui arrache Hong Kong ; la deuxième guerre (1856-1860) implique également la France, qui impose de nouvelles concessions. Ces défaites humiliantes forcent la Chine à signer des traités inégaux accordant aux étrangers des zones d'influence, des ports de commerce et des concessions territoriales. Le document décrit la situation qui s'ensuit : la Chine est encerclée par plusieurs puissances impérialistes qui la dépeçent progressivement.</p>
+          </div>
+        </div>
+      </li>
+      <li>
+        <div class="q-inner">
+          <div class="q-texte">Explique les principaux impérialismes évoqués dans le document (Russie, France, Japon). <span style="font-size:.8em;color:#C27A00;font-weight:400">(4 pts)</span></div>
+          <textarea class="reponse" style="min-height:110px" placeholder="Votre réponse…"></textarea>
+          <button class="btn-correction" onclick="toggleCorr('corr-q2')">
+            <span>✅</span><span style="flex:1;text-align:left">Voir la correction — Question 2</span><span class="arrow">▼</span>
+          </button>
+          <div id="corr-q2" class="corr-wrap">
+            <div class="corr-badge">✅ Correction complète</div>
+            <h4>La Russie au nord :</h4>
+            <p>La Russie convoite les territoires chinois au nord pour accéder aux ports chauds du Pacifique et dominer l'Asie centrale. Par le traité d'Aigun (1858) et le traité de Pékin (1860), la Russie arrache à la Chine de vastes territoires en Sibérie orientale, permettant la fondation du port de Vladivostok en 1860. La Russie s'implante également en Mandchourie et en Mongolie, cherchant à étendre son influence jusqu'à la Corée. Cette expansion russe vers l'est inquiète le Japon, ce qui contribuera à déclencher la guerre russo-japonaise de 1904-1905.</p>
+            <h4>La France au sud :</h4>
+            <p>La France s'implante au sud de la Chine à travers la conquête de l'Indochine. Elle prend possession du Viêt Nam (Cochinchine en 1862, Tonkin et Annam en 1883-1885), du Cambodge (1863) et du Laos (1893), formant ainsi l'Indochine française. Cette présence française aux portes du sud de la Chine représente une menace directe pour l'empire Qing et lui vaut des affrontements militaires lors de la guerre franco-chinoise (1884-1885), à l'issue de laquelle la France renforce son contrôle sur l'Indochine.</p>
+            <h4>Le Japon à l'est :</h4>
+            <p>Le Japon est la puissance la plus agressive à l'égard de la Chine à la fin du XIX<sup>e</sup> siècle. Après sa modernisation rapide sous l'ère Meiji, le Japon déclare la guerre à la Chine en 1894 (guerre sino-japonaise) pour le contrôle de la Corée. La victoire japonaise écrasante est sanctionnée par le traité de Shimonoseki (1895) : la Chine cède Formose (Taïwan), les îles Pescadores et la péninsule du Liaodong au Japon, et reconnaît l'indépendance de la Corée (qui deviendra un protectorat japonais). Cette défaite révèle la profonde faiblesse de la Chine et l'incapacité de la dynastie Qing à défendre le pays.</p>
+          </div>
+        </div>
+      </li>
+      <li>
+        <div class="q-inner">
+          <div class="q-texte">Indique les conséquences des impérialismes étrangers en Chine. <span style="font-size:.8em;color:#C27A00;font-weight:400">(3 pts)</span></div>
+          <textarea class="reponse" style="min-height:110px" placeholder="Votre réponse…"></textarea>
+          <button class="btn-correction" onclick="toggleCorr('corr-q3')">
+            <span>✅</span><span style="flex:1;text-align:left">Voir la correction — Question 3</span><span class="arrow">▼</span>
+          </button>
+          <div id="corr-q3" class="corr-wrap">
+            <div class="corr-badge">✅ Correction complète</div>
+            <h4>Conséquences politiques :</h4>
+            <p>L'impérialisme étranger affaiblit profondément le pouvoir de la dynastie Qing, qui perd progressivement sa légitimité aux yeux du peuple chinois. La révolte des Boxers (1900) est une des conséquences directes de cette domination étrangère : des mouvements nationalistes chinois se lèvent contre les puissances étrangères et leurs missionnaires. Cette rébellion est écrasée par une expédition militaire internationale (France, Royaume-Uni, Allemagne, Russie, Japon, États-Unis). L'humiliation qui en résulte accélère la fin de l'empire : la Révolution de 1911, dirigée par Sun Yat-sen, renverse la dynastie Qing et proclame la République de Chine en 1912.</p>
+            <h4>Conséquences économiques :</h4>
+            <p>Les puissances étrangères ont découpé la Chine en zones d'influence exclusives, accordant à chaque puissance des droits commerciaux privilégiés dans certaines régions. Des ports, appelés « ports à traités », sont ouverts de force au commerce étranger (Shanghai, Canton, Tianjin…). Les ressources chinoises (minerais, main-d'œuvre bon marché) sont exploitées au profit des puissances étrangères, tandis que les industries chinoises traditionnelles sont ruinées par la concurrence des produits manufacturés occidentaux.</p>
+            <h4>Conséquences sociales et culturelles :</h4>
+            <p>L'humiliation nationale provoquée par ces défaites successives nourrit un profond sentiment de honte et de colère au sein de la population et des élites chinoises. Ce sentiment nationaliste est le terreau sur lequel vont germer les grands mouvements révolutionnaires du XX<sup>e</sup> siècle : le mouvement du 4 mai 1919, la fondation du Parti Communiste Chinois en 1921 par Mao Zedong, et finalement la proclamation de la République Populaire de Chine le 1<sup>er</sup> octobre 1949.</p>
+          </div>
+        </div>
+      </li>
+    </ol>
+  </div>
+</div>
+<footer>BFEM · Histoire-Géographie 3<sup>e</sup> · © Taté — Plateforme éducative sénégalaise</footer>
+<script>
+function toggleCorr(id){const el=document.getElementById(id);const btn=el.previousElementSibling;const isOpen=el.classList.contains('visible');el.classList.toggle('visible',!isOpen);btn.classList.toggle('open',!isOpen);btn.querySelector('.arrow').textContent=isOpen?'▼':'▲';if(!isOpen)setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'nearest'}),50);}
+let tSec=5400,iv=null;const timerEl=document.getElementById('timer');
+const fmt=s=>`${Math.floor(s/3600)}:${String(Math.floor((s%3600)/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+function startTimer(){if(iv)return;iv=setInterval(()=>{if(tSec<=0){clearInterval(iv);timerEl.style.color='#E74C3C';return;}tSec--;timerEl.textContent=fmt(tSec);if(tSec<=300)timerEl.style.color='#E74C3C';},1000);}
+function resetTimer(){clearInterval(iv);iv=null;tSec=5400;timerEl.textContent=fmt(tSec);timerEl.style.color='#C27A00';}
+</script>
+</body>
+</html>

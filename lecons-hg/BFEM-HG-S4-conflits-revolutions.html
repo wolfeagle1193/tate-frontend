@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BFEM Histoire – S4 : Conflits, révolutions et Guerre froide</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#FDF6EC;color:#2c1a00;line-height:1.75;font-size:16px}
+.header{background:linear-gradient(135deg,#7B4100,#C27A00);color:#fff;padding:24px 16px;text-align:center}
+.header .badge{display:inline-block;background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.5);border-radius:30px;padding:5px 18px;font-size:.78em;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.header h1{font-size:clamp(1.1em,4.5vw,1.65em);font-weight:800;line-height:1.3}
+.header p{font-size:.88em;opacity:.9;margin-top:5px}
+.container{max-width:860px;margin:22px auto;padding:0 14px}
+.timer-box{display:flex;align-items:center;gap:12px;background:#fff;border-radius:12px;padding:12px 16px;box-shadow:0 2px 8px rgba(0,0,0,.09);margin-bottom:18px;flex-wrap:wrap}
+.timer-label{font-weight:700;color:#7B4100;white-space:nowrap;font-size:.9em}
+.timer-display{font-size:1.5em;font-weight:800;color:#C27A00;min-width:78px;font-variant-numeric:tabular-nums}
+.btn{padding:8px 16px;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:.85em;transition:.15s}
+.btn-start{background:#7B4100;color:#fff}.btn-reset{background:#ede8df;color:#7B4100}
+.methode-box{background:#fff8e1;border:1.5px dashed #F9A825;border-radius:10px;padding:14px 18px;margin-bottom:18px;font-size:.88em;color:#5a3800}
+.methode-box strong{display:block;margin-bottom:6px;font-size:.95em;color:#7B4100}
+.section{background:#fff;border-radius:14px;padding:20px 20px 14px;margin-bottom:20px;box-shadow:0 2px 10px rgba(0,0,0,.08)}
+.section-title{font-size:1em;font-weight:800;color:#fff;background:linear-gradient(90deg,#7B4100,#C27A00);padding:9px 16px;border-radius:8px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px}
+.points{background:rgba(255,255,255,.25);border-radius:20px;padding:2px 10px;font-size:.78em;font-weight:700;white-space:nowrap}
+.contexte-box{background:#FFF8E1;border:1px solid #F9A825;border-radius:8px;padding:12px 16px;margin-bottom:12px;font-style:italic;color:#4a3000;font-size:.92em;line-height:1.7}
+.consigne-box{background:#FFF3CD;border-left:4px solid #C27A00;padding:11px 15px;border-radius:0 8px 8px 0;font-weight:700;color:#4a3000;margin-bottom:16px;font-size:.93em;line-height:1.6}
+.doc-box{background:#fdf8f0;border:1px solid #e8d8b8;border-radius:10px;padding:14px 16px;margin-bottom:14px}
+.doc-title{font-weight:700;color:#7B4100;margin-bottom:8px;font-size:.9em}
+.doc-text{font-size:.91em;line-height:1.85;text-align:justify}
+.doc-source{text-align:right;font-size:.78em;color:#888;margin-top:8px;font-style:italic}
+.souligné{text-decoration:underline;font-weight:600;color:#a04000}
+.questions-list{list-style:none;padding:0;counter-reset:qnum}
+.questions-list>li{counter-increment:qnum;display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:10px;margin-bottom:12px;background:#FFF8E1}
+.questions-list>li::before{content:counter(qnum);background:#C27A00;color:#fff;font-weight:800;width:28px;height:28px;min-width:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.82em;margin-top:1px}
+.q-inner{width:100%}
+.q-texte{font-size:.92em;font-weight:600;color:#4a2000;line-height:1.6}
+.reponse{width:100%;min-height:100px;border:1.5px solid #e8d8b8;border-radius:8px;padding:10px 12px;font-size:.9em;resize:vertical;font-family:inherit;background:#fffdf8;margin-top:8px;color:#2c1a00}
+.reponse:focus{outline:none;border-color:#C27A00;background:#fff}
+.btn-correction{display:flex;align-items:center;gap:8px;margin-top:14px;padding:11px 18px;border:2px solid #27AE60;background:#fff;color:#1A6632;border-radius:10px;cursor:pointer;font-weight:700;font-size:.9em;transition:.2s;width:100%}
+.btn-correction:hover{background:#f0fff4}
+.btn-correction .arrow{transition:transform .25s;display:inline-block}
+.btn-correction.open{background:#f0fff4}
+.btn-correction.open .arrow{transform:rotate(180deg)}
+.corr-wrap{display:none;margin-top:0;border-left:4px solid #27AE60;border-radius:0 10px 10px 0;background:#f0fff8;padding:18px 20px;font-size:.92em;line-height:1.85;color:#0d2b1a}
+.corr-wrap.visible{display:block}
+.corr-wrap h3{color:#1A5276;font-size:1em;font-weight:800;margin:16px 0 6px;padding-bottom:4px;border-bottom:1px solid #bee3cc}
+.corr-wrap h3:first-child{margin-top:0}
+.corr-wrap h4{color:#1A6632;font-size:.93em;font-weight:700;margin:12px 0 4px}
+.corr-wrap p{margin-bottom:10px;text-align:justify}
+.corr-wrap p:last-child{margin-bottom:0}
+.corr-wrap .note-methodo{background:#e8f8f0;border:1px solid #a9dfbf;border-radius:6px;padding:9px 13px;margin-bottom:10px;font-size:.88em;color:#1A5276;font-style:italic}
+.corr-badge{display:inline-flex;align-items:center;gap:6px;background:#27AE60;color:#fff;border-radius:20px;padding:4px 14px;font-size:.8em;font-weight:700;margin-bottom:14px}
+footer{text-align:center;padding:28px 16px;color:#888;font-size:.8em}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="badge">📝 Sujet BFEM — Histoire</div>
+  <h1>Conflits et révolutions : Chine, Doctrine Truman</h1>
+  <p>Le monde au XX<sup>e</sup> siècle · 3<sup>e</sup> · Histoire-Géographie · Année 2023 – Session Normale</p>
+</div>
+<div class="container">
+  <div class="timer-box">
+    <span class="timer-label">⏱ Durée :</span>
+    <span class="timer-display" id="timer">1:30:00</span>
+    <button class="btn btn-start" onclick="startTimer()">▶ Démarrer</button>
+    <button class="btn btn-reset" onclick="resetTimer()">↺ Réinitialiser</button>
+  </div>
+  <div class="methode-box">
+    <strong>📐 Rappel méthodologique — La dissertation (BFEM)</strong>
+    <strong>Introduction :</strong> Amorce → Définition des termes → Problématique → Plan annoncé.<br>
+    <strong>Développement :</strong> 2 parties (situation → rôle des communistes), sous-parties A/B avec exemples précis.<br>
+    <strong>Conclusion :</strong> Synthèse et ouverture.
+  </div>
+
+  <!-- PARTIE 1 -->
+  <div class="section">
+    <div class="section-title">✍️ Partie 1 – Dissertation <span class="points">10 pts</span></div>
+    <div class="contexte-box">« En 1949, la République populaire est proclamée par MAO ZEDONG. »</div>
+    <div class="consigne-box">Consigne : Présente la situation de la Chine au début du XX<sup>e</sup> siècle puis décris le rôle des Communistes dans l'indépendance du pays.</div>
+    <textarea class="reponse" style="min-height:220px" placeholder="Rédigez votre dissertation ici…"></textarea>
+    <button class="btn-correction" onclick="toggleCorr('corr-diss')">
+      <span>✅</span><span style="flex:1;text-align:left">Voir la correction complète — Dissertation</span><span class="arrow">▼</span>
+    </button>
+    <div id="corr-diss" class="corr-wrap">
+      <div class="corr-badge">✅ Correction modèle — niveau BFEM</div>
+      <div class="note-methodo">💡 Copie modèle intégrale. Compare avec ta rédaction.</div>
+      <h3>INTRODUCTION</h3>
+      <p>Au début du XX<sup>e</sup> siècle, la Chine — l'une des plus vieilles civilisations du monde — traverse une profonde crise. Affaiblie par des décennies d'impérialisme étranger et par une dynastie Qing incapable de moderniser le pays, la Chine est au bord du gouffre. C'est dans ce contexte que les communistes, sous la direction de Mao Zedong, vont jouer un rôle décisif pour libérer et unifier la Chine. Quelle était la situation de la Chine au début du XX<sup>e</sup> siècle, et comment les communistes ont-ils réussi à prendre le pouvoir en 1949 ? Nous présenterons d'abord la situation de la Chine au début du XX<sup>e</sup> siècle, avant de décrire le rôle joué par les communistes dans la libération du pays.</p>
+
+      <h3>DÉVELOPPEMENT</h3>
+      <h4>I. LA SITUATION DE LA CHINE AU DÉBUT DU XX<sup>e</sup> SIÈCLE</h4>
+      <h4>A. Une Chine affaiblie par l'impérialisme et les crises internes</h4>
+      <p>Au début du XX<sup>e</sup> siècle, la Chine impériale est dans un état de décomposition avancée. Sur le plan externe, elle a subi de nombreuses défaites humiliantes face aux puissances étrangères : deux guerres de l'opium (1839-1842 et 1856-1860) contre le Royaume-Uni et la France, une guerre contre le Japon en 1894-1895 et une intervention militaire internationale en 1900 après la révolte des Boxers. Ces défaites ont obligé la Chine à signer des « traités inégaux » accordant aux étrangers des concessions territoriales (Hong Kong, Macao), des droits commerciaux exclusifs et une extraterritorialité qui nient la souveraineté chinoise. Sur le plan interne, la dynaste Qing est discréditée, incapable de moderniser le pays et de résister aux pressions étrangères.</p>
+      <h4>B. La Révolution de 1911 et l'instabilité politique</h4>
+      <p>Face à cette situation catastrophique, la Révolution de 1911 (aussi appelée « Révolution Xinhai ») renverse la dynastie Qing et proclame la République de Chine le 1<sup>er</sup> janvier 1912. Son chef, Sun Yat-sen (Sun Wen), fondateur du Guomindang (Parti Nationaliste), en est le premier président. Cependant, cette révolution ne met pas fin à l'instabilité : le général Yuan Shikai s'empare du pouvoir en 1912 et tente d'instaurer une nouvelle monarchie. Après sa mort en 1916, la Chine est divisée entre des seigneurs de guerre régionaux qui se font la guerre. Tchang Kai-chek (Jiang Jieshi) prend la tête du Guomindang en 1925 et lance une campagne militaire pour réunifier le pays, mais en massacrant les communistes lors du coup de Shanghai en 1927 (massacre de plusieurs milliers de membres du Parti communiste), il ouvre une guerre civile qui durera deux décennies.</p>
+
+      <h4>II. LE RÔLE DES COMMUNISTES DANS L'INDÉPENDANCE DE LA CHINE</h4>
+      <h4>A. L'organisation et la survie du Parti communiste</h4>
+      <p>Le Parti Communiste Chinois (PCC) est fondé en 1921 à Shanghai, avec l'aide de l'Internationale communiste (Komintern) soviétique. Mao Zedong, jeune intellectuel du Hunan, en devient rapidement l'un des dirigeants les plus influents. Après le massacre de 1927 par Tchang Kai-chek, le PCC se réfugie dans les campagnes et constitue des zones rouges, s'appuyant sur les paysans pauvres plutôt que sur le prolétariat urbain. En 1934-1935, encerclés par les nationalistes, les communistes entreprennent la Longue Marche : un repli stratégique de plus de 12 000 kilomètres à travers des terrains hostiles, qui dure 368 jours et coûte la vie à la majorité des 86 000 soldats partis. Seuls 8 000 environ arrivent à destination (Yan'an, dans le Shanxi). Cette épopée forge une armée révolutionnaire trempée et légendaire, et consacre l'autorité absolue de Mao.</p>
+      <h4>B. La victoire de 1949</h4>
+      <p>L'invasion japonaise de la Chine (1937-1945) conduit les communistes et les nationalistes à former un « front uni » contre l'envahisseur commun. Cette alliance profite surtout aux communistes qui étendent leur influence sur les populations rurales en menant une guerre de guérilla efficace, tout en appliquant des réformes agraires populaires (redistribution des terres aux paysans). Après la défaite du Japon en 1945, la guerre civile entre communistes et nationalistes reprend. Les armées nationalistes, corrompues et impopulaires, s'effondrent progressivement. Le 1<sup>er</sup> octobre 1949, sur la place Tian'anmen à Pékin, Mao Zedong proclame la République populaire de Chine. Tchang Kai-chek et les nationalistes se replient à Taïwan.</p>
+
+      <h3>CONCLUSION</h3>
+      <p>Au début du XX<sup>e</sup> siècle, la Chine était un pays humilié par l'impérialisme étranger, déchiré par une guerre civile et écrasé par la misère paysanne. Face à cette situation, les communistes de Mao Zedong ont su s'organiser, résister aux nationalistes grâce à la Longue Marche, et profiter de la guerre contre le Japon pour étendre leur influence. La proclamation de la République populaire de Chine le 1<sup>er</sup> octobre 1949 marque la fin d'un siècle d'humiliation nationale et le début d'une ère nouvelle pour ce pays de plus d'un milliard d'habitants.</p>
+    </div>
+  </div>
+
+  <!-- PARTIE 2 -->
+  <div class="section">
+    <div class="section-title">📄 Partie 2 – Commentaire historique <span class="points">10 pts</span></div>
+    <div class="doc-box">
+      <div class="doc-title">La doctrine Truman (mars 1947)</div>
+      <div class="doc-text">
+        « Les États-Unis doivent soutenir les peuples libres qui résistent à des tentatives d'asservissement par des minorités armées, ou des pressions venues de l'extérieur. Je crois que notre aide doit consister essentiellement en un soutien économique et financier qui est indispensable à la stabilité économique et à une vie politique cohérente. Chaque nation se trouvait désormais en face d'un choix à faire entre deux modes de vie opposés. L'un d'eux, avais-je dit, repose sur la volonté de la majorité et il est caractérisé par des institutions libres, des élections libres. Quant à l'autre, il repose sur la volonté d'une minorité imposée par la force à une majorité. Il s'appuie sur la terreur et l'oppression. Les peuples libres du monde attendent de nous que nous les aidions à sauvegarder leurs libertés. »
+      </div>
+      <div class="doc-source">Harry S. TRUMAN, <em>Mémoires</em>, Plon, 1956.</div>
+    </div>
+
+    <ol class="questions-list">
+      <li>
+        <div class="q-inner">
+          <div class="q-texte">Présente le document et son contexte. <span style="font-size:.8em;color:#C27A00;font-weight:400">(2 pts)</span></div>
+          <textarea class="reponse" style="min-height:90px" placeholder="Votre réponse…"></textarea>
+          <button class="btn-correction" onclick="toggleCorr('corr-q1')">
+            <span>✅</span><span style="flex:1;text-align:left">Voir la correction — Question 1</span><span class="arrow">▼</span>
+          </button>
+          <div id="corr-q1" class="corr-wrap">
+            <div class="corr-badge">✅ Correction complète</div>
+            <p>Ce document est un extrait des <em>Mémoires</em> de Harry S. Truman, publiées en 1956. Truman était le 33<sup>e</sup> président des États-Unis (1945-1953). Ce texte reprend en substance le discours qu'il a prononcé devant le Congrès américain en mars 1947, discours qui allait donner naissance à ce que l'on appelle la « doctrine Truman ».</p>
+            <p>Le contexte est celui de l'immédiat après-guerre. En 1945, la Seconde Guerre Mondiale s'est achevée sur la victoire des Alliés (États-Unis, URSS, Royaume-Uni, France). Mais rapidement, la grande alliance de guerre se fracture : les États-Unis et l'Union soviétique s'opposent sur le type d'ordre mondial à construire. La Grèce et la Turquie sont alors menacées d'être emportées dans l'orbite communiste (la Grèce est en guerre civile, la Turquie subit des pressions soviétiques). C'est dans ce contexte de tension naissante — qui deviendra la Guerre froide — que Truman prononce ce discours fondateur.</p>
+          </div>
+        </div>
+      </li>
+      <li>
+        <div class="q-inner">
+          <div class="q-texte">Relève et explique les caractéristiques des deux systèmes idéologiques évoqués dans le document. <span style="font-size:.8em;color:#C27A00;font-weight:400">(4 pts)</span></div>
+          <textarea class="reponse" style="min-height:110px" placeholder="Votre réponse…"></textarea>
+          <button class="btn-correction" onclick="toggleCorr('corr-q2')">
+            <span>✅</span><span style="flex:1;text-align:left">Voir la correction — Question 2</span><span class="arrow">▼</span>
+          </button>
+          <div id="corr-q2" class="corr-wrap">
+            <div class="corr-badge">✅ Correction complète</div>
+            <h4>Le premier système : le capitalisme libéral (le bloc occidental)</h4>
+            <p>Truman décrit le premier mode de vie comme reposant sur « la volonté de la majorité », caractérisé par des « institutions libres » et des « élections libres ». C'est une description du modèle démocratique et capitaliste que représentent les États-Unis et leurs alliés occidentaux. Ce système garantit les libertés individuelles (liberté d'expression, liberté de la presse, liberté d'entreprendre), l'État de droit et le pluralisme politique. Sur le plan économique, il repose sur le capitalisme : l'économie de marché libre, la propriété privée et la concurrence.</p>
+            <h4>Le second système : le communisme soviétique (le bloc oriental)</h4>
+            <p>Truman décrit le second mode de vie, sans jamais le nommer explicitement, comme reposant sur « la volonté d'une minorité imposée par la force à une majorité » et s'appuyant sur « la terreur et l'oppression ». C'est une description — partiale — du régime soviétique de Staline. Dans ce système, le Parti communiste dirige l'État de façon autoritaire et réprime toute opposition. L'économie est collectivisée et planifiée par l'État. Cette description américaine est clairement une propagande anti-soviétique : elle présente le communisme comme fondamentalement tyrannique et opposé à la liberté humaine.</p>
+          </div>
+        </div>
+      </li>
+      <li>
+        <div class="q-inner">
+          <div class="q-texte">Décris l'impact de ce discours dans les relations internationales. <span style="font-size:.8em;color:#C27A00;font-weight:400">(4 pts)</span></div>
+          <textarea class="reponse" style="min-height:110px" placeholder="Votre réponse…"></textarea>
+          <button class="btn-correction" onclick="toggleCorr('corr-q3')">
+            <span>✅</span><span style="flex:1;text-align:left">Voir la correction — Question 3</span><span class="arrow">▼</span>
+          </button>
+          <div id="corr-q3" class="corr-wrap">
+            <div class="corr-badge">✅ Correction complète</div>
+            <p>La doctrine Truman a eu un impact considérable et durable sur les relations internationales. Elle marque officiellement le début de la Guerre froide, cette longue période de tension (1947-1991) entre les États-Unis et l'URSS qui va dominer la politique mondiale pendant plus de quatre décennies.</p>
+            <h4>Conséquence immédiate : le Plan Marshall (1948)</h4>
+            <p>Dès juin 1947, pour mettre en pratique la doctrine Truman (« soutien économique et financier »), le secrétaire d'État George Marshall propose un plan d'aide économique massive à l'Europe occidentale ruinée par la guerre. De 1948 à 1952, les États-Unis versent 13 milliards de dollars aux pays d'Europe occidentale. L'objectif affiché est de reconstruire ces économies ; l'objectif réel est aussi de les rendre assez prospères pour qu'elles résistent à l'attrait du communisme. L'URSS refuse cette aide et interdit à ses pays satellites de l'accepter.</p>
+            <h4>La formation des blocs militaires</h4>
+            <p>La doctrine Truman entraîne la création de deux blocs militaires antagonistes. Du côté occidental, l'OTAN (Organisation du Traité de l'Atlantique Nord) est fondée en avril 1949 : c'est une alliance militaire regroupant les États-Unis, le Canada et les démocraties d'Europe occidentale. En réponse, l'URSS crée le Pacte de Varsovie en 1955 regroupant les pays communistes d'Europe orientale. L'Europe est désormais coupée en deux par le « rideau de fer ».</p>
+            <h4>Les conflits par procuration</h4>
+            <p>La doctrine de « containment » (endiguement du communisme) justifie des interventions militaires américaines dans le monde entier. Les États-Unis s'engagent militairement en Grèce (1947), en Corée (1950-1953), au Viêt Nam (1965-1975) et financent des mouvements anticommunistes en Amérique latine, en Afrique et en Asie. Cette politique de la doctrine Truman divise le monde en deux camps et fait de chaque pays du globe un enjeu de la compétition entre les deux superpuissances.</p>
+          </div>
+        </div>
+      </li>
+    </ol>
+  </div>
+</div>
+<footer>BFEM · Histoire-Géographie 3<sup>e</sup> · © Taté — Plateforme éducative sénégalaise</footer>
+<script>
+function toggleCorr(id){const el=document.getElementById(id);const btn=el.previousElementSibling;const isOpen=el.classList.contains('visible');el.classList.toggle('visible',!isOpen);btn.classList.toggle('open',!isOpen);btn.querySelector('.arrow').textContent=isOpen?'▼':'▲';if(!isOpen)setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'nearest'}),50);}
+let tSec=5400,iv=null;const timerEl=document.getElementById('timer');
+const fmt=s=>`${Math.floor(s/3600)}:${String(Math.floor((s%3600)/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+function startTimer(){if(iv)return;iv=setInterval(()=>{if(tSec<=0){clearInterval(iv);timerEl.style.color='#E74C3C';return;}tSec--;timerEl.textContent=fmt(tSec);if(tSec<=300)timerEl.style.color='#E74C3C';},1000);}
+function resetTimer(){clearInterval(iv);iv=null;tSec=5400;timerEl.textContent=fmt(tSec);timerEl.style.color='#C27A00';}
+</script>
+</body>
+</html>

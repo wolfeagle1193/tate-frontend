@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 15px; color: #1a1a1a; background: #fff; padding: 16px; line-height: 1.7; }
+  .partie-badge { background: #1A5276; color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 10px; }
+  h1 { font-size: 1.35rem; font-weight: 800; color: #1A5276; border-bottom: 3px solid #2E86C1; padding-bottom: 8px; margin-bottom: 18px; }
+  .essentiel { background: linear-gradient(135deg, #EBF5FB, #D6EAF8); border-left: 5px solid #2E86C1; border-radius: 10px; padding: 16px 18px; margin-bottom: 22px; }
+  .essentiel-titre { font-size: 1rem; font-weight: 800; color: #1A5276; text-align: center; margin-bottom: 10px; }
+  .essentiel p { font-weight: 600; color: #1A5276; font-size: 14px; }
+  h2 { font-size: 1.05rem; font-weight: 800; color: #1A5276; margin: 22px 0 10px; border-left: 4px solid #2E86C1; padding-left: 10px; }
+  h3 { font-size: .95rem; font-weight: 700; color: #154360; margin: 14px 0 6px; }
+  p { margin-bottom: 10px; }
+  ul { margin-left: 18px; margin-bottom: 10px; }
+  li { margin-bottom: 4px; }
+  .explorer-card { background: #EBF5FB; border: 1.5px solid #2E86C1; border-radius: 10px; padding: 12px 16px; margin: 10px 0; }
+  .explorer-nom { font-weight: 800; color: #1A5276; font-size: 14px; margin-bottom: 4px; }
+  .frise { background: #F8F9FA; border: 1.5px solid #BDC3C7; border-radius: 10px; padding: 14px 16px; margin: 14px 0; }
+  .frise-titre { font-weight: 800; color: #1A5276; margin-bottom: 10px; font-size: 14px; }
+  .frise-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 6px; font-size: 13px; }
+  .frise-date { background: #2E86C1; color: #fff; border-radius: 6px; padding: 2px 8px; font-weight: 700; white-space: nowrap; flex-shrink: 0; }
+  .conclusion { background: #EBF5FB; border: 1.5px solid #2E86C1; border-radius: 8px; padding: 12px 16px; margin: 18px 0; }
+  .conclusion p { font-weight: 700; color: #1A5276; margin: 0; font-size: 14px; }
+  .qcm-section { margin-top: 30px; border-top: 3px solid #2E86C1; padding-top: 20px; }
+  .qcm-titre { font-size: 1.1rem; font-weight: 800; color: #fff; background: #1A5276; padding: 10px 16px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
+  .question-bloc { background: #FAFAFA; border: 1.5px solid #AED6F1; border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; }
+  .question-texte { font-weight: 700; color: #1a1a1a; margin-bottom: 10px; font-size: 14px; }
+  .question-num { color: #2E86C1; font-weight: 800; }
+  .option { display: flex; align-items: flex-start; gap: 10px; padding: 7px 10px; border-radius: 7px; margin-bottom: 4px; cursor: pointer; border: 1.5px solid transparent; }
+  .option:hover { background: #EBF5FB; border-color: #2E86C1; }
+  .option input[type="radio"] { margin-top: 2px; accent-color: #1A5276; flex-shrink: 0; width: 16px; height: 16px; }
+  .option label { cursor: pointer; font-size: 14px; color: #333; }
+</style>
+</head>
+<body>
+
+<div class="partie-badge">Partie 2 — L'impérialisme en Afrique</div>
+<h1>Leçon 5 — Les missions religieuses et les explorations</h1>
+
+<div class="essentiel">
+  <div class="essentiel-titre">📌 L'essentiel à retenir</div>
+  <p>Au XIXe siècle, l'Europe envoie des missionnaires et des explorateurs en Afrique. Les missionnaires propagent le christianisme, construisent écoles et hôpitaux. Les explorateurs cartographient le continent et préparent la colonisation en identifiant les ressources naturelles et les voies de communication.</p>
+</div>
+
+<h2>I. Les missions religieuses</h2>
+
+<h3>A. Les missions catholiques</h3>
+<p>Plusieurs ordres religieux catholiques s'installent en Afrique, notamment en Afrique de l'Ouest :</p>
+<ul>
+  <li>Les <strong>Religieuses de Saint-Joseph de Cluny</strong> : arrivées au Sénégal dès <strong>1820</strong>, fondées par Anne-Marie Javouhey.</li>
+  <li>Les <strong>Pères du Saint-Esprit</strong> (Spiritains) : installés en Afrique à partir de <strong>1848</strong>.</li>
+  <li>Les <strong>Missions Africaines de Lyon</strong> : fondées en <strong>1854</strong>, actives en Afrique de l'Ouest.</li>
+  <li>Les <strong>Pères Blancs</strong> (Missionnaires d'Afrique) : fondés par le Cardinal Lavigerie, très actifs en Ouganda et en Afrique centrale.</li>
+</ul>
+
+<h3>B. Les missions protestantes</h3>
+<p>Les protestants sont également très actifs :</p>
+<ul>
+  <li>La <strong>London Missionary Society</strong> : fondée en <strong>1795</strong>, envoyée en Afrique du Sud entre <strong>1803 et 1813</strong>.</li>
+  <li>David Livingstone était l'un des missionnaires protestants les plus célèbres.</li>
+</ul>
+
+<h3>C. Les actions des missions</h3>
+<ul>
+  <li><strong>Évangélisation</strong> : propagation du christianisme, traduction de la Bible dans les langues locales.</li>
+  <li><strong>Éducation</strong> : création d'écoles, alphabétisation des populations.</li>
+  <li><strong>Santé</strong> : construction d'hôpitaux et de dispensaires.</li>
+  <li><strong>Rôle précolonial</strong> : les missionnaires informaient les gouvernements européens des richesses et des routes du continent.</li>
+</ul>
+
+<h2>II. Les explorations géographiques</h2>
+
+<h3>A. Exploration de l'Afrique de l'Ouest</h3>
+
+<div class="explorer-card">
+  <div class="explorer-nom">🧭 Mungo Park (Écossais)</div>
+  <p style="font-size:13px;">En <strong>1795</strong>, explore la Gambie et remonte jusqu'à <strong>Ségou</strong> (au Mali actuel). Premier Européen à atteindre le Niger. Confirme que le fleuve Niger coule vers l'est.</p>
+</div>
+
+<div class="explorer-card">
+  <div class="explorer-nom">🧭 René Caillé (Français)</div>
+  <p style="font-size:13px;">En <strong>1827</strong>, traverse le Sahara et atteint <strong>Tombouctou</strong> déguisé en pèlerin arabe. Revient vivant, contrairement à beaucoup d'autres. Premier Européen à revenir de Tombouctou pour le raconter.</p>
+</div>
+
+<div class="explorer-card">
+  <div class="explorer-nom">🧭 Les frères Lander (Britanniques)</div>
+  <p style="font-size:13px;">En <strong>1830</strong>, descendent le Niger jusqu'à son embouchure dans le golfe de Guinée et établissent la <strong>carte complète du fleuve Niger</strong>.</p>
+</div>
+
+<div class="explorer-card">
+  <div class="explorer-nom">🧭 Barth et Nachtigal (Allemands)</div>
+  <p style="font-size:13px;">Explorent le <strong>Darfour</strong> et le <strong>Tibesti</strong> (régions du Sahara central et du Tchad). Fournissent des données géographiques précieuses sur l'Afrique saharienne.</p>
+</div>
+
+<h3>B. Exploration de l'Afrique orientale et centrale</h3>
+
+<div class="explorer-card">
+  <div class="explorer-nom">🧭 Speke et Grant (Britanniques)</div>
+  <p style="font-size:13px;">Entre <strong>1860 et 1863</strong>, découvrent les <strong>sources du Nil</strong> au lac Victoria (actuelle Ouganda). Résolvent l'un des plus grands mystères géographiques de l'époque.</p>
+</div>
+
+<div class="explorer-card">
+  <div class="explorer-nom">🧭 David Livingstone (Écossais)</div>
+  <p style="font-size:13px;">Missionnaire et explorateur, explore la <strong>vallée du Zambèze</strong> et découvre les chutes Victoria. Lutte contre l'esclavage arabe. Disparaît, retrouvé par Stanley en 1871.</p>
+</div>
+
+<div class="explorer-card">
+  <div class="explorer-nom">🧭 Henry Morton Stanley (Américain)</div>
+  <p style="font-size:13px;">En <strong>1881</strong>, explore le <strong>bassin du Congo</strong> pour le compte du roi Léopold II de Belgique. Signe des traités avec les chefs locaux qui serviront à la mise en valeur du Congo belge.</p>
+</div>
+
+<div class="frise">
+  <div class="frise-titre">📅 Chronologie des grandes explorations</div>
+  <div class="frise-item"><span class="frise-date">1795</span><span>Mungo Park explore la Gambie et atteint le Niger à Ségou</span></div>
+  <div class="frise-item"><span class="frise-date">1803-1813</span><span>London Missionary Society en Afrique du Sud</span></div>
+  <div class="frise-item"><span class="frise-date">1820</span><span>Religieuses de Saint-Joseph de Cluny au Sénégal</span></div>
+  <div class="frise-item"><span class="frise-date">1827</span><span>René Caillé traverse le Sahara et atteint Tombouctou</span></div>
+  <div class="frise-item"><span class="frise-date">1830</span><span>Les frères Lander cartographient l'embouchure du Niger</span></div>
+  <div class="frise-item"><span class="frise-date">1848</span><span>Pères du Saint-Esprit en Afrique</span></div>
+  <div class="frise-item"><span class="frise-date">1854</span><span>Missions Africaines de Lyon fondées</span></div>
+  <div class="frise-item"><span class="frise-date">1860-1863</span><span>Speke et Grant découvrent les sources du Nil</span></div>
+  <div class="frise-item"><span class="frise-date">1881</span><span>Stanley explore le bassin du Congo pour Léopold II</span></div>
+</div>
+
+<div class="conclusion">
+  <p>💡 Les explorations et les missions ont préparé la colonisation de l'Afrique. Les explorateurs ont fourni aux gouvernements européens des cartes, des informations sur les ressources et les populations, facilitant ainsi la conquête coloniale qui culminera avec le Congrès de Berlin de 1884-1885.</p>
+</div>
+
+<!-- ===== QCM ===== -->
+<div class="qcm-section">
+  <div class="qcm-titre">🎯 Évalue tes connaissances — 22 questions</div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">1.</span> Quelle congrégation religieuse catholique est arrivée au Sénégal dès 1820 ?</div>
+    <div class="option"><input type="radio" name="q1" value="a"><label>Les Pères Blancs</label></div>
+    <div class="option"><input type="radio" name="q1" value="b" data-correct="true"><label>Les Religieuses de Saint-Joseph de Cluny</label></div>
+    <div class="option"><input type="radio" name="q1" value="c"><label>Les Missions Africaines de Lyon</label></div>
+    <div class="option"><input type="radio" name="q1" value="d"><label>Les Pères du Saint-Esprit</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">2.</span> En quelle année les Pères du Saint-Esprit (Spiritains) se sont-ils installés en Afrique ?</div>
+    <div class="option"><input type="radio" name="q2" value="a"><label>1820</label></div>
+    <div class="option"><input type="radio" name="q2" value="b"><label>1795</label></div>
+    <div class="option"><input type="radio" name="q2" value="c" data-correct="true"><label>1848</label></div>
+    <div class="option"><input type="radio" name="q2" value="d"><label>1854</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">3.</span> Les Missions Africaines de Lyon ont été fondées en quelle année ?</div>
+    <div class="option"><input type="radio" name="q3" value="a"><label>1848</label></div>
+    <div class="option"><input type="radio" name="q3" value="b" data-correct="true"><label>1854</label></div>
+    <div class="option"><input type="radio" name="q3" value="c"><label>1870</label></div>
+    <div class="option"><input type="radio" name="q3" value="d"><label>1830</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">4.</span> Les Pères Blancs (Missionnaires d'Afrique) étaient particulièrement actifs dans quelle région d'Afrique ?</div>
+    <div class="option"><input type="radio" name="q4" value="a"><label>Afrique du Sud</label></div>
+    <div class="option"><input type="radio" name="q4" value="b"><label>Sénégal</label></div>
+    <div class="option"><input type="radio" name="q4" value="c" data-correct="true"><label>Ouganda et Afrique centrale</label></div>
+    <div class="option"><input type="radio" name="q4" value="d"><label>Madagascar</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">5.</span> Quelle organisation protestante était très active en Afrique du Sud entre 1803 et 1813 ?</div>
+    <div class="option"><input type="radio" name="q5" value="a"><label>Les Pères Blancs</label></div>
+    <div class="option"><input type="radio" name="q5" value="b" data-correct="true"><label>La London Missionary Society</label></div>
+    <div class="option"><input type="radio" name="q5" value="c"><label>La Croix Rouge protestante</label></div>
+    <div class="option"><input type="radio" name="q5" value="d"><label>La Mission de Paris</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">6.</span> Quelle est la nationalité de l'explorateur Mungo Park ?</div>
+    <div class="option"><input type="radio" name="q6" value="a"><label>Français</label></div>
+    <div class="option"><input type="radio" name="q6" value="b"><label>Américain</label></div>
+    <div class="option"><input type="radio" name="q6" value="c" data-correct="true"><label>Écossais (Britannique)</label></div>
+    <div class="option"><input type="radio" name="q6" value="d"><label>Allemand</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">7.</span> En 1795, jusqu'où Mungo Park est-il parvenu lors de son exploration du Niger ?</div>
+    <div class="option"><input type="radio" name="q7" value="a"><label>Jusqu'à Tombouctou</label></div>
+    <div class="option"><input type="radio" name="q7" value="b" data-correct="true"><label>Jusqu'à Ségou</label></div>
+    <div class="option"><input type="radio" name="q7" value="c"><label>Jusqu'à l'embouchure du Niger</label></div>
+    <div class="option"><input type="radio" name="q7" value="d"><label>Jusqu'aux sources du Nil</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">8.</span> René Caillé est arrivé à Tombouctou en quelle année ?</div>
+    <div class="option"><input type="radio" name="q8" value="a"><label>1795</label></div>
+    <div class="option"><input type="radio" name="q8" value="b"><label>1830</label></div>
+    <div class="option"><input type="radio" name="q8" value="c" data-correct="true"><label>1827</label></div>
+    <div class="option"><input type="radio" name="q8" value="d"><label>1865</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">9.</span> Comment René Caillé a-t-il réussi à entrer à Tombouctou sans être arrêté ?</div>
+    <div class="option"><input type="radio" name="q9" value="a"><label>En se faisant passer pour un médecin</label></div>
+    <div class="option"><input type="radio" name="q9" value="b" data-correct="true"><label>Déguisé en pèlerin arabe</label></div>
+    <div class="option"><input type="radio" name="q9" value="c"><label>Avec une escorte militaire</label></div>
+    <div class="option"><input type="radio" name="q9" value="d"><label>En payant les chefs locaux</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">10.</span> Qu'ont accompli les frères Lander en 1830 ?</div>
+    <div class="option"><input type="radio" name="q10" value="a"><label>Ils ont découvert les sources du Nil</label></div>
+    <div class="option"><input type="radio" name="q10" value="b"><label>Ils ont atteint Tombouctou</label></div>
+    <div class="option"><input type="radio" name="q10" value="c" data-correct="true"><label>Ils ont cartographié le Niger jusqu'à son embouchure</label></div>
+    <div class="option"><input type="radio" name="q10" value="d"><label>Ils ont exploré le bassin du Congo</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">11.</span> Dans quelle région Barth et Nachtigal ont-ils mené leurs explorations ?</div>
+    <div class="option"><input type="radio" name="q11" value="a"><label>Bassin du Congo</label></div>
+    <div class="option"><input type="radio" name="q11" value="b"><label>Vallée du Zambèze</label></div>
+    <div class="option"><input type="radio" name="q11" value="c" data-correct="true"><label>Darfour et Tibesti (Sahara central)</label></div>
+    <div class="option"><input type="radio" name="q11" value="d"><label>Afrique du Sud</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">12.</span> Entre 1860 et 1863, Speke et Grant ont découvert quoi ?</div>
+    <div class="option"><input type="radio" name="q12" value="a"><label>Les chutes Victoria sur le Zambèze</label></div>
+    <div class="option"><input type="radio" name="q12" value="b" data-correct="true"><label>Les sources du Nil au lac Victoria</label></div>
+    <div class="option"><input type="radio" name="q12" value="c"><label>L'embouchure du fleuve Congo</label></div>
+    <div class="option"><input type="radio" name="q12" value="d"><label>Les sources du fleuve Niger</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">13.</span> David Livingstone était à la fois missionnaire et explorateur. Quelle vallée a-t-il principalement explorée ?</div>
+    <div class="option"><input type="radio" name="q13" value="a"><label>La vallée du Nil</label></div>
+    <div class="option"><input type="radio" name="q13" value="b"><label>La vallée du Niger</label></div>
+    <div class="option"><input type="radio" name="q13" value="c" data-correct="true"><label>La vallée du Zambèze</label></div>
+    <div class="option"><input type="radio" name="q13" value="d"><label>La vallée du Congo</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">14.</span> Pour le compte de qui Stanley a-t-il exploré le bassin du Congo en 1881 ?</div>
+    <div class="option"><input type="radio" name="q14" value="a"><label>Le gouvernement américain</label></div>
+    <div class="option"><input type="radio" name="q14" value="b" data-correct="true"><label>Le roi Léopold II de Belgique</label></div>
+    <div class="option"><input type="radio" name="q14" value="c"><label>La reine Victoria d'Angleterre</label></div>
+    <div class="option"><input type="radio" name="q14" value="d"><label>Le gouvernement français</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">15.</span> Quelle est la nationalité de Henry Morton Stanley ?</div>
+    <div class="option"><input type="radio" name="q15" value="a"><label>Britannique</label></div>
+    <div class="option"><input type="radio" name="q15" value="b"><label>Belge</label></div>
+    <div class="option"><input type="radio" name="q15" value="c" data-correct="true"><label>Américain</label></div>
+    <div class="option"><input type="radio" name="q15" value="d"><label>Allemand</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">16.</span> Quel rôle les missions religieuses ont-elles joué dans la colonisation de l'Afrique ?</div>
+    <div class="option"><input type="radio" name="q16" value="a"><label>Elles ont organisé la résistance africaine</label></div>
+    <div class="option"><input type="radio" name="q16" value="b" data-correct="true"><label>Elles ont informé les gouvernements des richesses africaines et préparé la colonisation</label></div>
+    <div class="option"><input type="radio" name="q16" value="c"><label>Elles ont freiné la colonisation en défendant les droits des Africains</label></div>
+    <div class="option"><input type="radio" name="q16" value="d"><label>Elles ont négocié l'indépendance de l'Afrique</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">17.</span> Lequel de ces explorateurs a exploré l'Afrique de l'Ouest au XIXe siècle ?</div>
+    <div class="option"><input type="radio" name="q17" value="a"><label>Speke</label></div>
+    <div class="option"><input type="radio" name="q17" value="b"><label>Stanley</label></div>
+    <div class="option"><input type="radio" name="q17" value="c" data-correct="true"><label>René Caillé</label></div>
+    <div class="option"><input type="radio" name="q17" value="d"><label>Livingstone</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">18.</span> Quelle est la caractéristique commune des explorations du XIXe siècle en Afrique ?</div>
+    <div class="option"><input type="radio" name="q18" value="a"><label>Elles visaient à libérer les peuples africains</label></div>
+    <div class="option"><input type="radio" name="q18" value="b" data-correct="true"><label>Elles ont préparé la colonisation en identifiant les ressources et les voies de communication</label></div>
+    <div class="option"><input type="radio" name="q18" value="c"><label>Elles ont été menées uniquement par des religieux</label></div>
+    <div class="option"><input type="radio" name="q18" value="d"><label>Elles ont échoué à cause des maladies tropicales</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">19.</span> Parmi les actions des missions religieuses, laquelle n'est PAS citée dans le cours ?</div>
+    <div class="option"><input type="radio" name="q19" value="a"><label>L'évangélisation et la traduction de la Bible</label></div>
+    <div class="option"><input type="radio" name="q19" value="b"><label>La construction d'écoles et d'hôpitaux</label></div>
+    <div class="option"><input type="radio" name="q19" value="c" data-correct="true"><label>L'organisation de rébellions contre les autorités locales</label></div>
+    <div class="option"><input type="radio" name="q19" value="d"><label>L'alphabétisation des populations africaines</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">20.</span> Quelle est la fondatrice des Religieuses de Saint-Joseph de Cluny ?</div>
+    <div class="option"><input type="radio" name="q20" value="a"><label>Mère Teresa</label></div>
+    <div class="option"><input type="radio" name="q20" value="b"><label>Le Cardinal Lavigerie</label></div>
+    <div class="option"><input type="radio" name="q20" value="c" data-correct="true"><label>Anne-Marie Javouhey</label></div>
+    <div class="option"><input type="radio" name="q20" value="d"><label>Sainte Thérèse d'Avila</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">21.</span> Les Pères Blancs ont été fondés par quel cardinal ?</div>
+    <div class="option"><input type="radio" name="q21" value="a"><label>Cardinal Richelieu</label></div>
+    <div class="option"><input type="radio" name="q21" value="b" data-correct="true"><label>Cardinal Lavigerie</label></div>
+    <div class="option"><input type="radio" name="q21" value="c"><label>Cardinal Mazarin</label></div>
+    <div class="option"><input type="radio" name="q21" value="d"><label>Cardinal Dupont</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">22.</span> Quelle découverte importante Livingstone a-t-il faite lors de son exploration du Zambèze ?</div>
+    <div class="option"><input type="radio" name="q22" value="a"><label>Les sources du Nil</label></div>
+    <div class="option"><input type="radio" name="q22" value="b"><label>Le lac Tchad</label></div>
+    <div class="option"><input type="radio" name="q22" value="c" data-correct="true"><label>Les chutes Victoria</label></div>
+    <div class="option"><input type="radio" name="q22" value="d"><label>L'embouchure du Congo</label></div>
+  </div>
+
+</div>
+</body>
+</html>

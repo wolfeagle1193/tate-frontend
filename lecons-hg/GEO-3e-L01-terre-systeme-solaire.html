@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 15px; color: #1a1a1a; background: #fff; padding: 16px; line-height: 1.7; }
+  .partie-badge { background: #154360; color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 10px; }
+  h1 { font-size: 1.35rem; font-weight: 800; color: #154360; border-bottom: 3px solid #2E86C1; padding-bottom: 8px; margin-bottom: 18px; }
+  .essentiel { background: linear-gradient(135deg, #EBF5FB, #D6EAF8); border-left: 5px solid #2E86C1; border-radius: 10px; padding: 16px 18px; margin-bottom: 22px; }
+  .essentiel-titre { font-size: 1rem; font-weight: 800; color: #154360; text-align: center; margin-bottom: 10px; }
+  .essentiel p { font-weight: 600; color: #154360; font-size: 14px; }
+  h2 { font-size: 1.05rem; font-weight: 800; color: #154360; margin: 22px 0 10px; border-left: 4px solid #2E86C1; padding-left: 10px; }
+  h3 { font-size: .95rem; font-weight: 700; color: #1A5276; margin: 14px 0 6px; }
+  p { margin-bottom: 10px; }
+  ul { margin-left: 18px; margin-bottom: 10px; }
+  li { margin-bottom: 5px; }
+  .info-card { background: #F8F9FA; border-left: 4px solid #2E86C1; border-radius: 6px; padding: 10px 14px; margin: 8px 0; font-size: 13px; }
+  .info-titre { font-weight: 800; color: #154360; margin-bottom: 4px; }
+  .tableau { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .tableau th { background: #154360; color: #fff; padding: 8px 10px; text-align: left; }
+  .tableau td { padding: 8px 10px; border-bottom: 1px solid #D6EAF8; }
+  .tableau tr:nth-child(even) td { background: #EBF5FB; }
+  .frise { background: #F8F9FA; border: 1.5px solid #BDC3C7; border-radius: 10px; padding: 14px 16px; margin: 14px 0; }
+  .frise-titre { font-weight: 800; color: #154360; margin-bottom: 10px; font-size: 14px; }
+  .frise-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 6px; font-size: 13px; }
+  .frise-date { background: #2E86C1; color: #fff; border-radius: 6px; padding: 2px 8px; font-weight: 700; white-space: nowrap; flex-shrink: 0; }
+  .planet-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
+  .planet-card { border-radius: 8px; padding: 10px 12px; font-size: 13px; }
+  .tellurique { background: #FDEBD0; border-left: 4px solid #E67E22; }
+  .gazeuse { background: #EBF5FB; border-left: 4px solid #2E86C1; }
+  .planet-type { font-weight: 800; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px; }
+  .tellurique .planet-type { color: #A04000; }
+  .gazeuse .planet-type { color: #1A5276; }
+  .zone-card { border-radius: 8px; padding: 10px 12px; margin: 6px 0; font-size: 13px; }
+  .zone-chaude { background: #FDEDEC; border-left: 4px solid #E74C3C; }
+  .zone-temp { background: #FEF9E7; border-left: 4px solid #F1C40F; }
+  .zone-froide { background: #EBF5FB; border-left: 4px solid #2E86C1; }
+  .zone-titre { font-weight: 800; margin-bottom: 3px; }
+  .zone-chaude .zone-titre { color: #C0392B; }
+  .zone-temp .zone-titre { color: #B7950B; }
+  .zone-froide .zone-titre { color: #1A5276; }
+  .qcm-section { margin-top: 30px; border-top: 3px solid #2E86C1; padding-top: 20px; }
+  .qcm-titre { font-size: 1.1rem; font-weight: 800; color: #fff; background: #154360; padding: 10px 16px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
+  .question-bloc { background: #FAFAFA; border: 1.5px solid #D6EAF8; border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; }
+  .question-texte { font-weight: 700; color: #1a1a1a; margin-bottom: 10px; font-size: 14px; }
+  .question-num { color: #2E86C1; font-weight: 800; }
+  .option { display: flex; align-items: flex-start; gap: 10px; padding: 7px 10px; border-radius: 7px; margin-bottom: 4px; cursor: pointer; border: 1.5px solid transparent; }
+  .option:hover { background: #EBF5FB; border-color: #2E86C1; }
+  .option input[type="radio"] { margin-top: 2px; accent-color: #154360; flex-shrink: 0; width: 16px; height: 16px; }
+  .option label { cursor: pointer; font-size: 14px; color: #333; }
+</style>
+</head>
+<body>
+
+<div class="partie-badge">Géographie — Chapitre I</div>
+<h1>Leçon 1 — La Terre, une planète du système solaire</h1>
+
+<div class="essentiel">
+  <div class="essentiel-titre">📌 L'essentiel à retenir</div>
+  <p>La Terre est une planète du système solaire, formée il y a environ 4 milliards d'années. Elle est la seule planète connue abritant la vie grâce à sa position idéale par rapport au Soleil. Ses deux mouvements (rotation et révolution) déterminent l'alternance des jours/nuits et des saisons.</p>
+</div>
+
+<h2>I. La Terre dans le système solaire</h2>
+
+<h3>A. Caractéristiques de la Terre</h3>
+
+<div class="info-card">
+  <div class="info-titre">🌍 Dimensions et caractéristiques</div>
+  <ul>
+    <li><strong>Âge :</strong> environ 4 milliards d'années</li>
+    <li><strong>Forme :</strong> sphère aplatie aux pôles = <strong>ellipsoïde</strong> ou <strong>géoïde</strong></li>
+    <li><strong>Diamètre :</strong> 12 750 km</li>
+    <li><strong>Circonférence :</strong> 40 000 km</li>
+    <li><strong>Superficie :</strong> 510 millions de km²</li>
+    <li><strong>Volume :</strong> 1 083 × 10¹² km³</li>
+    <li>Surnommée <strong>"Planète bleue"</strong> car 71% de sa surface est couverte d'océans</li>
+  </ul>
+</div>
+
+<h3>B. Les cinq océans</h3>
+<p>La Terre est entourée de cinq grands océans : <strong>Pacifique</strong> (le plus grand), <strong>Atlantique</strong>, <strong>Indien</strong>, <strong>Arctique</strong> et <strong>Antarctique</strong>.</p>
+
+<h3>C. La structure interne de la Terre</h3>
+
+<table class="tableau">
+  <tr><th>Couche</th><th>Épaisseur</th><th>Caractéristiques</th></tr>
+  <tr><td><strong>Croûte terrestre</strong></td><td>30 km (continents) / 10 km (océans)</td><td>Couche superficielle rocheuse</td></tr>
+  <tr><td><strong>Manteau</strong></td><td>2 900 km</td><td>Roche en fusion partielle</td></tr>
+  <tr><td><strong>Noyau</strong></td><td>Rayon : 3 500 km</td><td>Fer + nickel, température : 6 000°C</td></tr>
+</table>
+
+<h2>II. Le système solaire</h2>
+
+<h3>A. Organisation du système solaire</h3>
+
+<div class="info-card">
+  <div class="info-titre">☀️ Le Soleil</div>
+  Le Soleil est une <strong>étoile</strong> au centre du système solaire. Sa surface est à <strong>6 000°C</strong> et son centre à <strong>10 millions °C</strong>. L'<strong>année-lumière</strong> est la distance parcourue par la lumière en un an, soit environ <strong>10 000 milliards de km</strong>. La Terre est à <strong>150 millions de km</strong> du Soleil.
+</div>
+
+<p>Le système solaire comprend : le <strong>Soleil</strong> + <strong>8 planètes</strong> + des astéroïdes + des comètes. Le satellite naturel de la Terre est la <strong>Lune</strong>.</p>
+
+<h3>B. Les deux groupes de planètes</h3>
+
+<div class="planet-grid">
+  <div class="planet-card tellurique">
+    <div class="planet-type">Planètes telluriques (rocheuses)</div>
+    <strong>Mercure, Vénus, Terre, Mars</strong><br>
+    Petites, denses, rocheuses, proches du Soleil
+  </div>
+  <div class="planet-card gazeuse">
+    <div class="planet-type">Planètes gazeuses (joviennes)</div>
+    <strong>Jupiter, Saturne, Uranus, Neptune</strong><br>
+    Grandes, gazeuses, éloignées du Soleil
+  </div>
+</div>
+
+<p>La Terre est la <strong>3ème planète</strong> dans l'ordre à partir du Soleil.</p>
+
+<h2>III. Les mouvements de la Terre</h2>
+
+<h3>A. La rotation</h3>
+<div class="info-card">
+  <div class="info-titre">🔄 Rotation (mouvement journalier)</div>
+  <ul>
+    <li><strong>Durée :</strong> 24 heures</li>
+    <li><strong>Sens :</strong> d'Ouest en Est (sens antihoraire vu du pôle Nord)</li>
+    <li><strong>Conséquences :</strong> alternance des <strong>jours et des nuits</strong>, décalages horaires</li>
+  </ul>
+</div>
+
+<h3>B. La révolution</h3>
+<div class="info-card">
+  <div class="info-titre">🌐 Révolution (mouvement annuel)</div>
+  <ul>
+    <li><strong>Durée :</strong> 365 jours et 6 heures</li>
+    <li><strong>Plan :</strong> plan de l'écliptique (orbite elliptique autour du Soleil)</li>
+    <li><strong>Conséquences :</strong> alternance des <strong>saisons</strong></li>
+  </ul>
+</div>
+
+<div class="frise">
+  <div class="frise-titre">📅 Les quatre positions marquant les saisons (hémisphère Nord)</div>
+  <div class="frise-item"><span class="frise-date">21 juin</span><span><strong>Solstice d'été</strong> — jour le plus long, Soleil au zénith au tropique du Cancer</span></div>
+  <div class="frise-item"><span class="frise-date">22 déc.</span><span><strong>Solstice d'hiver</strong> — nuit la plus longue, Soleil au zénith au tropique du Capricorne</span></div>
+  <div class="frise-item"><span class="frise-date">21 mars</span><span><strong>Équinoxe de printemps</strong> — durée égale jour/nuit</span></div>
+  <div class="frise-item"><span class="frise-date">23 sept.</span><span><strong>Équinoxe d'automne</strong> — durée égale jour/nuit</span></div>
+</div>
+
+<h2>IV. Les zones thermiques et l'influence du Soleil</h2>
+
+<h3>A. Les cinq zones thermiques</h3>
+
+<div class="zone-card zone-chaude">
+  <div class="zone-titre">🌡️ Zone chaude (1 zone)</div>
+  Comprise entre le tropique du Cancer (23°26' N) et le tropique du Capricorne (23°26' S). Chaleur intense toute l'année.
+</div>
+<div class="zone-card zone-temp">
+  <div class="zone-titre">🌤️ Zones tempérées (2 zones)</div>
+  Situées entre les tropiques et les cercles polaires (66°34'). Quatre saisons marquées.
+</div>
+<div class="zone-card zone-froide">
+  <div class="zone-titre">❄️ Zones froides (2 zones)</div>
+  Au-delà des cercles polaires, autour des pôles. Froid extrême, nuits/jours polaires.
+</div>
+
+<h3>B. L'influence du Soleil sur la Terre</h3>
+
+<div class="info-card">
+  <div class="info-titre">☀️ Trois phénomènes liés au rayonnement solaire</div>
+  <ul>
+    <li><strong>Réflexion (albédo) :</strong> la neige réfléchit 85% du rayonnement, les continents 34%, les forêts 5 à 10%</li>
+    <li><strong>Absorption :</strong> par l'ozone, la vapeur d'eau et le CO₂ de l'atmosphère</li>
+    <li><strong>Diffusion :</strong> dispersion du rayonnement dans l'atmosphère</li>
+  </ul>
+</div>
+
+<h3>C. L'effet de serre</h3>
+<p>L'énergie solaire qui atteint la surface terrestre est réémise sous forme de <strong>rayons infrarouges</strong>. Ces rayons sont partiellement retenus par les <strong>Gaz à Effet de Serre (GES)</strong> : CO₂, méthane, vapeur d'eau. C'est l'<strong>effet de serre naturel</strong>, indispensable à la vie. L'activité humaine intensifie ce phénomène, provoquant le <strong>réchauffement climatique</strong>.</p>
+
+<!-- QCM -->
+<div class="qcm-section">
+<div class="qcm-titre">📝 Évaluation — Questions à Choix Multiples (24 questions)</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">1.</span> La Terre a été formée il y a environ :</div>
+  <div class="option"><input type="radio" name="q1" value="A" id="q1A"><label for="q1A">A. 2 milliards d'années</label></div>
+  <div class="option"><input type="radio" name="q1" value="B" id="q1B" data-correct="true"><label for="q1B">B. 4 milliards d'années</label></div>
+  <div class="option"><input type="radio" name="q1" value="C" id="q1C"><label for="q1C">C. 6 milliards d'années</label></div>
+  <div class="option"><input type="radio" name="q1" value="D" id="q1D"><label for="q1D">D. 1 milliard d'années</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">2.</span> Quelle est la forme exacte de la Terre ?</div>
+  <div class="option"><input type="radio" name="q2" value="A" id="q2A"><label for="q2A">A. Une sphère parfaite</label></div>
+  <div class="option"><input type="radio" name="q2" value="B" id="q2B"><label for="q2B">B. Un cube</label></div>
+  <div class="option"><input type="radio" name="q2" value="C" id="q2C" data-correct="true"><label for="q2C">C. Un géoïde (ellipsoïde aplati aux pôles)</label></div>
+  <div class="option"><input type="radio" name="q2" value="D" id="q2D"><label for="q2D">D. Un cylindre</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">3.</span> Quel est le diamètre de la Terre ?</div>
+  <div class="option"><input type="radio" name="q3" value="A" id="q3A"><label for="q3A">A. 6 375 km</label></div>
+  <div class="option"><input type="radio" name="q3" value="B" id="q3B"><label for="q3B">B. 40 000 km</label></div>
+  <div class="option"><input type="radio" name="q3" value="C" id="q3C" data-correct="true"><label for="q3C">C. 12 750 km</label></div>
+  <div class="option"><input type="radio" name="q3" value="D" id="q3D"><label for="q3D">D. 510 000 km</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">4.</span> Pourquoi la Terre est-elle surnommée "Planète bleue" ?</div>
+  <div class="option"><input type="radio" name="q4" value="A" id="q4A"><label for="q4A">A. À cause de l'atmosphère uniquement</label></div>
+  <div class="option"><input type="radio" name="q4" value="B" id="q4B" data-correct="true"><label for="q4B">B. Parce que 71% de sa surface est couverte d'océans</label></div>
+  <div class="option"><input type="radio" name="q4" value="C" id="q4C"><label for="q4C">C. À cause des forêts et des glaces</label></div>
+  <div class="option"><input type="radio" name="q4" value="D" id="q4D"><label for="q4D">D. Parce que 71% de sa surface est couverte de glace</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">5.</span> Quelle est la couche la plus profonde de la Terre ?</div>
+  <div class="option"><input type="radio" name="q5" value="A" id="q5A"><label for="q5A">A. La croûte terrestre</label></div>
+  <div class="option"><input type="radio" name="q5" value="B" id="q5B"><label for="q5B">B. Le manteau</label></div>
+  <div class="option"><input type="radio" name="q5" value="C" id="q5C" data-correct="true"><label for="q5C">C. Le noyau</label></div>
+  <div class="option"><input type="radio" name="q5" value="D" id="q5D"><label for="q5D">D. La lithosphère</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">6.</span> La température au centre du noyau terrestre est d'environ :</div>
+  <div class="option"><input type="radio" name="q6" value="A" id="q6A"><label for="q6A">A. 1 500°C</label></div>
+  <div class="option"><input type="radio" name="q6" value="B" id="q6B"><label for="q6B">B. 3 500°C</label></div>
+  <div class="option"><input type="radio" name="q6" value="C" id="q6C" data-correct="true"><label for="q6C">C. 6 000°C</label></div>
+  <div class="option"><input type="radio" name="q6" value="D" id="q6D"><label for="q6D">D. 10 000°C</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">7.</span> Combien de planètes compte le système solaire ?</div>
+  <div class="option"><input type="radio" name="q7" value="A" id="q7A"><label for="q7A">A. 7</label></div>
+  <div class="option"><input type="radio" name="q7" value="B" id="q7B"><label for="q7B">B. 9</label></div>
+  <div class="option"><input type="radio" name="q7" value="C" id="q7C" data-correct="true"><label for="q7C">C. 8</label></div>
+  <div class="option"><input type="radio" name="q7" value="D" id="q7D"><label for="q7D">D. 10</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">8.</span> La Terre est la ________ planète dans l'ordre à partir du Soleil.</div>
+  <div class="option"><input type="radio" name="q8" value="A" id="q8A"><label for="q8A">A. 2ème</label></div>
+  <div class="option"><input type="radio" name="q8" value="B" id="q8B" data-correct="true"><label for="q8B">B. 3ème</label></div>
+  <div class="option"><input type="radio" name="q8" value="C" id="q8C"><label for="q8C">C. 4ème</label></div>
+  <div class="option"><input type="radio" name="q8" value="D" id="q8D"><label for="q8D">D. 5ème</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">9.</span> Parmi ces planètes, lesquelles sont des planètes telluriques ?</div>
+  <div class="option"><input type="radio" name="q9" value="A" id="q9A"><label for="q9A">A. Jupiter, Saturne, Uranus, Neptune</label></div>
+  <div class="option"><input type="radio" name="q9" value="B" id="q9B" data-correct="true"><label for="q9B">B. Mercure, Vénus, Terre, Mars</label></div>
+  <div class="option"><input type="radio" name="q9" value="C" id="q9C"><label for="q9C">C. Vénus, Jupiter, Saturne, Mars</label></div>
+  <div class="option"><input type="radio" name="q9" value="D" id="q9D"><label for="q9D">D. Terre, Jupiter, Neptune, Uranus</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">10.</span> Quelle est la distance entre la Terre et le Soleil ?</div>
+  <div class="option"><input type="radio" name="q10" value="A" id="q10A"><label for="q10A">A. 15 millions de km</label></div>
+  <div class="option"><input type="radio" name="q10" value="B" id="q10B"><label for="q10B">B. 1 milliard de km</label></div>
+  <div class="option"><input type="radio" name="q10" value="C" id="q10C" data-correct="true"><label for="q10C">C. 150 millions de km</label></div>
+  <div class="option"><input type="radio" name="q10" value="D" id="q10D"><label for="q10D">D. 10 000 milliards de km</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">11.</span> Quel est le satellite naturel de la Terre ?</div>
+  <div class="option"><input type="radio" name="q11" value="A" id="q11A"><label for="q11A">A. Phobos</label></div>
+  <div class="option"><input type="radio" name="q11" value="B" id="q11B"><label for="q11B">B. Titan</label></div>
+  <div class="option"><input type="radio" name="q11" value="C" id="q11C" data-correct="true"><label for="q11C">C. La Lune</label></div>
+  <div class="option"><input type="radio" name="q11" value="D" id="q11D"><label for="q11D">D. Europe</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">12.</span> La rotation de la Terre sur elle-même dure :</div>
+  <div class="option"><input type="radio" name="q12" value="A" id="q12A"><label for="q12A">A. 365 jours et 6 heures</label></div>
+  <div class="option"><input type="radio" name="q12" value="B" id="q12B"><label for="q12B">B. 12 heures</label></div>
+  <div class="option"><input type="radio" name="q12" value="C" id="q12C" data-correct="true"><label for="q12C">C. 24 heures</label></div>
+  <div class="option"><input type="radio" name="q12" value="D" id="q12D"><label for="q12D">D. 7 jours</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">13.</span> La principale conséquence de la rotation de la Terre est :</div>
+  <div class="option"><input type="radio" name="q13" value="A" id="q13A"><label for="q13A">A. L'alternance des saisons</label></div>
+  <div class="option"><input type="radio" name="q13" value="B" id="q13B"><label for="q13B">B. Le déplacement des plaques tectoniques</label></div>
+  <div class="option"><input type="radio" name="q13" value="C" id="q13C" data-correct="true"><label for="q13C">C. L'alternance des jours et des nuits</label></div>
+  <div class="option"><input type="radio" name="q13" value="D" id="q13D"><label for="q13D">D. Les éclipses solaires</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">14.</span> La révolution de la Terre autour du Soleil dure :</div>
+  <div class="option"><input type="radio" name="q14" value="A" id="q14A"><label for="q14A">A. 24 heures</label></div>
+  <div class="option"><input type="radio" name="q14" value="B" id="q14B" data-correct="true"><label for="q14B">B. 365 jours et 6 heures</label></div>
+  <div class="option"><input type="radio" name="q14" value="C" id="q14C"><label for="q14C">C. 360 jours exactement</label></div>
+  <div class="option"><input type="radio" name="q14" value="D" id="q14D"><label for="q14D">D. 30 jours</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">15.</span> Le 21 juin correspond à :</div>
+  <div class="option"><input type="radio" name="q15" value="A" id="q15A"><label for="q15A">A. L'équinoxe de printemps</label></div>
+  <div class="option"><input type="radio" name="q15" value="B" id="q15B"><label for="q15B">B. Le solstice d'hiver</label></div>
+  <div class="option"><input type="radio" name="q15" value="C" id="q15C" data-correct="true"><label for="q15C">C. Le solstice d'été (jour le plus long)</label></div>
+  <div class="option"><input type="radio" name="q15" value="D" id="q15D"><label for="q15D">D. L'équinoxe d'automne</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">16.</span> À quelle date la durée du jour est-elle égale à celle de la nuit au printemps ?</div>
+  <div class="option"><input type="radio" name="q16" value="A" id="q16A"><label for="q16A">A. 22 décembre</label></div>
+  <div class="option"><input type="radio" name="q16" value="B" id="q16B"><label for="q16B">B. 21 juin</label></div>
+  <div class="option"><input type="radio" name="q16" value="C" id="q16C" data-correct="true"><label for="q16C">C. 21 mars</label></div>
+  <div class="option"><input type="radio" name="q16" value="D" id="q16D"><label for="q16D">D. 15 avril</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">17.</span> Combien de zones thermiques la Terre comprend-elle ?</div>
+  <div class="option"><input type="radio" name="q17" value="A" id="q17A"><label for="q17A">A. 3 zones</label></div>
+  <div class="option"><input type="radio" name="q17" value="B" id="q17B"><label for="q17B">B. 4 zones</label></div>
+  <div class="option"><input type="radio" name="q17" value="C" id="q17C" data-correct="true"><label for="q17C">C. 5 zones</label></div>
+  <div class="option"><input type="radio" name="q17" value="D" id="q17D"><label for="q17D">D. 7 zones</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">18.</span> La zone chaude se situe :</div>
+  <div class="option"><input type="radio" name="q18" value="A" id="q18A"><label for="q18A">A. Entre les cercles polaires</label></div>
+  <div class="option"><input type="radio" name="q18" value="B" id="q18B" data-correct="true"><label for="q18B">B. Entre les deux tropiques (Cancer et Capricorne)</label></div>
+  <div class="option"><input type="radio" name="q18" value="C" id="q18C"><label for="q18C">C. Au-delà des cercles polaires</label></div>
+  <div class="option"><input type="radio" name="q18" value="D" id="q18D"><label for="q18D">D. Entre le tropique et le cercle polaire</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">19.</span> L'albédo désigne :</div>
+  <div class="option"><input type="radio" name="q19" value="A" id="q19A"><label for="q19A">A. L'absorption du rayonnement solaire</label></div>
+  <div class="option"><input type="radio" name="q19" value="B" id="q19B"><label for="q19B">B. La diffusion du rayonnement solaire</label></div>
+  <div class="option"><input type="radio" name="q19" value="C" id="q19C" data-correct="true"><label for="q19C">C. La réflexion du rayonnement solaire</label></div>
+  <div class="option"><input type="radio" name="q19" value="D" id="q19D"><label for="q19D">D. La transformation en rayons infrarouges</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">20.</span> Quel type de surface réfléchit le plus le rayonnement solaire ?</div>
+  <div class="option"><input type="radio" name="q20" value="A" id="q20A"><label for="q20A">A. Les forêts (5 à 10%)</label></div>
+  <div class="option"><input type="radio" name="q20" value="B" id="q20B"><label for="q20B">B. Les continents (34%)</label></div>
+  <div class="option"><input type="radio" name="q20" value="C" id="q20C" data-correct="true"><label for="q20C">C. La neige (85%)</label></div>
+  <div class="option"><input type="radio" name="q20" value="D" id="q20D"><label for="q20D">D. Les océans (71%)</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">21.</span> L'effet de serre naturel est produit par :</div>
+  <div class="option"><input type="radio" name="q21" value="A" id="q21A"><label for="q21A">A. La couche d'ozone uniquement</label></div>
+  <div class="option"><input type="radio" name="q21" value="B" id="q21B" data-correct="true"><label for="q21B">B. Les Gaz à Effet de Serre (CO₂, méthane, vapeur d'eau)</label></div>
+  <div class="option"><input type="radio" name="q21" value="C" id="q21C"><label for="q21C">C. Le noyau terrestre</label></div>
+  <div class="option"><input type="radio" name="q21" value="D" id="q21D"><label for="q21D">D. Les rayons ultraviolets</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">22.</span> L'énergie solaire réémise par la surface terrestre prend la forme de :</div>
+  <div class="option"><input type="radio" name="q22" value="A" id="q22A"><label for="q22A">A. Rayons ultraviolets</label></div>
+  <div class="option"><input type="radio" name="q22" value="B" id="q22B"><label for="q22B">B. Rayons gamma</label></div>
+  <div class="option"><input type="radio" name="q22" value="C" id="q22C" data-correct="true"><label for="q22C">C. Rayons infrarouges</label></div>
+  <div class="option"><input type="radio" name="q22" value="D" id="q22D"><label for="q22D">D. Rayons X</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">23.</span> Le manteau terrestre a une épaisseur d'environ :</div>
+  <div class="option"><input type="radio" name="q23" value="A" id="q23A"><label for="q23A">A. 30 km</label></div>
+  <div class="option"><input type="radio" name="q23" value="B" id="q23B"><label for="q23B">B. 3 500 km</label></div>
+  <div class="option"><input type="radio" name="q23" value="C" id="q23C" data-correct="true"><label for="q23C">C. 2 900 km</label></div>
+  <div class="option"><input type="radio" name="q23" value="D" id="q23D"><label for="q23D">D. 12 750 km</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">24.</span> Une année-lumière correspond à :</div>
+  <div class="option"><input type="radio" name="q24" value="A" id="q24A"><label for="q24A">A. 150 millions de km</label></div>
+  <div class="option"><input type="radio" name="q24" value="B" id="q24B"><label for="q24B">B. 1 milliard de km</label></div>
+  <div class="option"><input type="radio" name="q24" value="C" id="q24C" data-correct="true"><label for="q24C">C. Environ 10 000 milliards de km</label></div>
+  <div class="option"><input type="radio" name="q24" value="D" id="q24D"><label for="q24D">D. 40 000 km</label></div>
+</div>
+
+</div><!-- end qcm-section -->
+</body>
+</html>

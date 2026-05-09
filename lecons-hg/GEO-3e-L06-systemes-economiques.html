@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 15px; color: #1a1a1a; background: #fff; padding: 16px; line-height: 1.7; }
+  .partie-badge { background: #154360; color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 10px; }
+  h1 { font-size: 1.35rem; font-weight: 800; color: #154360; border-bottom: 3px solid #2E86C1; padding-bottom: 8px; margin-bottom: 18px; }
+  .essentiel { background: linear-gradient(135deg, #EBF5FB, #D6EAF8); border-left: 5px solid #2E86C1; border-radius: 10px; padding: 16px 18px; margin-bottom: 22px; }
+  .essentiel-titre { font-size: 1rem; font-weight: 800; color: #154360; text-align: center; margin-bottom: 10px; }
+  .essentiel p { font-weight: 600; color: #154360; font-size: 14px; }
+  h2 { font-size: 1.05rem; font-weight: 800; color: #154360; margin: 22px 0 10px; border-left: 4px solid #2E86C1; padding-left: 10px; }
+  h3 { font-size: .95rem; font-weight: 700; color: #1A5276; margin: 14px 0 6px; }
+  p { margin-bottom: 10px; }
+  ul { margin-left: 18px; margin-bottom: 10px; }
+  li { margin-bottom: 5px; }
+  .systeme-card { border-radius: 10px; padding: 12px 16px; margin: 10px 0; border-left: 5px solid; }
+  .capi { background: #EBF5FB; border-color: #1A5276; }
+  .socia { background: #FDEBD0; border-color: #E67E22; }
+  .mixte { background: #E9F7EF; border-color: #27AE60; }
+  .systeme-titre { font-weight: 800; font-size: 14px; margin-bottom: 6px; }
+  .capi .systeme-titre { color: #1A5276; }
+  .socia .systeme-titre { color: #A04000; }
+  .mixte .systeme-titre { color: #1E8449; }
+  .comp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0; }
+  .comp-col { border-radius: 8px; padding: 10px 12px; font-size: 13px; }
+  .comp-capi { background: #EBF5FB; border: 1.5px solid #2E86C1; }
+  .comp-socia { background: #FEF9E7; border: 1.5px solid #E67E22; }
+  .comp-titre { font-weight: 800; text-align: center; margin-bottom: 6px; font-size: 13px; }
+  .comp-capi .comp-titre { color: #1A5276; }
+  .comp-socia .comp-titre { color: #A04000; }
+  .info-card { background: #F8F9FA; border-left: 4px solid #2E86C1; border-radius: 6px; padding: 10px 14px; margin: 8px 0; font-size: 13px; }
+  .info-titre { font-weight: 800; color: #154360; margin-bottom: 4px; }
+  .qcm-section { margin-top: 30px; border-top: 3px solid #2E86C1; padding-top: 20px; }
+  .qcm-titre { font-size: 1.1rem; font-weight: 800; color: #fff; background: #154360; padding: 10px 16px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
+  .question-bloc { background: #FAFAFA; border: 1.5px solid #D6EAF8; border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; }
+  .question-texte { font-weight: 700; color: #1a1a1a; margin-bottom: 10px; font-size: 14px; }
+  .question-num { color: #2E86C1; font-weight: 800; }
+  .option { display: flex; align-items: flex-start; gap: 10px; padding: 7px 10px; border-radius: 7px; margin-bottom: 4px; cursor: pointer; border: 1.5px solid transparent; }
+  .option:hover { background: #EBF5FB; border-color: #2E86C1; }
+  .option input[type="radio"] { margin-top: 2px; accent-color: #154360; flex-shrink: 0; width: 16px; height: 16px; }
+  .option label { cursor: pointer; font-size: 14px; color: #333; }
+</style>
+</head>
+<body>
+
+<div class="partie-badge">Géographie — Chapitre III : La Terre, une planète divisée</div>
+<h1>Leçon 6 — Les systèmes économiques : le capitalisme et le socialisme</h1>
+
+<div class="essentiel">
+  <div class="essentiel-titre">📌 L'essentiel à retenir</div>
+  <p>Un système économique est un ensemble de valeurs et de principes qui organisent et orientent les politiques et la vie économique et sociale d'un pays. Les systèmes économiques s'inspirent soit du <strong>capitalisme</strong> soit du <strong>socialisme</strong>. Caractérisés par des structures économiques et sociales particulières, les deux systèmes sont en constante évolution.</p>
+</div>
+
+<h2>I. Le capitalisme et son évolution</h2>
+
+<div class="systeme-card capi">
+  <div class="systeme-titre">💰 Le capitalisme</div>
+  Système fondé sur :
+  <ul>
+    <li><strong>La propriété privée</strong> des moyens de production (terre, usines, banques…)</li>
+    <li><strong>La recherche du profit</strong></li>
+    <li><strong>L'initiative individuelle</strong> et la liberté d'entreprise</li>
+    <li><strong>La concurrence</strong> et la loi de l'offre et de la demande</li>
+    <li><strong>La non-intervention de l'État</strong></li>
+  </ul>
+</div>
+
+<h3>A. Les structures du capitalisme</h3>
+<div class="info-card">
+  <div class="info-titre">🏦 Les structures économiques capitalistes</div>
+  <ul>
+    <li>Les <strong>banques</strong>, les sociétés, les bourses et les marchés</li>
+    <li>Les entreprises obéissent aux règles du marché (concurrence, offre et demande)</li>
+    <li>Concentrations : <strong>trusts, cartels, conglomérats</strong> → Firmes Multinationales <strong>(FMN)</strong> ou Transnationales <strong>(FTN)</strong> : Total, Samsung, Huawei, Coca Cola, Auchan…</li>
+    <li>Repose sur la standardisation, le taylorisme et l'innovation</li>
+  </ul>
+</div>
+
+<h3>B. Les formes et l'évolution du capitalisme</h3>
+<p>Le capitalisme a revêtu plusieurs formes : <strong>mercantile, industriel, monopole, libéral, d'État</strong>. Ses structures évoluent : face aux crises (1929, 2008), l'État est intervenu pour soutenir les entreprises, aider les catégories défavorisées, protéger l'économie nationale.</p>
+
+<h2>II. Le socialisme et son évolution</h2>
+
+<div class="systeme-card socia">
+  <div class="systeme-titre">⚙️ Le socialisme</div>
+  Système fondé sur :
+  <ul>
+    <li><strong>La propriété collective</strong> des moyens de production</li>
+    <li><strong>L'intervention et le monopole de l'État</strong></li>
+    <li><strong>La planification</strong> : l'État fixe les prix, détermine la production (plans quinquennaux)</li>
+    <li>Structures sociales : <strong>sovkhozes</strong> (fermes d'État) et <strong>kolkhozes</strong> (coopératives)</li>
+  </ul>
+  Le socialisme a triomphé en <strong>URSS (1917)</strong>, en <strong>Chine (1949)</strong> et à <strong>Cuba (1959)</strong>.
+</div>
+
+<h3>A. Les avantages de la planification socialiste</h3>
+<p>La planification centralisée a permis à l'URSS de <strong>réaliser la "conquête de l'Est"</strong> : création de voies de communication, usines, logements. Elle a permis à la Chine de développer les <strong>Zones Économiques Spéciales (ZES)</strong>.</p>
+
+<h3>B. L'évolution du socialisme</h3>
+<div class="info-card">
+  <div class="info-titre">🔄 Transformations du socialisme</div>
+  <ul>
+    <li>Le socialisme pur ne survit qu'en <strong>Corée du Nord et à Cuba</strong></li>
+    <li>Depuis <strong>1991</strong>, la Russie a adopté le <strong>capitalisme d'État</strong> (grandes entreprises publiques organisées selon les règles du marché)</li>
+    <li>La <strong>Chine</strong> a inventé l'<strong>"économie socialiste de marché"</strong> : associe planification (socialisme) et propriété privée + concurrence (capitalisme) — avec des ZES</li>
+  </ul>
+</div>
+
+<div class="systeme-card mixte">
+  <div class="systeme-titre">🌐 La mondialisation et les systèmes économiques</div>
+  La planète est toujours marquée par des systèmes économiques différents. Toutefois, avec la mondialisation, le <strong>système capitaliste libéral</strong> a tendance à s'imposer un peu partout. Les inégalités de développement reflètent aussi la complexité et la diversité des modèles économiques appliqués par les différents pays.
+</div>
+
+<div class="comp-grid">
+  <div class="comp-col comp-capi">
+    <div class="comp-titre">💰 CAPITALISME</div>
+    <ul>
+      <li>Propriété privée</li>
+      <li>Marché libre</li>
+      <li>FMN, multinationales</li>
+      <li>Profit individuel</li>
+      <li>Inégalités sociales</li>
+    </ul>
+  </div>
+  <div class="comp-col comp-socia">
+    <div class="comp-titre">⚙️ SOCIALISME</div>
+    <ul>
+      <li>Propriété collective</li>
+      <li>Économie planifiée</li>
+      <li>Kolkhozes, sovkhozes</li>
+      <li>Partage collectif</li>
+      <li>Pénuries alimentaires</li>
+    </ul>
+  </div>
+</div>
+
+<!-- QCM -->
+<div class="qcm-section">
+<div class="qcm-titre">📝 Évaluation — Questions à Choix Multiples (22 questions)</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">1.</span> Le capitalisme est fondé principalement sur :</div>
+  <div class="option"><input type="radio" name="q1" value="A" id="q1A"><label for="q1A">A. La propriété collective des moyens de production</label></div>
+  <div class="option"><input type="radio" name="q1" value="B" id="q1B" data-correct="true"><label for="q1B">B. La propriété privée, le profit et la liberté d'entreprise</label></div>
+  <div class="option"><input type="radio" name="q1" value="C" id="q1C"><label for="q1C">C. La planification centralisée par l'État</label></div>
+  <div class="option"><input type="radio" name="q1" value="D" id="q1D"><label for="q1D">D. L'abolition du marché et de la concurrence</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">2.</span> Le socialisme se caractérise par :</div>
+  <div class="option"><input type="radio" name="q2" value="A" id="q2A"><label for="q2A">A. La liberté totale d'entreprise et la non-intervention de l'État</label></div>
+  <div class="option"><input type="radio" name="q2" value="B" id="q2B" data-correct="true"><label for="q2B">B. La propriété collective, la planification et le monopole de l'État</label></div>
+  <div class="option"><input type="radio" name="q2" value="C" id="q2C"><label for="q2C">C. La concurrence entre entreprises privées</label></div>
+  <div class="option"><input type="radio" name="q2" value="D" id="q2D"><label for="q2D">D. La recherche du profit individuel</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">3.</span> En quelle année le socialisme a-t-il triomphé en URSS ?</div>
+  <div class="option"><input type="radio" name="q3" value="A" id="q3A"><label for="q3A">A. 1905</label></div>
+  <div class="option"><input type="radio" name="q3" value="B" id="q3B" data-correct="true"><label for="q3B">B. 1917</label></div>
+  <div class="option"><input type="radio" name="q3" value="C" id="q3C"><label for="q3C">C. 1949</label></div>
+  <div class="option"><input type="radio" name="q3" value="D" id="q3D"><label for="q3D">D. 1959</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">4.</span> Le socialisme a triomphé à Cuba en :</div>
+  <div class="option"><input type="radio" name="q4" value="A" id="q4A"><label for="q4A">A. 1917</label></div>
+  <div class="option"><input type="radio" name="q4" value="B" id="q4B"><label for="q4B">B. 1949</label></div>
+  <div class="option"><input type="radio" name="q4" value="C" id="q4C" data-correct="true"><label for="q4C">C. 1959</label></div>
+  <div class="option"><input type="radio" name="q4" value="D" id="q4D"><label for="q4D">D. 1991</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">5.</span> Les kolkhozes sont :</div>
+  <div class="option"><input type="radio" name="q5" value="A" id="q5A"><label for="q5A">A. Des entreprises capitalistes privées</label></div>
+  <div class="option"><input type="radio" name="q5" value="B" id="q5B"><label for="q5B">B. Des fermes d'État en URSS</label></div>
+  <div class="option"><input type="radio" name="q5" value="C" id="q5C" data-correct="true"><label for="q5C">C. Des coopératives agricoles dans le système socialiste</label></div>
+  <div class="option"><input type="radio" name="q5" value="D" id="q5D"><label for="q5D">D. Des banques d'État soviétiques</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">6.</span> Les sovkhozes sont :</div>
+  <div class="option"><input type="radio" name="q6" value="A" id="q6A"><label for="q6A">A. Des coopératives agricoles</label></div>
+  <div class="option"><input type="radio" name="q6" value="B" id="q6B" data-correct="true"><label for="q6B">B. Des fermes d'État appartenant à l'URSS</label></div>
+  <div class="option"><input type="radio" name="q6" value="C" id="q6C"><label for="q6C">C. Des multinationales soviétiques</label></div>
+  <div class="option"><input type="radio" name="q6" value="D" id="q6D"><label for="q6D">D. Des zones économiques spéciales</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">7.</span> Total, Samsung, Coca Cola sont des exemples de :</div>
+  <div class="option"><input type="radio" name="q7" value="A" id="q7A"><label for="q7A">A. Kolkhozes</label></div>
+  <div class="option"><input type="radio" name="q7" value="B" id="q7B"><label for="q7B">B. Entreprises socialistes d'État</label></div>
+  <div class="option"><input type="radio" name="q7" value="C" id="q7C" data-correct="true"><label for="q7C">C. Firmes Multinationales (FMN) ou Transnationales (FTN)</label></div>
+  <div class="option"><input type="radio" name="q7" value="D" id="q7D"><label for="q7D">D. Zones économiques spéciales</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">8.</span> L'"économie socialiste de marché" a été inventée par :</div>
+  <div class="option"><input type="radio" name="q8" value="A" id="q8A"><label for="q8A">A. Cuba</label></div>
+  <div class="option"><input type="radio" name="q8" value="B" id="q8B"><label for="q8B">B. La Russie</label></div>
+  <div class="option"><input type="radio" name="q8" value="C" id="q8C" data-correct="true"><label for="q8C">C. La Chine</label></div>
+  <div class="option"><input type="radio" name="q8" value="D" id="q8D"><label for="q8D">D. La Corée du Nord</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">9.</span> Depuis 1991, quel système économique la Russie a-t-elle adopté ?</div>
+  <div class="option"><input type="radio" name="q9" value="A" id="q9A"><label for="q9A">A. Le socialisme pur avec planification centralisée</label></div>
+  <div class="option"><input type="radio" name="q9" value="B" id="q9B" data-correct="true"><label for="q9B">B. Le capitalisme d'État avec de grandes entreprises publiques</label></div>
+  <div class="option"><input type="radio" name="q9" value="C" id="q9C"><label for="q9C">C. L'économie socialiste de marché</label></div>
+  <div class="option"><input type="radio" name="q9" value="D" id="q9D"><label for="q9D">D. Le capitalisme libéral pur</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">10.</span> Dans quel pays le socialisme pur survit-il encore aujourd'hui ?</div>
+  <div class="option"><input type="radio" name="q10" value="A" id="q10A"><label for="q10A">A. La Chine et la Russie</label></div>
+  <div class="option"><input type="radio" name="q10" value="B" id="q10B" data-correct="true"><label for="q10B">B. La Corée du Nord et Cuba</label></div>
+  <div class="option"><input type="radio" name="q10" value="C" id="q10C"><label for="q10C">C. L'URSS et la Yougoslavie</label></div>
+  <div class="option"><input type="radio" name="q10" value="D" id="q10D"><label for="q10D">D. Le Vietnam et la Bolivie</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">11.</span> Les crises économiques de 1929 et 2008 ont conduit :</div>
+  <div class="option"><input type="radio" name="q11" value="A" id="q11A"><label for="q11A">A. À la disparition du capitalisme</label></div>
+  <div class="option"><input type="radio" name="q11" value="B" id="q11B" data-correct="true"><label for="q11B">B. À l'intervention de l'État pour soutenir les entreprises et les catégories défavorisées</label></div>
+  <div class="option"><input type="radio" name="q11" value="C" id="q11C"><label for="q11C">C. Au renforcement du socialisme en Occident</label></div>
+  <div class="option"><input type="radio" name="q11" value="D" id="q11D"><label for="q11D">D. À la suppression des bourses et des marchés</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">12.</span> Le taylorisme est une méthode liée au :</div>
+  <div class="option"><input type="radio" name="q12" value="A" id="q12A"><label for="q12A">A. Système socialiste de planification</label></div>
+  <div class="option"><input type="radio" name="q12" value="B" id="q12B" data-correct="true"><label for="q12B">B. Système capitaliste (organisation scientifique du travail)</label></div>
+  <div class="option"><input type="radio" name="q12" value="C" id="q12C"><label for="q12C">C. L'économie socialiste de marché chinoise</label></div>
+  <div class="option"><input type="radio" name="q12" value="D" id="q12D"><label for="q12D">D. L'économie planifiée de l'URSS</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">13.</span> Les ZES (Zones Économiques Spéciales) ont été développées par :</div>
+  <div class="option"><input type="radio" name="q13" value="A" id="q13A"><label for="q13A">A. L'URSS pour développer l'Est sibérien</label></div>
+  <div class="option"><input type="radio" name="q13" value="B" id="q13B" data-correct="true"><label for="q13B">B. La Chine dans son modèle d'économie socialiste de marché</label></div>
+  <div class="option"><input type="radio" name="q13" value="C" id="q13C"><label for="q13C">C. Les États-Unis pour attirer les investissements étrangers</label></div>
+  <div class="option"><input type="radio" name="q13" value="D" id="q13D"><label for="q13D">D. Cuba pour moderniser son économie</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">14.</span> La loi de l'offre et de la demande est un principe :</div>
+  <div class="option"><input type="radio" name="q14" value="A" id="q14A"><label for="q14A">A. Du système socialiste</label></div>
+  <div class="option"><input type="radio" name="q14" value="B" id="q14B" data-correct="true"><label for="q14B">B. Du système capitaliste</label></div>
+  <div class="option"><input type="radio" name="q14" value="C" id="q14C"><label for="q14C">C. De l'économie planifiée</label></div>
+  <div class="option"><input type="radio" name="q14" value="D" id="q14D"><label for="q14D">D. Du système de kolkhozes</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">15.</span> La concentration d'entreprises en trusts ou cartels est une caractéristique de :</div>
+  <div class="option"><input type="radio" name="q15" value="A" id="q15A"><label for="q15A">A. L'économie planifiée socialiste</label></div>
+  <div class="option"><input type="radio" name="q15" value="B" id="q15B" data-correct="true"><label for="q15B">B. L'économie capitaliste</label></div>
+  <div class="option"><input type="radio" name="q15" value="C" id="q15C"><label for="q15C">C. L'économie de troc</label></div>
+  <div class="option"><input type="radio" name="q15" value="D" id="q15D"><label for="q15D">D. L'économie mixte des pays du Sud</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">16.</span> Un plan quinquennal est :</div>
+  <div class="option"><input type="radio" name="q16" value="A" id="q16A"><label for="q16A">A. Un plan de développement sur 10 ans</label></div>
+  <div class="option"><input type="radio" name="q16" value="B" id="q16B" data-correct="true"><label for="q16B">B. Un plan de planification économique sur 5 ans (socialisme)</label></div>
+  <div class="option"><input type="radio" name="q16" value="C" id="q16C"><label for="q16C">C. Un programme capitaliste de privatisation</label></div>
+  <div class="option"><input type="radio" name="q16" value="D" id="q16D"><label for="q16D">D. Un accord commercial entre cinq pays</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">17.</span> Avec la mondialisation, quel système économique tend à s'imposer partout ?</div>
+  <div class="option"><input type="radio" name="q17" value="A" id="q17A"><label for="q17A">A. Le socialisme planifié</label></div>
+  <div class="option"><input type="radio" name="q17" value="B" id="q17B"><label for="q17B">B. L'économie de subsistance</label></div>
+  <div class="option"><input type="radio" name="q17" value="C" id="q17C" data-correct="true"><label for="q17C">C. Le capitalisme libéral</label></div>
+  <div class="option"><input type="radio" name="q17" value="D" id="q17D"><label for="q17D">D. L'économie de troc</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">18.</span> En Chine, le secteur public comprend :</div>
+  <div class="option"><input type="radio" name="q18" value="A" id="q18A"><label for="q18A">A. Uniquement des entreprises privées nationales</label></div>
+  <div class="option"><input type="radio" name="q18" value="B" id="q18B" data-correct="true"><label for="q18B">B. Des entreprises appartenant à l'État, aux côtés d'entreprises privées nationales et étrangères</label></div>
+  <div class="option"><input type="radio" name="q18" value="C" id="q18C"><label for="q18C">C. Uniquement des firmes multinationales étrangères</label></div>
+  <div class="option"><input type="radio" name="q18" value="D" id="q18D"><label for="q18D">D. Des kolkhozes et sovkhozes transformés</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">19.</span> La planification centralisée a permis à l'URSS de :</div>
+  <div class="option"><input type="radio" name="q19" value="A" id="q19A"><label for="q19A">A. Développer les ZES sur le modèle chinois</label></div>
+  <div class="option"><input type="radio" name="q19" value="B" id="q19B" data-correct="true"><label for="q19B">B. Réaliser la "conquête de l'Est" (voies de communication, usines, logements)</label></div>
+  <div class="option"><input type="radio" name="q19" value="C" id="q19C"><label for="q19C">C. Devenir la première puissance capitaliste mondiale</label></div>
+  <div class="option"><input type="radio" name="q19" value="D" id="q19D"><label for="q19D">D. Éliminer toutes les inégalités sociales</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">20.</span> Le capitalisme mercantile est :</div>
+  <div class="option"><input type="radio" name="q20" value="A" id="q20A"><label for="q20A">A. La forme la plus récente du capitalisme</label></div>
+  <div class="option"><input type="radio" name="q20" value="B" id="q20B" data-correct="true"><label for="q20B">B. Une des formes historiques du capitalisme (commerce comme source de richesse)</label></div>
+  <div class="option"><input type="radio" name="q20" value="C" id="q20C"><label for="q20C">C. Le capitalisme pratiqué uniquement par les FMN</label></div>
+  <div class="option"><input type="radio" name="q20" value="D" id="q20D"><label for="q20D">D. Un système hybride entre capitalisme et socialisme</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">21.</span> Les problèmes du socialisme qui ont conduit à l'éclatement de l'URSS sont :</div>
+  <div class="option"><input type="radio" name="q21" value="A" id="q21A"><label for="q21A">A. La trop grande liberté d'entreprise</label></div>
+  <div class="option"><input type="radio" name="q21" value="B" id="q21B" data-correct="true"><label for="q21B">B. Les pénuries alimentaires et les difficultés de la centralisation de l'économie</label></div>
+  <div class="option"><input type="radio" name="q21" value="C" id="q21C"><label for="q21C">C. La concurrence des FMN capitalistes</label></div>
+  <div class="option"><input type="radio" name="q21" value="D" id="q21D"><label for="q21D">D. Le chômage de masse causé par la privatisation</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">22.</span> Le capitalisme en Chine triomphe en :</div>
+  <div class="option"><input type="radio" name="q22" value="A" id="q22A"><label for="q22A">A. 1917</label></div>
+  <div class="option"><input type="radio" name="q22" value="B" id="q22B"><label for="q22B">B. 1959</label></div>
+  <div class="option"><input type="radio" name="q22" value="C" id="q22C" data-correct="true"><label for="q22C">C. Le socialisme triomphe en Chine en 1949 (pas le capitalisme)</label></div>
+  <div class="option"><input type="radio" name="q22" value="D" id="q22D"><label for="q22D">D. 1991</label></div>
+</div>
+
+</div><!-- end qcm-section -->
+</body>
+</html>

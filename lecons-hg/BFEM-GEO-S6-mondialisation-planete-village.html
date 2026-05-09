@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BFEM Géographie – S6 : La mondialisation et la planète village</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:#EEF4FB;color:#0d2137;line-height:1.7;font-size:clamp(.93em,2.2vw,1em)}
+  .header{background:linear-gradient(135deg,#154360,#2E86C1);color:#fff;padding:28px 20px;text-align:center}
+  .header .badge{display:inline-block;background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.5);border-radius:30px;padding:6px 22px;font-size:.85em;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+  .header h1{font-size:clamp(1.2em,4vw,1.65em);font-weight:800}
+  .header p{font-size:.95em;opacity:.9}
+  .container{max-width:860px;margin:30px auto;padding:0 14px}
+  .section{background:#fff;border-radius:12px;padding:22px 20px;margin-bottom:22px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+  .section-title{font-size:1.05em;font-weight:700;color:#fff;background:linear-gradient(90deg,#154360,#2E86C1);padding:10px 16px;border-radius:8px;margin-bottom:18px}
+  .contexte-box{background:#EAF4FE;border:1px solid #AED6F1;border-radius:8px;padding:13px 16px;margin-bottom:12px;font-style:italic;color:#154360}
+  .consigne-box{background:#D6EAF8;border-left:4px solid #2E86C1;padding:11px 15px;border-radius:0 8px 8px 0;font-weight:600;color:#154360;margin-bottom:14px}
+  .doc-box{background:#f5f9ff;border:1px solid #AED6F1;border-radius:8px;padding:14px 18px;margin-bottom:14px}
+  .doc-title{font-weight:700;color:#154360;margin-bottom:8px}
+  .doc-source{text-align:right;font-size:.82em;color:#666;margin-top:8px;font-style:italic}
+  .souligné{text-decoration:underline;font-weight:600}
+  .table-wrapper{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:10px 0;border-radius:8px;border:1px solid #ddd}
+  .table-wrapper table{min-width:420px;width:100%;border-collapse:collapse;font-size:.9em}
+  .table-wrapper th{background:#154360;color:#fff;padding:8px 11px;text-align:center}
+  .table-wrapper td{border:1px solid #ddd;padding:7px 11px;text-align:center}
+  .table-wrapper tr:nth-child(even){background:#f0f6ff}
+  .scroll-hint{font-size:.75em;color:#888;text-align:right;margin-top:3px;display:none}
+  @media(max-width:600px){.scroll-hint{display:block}}
+  .q-block{background:#EAF4FE;border-radius:8px;padding:13px 15px;margin-bottom:14px}
+  .q-num{display:inline-block;background:#2E86C1;color:#fff;font-weight:700;width:26px;height:26px;border-radius:50%;text-align:center;line-height:26px;font-size:.85em;margin-right:8px;flex-shrink:0}
+  .q-text{font-weight:600;color:#154360;display:flex;align-items:flex-start;gap:6px}
+  .pts-badge{font-size:.78em;background:#154360;color:#fff;border-radius:12px;padding:1px 9px;font-weight:700;margin-left:6px;white-space:nowrap}
+  .btn-correction{display:flex;align-items:center;gap:8px;margin-top:12px;padding:10px 16px;border:2px solid #27AE60;background:#fff;color:#1A6632;border-radius:10px;cursor:pointer;font-weight:700;font-size:.88em;transition:.2s;width:100%}
+  .btn-correction:hover{background:#f0fff4}
+  .btn-correction.open{background:#f0fff4}
+  .btn-correction .arrow{transition:transform .25s;font-style:normal}
+  .btn-correction.open .arrow{transform:rotate(180deg)}
+  .corr-wrap{display:none;border-left:4px solid #27AE60;border-radius:0 10px 10px 0;background:#f0fff8;padding:16px 18px;font-size:.91em;line-height:1.85;margin-top:6px}
+  .corr-wrap.visible{display:block}
+  .corr-wrap h4{color:#1A6632;font-size:.95em;margin:12px 0 5px;border-bottom:1px solid #c3e6cb;padding-bottom:3px}
+  .corr-wrap h4:first-child{margin-top:0}
+  .corr-wrap p{margin-bottom:9px;text-align:justify}
+  .canvas-zone{border:2px dashed #AED6F1;border-radius:8px;padding:12px;margin-top:10px;text-align:center;background:#f9fcff;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .canvas-zone canvas{max-width:100%;height:auto}
+  .timer-box{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:#fff;border-radius:10px;padding:12px 18px;box-shadow:0 2px 8px rgba(0,0,0,.08);margin-bottom:22px}
+  .timer-display{font-size:1.5em;font-weight:800;color:#2E86C1;min-width:88px}
+  .btn{padding:9px 20px;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:.88em}
+  .btn-start{background:#154360;color:#fff}
+  .btn-reset{background:#ddd;color:#333}
+  .points{float:right;background:#154360;color:#fff;border-radius:20px;padding:2px 12px;font-size:.78em;font-weight:700}
+  footer{text-align:center;padding:24px;color:#888;font-size:.82em}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="badge">📝 Sujet BFEM — Géographie</div>
+  <h1>La mondialisation et la planète village</h1>
+  <p>Chapitre IV – La Terre solidaire ? · 3<sup>e</sup> · Histoire-Géographie</p>
+</div>
+
+<div class="container">
+  <div class="timer-box">
+    <strong style="color:#154360">⏱ Durée :</strong>
+    <span class="timer-display" id="timer">1:30:00</span>
+    <button class="btn btn-start" onclick="startTimer()">Démarrer</button>
+    <button class="btn btn-reset" onclick="resetTimer()">Réinitialiser</button>
+  </div>
+
+  <!-- DISSERTATION -->
+  <div class="section">
+    <div class="section-title">✍️ Partie 1 – Dissertation <span class="points">10 pts</span></div>
+    <div class="contexte-box">
+      « Grâce aux révolutions technologiques et aux échanges mondiaux, la Terre est devenue un 'village planétaire' où tout se partage instantanément. Mais cette mondialisation profite-t-elle à tous ? »
+    </div>
+    <div class="consigne-box">
+      Consigne : Montre que la mondialisation fait du monde un 'village planétaire', puis analyse deux effets négatifs de ce phénomène pour les pays en développement.
+    </div>
+
+    <button class="btn-correction" onclick="toggleCorr('corr-diss')">
+      <span>📝 Voir la correction – Dissertation complète</span>
+      <span class="arrow" style="margin-left:auto">▼</span>
+    </button>
+    <div class="corr-wrap" id="corr-diss">
+      <h4>Introduction</h4>
+      <p>En 1962, le philosophe canadien Marshall McLuhan inventait l'expression « village planétaire » pour décrire la façon dont les nouvelles technologies de communication (radio, télévision) rapprochaient les peuples du monde entier, effaçant les distances géographiques et culturelles. Soixante ans plus tard, avec l'Internet, les smartphones et la mondialisation économique, ce concept est devenu une réalité palpable.</p>
+      <p>La mondialisation désigne l'intensification et l'accélération des échanges économiques, culturels, humains et financiers à l'échelle mondiale, favorisées par les progrès des transports, des communications et la libéralisation du commerce international. La notion de « planète village » exprime l'idée que les distances s'effacent et que les peuples forment une communauté mondiale interconnectée. Les pays en développement (PED) sont des pays dont le PIB par habitant et l'IDH restent relativement faibles.</p>
+      <p><strong>Problématique :</strong> En quoi la mondialisation transforme-t-elle le monde en « village planétaire », et quels sont ses effets négatifs pour les pays en développement ?</p>
+      <p><strong>Plan :</strong> Nous montrerons d'abord que la mondialisation réunit le monde en un village global, puis nous analyserons deux effets négatifs majeurs pour les pays en développement.</p>
+
+      <h4>I. La mondialisation : le monde comme un village planétaire</h4>
+      <p><strong>A. La révolution des transports : des distances abolies</strong><br>
+      La première dimension du village planétaire est la réduction extraordinaire des distances grâce aux progrès des transports. Le transport aérien commercial a transporté plus de 4,5 milliards de passagers en 2019, reliant tous les continents via un réseau mondial de hubs (Paris Charles de Gaulle, Dubaï, Singapour, Atlanta). Un voyage Dakar-Paris, qui prenait plusieurs semaines en bateau au XIXe siècle, se fait désormais en moins de 7 heures. Sur les mers, la révolution de la conteneurisation (depuis les années 1960) a réduit considérablement les coûts et les délais du transport de marchandises : 90 % des marchandises mondiales transitent aujourd'hui par voie maritime dans des conteneurs standardisés. Cette révolution des transports a permis l'émergence de chaînes de production mondialisées où les composants d'un smartphone Apple, par exemple, sont fabriqués dans 43 pays différents avant d'être assemblés en Chine et vendus partout dans le monde.</p>
+      <p><strong>B. La révolution numérique : des échanges instantanés</strong><br>
+      La deuxième dimension est encore plus révolutionnaire : Internet et les technologies numériques ont annihilé les distances temporelles. Avec 5,4 milliards d'internautes dans le monde en 2023, l'information circule instantanément et gratuitement entre le Sénégal et le Japon. Les réseaux sociaux (Facebook avec 3 milliards d'utilisateurs, WhatsApp, TikTok, Instagram) permettent à des personnes séparées par des milliers de kilomètres de communiquer comme si elles étaient dans le même village. Au Sénégal, WhatsApp est devenu un outil essentiel du commerce informel : les marchands partagent leurs produits, négocient les prix et concluent des transactions via des groupes WhatsApp. L'artiste sénégalais Youssou N'Dour touche des auditeurs aux quatre coins du monde grâce à YouTube et Spotify. La mondialisation culturelle est une réalité : des séries américaines (Netflix) aux musiques coréennes (K-pop), les contenus culturels traversent le monde instantanément.</p>
+      <p><strong>C. L'intensification des échanges commerciaux</strong><br>
+      Sur le plan économique, les échanges mondiaux ont connu une croissance spectaculaire : les exportations mondiales sont passées de 3 450 milliards de dollars en 1990 à 28 500 milliards en 2022 — une multiplication par 8 en 30 ans. Les firmes transnationales (FTN) comme Apple, Total, Nestlé, Samsung ou Volkswagen opèrent simultanément dans des dizaines de pays, optimisant leurs chaînes de production à l'échelle mondiale.</p>
+
+      <h4>II. Deux effets négatifs de la mondialisation pour les pays en développement</h4>
+      <p><strong>Effet négatif 1 — La dépendance économique et la désindustrialisation</strong><br>
+      La mondialisation, loin de bénéficier équitablement à tous, aggrave la dépendance économique des pays en développement. Ces pays continuent d'exporter des matières premières brutes (pétrole, cacao, café, minerais, coton) à bas prix, sans les transformer localement, et importent des produits manufacturés à haute valeur ajoutée à des prix élevés. Cette relation commerciale asymétrique — héritée du colonialisme et perpétuée par la mondialisation — maintient les PED dans un rôle de fournisseurs de matières brutes pour les économies riches.</p>
+      <p>De plus, l'afflux massif de produits importés bon marché (textiles chinois produits à très faible coût, poulets congelés européens subventionnés, riz brisé asiatique) détruit les industries et l'agriculture locales qui ne peuvent pas concurrencer des produits aussi bon marché. Au Sénégal, les importations de tomates industrielles européennes transformées en conserve ont longtemps concurrencé les producteurs locaux de tomates, et les poulets brésiliens et européens ont fragilisé l'aviculture sénégalaise. Cette désindustrialisation par les importations prive les PED de la possibilité de développer leurs propres industries.</p>
+
+      <p><strong>Effet négatif 2 — La fracture numérique et la domination culturelle</strong><br>
+      Si Internet est l'un des moteurs du village planétaire, il est aussi l'instrument d'une nouvelle forme d'inégalité : la fracture numérique. En 2023, plus de 93 % de la population des pays développés est connectée à Internet, contre seulement 37 % en Afrique subsaharienne. Cette inégalité d'accès exclut des centaines de millions d'Africains de l'économie numérique mondiale : ils ne peuvent pas bénéficier du commerce en ligne, des services bancaires mobiles (hormis les solutions africaines comme M-Pesa ou Wave), de la télé-médecine, de la formation à distance ou des opportunités d'emploi numérique. Dans le village planétaire numérique, ils n'ont pas de maison.</p>
+      <p>Par ailleurs, la mondialisation culturelle véhicule souvent une domination culturelle au détriment des cultures locales. La diffusion massive de séries télévisées américaines, de musique pop anglo-saxonne, de la nourriture fast-food (McDonald's, KFC présents dans les capitales africaines), de la mode occidentale tend à uniformiser les modes de vie et à marginaliser les langues, les arts, la gastronomie et les valeurs locales. Ce phénomène d'acculturation menace la diversité culturelle mondiale. Enfin, le brain drain (fuite des cerveaux) prive les PED de leurs élites : les médecins, ingénieurs et chercheurs formés avec les maigres budgets africains partent travailler dans les pays riches, appauvrissant davantage les capacités de développement des pays du Sud.</p>
+
+      <h4>Conclusion</h4>
+      <p>La mondialisation a indéniablement transformé la Terre en un village planétaire : les distances s'effacent, les échanges s'intensifient et les cultures se mêlent à une vitesse sans précédent. Mais ce village est profondément inégalitaire : certains en tirent d'immenses profits, d'autres en subissent les effets destructeurs — dépendance économique, désindustrialisation, fracture numérique, domination culturelle. Pour que la mondialisation bénéficie à tous, il est indispensable de revoir les règles du commerce international, d'investir dans l'accès universel au numérique et de protéger la diversité culturelle mondiale.</p>
+    </div>
+  </div>
+
+  <!-- COMMENTAIRE -->
+  <div class="section">
+    <div class="section-title">📊 Partie 2 – Commentaire de documents <span class="points">10 pts</span></div>
+
+    <div class="doc-box">
+      <div class="doc-title">Document 1. Évolution du commerce mondial (exportations en milliards de dollars, 1990–2022)</div>
+      <div class="table-wrapper">
+        <table>
+          <tr><th>Année</th><th>1990</th><th>2000</th><th>2010</th><th>2019</th><th>2022</th></tr>
+          <tr><td><strong>Exportations mondiales (Mds $)</strong></td><td>3 450</td><td>6 450</td><td>15 300</td><td>19 000</td><td>28 500</td></tr>
+        </table>
+      </div>
+      <div class="scroll-hint">← Faire glisser pour voir tout le tableau →</div>
+      <div class="doc-source">Source : OMC (Organisation Mondiale du Commerce), 2023.</div>
+    </div>
+
+    <div class="doc-box">
+      <div class="doc-title">Document 2. La fracture numérique dans le monde</div>
+      <div style="font-size:.93em;line-height:1.85;text-align:justify;margin-top:6px">
+        « L'accès à Internet reste profondément inégal à l'échelle mondiale. Alors que dans les pays développés, plus de 90% de la population est connectée, ce taux tombe à 37% en Afrique subsaharienne. Cette <span class="souligné">fracture numérique</span> empêche des centaines de millions de personnes de participer à l'<span class="souligné">économie numérique</span> et à la <span class="souligné">mondialisation</span>. Les conséquences sont multiples : exclusion du commerce en ligne, impossibilité d'accéder aux services bancaires mobiles, impossibilité de télé-travailler ou de suivre une formation en ligne. Paradoxalement, certains pays africains ont réussi des avancées remarquables : le Kenya avec M-Pesa (paiement mobile), le Rwanda avec ses centres d'innovation, ou encore le Sénégal avec Wave (fintech). Ces success stories montrent que la <span class="souligné">technologie</span> peut être un vecteur de développement si des politiques publiques volontaristes l'accompagnent. »
+      </div>
+      <div class="doc-source">Source : Union Internationale des Télécommunications (UIT), <em>Rapport sur les faits et chiffres TIC 2023</em>. Adapté.</div>
+    </div>
+
+    <!-- Question 1 -->
+    <div class="q-block">
+      <div class="q-text"><span class="q-num">1</span><span><strong>Définis les termes soulignés dans le document 2 :</strong> <em>fracture numérique, économie numérique, mondialisation, technologie</em> <span class="pts-badge">4 pts</span></span></div>
+      <button class="btn-correction" onclick="toggleCorr('corr-q1')">
+        <span>✅ Voir la correction</span>
+        <span class="arrow" style="margin-left:auto">▼</span>
+      </button>
+      <div class="corr-wrap" id="corr-q1">
+        <p><strong>Fracture numérique :</strong> La fracture numérique (ou « fossé numérique ») désigne l'inégalité d'accès aux technologies de l'information et de la communication (TIC) — Internet, smartphones, ordinateurs, haut débit — entre différentes populations. Cette fracture peut être géographique (entre pays riches et pays pauvres, entre zones urbaines et rurales), sociale (entre riches et pauvres au sein d'un même pays) ou générationnelle (entre jeunes et personnes âgées). Elle se mesure notamment par le taux d'accès à Internet. Le document 2 illustre cette fracture : 90 % de la population des pays développés est connectée, contre seulement 37 % en Afrique subsaharienne. Cette inégalité d'accès exclut des millions de personnes des bénéfices de la mondialisation numérique.</p>
+        <p><strong>Économie numérique :</strong> L'économie numérique désigne l'ensemble des activités économiques qui reposent sur les technologies digitales et numériques. Elle comprend le commerce électronique (e-commerce : Amazon, Jumia, Alibaba), les services numériques (streaming, logiciels, applications), les paiements mobiles (M-Pesa, Wave, Orange Money), le travail numérique (télétravail, freelance en ligne), les fintech (entreprises de technologie financière) et les plateformes numériques (Uber, Airbnb). L'économie numérique représente environ 15 % du PIB mondial en 2023 et constitue le secteur à la plus forte croissance. Elle est un vecteur de développement potentiel pour les pays du Sud, à condition qu'ils puissent y accéder.</p>
+        <p><strong>Mondialisation :</strong> La mondialisation est le processus d'intégration croissante et accélérée des économies, des sociétés et des cultures du monde entier, rendue possible par les progrès des transports, des communications et la libéralisation du commerce international (suppression progressive des barrières douanières). Elle se manifeste par l'augmentation des échanges commerciaux, des flux financiers et des migrations, ainsi que par la diffusion mondiale de modèles culturels. Le document 1 illustre la mondialisation économique : les exportations mondiales sont passées de 3 450 milliards de dollars en 1990 à 28 500 milliards en 2022.</p>
+        <p><strong>Technologie :</strong> La technologie désigne l'ensemble des techniques, outils, méthodes et savoir-faire issus de la recherche scientifique et utilisés pour produire des biens et des services ou résoudre des problèmes. Les technologies numériques (Internet, intelligence artificielle, blockchain, smartphones, satellites) transforment aujourd'hui tous les secteurs de l'économie : agriculture, santé, éducation, commerce, finance. Le document 2 souligne que la technologie peut être « un vecteur de développement » pour les pays africains — comme le montrent M-Pesa au Kenya ou Wave au Sénégal — à condition que des politiques publiques volontaristes accompagnent leur déploiement.</p>
+      </div>
+    </div>
+
+    <!-- Question 2 -->
+    <div class="q-block">
+      <div class="q-text"><span class="q-num">2</span><span><strong>À l'aide du document 1, construis une courbe d'évolution du commerce mondial de 1990 à 2022, puis interprète ce graphique.</strong> <span class="pts-badge">3 pts</span></span></div>
+      <div class="canvas-zone">
+        <canvas id="chartCommerce" width="660" height="210"></canvas>
+        <p style="font-size:.83em;color:#555;margin-top:6px">Courbe interactive · Reproduis sur ta copie avec axes, unités, titre et légende</p>
+      </div>
+      <button class="btn-correction" onclick="toggleCorr('corr-q2')">
+        <span>✅ Voir l'interprétation du graphique</span>
+        <span class="arrow" style="margin-left:auto">▼</span>
+      </button>
+      <div class="corr-wrap" id="corr-q2">
+        <h4>Comment construire la courbe</h4>
+        <p>Sur ta copie, trace un axe horizontal (abscisse) avec les années 1990, 2000, 2010, 2019, 2022 régulièrement espacées. Trace un axe vertical (ordonnée) gradué de 0 à 30 000 milliards de dollars (par exemple : 0, 5 000, 10 000, 15 000, 20 000, 25 000, 30 000). Place les cinq points correspondants et relie-les avec une courbe bleue ascendante. Donne un titre : « Évolution des exportations mondiales en milliards de dollars (1990–2022) ».</p>
+        <h4>Interprétation du graphique</h4>
+        <p>La courbe du commerce mondial entre 1990 et 2022 dessine une tendance nettement ascendante et presque ininterrompue, qui traduit l'essor spectaculaire de la mondialisation économique. En 32 ans, les exportations mondiales ont été multipliées par 8,3 : elles sont passées de 3 450 milliards de dollars en 1990 à 28 500 milliards en 2022. Cette progression phénoménale s'est réalisée en plusieurs phases : une première accélération entre 1990 et 2000 (doublement à 6 450 milliards), une deuxième accélération encore plus forte entre 2000 et 2010 (de 6 450 à 15 300 milliards), notamment grâce à l'intégration de la Chine dans le commerce mondial (entrée à l'OMC en 2001) et à Internet. Entre 2010 et 2019, la croissance continue mais à un rythme plus modéré (19 000 milliards). En 2022, le chiffre record de 28 500 milliards est atteint, porté par la reprise post-COVID et la hausse des prix de l'énergie.</p>
+        <p>Cette courbe ascendante illustre concrètement le phénomène de mondialisation économique : les échanges internationaux de biens et de services ont une importance croissante dans la production mondiale, et les économies nationales sont de plus en plus interdépendantes. Elle confirme également que la mondialisation, telle qu'elle s'est développée, a davantage profité aux économies qui produisent des biens manufacturés à haute valeur ajoutée (Chine, Allemagne, États-Unis) qu'aux pays exportateurs de matières premières brutes.</p>
+      </div>
+    </div>
+
+    <!-- Question 3 -->
+    <div class="q-block">
+      <div class="q-text"><span class="q-num">3</span><span><strong>À l'aide des deux documents et de tes connaissances, montre que la mondialisation crée à la fois des opportunités et des inégalités pour l'Afrique.</strong> <span class="pts-badge">3 pts</span></span></div>
+      <button class="btn-correction" onclick="toggleCorr('corr-q3')">
+        <span>✅ Voir la correction</span>
+        <span class="arrow" style="margin-left:auto">▼</span>
+      </button>
+      <div class="corr-wrap" id="corr-q3">
+        <p>La mondialisation présente pour l'Afrique un visage profondément paradoxal : elle ouvre des opportunités réelles tout en creusant de nouvelles inégalités. Pour mettre en évidence cette dualité, nous analyserons successivement les opportunités offertes par la mondialisation à l'Afrique, puis les inégalités qu'elle génère ou amplifie.</p>
+        <h4>Les opportunités de la mondialisation pour l'Afrique</h4>
+        <p>La croissance spectaculaire du commerce mondial (Doc. 1 : 28 500 milliards de dollars en 2022) offre à l'Afrique des marchés à l'exportation pour ses ressources naturelles : pétrole (Sénégal, Mauritanie, Nigeria), gaz naturel, cacao ivoirien, cobalt congolais (indispensable aux batteries électriques), café éthiopien, minerais divers. La demande mondiale croissante pour ces ressources génère des revenus d'exportation qui, bien utilisés, pourraient financer le développement.</p>
+        <p>Les technologies numériques offrent également des opportunités remarquables. Le document 2 cite des exemples africains de succès technologique : M-Pesa au Kenya, un service de paiement mobile lancé en 2007 qui a bancarisé des millions de personnes sans compte bancaire et transformé l'économie kényane. Au Sénégal, Wave — une fintech fondée au Sénégal — permet des transferts d'argent à très faible coût, révolutionnant la vie de millions de Sénégalais. Ces innovations montrent que l'Afrique n'est pas condamnée à subir la mondialisation mais peut développer des solutions adaptées à ses besoins. Par ailleurs, la diaspora africaine envoie des fonds (remittances) considérables vers le continent : les transferts d'argent vers le Sénégal représentaient environ 2,7 milliards de dollars en 2022, dépassant certaines années les flux d'aide publique au développement.</p>
+        <h4>Les inégalités générées par la mondialisation pour l'Afrique</h4>
+        <p>Cependant, la mondialisation génère aussi de profondes inégalités pour l'Afrique. La fracture numérique (Doc. 2 : 37 % d'internautes en Afrique subsaharienne contre 90 % dans les pays développés) prive une grande majorité d'Africains des bénéfices de l'économie numérique : commerce en ligne, formation à distance, télémédecine, emplois numériques. Sans connexion Internet fiable et abordable, les populations rurales africaines restent exclues de la mondialisation numérique.</p>
+        <p>Sur le plan commercial, les termes de l'échange restent défavorables à l'Afrique : le continent exporte essentiellement des matières premières brutes (cacao, café, pétrole, minerais) dont les prix sont très volatils, et importe des produits manufacturés coûteux. L'arrivée massive de produits importés bon marché (textiles asiatiques, produits alimentaires subventionnés) détruit les industries locales et fragilise l'agriculture vivrière. La domination culturelle — diffusion des modèles de consommation américains et européens via la télévision et Internet — menace les identités culturelles locales et les langues africaines.</p>
+        <p>En conclusion, la mondialisation est pour l'Afrique un défi autant qu'une opportunité. Pour que ses bénéfices l'emportent sur ses effets négatifs, il est indispensable d'investir massivement dans l'accès au numérique, de développer des industries de transformation locales, de diversifier les exportations et de mettre en place des politiques publiques volontaristes qui permettent à chaque pays africain de participer à la mondialisation selon ses propres termes et intérêts.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>BFEM · Histoire-Géographie 3e · Taté — Plateforme éducative sénégalaise</footer>
+
+<script>
+function toggleCorr(id){
+  const el=document.getElementById(id);
+  const btn=el.previousElementSibling;
+  const isOpen=el.classList.contains('visible');
+  el.classList.toggle('visible',!isOpen);
+  btn.classList.toggle('open',!isOpen);
+  btn.querySelector('.arrow').textContent=isOpen?'▼':'▲';
+  if(!isOpen)setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'nearest'}),50);
+}
+
+window.onload=function(){
+  const c=document.getElementById('chartCommerce');if(!c)return;
+  const dpr=window.devicePixelRatio||1;
+  const dW=Math.min(c.parentElement.clientWidth-28,660);
+  const dH=210;
+  c.style.width=dW+'px';c.style.height=dH+'px';
+  c.width=dW*dpr;c.height=dH*dpr;
+  const ctx=c.getContext('2d');ctx.scale(dpr,dpr);
+  const W=dW,H=dH;
+  const years=[1990,2000,2010,2019,2022];
+  const vals=[3450,6450,15300,19000,28500];
+  const pad={left:55,right:18,top:28,bottom:44};
+  const cW=W-pad.left-pad.right,cH=H-pad.top-pad.bottom;
+  const minV=0,maxV=32000;
+  ctx.strokeStyle='#154360';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(pad.left,pad.top);ctx.lineTo(pad.left,H-pad.bottom);ctx.lineTo(W-pad.right,H-pad.bottom);ctx.stroke();
+  for(let v=0;v<=32000;v+=8000){
+    const y=H-pad.bottom-((v-minV)/(maxV-minV))*cH;
+    ctx.fillStyle='#333';ctx.font='10px sans-serif';ctx.textAlign='right';
+    ctx.fillText((v/1000)+'k',pad.left-4,y+4);
+    ctx.strokeStyle='#eee';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(pad.left,y);ctx.lineTo(W-pad.right,y);ctx.stroke();
+  }
+  const xStep=cW/(years.length-1);
+  const pts=years.map((yr,i)=>({x:pad.left+i*xStep,y:H-pad.bottom-((vals[i]-minV)/(maxV-minV))*cH,yr,val:vals[i]}));
+  // gradient fill
+  const grd=ctx.createLinearGradient(0,pad.top,0,H-pad.bottom);
+  grd.addColorStop(0,'rgba(46,134,193,0.25)');grd.addColorStop(1,'rgba(46,134,193,0.02)');
+  ctx.fillStyle=grd;
+  ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);
+  pts.forEach(p=>ctx.lineTo(p.x,p.y));
+  ctx.lineTo(pts[pts.length-1].x,H-pad.bottom);
+  ctx.lineTo(pts[0].x,H-pad.bottom);ctx.closePath();ctx.fill();
+  ctx.strokeStyle='#2E86C1';ctx.lineWidth=2.5;
+  ctx.beginPath();pts.forEach((p,i)=>i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y));ctx.stroke();
+  pts.forEach(p=>{
+    ctx.fillStyle='#154360';ctx.beginPath();ctx.arc(p.x,p.y,5,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#154360';ctx.font='bold 10px sans-serif';ctx.textAlign='center';
+    ctx.fillText((p.val/1000).toFixed(0)+'k$',p.x,p.y-9);
+    ctx.fillStyle='#333';ctx.font='10px sans-serif';
+    ctx.fillText(p.yr,p.x,H-pad.bottom+16);
+  });
+  ctx.fillStyle='#154360';ctx.font='bold 12px sans-serif';ctx.textAlign='center';
+  ctx.fillText('Exportations mondiales (milliards $, 1990–2022)',W/2,15);
+};
+
+let ts=5400,iv=null;
+const te=document.getElementById('timer');
+function fmt(s){return`${Math.floor(s/3600)}:${String(Math.floor((s%3600)/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;}
+function startTimer(){if(iv)return;iv=setInterval(()=>{if(ts<=0){clearInterval(iv);te.style.color='#e53935';return;}ts--;te.textContent=fmt(ts);if(ts<=300)te.style.color='#e53935';},1000);}
+function resetTimer(){clearInterval(iv);iv=null;ts=5400;te.textContent=fmt(ts);te.style.color='#2E86C1';}
+</script>
+</body>
+</html>

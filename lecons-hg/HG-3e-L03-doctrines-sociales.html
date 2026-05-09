@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 15px; color: #1a1a1a; background: #fff; padding: 16px; line-height: 1.7; }
+  .partie-badge { background: #7B4F2E; color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 10px; }
+  h1 { font-size: 1.35rem; font-weight: 800; color: #7B4F2E; border-bottom: 3px solid #C9A96E; padding-bottom: 8px; margin-bottom: 18px; }
+  .essentiel { background: linear-gradient(135deg, #FFF8F0, #FFF3E0); border-left: 5px solid #C9A96E; border-radius: 10px; padding: 16px 18px; margin-bottom: 22px; }
+  .essentiel-titre { font-size: 1rem; font-weight: 800; color: #7B4F2E; text-align: center; margin-bottom: 10px; }
+  .essentiel p { font-weight: 600; color: #5D3A1A; font-size: 14px; }
+  h2 { font-size: 1.05rem; font-weight: 800; color: #7B4F2E; margin: 22px 0 10px; border-left: 4px solid #C9A96E; padding-left: 10px; }
+  h3 { font-size: .95rem; font-weight: 700; color: #5D3A1A; margin: 14px 0 6px; }
+  p { margin-bottom: 10px; }
+  ul { margin-left: 18px; margin-bottom: 10px; }
+  .courant-card { border-radius: 10px; padding: 12px 16px; margin: 10px 0; border-left: 5px solid; }
+  .courant-rev { background: #FFF0F0; border-color: #C0392B; }
+  .courant-ref { background: #F0FFF4; border-color: #27AE60; }
+  .courant-ana { background: #F5F0FF; border-color: #8E44AD; }
+  .courant-titre { font-weight: 800; font-size: 14px; margin-bottom: 5px; }
+  .courant-rev .courant-titre { color: #C0392B; }
+  .courant-ref .courant-titre { color: #27AE60; }
+  .courant-ana .courant-titre { color: #8E44AD; }
+  .acquis-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
+  .acquis-item { background: #F0FFF4; border: 1.5px solid #27AE60; border-radius: 8px; padding: 8px 12px; font-size: 13px; font-weight: 600; color: #1a5c2e; }
+  .conclusion { background: #FFF3E0; border: 1.5px solid #C9A96E; border-radius: 8px; padding: 12px 16px; margin: 18px 0; }
+  .conclusion p { font-weight: 700; color: #7B4F2E; margin: 0; font-size: 14px; }
+  .qcm-section { margin-top: 30px; border-top: 3px solid #C9A96E; padding-top: 20px; }
+  .qcm-titre { font-size: 1.1rem; font-weight: 800; color: #fff; background: #7B4F2E; padding: 10px 16px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
+  .question-bloc { background: #FAFAFA; border: 1.5px solid #E8D5C0; border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; }
+  .question-texte { font-weight: 700; color: #1a1a1a; margin-bottom: 10px; font-size: 14px; }
+  .question-num { color: #C9A96E; font-weight: 800; }
+  .option { display: flex; align-items: flex-start; gap: 10px; padding: 7px 10px; border-radius: 7px; margin-bottom: 4px; cursor: pointer; border: 1.5px solid transparent; }
+  .option:hover { background: #FFF3E0; border-color: #C9A96E; }
+  .option input[type="radio"] { margin-top: 2px; accent-color: #7B4F2E; flex-shrink: 0; width: 16px; height: 16px; }
+  .option label { cursor: pointer; font-size: 14px; color: #333; }
+</style>
+</head>
+<body>
+
+<div class="partie-badge">Partie 1 — Histoire</div>
+<h1>Leçon 3 — Les doctrines sociales : le syndicalisme et le socialisme</h1>
+
+<div class="essentiel">
+  <div class="essentiel-titre">📌 L'essentiel à retenir</div>
+  <p>Dans la deuxième moitié du XIXe siècle, l'industrialisation engendre des inégalités et des injustices sociales remarquables. Celles-ci font naître deux grands courants de pensée : le socialisme et le syndicalisme.</p>
+</div>
+
+<h2>I. Le syndicalisme</h2>
+
+<p>C'est un courant de pensée qui vise l'<strong>amélioration des conditions de vie et de travail des ouvriers</strong>. Apparus en Angleterre à partir de 1825, les syndicats ont eu des débuts difficiles à cause de l'hostilité des gouvernements, la réticence des patrons et la passivité des masses.</p>
+
+<p>Le syndicalisme est divisé en trois courants :</p>
+
+<div class="courant-card courant-rev">
+  <div class="courant-titre">⚡ Le courant révolutionnaire</div>
+  <p style="font-size:13px;">Il conteste le système capitaliste et adopte l'action directe des ouvriers contre les bourgeois, la grève générale. Influencé par le marxisme, très puissant en Espagne, Belgique et en France avec la <strong>CGT</strong>.</p>
+</div>
+
+<div class="courant-card courant-ref">
+  <div class="courant-titre">🤝 Le courant réformiste</div>
+  <p style="font-size:13px;">Très développé en Angleterre avec les syndicats réformistes, les <strong>Trade Unions</strong>. Il défend la négociation, le dialogue social et la recherche du compromis.</p>
+</div>
+
+<div class="courant-card courant-ana">
+  <div class="courant-titre">💥 Le courant anarchiste</div>
+  <p style="font-size:13px;">Il utilise la révolte, la violence et le sabotage pour anéantir le système capitaliste responsable des malheurs des ouvriers.</p>
+</div>
+
+<p>Les principaux acquis de la lutte syndicale :</p>
+<div class="acquis-grid">
+  <div class="acquis-item">✅ Droit de grève (1830 UK, 1864 France)</div>
+  <div class="acquis-item">✅ Congés payés (1853)</div>
+  <div class="acquis-item">✅ Interdiction travail des enfants (1882)</div>
+  <div class="acquis-item">✅ École gratuite (1882)</div>
+  <div class="acquis-item">✅ Réduction temps de travail (1884)</div>
+  <div class="acquis-item">✅ 1er mai chômé et payé (1886)</div>
+</div>
+
+<h2>II. Le socialisme</h2>
+
+<p>C'est une doctrine qui propose de <strong>réformer la société au profit des travailleurs</strong>. Il comprend plusieurs courants :</p>
+
+<h3>Le socialisme utopique</h3>
+<p>Il désigne l'ensemble des idées apparues au début de la révolution industrielle qui cherchent à changer la société en s'appuyant sur les valeurs morales et religieuses. Ce sont les idées de <strong>Saint Simon, Owen, Proudhon, Louis Blanc</strong> — peu ou pas applicables.</p>
+
+<h3>Le socialisme scientifique (marxisme)</h3>
+<p>Proposé par <strong>Karl MARX</strong> et <strong>Friedrich ENGELS</strong>. Il préconise la lutte de classes et la révolution qui doit aboutir :</p>
+<ul>
+  <li>Dans un premier temps : au renversement de la bourgeoisie et à la <strong>dictature du prolétariat</strong> (société socialiste)</li>
+  <li>Dans un deuxième temps : à une <strong>société sans classes</strong> (société communiste)</li>
+</ul>
+<p>Les socialistes forment à Londres la <strong>1re Internationale ouvrière (1864)</strong>, la deuxième à Paris (1889) et la troisième à Moscou (1919).</p>
+
+<h3>Le socialisme réformiste</h3>
+<p>Il s'oppose à la révolution. Il défend des <strong>réformes progressives</strong> pour changer la société de manière pacifique. Il est à l'origine de nombreux partis socialistes : le Parti social-démocrate en Allemagne, la SFIO en France, le Labour Party en Angleterre.</p>
+
+<div class="conclusion">
+  <p>💡 Le développement des doctrines sociales traduit la complexité des problèmes sociaux et politiques engendrés par le système capitaliste, dont les difficultés vont donner naissance au mouvement impérialiste.</p>
+</div>
+
+<!-- QCM -->
+<div class="qcm-section">
+  <div class="qcm-titre">✏️ Exercices — Vérifie ta compréhension</div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">1.</span> Dans quel pays les syndicats sont-ils apparus pour la première fois, à partir de 1825 ?</div>
+    <div class="option"><input type="radio" name="q1" value="a"> <label>La France</label></div>
+    <div class="option"><input type="radio" name="q1" value="b" data-correct="true"> <label>L'Angleterre</label></div>
+    <div class="option"><input type="radio" name="q1" value="c"> <label>L'Allemagne</label></div>
+    <div class="option"><input type="radio" name="q1" value="d"> <label>Les États-Unis</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">2.</span> Les Trade Unions sont des syndicats :</div>
+    <div class="option"><input type="radio" name="q2" value="a"> <label>Révolutionnaires, partisans de la grève générale</label></div>
+    <div class="option"><input type="radio" name="q2" value="b"> <label>Anarchistes, partisans du sabotage</label></div>
+    <div class="option"><input type="radio" name="q2" value="c" data-correct="true"> <label>Réformistes, défenseurs de la négociation et du dialogue social</label></div>
+    <div class="option"><input type="radio" name="q2" value="d"> <label>Marxistes, partisans de la lutte des classes</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">3.</span> La CGT (Confédération Générale du Travail) appartient au courant :</div>
+    <div class="option"><input type="radio" name="q3" value="a"> <label>Réformiste</label></div>
+    <div class="option"><input type="radio" name="q3" value="b"> <label>Anarchiste</label></div>
+    <div class="option"><input type="radio" name="q3" value="c" data-correct="true"> <label>Révolutionnaire</label></div>
+    <div class="option"><input type="radio" name="q3" value="d"> <label>Utopique</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">4.</span> En quelle année le droit de grève a-t-il été adopté en France ?</div>
+    <div class="option"><input type="radio" name="q4" value="a"> <label>1825</label></div>
+    <div class="option"><input type="radio" name="q4" value="b"> <label>1853</label></div>
+    <div class="option"><input type="radio" name="q4" value="c" data-correct="true"> <label>1864</label></div>
+    <div class="option"><input type="radio" name="q4" value="d"> <label>1886</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">5.</span> Karl Marx et Friedrich Engels sont les fondateurs du :</div>
+    <div class="option"><input type="radio" name="q5" value="a"> <label>Socialisme utopique</label></div>
+    <div class="option"><input type="radio" name="q5" value="b"> <label>Syndicalisme réformiste</label></div>
+    <div class="option"><input type="radio" name="q5" value="c" data-correct="true"> <label>Socialisme scientifique (marxisme)</label></div>
+    <div class="option"><input type="radio" name="q5" value="d"> <label>Courant anarchiste</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">6.</span> Selon Marx, la révolution socialiste doit conduire dans un premier temps à :</div>
+    <div class="option"><input type="radio" name="q6" value="a"> <label>Une société sans classes directement</label></div>
+    <div class="option"><input type="radio" name="q6" value="b" data-correct="true"> <label>Le renversement de la bourgeoisie et la dictature du prolétariat</label></div>
+    <div class="option"><input type="radio" name="q6" value="c"> <label>Des réformes progressives et pacifiques</label></div>
+    <div class="option"><input type="radio" name="q6" value="d"> <label>L'abolition des syndicats</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">7.</span> La 1re Internationale ouvrière a été fondée à :</div>
+    <div class="option"><input type="radio" name="q7" value="a"> <label>Paris en 1889</label></div>
+    <div class="option"><input type="radio" name="q7" value="b"> <label>Moscou en 1919</label></div>
+    <div class="option"><input type="radio" name="q7" value="c" data-correct="true"> <label>Londres en 1864</label></div>
+    <div class="option"><input type="radio" name="q7" value="d"> <label>Berlin en 1871</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">8.</span> Le socialisme utopique est caractérisé par :</div>
+    <div class="option"><input type="radio" name="q8" value="a"> <label>La lutte armée des ouvriers contre les bourgeois</label></div>
+    <div class="option"><input type="radio" name="q8" value="b" data-correct="true"> <label>Des idées peu applicables qui cherchent à changer la société par les valeurs morales et religieuses</label></div>
+    <div class="option"><input type="radio" name="q8" value="c"> <label>La création d'Internationales ouvrières</label></div>
+    <div class="option"><input type="radio" name="q8" value="d"> <label>La nationalisation de toutes les entreprises par l'État</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">9.</span> Quel acquis syndical a été obtenu en 1886 ?</div>
+    <div class="option"><input type="radio" name="q9" value="a"> <label>L'interdiction du travail des enfants</label></div>
+    <div class="option"><input type="radio" name="q9" value="b"> <label>Les congés payés</label></div>
+    <div class="option"><input type="radio" name="q9" value="c"> <label>La réduction du temps de travail</label></div>
+    <div class="option"><input type="radio" name="q9" value="d" data-correct="true"> <label>La journée du 1er mai chômée et payée</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">10.</span> Le courant anarchiste utilise comme moyen de lutte :</div>
+    <div class="option"><input type="radio" name="q10" value="a"> <label>La négociation et le dialogue social</label></div>
+    <div class="option"><input type="radio" name="q10" value="b"> <label>La création de partis politiques</label></div>
+    <div class="option"><input type="radio" name="q10" value="c" data-correct="true"> <label>La révolte, la violence et le sabotage</label></div>
+    <div class="option"><input type="radio" name="q10" value="d"> <label>La grève pacifique et les pétitions</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">11.</span> Le Labour Party (Parti travailliste) est un parti socialiste :</div>
+    <div class="option"><input type="radio" name="q11" value="a"> <label>Allemand</label></div>
+    <div class="option"><input type="radio" name="q11" value="b"> <label>Français</label></div>
+    <div class="option"><input type="radio" name="q11" value="c" data-correct="true"> <label>Anglais</label></div>
+    <div class="option"><input type="radio" name="q11" value="d"> <label>Américain</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">12.</span> Quelle est la principale différence entre le socialisme scientifique et le socialisme réformiste ?</div>
+    <div class="option"><input type="radio" name="q12" value="a"> <label>Le socialisme scientifique défend la démocratie, le réformiste la dictature</label></div>
+    <div class="option"><input type="radio" name="q12" value="b" data-correct="true"> <label>Le socialisme scientifique prône la révolution violente, le réformiste prône des réformes progressives pacifiques</label></div>
+    <div class="option"><input type="radio" name="q12" value="c"> <label>Le socialisme réformiste est partisan du marxisme, le scientifique rejette Marx</label></div>
+    <div class="option"><input type="radio" name="q12" value="d"> <label>Il n'y a aucune différence entre les deux courants</label></div>
+  </div>
+
+</div>
+</body>
+</html>

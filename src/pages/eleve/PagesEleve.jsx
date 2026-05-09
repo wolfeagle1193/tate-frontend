@@ -2758,7 +2758,7 @@ function FrancaisOnglets({ chapitres, isValide, isVerrouille, matiere, onDemarre
 // Carte matière — design attrayant
 // ─────────────────────────────────────────────────────────────────
 function CarteMatiere({ matiere, nbChapitres, nbValides, onClick }) {
-  const pct = nbChapitres > 0 ? Math.round((nbValides / nbChapitres) * 100) : 0;
+  const pct = nbChapitres > 0 ? Math.min(Math.round((nbValides / nbChapitres) * 100), 100) : 0;
   const nbRestants = Math.max(0, nbChapitres - nbValides);
   return (
     <motion.button
@@ -2834,7 +2834,7 @@ function VueChapitres({ matiere, chapitres, isValide, isVerrouille, nbValides, c
         {/* Mini barre progression */}
         {!chargement && chapitres.length > 0 && (
           <div className="mt-3 h-1.5 rounded-full bg-white/30 overflow-hidden relative z-10">
-            <motion.div initial={{ width:0 }} animate={{ width:`${Math.round((nbValides/chapitres.length)*100)}%` }}
+            <motion.div initial={{ width:0 }} animate={{ width:`${Math.min(Math.round((nbValides/chapitres.length)*100), 100)}%` }}
               transition={{ duration:0.8, delay:0.2 }}
               className="h-full rounded-full bg-white/80" />
           </div>
@@ -2903,7 +2903,7 @@ function VueChapitresFr({ matiere, chapitres, isValide, isVerrouille, nbValides,
 
         {!chargement && chapitres.length > 0 && (
           <div className="mt-3 h-1.5 rounded-full bg-white/30 overflow-hidden relative z-10">
-            <motion.div initial={{ width:0 }} animate={{ width:`${Math.round((nbValides/chapitres.length)*100)}%` }}
+            <motion.div initial={{ width:0 }} animate={{ width:`${Math.min(Math.round((nbValides/chapitres.length)*100), 100)}%` }}
               transition={{ duration:0.8, delay:0.2 }}
               className="h-full rounded-full bg-white/80" />
           </div>

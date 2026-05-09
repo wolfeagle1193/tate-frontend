@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 15px; color: #1a1a1a; background: #fff; padding: 16px; line-height: 1.7; }
+  .partie-badge { background: #154360; color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 10px; }
+  h1 { font-size: 1.35rem; font-weight: 800; color: #154360; border-bottom: 3px solid #2E86C1; padding-bottom: 8px; margin-bottom: 18px; }
+  .essentiel { background: linear-gradient(135deg, #EBF5FB, #D6EAF8); border-left: 5px solid #2E86C1; border-radius: 10px; padding: 16px 18px; margin-bottom: 22px; }
+  .essentiel-titre { font-size: 1rem; font-weight: 800; color: #154360; text-align: center; margin-bottom: 10px; }
+  .essentiel p { font-weight: 600; color: #154360; font-size: 14px; }
+  h2 { font-size: 1.05rem; font-weight: 800; color: #154360; margin: 22px 0 10px; border-left: 4px solid #2E86C1; padding-left: 10px; }
+  h3 { font-size: .95rem; font-weight: 700; color: #1A5276; margin: 14px 0 6px; }
+  p { margin-bottom: 10px; }
+  ul { margin-left: 18px; margin-bottom: 10px; }
+  li { margin-bottom: 5px; }
+  .aspect-card { border-radius: 10px; padding: 12px 16px; margin: 10px 0; border-left: 5px solid; }
+  .unifie { background: #E9F7EF; border-color: #27AE60; }
+  .eclate { background: #FDEDEC; border-color: #E74C3C; }
+  .aspect-titre { font-weight: 800; font-size: 14px; margin-bottom: 6px; }
+  .unifie .aspect-titre { color: #1E8449; }
+  .eclate .aspect-titre { color: #C0392B; }
+  .info-card { background: #F8F9FA; border-left: 4px solid #2E86C1; border-radius: 6px; padding: 10px 14px; margin: 8px 0; font-size: 13px; }
+  .info-titre { font-weight: 800; color: #154360; margin-bottom: 4px; }
+  .monde-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 12px 0; }
+  .monde-item { border-radius: 8px; padding: 8px 10px; font-size: 12px; text-align: center; }
+  .dominant { background: #EBF5FB; border: 1.5px solid #1A5276; }
+  .emergent { background: #FEF9E7; border: 1.5px solid #F39C12; }
+  .domine { background: #FDEDEC; border: 1.5px solid #E74C3C; }
+  .monde-label { font-weight: 800; font-size: 11px; text-transform: uppercase; margin-bottom: 4px; }
+  .dominant .monde-label { color: #1A5276; }
+  .emergent .monde-label { color: #B7770D; }
+  .domine .monde-label { color: #C0392B; }
+  .qcm-section { margin-top: 30px; border-top: 3px solid #2E86C1; padding-top: 20px; }
+  .qcm-titre { font-size: 1.1rem; font-weight: 800; color: #fff; background: #154360; padding: 10px 16px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
+  .question-bloc { background: #FAFAFA; border: 1.5px solid #D6EAF8; border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; }
+  .question-texte { font-weight: 700; color: #1a1a1a; margin-bottom: 10px; font-size: 14px; }
+  .question-num { color: #2E86C1; font-weight: 800; }
+  .option { display: flex; align-items: flex-start; gap: 10px; padding: 7px 10px; border-radius: 7px; margin-bottom: 4px; cursor: pointer; border: 1.5px solid transparent; }
+  .option:hover { background: #EBF5FB; border-color: #2E86C1; }
+  .option input[type="radio"] { margin-top: 2px; accent-color: #154360; flex-shrink: 0; width: 16px; height: 16px; }
+  .option label { cursor: pointer; font-size: 14px; color: #333; }
+</style>
+</head>
+<body>
+
+<div class="partie-badge">Géographie — Chapitre IV : La Terre, une planète solidaire ?</div>
+<h1>Leçon 9 — La planète Terre, un village ?</h1>
+
+<div class="essentiel">
+  <div class="essentiel-titre">📌 L'essentiel à retenir</div>
+  <p>Aujourd'hui, le monde apparaît unifié et globalisé. L'interdépendance et l'interconnexion entre ses différentes parties sont si poussées, les distances si réduites que la Planète Terre est comparée à un <strong>Village</strong>. Mais la Terre est-elle réellement un village ? Depuis le XIXe siècle, l'unification du monde s'est beaucoup accentuée, sans pour autant homogénéiser les modèles culturels.</p>
+</div>
+
+<h2>I. Un monde de plus en plus unifié et uniformisé</h2>
+
+<div class="aspect-card unifie">
+  <div class="aspect-titre">🌐 Le village planétaire</div>
+  <ul>
+    <li>La notion de <strong>"village planétaire"</strong> traduit l'effacement relatif des frontières et la réduction des distances entre les différentes régions du monde</li>
+    <li>Interdépendance et interconnexion très étroites entre toutes les parties du monde</li>
+    <li>Avec la mondialisation, le monde tend à devenir un <strong>système unifié</strong></li>
+    <li>Les produits, marchandises, biens, capitaux, personnes pénètrent dans les régions les plus reculées</li>
+    <li>La diffusion rapide et instantanée des informations réduit l'humanité en une seule et même communauté : même temps, même rythme, même espace → <strong>téléprésence</strong></li>
+  </ul>
+</div>
+
+<h3>A. L'uniformisation du monde</h3>
+<p>Le monde a tendance à être <strong>uniformisé</strong>. Avec la mondialisation, le modèle capitaliste libéral se répand dans le monde. La mondialisation est assimilée à une <strong>occidentalisation du monde</strong> avec la diffusion de la culture occidentale (musique, cinéma, mode, alimentation…).</p>
+
+<h2>II. Un monde toujours éclaté</h2>
+
+<div class="aspect-card eclate">
+  <div class="aspect-titre">🌍 Les persistances des divisions</div>
+  Le monde continue d'être façonné par de multiples différences :
+  <ul>
+    <li><strong>Inégalités économiques :</strong> déséquilibres dans l'espace mondial — une nouvelle géographie se dessine</li>
+    <li><strong>Disparités politiques :</strong> inégalités en matière de démocratie et de droits de l'homme entre Nord et Sud</li>
+    <li><strong>Différences culturelles et religieuses :</strong> fondamentalistes, intégristes, repli identitaire</li>
+  </ul>
+</div>
+
+<h3>A. La nouvelle géographie mondiale</h3>
+
+<div class="monde-grid">
+  <div class="monde-item dominant">
+    <div class="monde-label">Espaces dominants</div>
+    <strong>La Triade</strong><br>
+    Amérique du Nord, Europe Occ., Japon
+  </div>
+  <div class="monde-item emergent">
+    <div class="monde-label">Pays émergents</div>
+    <strong>Chine, Brésil</strong><br>
+    Croissance rapide
+  </div>
+  <div class="monde-item domine">
+    <div class="monde-label">Espaces dominés</div>
+    <strong>Afrique subsaharienne, Amérique latine, Asie</strong>
+  </div>
+</div>
+
+<h3>B. Le repli identitaire et l'altermondialisme</h3>
+
+<div class="info-card">
+  <div class="info-titre">🕌 Différences culturelles et religieuses</div>
+  Les sociétés revendiquent leur particularité, leur différence par rapport au modèle occidental en recourant à l'orthodoxie, aux fondements de la religion, d'où les <strong>fondamentalistes ou intégristes</strong> dans le christianisme, l'Islam, l'hindouisme, etc. Cela favorise aussi le <strong>repli identitaire</strong>.
+</div>
+
+<div class="info-card">
+  <div class="info-titre">✊ Le mouvement altermondialiste</div>
+  Face à l'orientation libérale et occidentale de la mondialisation, de nombreux groupes sociaux et professionnels, les <strong>altermondialistes</strong>, résistent à cette tendance libérale et modernisatrice qui présente le risque de faire disparaître les coutumes, les traditions et les valeurs ancestrales.
+</div>
+
+<!-- QCM -->
+<div class="qcm-section">
+<div class="qcm-titre">📝 Évaluation — Questions à Choix Multiples (22 questions)</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">1.</span> La notion de "village planétaire" désigne :</div>
+  <div class="option"><input type="radio" name="q1" value="A" id="q1A"><label for="q1A">A. Un petit village africain symbole de la mondialisation</label></div>
+  <div class="option"><input type="radio" name="q1" value="B" id="q1B" data-correct="true"><label for="q1B">B. L'effacement des frontières et la réduction des distances entre les régions du monde grâce à la mondialisation</label></div>
+  <div class="option"><input type="radio" name="q1" value="C" id="q1C"><label for="q1C">C. Un projet architectural de ville mondiale futuriste</label></div>
+  <div class="option"><input type="radio" name="q1" value="D" id="q1D"><label for="q1D">D. L'uniformisation totale des cultures mondiales</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">2.</span> La téléprésence désigne :</div>
+  <div class="option"><input type="radio" name="q2" value="A" id="q2A"><label for="q2A">A. La présence physique simultanée de personnes dans plusieurs lieux</label></div>
+  <div class="option"><input type="radio" name="q2" value="B" id="q2B" data-correct="true"><label for="q2B">B. Le sentiment de vivre au même temps, au même rythme et dans un même espace grâce aux communications</label></div>
+  <div class="option"><input type="radio" name="q2" value="C" id="q2C"><label for="q2C">C. Les réunions en présentiel entre dirigeants mondiaux</label></div>
+  <div class="option"><input type="radio" name="q2" value="D" id="q2D"><label for="q2D">D. Le transport aérien à grande vitesse</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">3.</span> La mondialisation est souvent assimilée à :</div>
+  <div class="option"><input type="radio" name="q3" value="A" id="q3A"><label for="q3A">A. Une africanisation du monde</label></div>
+  <div class="option"><input type="radio" name="q3" value="B" id="q3B"><label for="q3B">B. Une asianisation du monde</label></div>
+  <div class="option"><input type="radio" name="q3" value="C" id="q3C" data-correct="true"><label for="q3C">C. Une occidentalisation du monde avec diffusion de la culture occidentale</label></div>
+  <div class="option"><input type="radio" name="q3" value="D" id="q3D"><label for="q3D">D. Une uniformisation des économies socialistes</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">4.</span> La Triade désigne les espaces :</div>
+  <div class="option"><input type="radio" name="q4" value="A" id="q4A"><label for="q4A">A. Dominés du monde (Afrique, Asie, Amérique latine)</label></div>
+  <div class="option"><input type="radio" name="q4" value="B" id="q4B" data-correct="true"><label for="q4B">B. Dominants du monde (Amérique du Nord, Europe Occidentale, Japon)</label></div>
+  <div class="option"><input type="radio" name="q4" value="C" id="q4C"><label for="q4C">C. Pays émergents (Chine, Brésil, Inde)</label></div>
+  <div class="option"><input type="radio" name="q4" value="D" id="q4D"><label for="q4D">D. Pays pétroliers riches</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">5.</span> Les altermondialistes sont :</div>
+  <div class="option"><input type="radio" name="q5" value="A" id="q5A"><label for="q5A">A. Des partisans de la mondialisation libérale et capitaliste</label></div>
+  <div class="option"><input type="radio" name="q5" value="B" id="q5B" data-correct="true"><label for="q5B">B. Des groupes qui résistent à la mondialisation libérale pour défendre les cultures et traditions ancestrales</label></div>
+  <div class="option"><input type="radio" name="q5" value="C" id="q5C"><label for="q5C">C. Des organisations qui prônent l'isolement économique des pays</label></div>
+  <div class="option"><input type="radio" name="q5" value="D" id="q5D"><label for="q5D">D. Des promoteurs du capitalisme d'État</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">6.</span> Le repli identitaire est une réaction :</div>
+  <div class="option"><input type="radio" name="q6" value="A" id="q6A"><label for="q6A">A. En faveur de la mondialisation et de l'uniformisation des cultures</label></div>
+  <div class="option"><input type="radio" name="q6" value="B" id="q6B" data-correct="true"><label for="q6B">B. De certaines sociétés qui revendiquent leur particularité culturelle face à l'occidentalisation</label></div>
+  <div class="option"><input type="radio" name="q6" value="C" id="q6C"><label for="q6C">C. Des pays développés contre les pays émergents</label></div>
+  <div class="option"><input type="radio" name="q6" value="D" id="q6D"><label for="q6D">D. Des pays du Sud contre la coopération internationale</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">7.</span> Parmi ces pays, lesquels sont considérés comme des espaces dominés ?</div>
+  <div class="option"><input type="radio" name="q7" value="A" id="q7A"><label for="q7A">A. Les États-Unis, le Japon et l'Allemagne</label></div>
+  <div class="option"><input type="radio" name="q7" value="B" id="q7B"><label for="q7B">B. La Chine et le Brésil</label></div>
+  <div class="option"><input type="radio" name="q7" value="C" id="q7C" data-correct="true"><label for="q7C">C. L'Afrique subsaharienne, l'Amérique latine et une partie de l'Asie</label></div>
+  <div class="option"><input type="radio" name="q7" value="D" id="q7D"><label for="q7D">D. L'Europe occidentale et l'Amérique du Nord</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">8.</span> L'interdépendance et l'interconnexion mondiales signifient que :</div>
+  <div class="option"><input type="radio" name="q8" value="A" id="q8A"><label for="q8A">A. Tous les pays ont le même niveau de développement</label></div>
+  <div class="option"><input type="radio" name="q8" value="B" id="q8B" data-correct="true"><label for="q8B">B. Les différentes parties du monde sont liées et s'influencent mutuellement de manière étroite</label></div>
+  <div class="option"><input type="radio" name="q8" value="C" id="q8C"><label for="q8C">C. Tous les pays partagent la même culture</label></div>
+  <div class="option"><input type="radio" name="q8" value="D" id="q8D"><label for="q8D">D. Les frontières nationales ont disparu</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">9.</span> Le fondamentalisme religieux est une forme de :</div>
+  <div class="option"><input type="radio" name="q9" value="A" id="q9A"><label for="q9A">A. Participation active à la mondialisation</label></div>
+  <div class="option"><input type="radio" name="q9" value="B" id="q9B"><label for="q9B">B. Soutien au modèle occidental</label></div>
+  <div class="option"><input type="radio" name="q9" value="C" id="q9C" data-correct="true"><label for="q9C">C. Repli identitaire et résistance à l'occidentalisation du monde</label></div>
+  <div class="option"><input type="radio" name="q9" value="D" id="q9D"><label for="q9D">D. Coopération multilatérale entre pays du Sud</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">10.</span> La Chine et le Brésil sont classés dans la catégorie des :</div>
+  <div class="option"><input type="radio" name="q10" value="A" id="q10A"><label for="q10A">A. Espaces dominants (Triade)</label></div>
+  <div class="option"><input type="radio" name="q10" value="B" id="q10B" data-correct="true"><label for="q10B">B. Pays émergents</label></div>
+  <div class="option"><input type="radio" name="q10" value="C" id="q10C"><label for="q10C">C. Espaces dominés</label></div>
+  <div class="option"><input type="radio" name="q10" value="D" id="q10D"><label for="q10D">D. PMA (Pays les Moins Avancés)</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">11.</span> L'uniformisation du monde à travers la mondialisation se manifeste par :</div>
+  <div class="option"><input type="radio" name="q11" value="A" id="q11A"><label for="q11A">A. La préservation de toutes les cultures locales</label></div>
+  <div class="option"><input type="radio" name="q11" value="B" id="q11B" data-correct="true"><label for="q11B">B. La diffusion du modèle capitaliste libéral et de la culture occidentale dans le monde</label></div>
+  <div class="option"><input type="radio" name="q11" value="C" id="q11C"><label for="q11C">C. La disparition des échanges commerciaux</label></div>
+  <div class="option"><input type="radio" name="q11" value="D" id="q11D"><label for="q11D">D. Le retour à des économies nationales fermées</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">12.</span> Au plan politique, les disparités entre Nord et Sud se manifestent par :</div>
+  <div class="option"><input type="radio" name="q12" value="A" id="q12A"><label for="q12A">A. Des différences uniquement économiques</label></div>
+  <div class="option"><input type="radio" name="q12" value="B" id="q12B" data-correct="true"><label for="q12B">B. Des inégalités en matière de démocratie et de droits de l'homme</label></div>
+  <div class="option"><input type="radio" name="q12" value="C" id="q12C"><label for="q12C">C. Une coopération militaire renforcée</label></div>
+  <div class="option"><input type="radio" name="q12" value="D" id="q12D"><label for="q12D">D. Une égalité parfaite des droits politiques</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">13.</span> Depuis le XIXe siècle, l'unification du monde s'est accentuée grâce à :</div>
+  <div class="option"><input type="radio" name="q13" value="A" id="q13A"><label for="q13A">A. La construction de murs entre les pays</label></div>
+  <div class="option"><input type="radio" name="q13" value="B" id="q13B" data-correct="true"><label for="q13B">B. L'expansion des flux économiques et des informations qui ont rapproché le monde</label></div>
+  <div class="option"><input type="radio" name="q13" value="C" id="q13C"><label for="q13C">C. La mise en place d'une monnaie unique mondiale</label></div>
+  <div class="option"><input type="radio" name="q13" value="D" id="q13D"><label for="q13D">D. La disparition des échanges culturels</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">14.</span> Malgré l'unification du monde, les modèles culturels sont :</div>
+  <div class="option"><input type="radio" name="q14" value="A" id="q14A"><label for="q14A">A. Complètement uniformisés</label></div>
+  <div class="option"><input type="radio" name="q14" value="B" id="q14B" data-correct="true"><label for="q14B">B. Toujours différents — l'unification n'a pas homogénéisé les modèles culturels</label></div>
+  <div class="option"><input type="radio" name="q14" value="C" id="q14C"><label for="q14C">C. Entièrement remplacés par la culture américaine</label></div>
+  <div class="option"><input type="radio" name="q14" value="D" id="q14D"><label for="q14D">D. Identiques dans tous les pays développés</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">15.</span> Le terme "mondialisation" fait référence à :</div>
+  <div class="option"><input type="radio" name="q15" value="A" id="q15A"><label for="q15A">A. L'isolement des pays dans leurs frontières nationales</label></div>
+  <div class="option"><input type="radio" name="q15" value="B" id="q15B" data-correct="true"><label for="q15B">B. L'intégration croissante des économies, des sociétés et des cultures à l'échelle mondiale</label></div>
+  <div class="option"><input type="radio" name="q15" value="C" id="q15C"><label for="q15C">C. La domination exclusive de la Triade sur le reste du monde</label></div>
+  <div class="option"><input type="radio" name="q15" value="D" id="q15D"><label for="q15D">D. L'expansion du socialisme à l'échelle mondiale</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">16.</span> L'intégrisme est une forme d'attachement :</div>
+  <div class="option"><input type="radio" name="q16" value="A" id="q16A"><label for="q16A">A. Au modèle de développement occidental</label></div>
+  <div class="option"><input type="radio" name="q16" value="B" id="q16B"><label for="q16B">B. Au libéralisme économique</label></div>
+  <div class="option"><input type="radio" name="q16" value="C" id="q16C" data-correct="true"><label for="q16C">C. Aux fondements d'une religion contre les influences extérieures (occidentalisation)</label></div>
+  <div class="option"><input type="radio" name="q16" value="D" id="q16D"><label for="q16D">D. Aux valeurs démocratiques universelles</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">17.</span> Le système-monde désigne :</div>
+  <div class="option"><input type="radio" name="q17" value="A" id="q17A"><label for="q17A">A. L'organisation militaire mondiale</label></div>
+  <div class="option"><input type="radio" name="q17" value="B" id="q17B" data-correct="true"><label for="q17B">B. Le monde comme un ensemble interconnecté et interdépendant, organisé autour de pôles dominants</label></div>
+  <div class="option"><input type="radio" name="q17" value="C" id="q17C"><label for="q17C">C. Le réseau de transport international</label></div>
+  <div class="option"><input type="radio" name="q17" value="D" id="q17D"><label for="q17D">D. Le système économique socialiste mondial</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">18.</span> La diffusion rapide des informations grâce aux communications a pour conséquence :</div>
+  <div class="option"><input type="radio" name="q18" value="A" id="q18A"><label for="q18A">A. L'isolement des cultures régionales</label></div>
+  <div class="option"><input type="radio" name="q18" value="B" id="q18B" data-correct="true"><label for="q18B">B. Le rapprochement des hommes et le sentiment d'appartenir à une même communauté mondiale</label></div>
+  <div class="option"><input type="radio" name="q18" value="C" id="q18C"><label for="q18C">C. L'augmentation des conflits entre pays</label></div>
+  <div class="option"><input type="radio" name="q18" value="D" id="q18D"><label for="q18D">D. La réduction des échanges commerciaux</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">19.</span> L'altermondialisme s'oppose à :</div>
+  <div class="option"><input type="radio" name="q19" value="A" id="q19A"><label for="q19A">A. Tout échange entre pays</label></div>
+  <div class="option"><input type="radio" name="q19" value="B" id="q19B"><label for="q19B">B. La coopération internationale bilatérale</label></div>
+  <div class="option"><input type="radio" name="q19" value="C" id="q19C" data-correct="true"><label for="q19C">C. La mondialisation libérale et occidentale qui menace les cultures et traditions</label></div>
+  <div class="option"><input type="radio" name="q19" value="D" id="q19D"><label for="q19D">D. Le développement des échanges commerciaux équitables</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">20.</span> Les inégalités économiques mondiales font apparaître une nouvelle géographie avec :</div>
+  <div class="option"><input type="radio" name="q20" value="A" id="q20A"><label for="q20A">A. Un seul bloc développé et uniformisé</label></div>
+  <div class="option"><input type="radio" name="q20" value="B" id="q20B" data-correct="true"><label for="q20B">B. Des espaces dominants (Triade), des pays émergents et des espaces dominés</label></div>
+  <div class="option"><input type="radio" name="q20" value="C" id="q20C"><label for="q20C">C. Une égalité croissante entre tous les pays</label></div>
+  <div class="option"><input type="radio" name="q20" value="D" id="q20D"><label for="q20D">D. Un seul pôle dominant unique (les États-Unis)</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">21.</span> Qu'est-ce qui prouve que le monde n'est PAS encore un village homogène ?</div>
+  <div class="option"><input type="radio" name="q21" value="A" id="q21A"><label for="q21A">A. L'existence d'Internet et des réseaux sociaux</label></div>
+  <div class="option"><input type="radio" name="q21" value="B" id="q21B"><label for="q21B">B. La présence des multinationales dans tous les pays</label></div>
+  <div class="option"><input type="radio" name="q21" value="C" id="q21C" data-correct="true"><label for="q21C">C. La persistance des inégalités économiques, des disparités politiques et des différences culturelles</label></div>
+  <div class="option"><input type="radio" name="q21" value="D" id="q21D"><label for="q21D">D. Le développement des transports aériens</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">22.</span> La mondialisation est dite "contradictoire" car :</div>
+  <div class="option"><input type="radio" name="q22" value="A" id="q22A"><label for="q22A">A. Elle favorise uniquement les pays pauvres</label></div>
+  <div class="option"><input type="radio" name="q22" value="B" id="q22B"><label for="q22B">B. Elle est identique dans tous les pays du monde</label></div>
+  <div class="option"><input type="radio" name="q22" value="C" id="q22C" data-correct="true"><label for="q22C">C. En unifiant, elle divise ; en intégrant, elle exclut — elle crée autant d'inégalités qu'elle rapproche</label></div>
+  <div class="option"><input type="radio" name="q22" value="D" id="q22D"><label for="q22D">D. Elle n'a aucun impact sur les échanges culturels</label></div>
+</div>
+
+</div><!-- end qcm-section -->
+</body>
+</html>

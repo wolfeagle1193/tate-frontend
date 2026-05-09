@@ -9,7 +9,7 @@ import {
   Search, X, TrendingUp, TrendingDown, BookOpen,
   CheckCircle, AlertTriangle, Star, Flame, Clock,
   ChevronDown, RefreshCw, Users, Award, Target,
-  BarChart2, Calendar,
+  BarChart2, Calendar, RotateCcw,
 } from 'lucide-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
@@ -113,6 +113,7 @@ function ModalDetailEleve({ eleve, onClose }) {
   const [chapList,    setChapList]    = useState([]);
   const [chapSelected, setChapSelected] = useState('');
   const [planSubmitting, setPlanSubmitting] = useState(false);
+  const [resetConfirmId, setResetConfirmId] = useState(null);
 
   // ── Stats fraîches chargées à l'ouverture du modal ───────────
   const [liveStats, setLiveStats] = useState({
@@ -199,8 +200,8 @@ function ModalDetailEleve({ eleve, onClose }) {
     ? Math.round((liveStats.maitrises / liveStats.totalSessions) * 100)
     : 0;
 
-  const chargerProgression = useCallback(async () => {
-    if (progression.length > 0) return;
+  const chargerProgression = useCallback(async (force = false) => {
+    if (!force && progression.length > 0) return;
     setLoadProg(true);
     try {
       const { data } = await axios.get(
@@ -260,6 +261,25 @@ function ModalDetailEleve({ eleve, onClose }) {
       setPlanning(p => p.filter(x => x._id !== id));
       toast.success('Devoir supprimé');
     } catch { toast.error('Erreur'); }
+  };
+
+  const reinitialiserChapitre = async (chapitreId) => {
+    try {
+      await axios.delete(
+        `${API}/resultats/eleve/${eleve._id}/chapitre/${chapitreId}`,
+        { headers: hdrs() }
+      );
+      // Retirer le chapitre de l'état local (tous ses résultats ont été supprimés)
+      setProgression(prev => prev.filter(c => {
+        const cid = c.chapitreId?._id?.toString() || c.chapitreId?.toString();
+        return cid !== chapitreId;
+      }));
+      setResetConfirmId(null);
+      toast.success('Chapitre réinitialisé — l\'élève peut recommencer à zéro');
+    } catch (e) {
+      toast.error(e.response?.data?.error || 'Erreur lors de la réinitialisation');
+      setResetConfirmId(null);
+    }
   };
 
   useEffect(() => {
@@ -496,6 +516,8 @@ function ModalDetailEleve({ eleve, onClose }) {
                 <div className="space-y-3">
                   {progression.map((chap, i) => {
                     const best = Math.max(...chap.tentatives.map(t => t.score));
+                    const chapId = chap.chapitreId?._id?.toString() || chap.chapitreId?.toString();
+                    const isConfirmingReset = resetConfirmId === chapId;
                     return (
                       <div key={i} className={`rounded-2xl border-2 overflow-hidden ${
                         chap.maitrise ? 'border-green-200 bg-green-50/30' : 'border-tate-border bg-white'
@@ -516,7 +538,39 @@ function ModalDetailEleve({ eleve, onClose }) {
                             <p className={`text-base font-bold ${couleurScore(best)}`}>{best}%</p>
                             <p className="text-xs text-tate-terre/40">meilleur</p>
                           </div>
+                          {/* Bouton réinitialisation (uniquement si chapitre maîtrisé) */}
+                          {chap.maitrise && (
+                            <button
+                              onClick={() => setResetConfirmId(isConfirmingReset ? null : chapId)}
+                              title="Réinitialiser ce chapitre (démonstration)"
+                              className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 transition-all ${
+                                isConfirmingReset
+                                  ? 'bg-red-100 text-alerte'
+                                  : 'text-tate-terre/25 hover:text-alerte hover:bg-red-50'
+                              }`}>
+                              <RotateCcw size={13} />
+                            </button>
+                          )}
                         </div>
+
+                        {/* Confirmation réinitialisation */}
+                        {isConfirmingReset && (
+                          <div className="border-t border-red-100 bg-red-50 px-4 py-2.5 flex items-center gap-3">
+                            <p className="text-xs text-red-700 flex-1 leading-tight">
+                              Supprimer tous les résultats et dévalider ce chapitre ?
+                            </p>
+                            <button
+                              onClick={() => setResetConfirmId(null)}
+                              className="text-xs text-tate-terre/50 hover:text-tate-terre px-2 py-1 rounded-lg hover:bg-white transition-all flex-shrink-0">
+                              Annuler
+                            </button>
+                            <button
+                              onClick={() => reinitialiserChapitre(chapId)}
+                              className="text-xs font-bold text-white bg-alerte hover:bg-red-600 px-3 py-1 rounded-lg transition-all flex-shrink-0">
+                              Réinitialiser
+                            </button>
+                          </div>
+                        )}
 
                         {/* Historique tentatives */}
                         <div className="border-t border-tate-border/40 px-4 py-2 space-y-1.5">

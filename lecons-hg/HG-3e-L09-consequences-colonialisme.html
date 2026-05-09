@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 15px; color: #1a1a1a; background: #fff; padding: 16px; line-height: 1.7; }
+  .partie-badge { background: #7B4F2E; color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 10px; }
+  h1 { font-size: 1.35rem; font-weight: 800; color: #7B4F2E; border-bottom: 3px solid #C9A96E; padding-bottom: 8px; margin-bottom: 18px; }
+  .essentiel { background: linear-gradient(135deg, #FFF8F0, #FFF3E0); border-left: 5px solid #C9A96E; border-radius: 10px; padding: 16px 18px; margin-bottom: 22px; }
+  .essentiel-titre { font-size: 1rem; font-weight: 800; color: #7B4F2E; text-align: center; margin-bottom: 10px; }
+  .essentiel p { font-weight: 600; color: #5D3A1A; font-size: 14px; }
+  h2 { font-size: 1.05rem; font-weight: 800; color: #7B4F2E; margin: 22px 0 10px; border-left: 4px solid #C9A96E; padding-left: 10px; }
+  h3 { font-size: .95rem; font-weight: 700; color: #5D3A1A; margin: 14px 0 6px; }
+  p { margin-bottom: 10px; }
+  ul { margin-left: 18px; margin-bottom: 10px; }
+  li { margin-bottom: 5px; }
+  .cons-card { border-radius: 10px; padding: 12px 16px; margin: 10px 0; border-left: 5px solid; }
+  .cons-neg { background: #FDF2F2; border-color: #C0392B; }
+  .cons-pos { background: #EAFAF1; border-color: #27AE60; }
+  .cons-eco { background: #FEF9E7; border-color: #F39C12; }
+  .cons-cult { background: #EBF5FB; border-color: #2E86C1; }
+  .cons-titre { font-weight: 800; font-size: 14px; margin-bottom: 6px; }
+  .cons-neg .cons-titre { color: #C0392B; }
+  .cons-pos .cons-titre { color: #1E8449; }
+  .cons-eco .cons-titre { color: #D68910; }
+  .cons-cult .cons-titre { color: #1A5276; }
+  .bilan-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 14px 0; }
+  .bilan-neg { background: #FDF2F2; border: 2px solid #C0392B; border-radius: 10px; padding: 13px 15px; }
+  .bilan-pos { background: #EAFAF1; border: 2px solid #27AE60; border-radius: 10px; padding: 13px 15px; }
+  .bilan-titre { font-weight: 800; font-size: 14px; margin-bottom: 8px; }
+  .bilan-neg .bilan-titre { color: #C0392B; }
+  .bilan-pos .bilan-titre { color: #1E8449; }
+  .bilan-neg li, .bilan-pos li { font-size: 13px; }
+  .exemple-box { background: #F5F5F5; border: 1px dashed #C9A96E; border-radius: 8px; padding: 10px 14px; margin: 8px 0; font-size: 13px; }
+  .exemple-box strong { color: #7B4F2E; }
+  .resistance-card { background: #FFF8E1; border: 1.5px solid #F9A825; border-radius: 10px; padding: 12px 15px; margin: 10px 0; }
+  .resistance-nom { font-weight: 800; color: #7B4F2E; margin-bottom: 5px; }
+  .conclusion { background: #FFF3E0; border: 1.5px solid #C9A96E; border-radius: 8px; padding: 12px 16px; margin: 18px 0; }
+  .conclusion p { font-weight: 700; color: #7B4F2E; margin: 0; font-size: 14px; }
+  .acquis-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
+  .acquis-item { background: #FFF8E1; border: 1.5px solid #C9A96E; border-radius: 8px; padding: 8px 12px; font-size: 13px; font-weight: 600; color: #5D3A1A; }
+  .qcm-section { margin-top: 30px; border-top: 3px solid #C9A96E; padding-top: 20px; }
+  .qcm-titre { font-size: 1.1rem; font-weight: 800; color: #fff; background: #7B4F2E; padding: 10px 16px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
+  .question-bloc { background: #FAFAFA; border: 1.5px solid #E8D5C0; border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; }
+  .question-texte { font-weight: 700; color: #1a1a1a; margin-bottom: 10px; font-size: 14px; }
+  .question-num { color: #C9A96E; font-weight: 800; }
+  .option { display: flex; align-items: flex-start; gap: 10px; padding: 7px 10px; border-radius: 7px; margin-bottom: 4px; cursor: pointer; border: 1.5px solid transparent; transition: .15s; }
+  .option:hover { background: #FFF3E0; border-color: #C9A96E; }
+  .option input[type="radio"] { margin-top: 2px; accent-color: #7B4F2E; flex-shrink: 0; width: 16px; height: 16px; }
+  .option label { cursor: pointer; font-size: 14px; color: #333; }
+  .feedback { display: none; margin-top: 8px; padding: 8px 12px; border-radius: 7px; font-size: 13px; font-weight: 600; }
+  .feedback.correct { background: #EAFAF1; color: #1E8449; border: 1px solid #A9DFBF; display: block; }
+  .feedback.wrong { background: #FDF2F2; color: #C0392B; border: 1px solid #F1948A; display: block; }
+  .btn-verif { margin-top: 10px; background: #7B4F2E; color: #fff; border: none; border-radius: 8px; padding: 8px 18px; font-weight: 700; font-size: 13px; cursor: pointer; }
+  .btn-verif:hover { background: #5D3A1A; }
+  @media (max-width: 600px) { .bilan-grid { grid-template-columns: 1fr; } .acquis-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="partie-badge">Partie 1 — Histoire · L'impérialisme</div>
+<h1>Leçon 9 — Les conséquences du colonialisme en Afrique et en Asie</h1>
+
+<div class="essentiel">
+  <div class="essentiel-titre">📌 L'essentiel à retenir</div>
+  <p>La colonisation européenne en Afrique et en Asie a eu des conséquences profondes et durables sur les peuples colonisés. Ces conséquences sont d'abord destructrices sur le plan politique, économique et culturel. Mais la colonisation génère aussi des résistances et contribue involontairement à la prise de conscience nationale qui conduira plus tard à la décolonisation.</p>
+</div>
+
+<h2>I. Les conséquences politiques et territoriales</h2>
+
+<div class="cons-card cons-neg">
+  <div class="cons-titre">❌ La perte de souveraineté</div>
+  <p style="font-size:13px;">Les peuples africains et asiatiques perdent leur indépendance politique. Les royaumes et empires précoloniaux (le Dahomey, le Royaume Zoulou, le Royaume Mandingue de Samory Touré) sont démantelés ou vassalisés. Les dirigeants traditionnels sont soit supprimés, soit transformés en relais de l'administration coloniale.</p>
+</div>
+
+<div class="cons-card cons-neg">
+  <div class="cons-titre">❌ Des frontières artificielles</div>
+  <p style="font-size:13px;">La Conférence de Berlin (1884-1885) trace des frontières géométriques qui ne respectent pas les réalités ethniques, linguistiques ou religieuses africaines. Des peuples du même groupe sont séparés par des frontières (ex : les Peuls dispersés entre Sénégal, Guinée, Mali, Nigeria), tandis que des peuples ennemis se retrouvent dans le même État. Ces frontières artificielles sont à l'origine de nombreux conflits actuels.</p>
+</div>
+
+<div class="exemple-box">
+  <strong>Exemple :</strong> Le peuple Éwé est partagé entre le Ghana (ancienne Gold Coast britannique) et le Togo (ancienne colonie allemande puis française). Après les indépendances, il se retrouve séparé par une frontière internationale.
+</div>
+
+<h2>II. Les conséquences économiques</h2>
+
+<div class="cons-card cons-eco">
+  <div class="cons-titre">💸 L'exploitation économique des colonies</div>
+  <p style="font-size:13px;">Les colonies sont organisées pour servir les intérêts économiques de la métropole. Les produits agricoles (arachide au Sénégal, coton en Égypte, cacao en Côte d'Ivoire) et les matières premières (cuivre au Congo belge, caoutchouc en Indochine) sont exportés vers l'Europe à bas prix. Les industries locales sont détruites pour forcer les colonies à importer des produits manufacturés européens. Les Africains et Asiatiques sont contraints au travail forcé (<em>prestations</em> en Afrique française).</p>
+</div>
+
+<div class="cons-card cons-eco">
+  <div class="cons-titre">🏗️ Des infrastructures… au service de la métropole</div>
+  <p style="font-size:13px;">Les colonisateurs construisent des voies ferrées, des ports et des routes — mais uniquement pour acheminer les matières premières vers les côtes et les exporter. Ces infrastructures ne servent pas le développement interne des colonies. Au Sénégal, le chemin de fer Dakar-Saint-Louis (1885) puis Dakar-Niger servent à évacuer l'arachide vers Dakar pour l'exportation.</p>
+</div>
+
+<h2>III. Les conséquences culturelles et sociales</h2>
+
+<div class="cons-card cons-cult">
+  <div class="cons-titre">📚 La politique d'assimilation culturelle</div>
+  <p style="font-size:13px;">Les colonisateurs imposent leur langue, leur religion et leurs valeurs. L'école coloniale enseigne la culture européenne au détriment des savoirs locaux. En Afrique française, l'enseignement se fait uniquement en français. Les langues africaines sont marginalisées, les pratiques culturelles traditionnelles sont parfois interdites ou dévalorisées. On parle de <strong>déculturation</strong> — une perte progressive de l'identité culturelle.</p>
+</div>
+
+<div class="cons-card cons-pos">
+  <div class="cons-titre">✅ Des aspects positifs involontaires</div>
+  <p style="font-size:13px;">Malgré son caractère profondément inégal, la colonisation a introduit certains éléments : les écoles coloniales forment une élite africaine et asiatique instruite qui va ensuite réclamer l'indépendance. Les progrès médicaux (lutte contre la variole, la malaria) réduisent la mortalité. L'introduction de nouvelles cultures (arachide, coton) enrichit certains agriculteurs dans un premier temps.</p>
+</div>
+
+<h2>IV. Le bilan global de la colonisation</h2>
+
+<div class="bilan-grid">
+  <div class="bilan-neg">
+    <div class="bilan-titre">❌ Bilan négatif (dominant)</div>
+    <ul>
+      <li>Perte de souveraineté politique</li>
+      <li>Exploitation économique systématique</li>
+      <li>Travail forcé et impôt de capitation</li>
+      <li>Frontières artificielles conflictuelles</li>
+      <li>Déculturation et dévalorisation des cultures locales</li>
+      <li>Déstructuration des sociétés traditionnelles</li>
+    </ul>
+  </div>
+  <div class="bilan-pos">
+    <div class="bilan-titre">✅ Effets positifs (secondaires)</div>
+    <ul>
+      <li>Construction d'infrastructures (routes, voies ferrées)</li>
+      <li>Progrès médicaux et réduction de certaines épidémies</li>
+      <li>Accès à l'éducation pour une élite</li>
+      <li>Unification linguistique dans certains pays</li>
+      <li>Émergence d'une conscience nationale chez les élites</li>
+    </ul>
+  </div>
+</div>
+
+<h2>V. Les résistances à la colonisation</h2>
+
+<p>Face à la domination coloniale, les peuples africains et asiatiques ont résisté de différentes manières :</p>
+
+<div class="resistance-card">
+  <div class="resistance-nom">⚔️ Les résistances armées immédiates</div>
+  <p style="font-size:13px;">De nombreux chefs africains ont combattu militairement la conquête coloniale. Au Sénégal, <strong>Lat Dior</strong>, damel du Cayor, résiste à la construction du chemin de fer et meurt au combat à Dékheulé en 1886. En Guinée, <strong>Samory Touré</strong> livre une longue guerre contre les Français de 1882 à 1898 avant d'être capturé. En Éthiopie, l'empereur <strong>Ménélik II</strong> remporte la victoire d'Adoua en 1896 contre les Italiens, préservant l'indépendance éthiopienne.</p>
+</div>
+
+<div class="resistance-card">
+  <div class="resistance-nom">✍️ Les résistances politiques et culturelles</div>
+  <p style="font-size:13px;">Avec le temps, des mouvements politiques émergent. En Inde, le <strong>Parti du Congrès</strong> (fondé en 1885) réclame progressivement l'autonomie puis l'indépendance. En Afrique, les intellectuels formés dans les écoles coloniales fondent des journaux et des associations pour défendre les droits des colonisés. Ces mouvements prépareront les indépendances du XX<sup>e</sup> siècle.</p>
+</div>
+
+<div class="conclusion">
+  <p>🔑 La colonisation a des conséquences durables et globalement négatives pour les peuples africains et asiatiques : perte de souveraineté, exploitation économique, déculturation et frontières artificielles. Ces effets structurent encore aujourd'hui les réalités géopolitiques et économiques des pays anciennement colonisés. Mais la résistance des peuples colonisés prépare le terrain des décolonisations du XX<sup>e</sup> siècle.</p>
+</div>
+
+<div class="acquis-grid">
+  <div class="acquis-item">✅ Analyser les conséquences politiques de la colonisation</div>
+  <div class="acquis-item">✅ Expliquer l'exploitation économique des colonies</div>
+  <div class="acquis-item">✅ Comprendre la déculturation et ses effets</div>
+  <div class="acquis-item">✅ Citer des exemples de résistances africaines</div>
+</div>
+
+<!-- QCM -->
+<div class="qcm-section">
+  <div class="qcm-titre">🧠 Vérifie ta compréhension — QCM</div>
+
+  <div class="question-bloc" id="q1">
+    <div class="question-texte"><span class="question-num">1.</span> Quel est le principal problème posé par les frontières coloniales en Afrique ?</div>
+    <div class="option" onclick="select(1,'A')"><input type="radio" name="q1" id="q1A"><label for="q1A">A. Elles sont trop longues et difficiles à surveiller</label></div>
+    <div class="option" onclick="select(1,'B')"><input type="radio" name="q1" id="q1B"><label for="q1B">B. Elles séparent des peuples unis ou regroupent des peuples ennemis, ignorant les réalités africaines</label></div>
+    <div class="option" onclick="select(1,'C')"><input type="radio" name="q1" id="q1C"><label for="q1C">C. Elles empêchent les échanges commerciaux entre pays voisins</label></div>
+    <div class="option" onclick="select(1,'D')"><input type="radio" name="q1" id="q1D"><label for="q1D">D. Elles favorisent les invasions militaires</label></div>
+    <button class="btn-verif" onclick="verify(1,'B')">Vérifier</button>
+    <div class="feedback" id="fb1"></div>
+  </div>
+
+  <div class="question-bloc" id="q2">
+    <div class="question-texte"><span class="question-num">2.</span> Pourquoi les colonisateurs construisent-ils des chemins de fer en Afrique ?</div>
+    <div class="option" onclick="select(2,'A')"><input type="radio" name="q2" id="q2A"><label for="q2A">A. Pour faciliter les déplacements des populations africaines</label></div>
+    <div class="option" onclick="select(2,'B')"><input type="radio" name="q2" id="q2B"><label for="q2B">B. Pour relier les capitales africaines entre elles</label></div>
+    <div class="option" onclick="select(2,'C')"><input type="radio" name="q2" id="q2C"><label for="q2C">C. Pour acheminer les matières premières vers les ports d'exportation vers l'Europe</label></div>
+    <div class="option" onclick="select(2,'D')"><input type="radio" name="q2" id="q2D"><label for="q2D">D. Pour permettre aux Africains d'accéder à l'éducation</label></div>
+    <button class="btn-verif" onclick="verify(2,'C')">Vérifier</button>
+    <div class="feedback" id="fb2"></div>
+  </div>
+
+  <div class="question-bloc" id="q3">
+    <div class="question-texte"><span class="question-num">3.</span> Qu'est-ce que la déculturation ?</div>
+    <div class="option" onclick="select(3,'A')"><input type="radio" name="q3" id="q3A"><label for="q3A">A. La politique d'éducation des colonisés dans les langues africaines</label></div>
+    <div class="option" onclick="select(3,'B')"><input type="radio" name="q3" id="q3B"><label for="q3B">B. La perte progressive de l'identité culturelle d'un peuple sous l'effet de la colonisation</label></div>
+    <div class="option" onclick="select(3,'C')"><input type="radio" name="q3" id="q3C"><label for="q3C">C. Le refus des colonisés d'adopter la culture européenne</label></div>
+    <div class="option" onclick="select(3,'D')"><input type="radio" name="q3" id="q3D"><label for="q3D">D. L'enrichissement culturel mutuel entre colonisés et colonisateurs</label></div>
+    <button class="btn-verif" onclick="verify(3,'B')">Vérifier</button>
+    <div class="feedback" id="fb3"></div>
+  </div>
+
+  <div class="question-bloc" id="q4">
+    <div class="question-texte"><span class="question-num">4.</span> Quel chef africain a vaincu les Italiens à la bataille d'Adoua en 1896 ?</div>
+    <div class="option" onclick="select(4,'A')"><input type="radio" name="q4" id="q4A"><label for="q4A">A. Samory Touré</label></div>
+    <div class="option" onclick="select(4,'B')"><input type="radio" name="q4" id="q4B"><label for="q4B">B. Lat Dior</label></div>
+    <div class="option" onclick="select(4,'C')"><input type="radio" name="q4" id="q4C"><label for="q4C">C. Chaka Zoulou</label></div>
+    <div class="option" onclick="select(4,'D')"><input type="radio" name="q4" id="q4D"><label for="q4D">D. Ménélik II</label></div>
+    <button class="btn-verif" onclick="verify(4,'D')">Vérifier</button>
+    <div class="feedback" id="fb4"></div>
+  </div>
+
+  <div class="question-bloc" id="q5">
+    <div class="question-texte"><span class="question-num">5.</span> Quelle est la conséquence positive involontaire de la colonisation pour les mouvements d'indépendance ?</div>
+    <div class="option" onclick="select(5,'A')"><input type="radio" name="q5" id="q5A"><label for="q5A">A. Les colonies sont devenues économiquement indépendantes de la métropole</label></div>
+    <div class="option" onclick="select(5,'B')"><input type="radio" name="q5" id="q5B"><label for="q5B">B. L'école coloniale a formé une élite instruite qui a ensuite mené les luttes pour l'indépendance</label></div>
+    <div class="option" onclick="select(5,'C')"><input type="radio" name="q5" id="q5C"><label for="q5C">C. Les colonisateurs ont eux-mêmes préparé l'indépendance des colonies</label></div>
+    <div class="option" onclick="select(5,'D')"><input type="radio" name="q5" id="q5D"><label for="q5D">D. Les frontières coloniales ont favorisé l'unité des peuples africains</label></div>
+    <button class="btn-verif" onclick="verify(5,'B')">Vérifier</button>
+    <div class="feedback" id="fb5"></div>
+  </div>
+</div>
+
+<script>
+const EXPLANATIONS = {
+  1: { B: "✅ Correct ! Les frontières coloniales, tracées à Berlin en 1884-1885, divisent des peuples du même groupe ethnique ou regroupent des peuples ennemis dans un même État. C'est une cause majeure des conflits politiques actuels en Afrique.", wrong: "❌ Incorrect. Le problème principal est qu'elles ignorent les réalités ethniques africaines, séparant des peuples unis ou regroupant des peuples antagonistes." },
+  2: { C: "✅ Correct ! Les infrastructures coloniales (chemins de fer, routes, ports) sont construites pour faciliter l'exportation des matières premières (arachide, caoutchouc, minerais) vers l'Europe, pas pour le développement interne des colonies.", wrong: "❌ Incorrect. Les chemins de fer coloniaux servent à acheminer les matières premières vers les ports d'exportation vers l'Europe — ils ne visent pas le développement africain." },
+  3: { B: "✅ Correct ! La déculturation désigne la perte progressive de l'identité culturelle d'un peuple : langue maternelle marginalisée, pratiques culturelles dévalorisées, enseignement uniquement dans la langue coloniale.", wrong: "❌ Incorrect. La déculturation est la perte progressive de l'identité culturelle d'un peuple colonisé au profit de la culture colonisatrice." },
+  4: { D: "✅ Correct ! L'empereur Ménélik II d'Éthiopie remporte la victoire d'Adoua le 1er mars 1896 contre les Italiens, infligeant une cuisante défaite à une armée européenne. L'Éthiopie préserve son indépendance, cas unique en Afrique.", wrong: "❌ Incorrect. C'est l'empereur Ménélik II d'Éthiopie qui remporte la victoire d'Adoua en 1896 contre les Italiens." },
+  5: { B: "✅ Correct ! L'école coloniale, en formant une élite africaine et asiatique en langues européennes, crée involontairement les futurs leaders des mouvements d'indépendance : Léopold Sédar Senghor, Kwame Nkrumah, Hô Chi Minh ont tous été formés dans des établissements coloniaux ou français.", wrong: "❌ Incorrect. La conséquence positive involontaire est que l'école coloniale forme une élite instruite qui mène ensuite les luttes pour l'indépendance." }
+};
+
+function select(q, opt) {
+  document.getElementById('q'+q+opt).checked = true;
+}
+function verify(q, correct) {
+  const fb = document.getElementById('fb'+q);
+  const selected = document.querySelector(`input[name="q${q}"]:checked`);
+  if (!selected) { fb.className='feedback wrong'; fb.textContent='⚠️ Choisis une réponse avant de vérifier.'; return; }
+  const val = selected.id.replace('q'+q,'');
+  const info = EXPLANATIONS[q];
+  if (val === correct) {
+    fb.className = 'feedback correct';
+    fb.textContent = info[correct];
+  } else {
+    fb.className = 'feedback wrong';
+    fb.textContent = info.wrong;
+  }
+}
+</script>
+</body>
+</html>

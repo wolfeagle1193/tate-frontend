@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BFEM Géographie – S3 : Communication et coopération internationale</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:#EEF4FB;color:#0d2137;line-height:1.7;font-size:clamp(.93em,2.2vw,1em)}
+  .header{background:linear-gradient(135deg,#154360,#2E86C1);color:#fff;padding:28px 20px;text-align:center}
+  .header .badge{display:inline-block;background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.5);border-radius:30px;padding:6px 22px;font-size:.85em;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+  .header h1{font-size:clamp(1.2em,4vw,1.65em);font-weight:800}
+  .header p{font-size:.95em;opacity:.9}
+  .container{max-width:860px;margin:30px auto;padding:0 14px}
+  .section{background:#fff;border-radius:12px;padding:22px 20px;margin-bottom:22px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+  .section-title{font-size:1.05em;font-weight:700;color:#fff;background:linear-gradient(90deg,#154360,#2E86C1);padding:10px 16px;border-radius:8px;margin-bottom:18px}
+  .contexte-box{background:#EAF4FE;border:1px solid #AED6F1;border-radius:8px;padding:13px 16px;margin-bottom:12px;font-style:italic;color:#154360}
+  .consigne-box{background:#D6EAF8;border-left:4px solid #2E86C1;padding:11px 15px;border-radius:0 8px 8px 0;font-weight:600;color:#154360;margin-bottom:14px}
+  .doc-box{background:#f5f9ff;border:1px solid #AED6F1;border-radius:8px;padding:14px 18px;margin-bottom:14px}
+  .doc-title{font-weight:700;color:#154360;margin-bottom:8px}
+  .doc-source{text-align:right;font-size:.82em;color:#666;margin-top:8px;font-style:italic}
+  .souligné{text-decoration:underline;font-weight:600}
+  .table-wrapper{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:10px 0;border-radius:8px;border:1px solid #ddd}
+  .table-wrapper table{min-width:360px;width:100%;border-collapse:collapse;font-size:.9em}
+  .table-wrapper th{background:#154360;color:#fff;padding:8px 11px;text-align:center}
+  .table-wrapper td{border:1px solid #ddd;padding:7px 11px;text-align:center}
+  .table-wrapper tr:nth-child(even){background:#f0f6ff}
+  .scroll-hint{font-size:.75em;color:#888;text-align:right;margin-top:3px;display:none}
+  @media(max-width:600px){.scroll-hint{display:block}}
+  .q-block{background:#EAF4FE;border-radius:8px;padding:13px 15px;margin-bottom:14px}
+  .q-num{display:inline-block;background:#2E86C1;color:#fff;font-weight:700;width:26px;height:26px;border-radius:50%;text-align:center;line-height:26px;font-size:.85em;margin-right:8px;flex-shrink:0}
+  .q-text{font-weight:600;color:#154360;display:flex;align-items:flex-start;gap:6px}
+  .pts-badge{font-size:.78em;background:#154360;color:#fff;border-radius:12px;padding:1px 9px;font-weight:700;margin-left:6px;white-space:nowrap}
+  .btn-correction{display:flex;align-items:center;gap:8px;margin-top:12px;padding:10px 16px;border:2px solid #27AE60;background:#fff;color:#1A6632;border-radius:10px;cursor:pointer;font-weight:700;font-size:.88em;transition:.2s;width:100%}
+  .btn-correction:hover{background:#f0fff4}
+  .btn-correction.open{background:#f0fff4}
+  .btn-correction .arrow{transition:transform .25s;font-style:normal}
+  .btn-correction.open .arrow{transform:rotate(180deg)}
+  .corr-wrap{display:none;border-left:4px solid #27AE60;border-radius:0 10px 10px 0;background:#f0fff8;padding:16px 18px;font-size:.91em;line-height:1.85;margin-top:6px}
+  .corr-wrap.visible{display:block}
+  .corr-wrap h4{color:#1A6632;font-size:.95em;margin:12px 0 5px;border-bottom:1px solid #c3e6cb;padding-bottom:3px}
+  .corr-wrap h4:first-child{margin-top:0}
+  .corr-wrap p{margin-bottom:9px;text-align:justify}
+  .canvas-zone{border:2px dashed #AED6F1;border-radius:8px;padding:12px;margin-top:10px;text-align:center;background:#f9fcff;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .canvas-zone canvas{max-width:100%;height:auto}
+  .timer-box{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:#fff;border-radius:10px;padding:12px 18px;box-shadow:0 2px 8px rgba(0,0,0,.08);margin-bottom:22px}
+  .timer-display{font-size:1.5em;font-weight:800;color:#2E86C1;min-width:88px}
+  .btn{padding:9px 20px;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:.88em}
+  .btn-start{background:#154360;color:#fff}
+  .btn-reset{background:#ddd;color:#333}
+  .points{float:right;background:#154360;color:#fff;border-radius:20px;padding:2px 12px;font-size:.78em;font-weight:700}
+  footer{text-align:center;padding:24px;color:#888;font-size:.82em}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="badge">📝 Sujet BFEM — Géographie</div>
+  <h1>Communication et coopération internationale</h1>
+  <p>Chapitre IV – La Terre solidaire ? · 3<sup>e</sup> · Histoire-Géographie</p>
+</div>
+
+<div class="container">
+  <div class="timer-box">
+    <strong style="color:#154360">⏱ Durée :</strong>
+    <span class="timer-display" id="timer">1:30:00</span>
+    <button class="btn btn-start" onclick="startTimer()">Démarrer</button>
+    <button class="btn btn-reset" onclick="resetTimer()">Réinitialiser</button>
+  </div>
+
+  <!-- DISSERTATION -->
+  <div class="section">
+    <div class="section-title">✍️ Partie 1 – Dissertation <span class="points">10 pts</span></div>
+    <div class="contexte-box">
+      Pour de nombreux spécialistes, la communication est le plus grand défi du XXIe siècle.
+    </div>
+    <div class="consigne-box">
+      Consigne : Décris le développement des communications depuis la Révolution industrielle, puis analyse deux avantages et deux inconvénients de l'internet au plan politique et au plan économique.
+    </div>
+
+    <button class="btn-correction" onclick="toggleCorr('corr-diss')">
+      <span>📝 Voir la correction – Dissertation complète</span>
+      <span class="arrow" style="margin-left:auto">▼</span>
+    </button>
+    <div class="corr-wrap" id="corr-diss">
+      <h4>Introduction</h4>
+      <p>La communication désigne l'ensemble des moyens permettant le déplacement de l'information et des personnes dans l'espace. Depuis la Révolution industrielle du XIXe siècle, elle a connu une évolution spectaculaire qui a profondément transformé les sociétés humaines. Aujourd'hui, avec l'avènement d'Internet et des technologies numériques, la planète est devenue un vaste réseau d'échanges instantanés où les frontières s'effacent.</p>
+      <p><strong>Problématique :</strong> Comment les communications se sont-elles développées depuis la Révolution industrielle, et quelles sont les conséquences positives et négatives d'Internet sur les plans politique et économique ?</p>
+      <p><strong>Plan :</strong> Nous analyserons d'abord les grandes étapes du développement des communications, puis nous examinerons deux avantages et deux inconvénients d'Internet.</p>
+
+      <h4>I. Le développement des communications depuis la Révolution industrielle</h4>
+      <p><strong>A. XIXe siècle : la révolution des transports et des télécommunications</strong><br>
+      La Révolution industrielle marque une rupture fondamentale dans l'histoire des communications. L'invention de la machine à vapeur permet le développement du chemin de fer à partir des années 1830 (première ligne commerciale en Angleterre en 1830, ligne Dakar-Saint-Louis au Sénégal en 1885). Les bateaux à vapeur remplacent les voiliers sur les océans, réduisant les temps de traversée. Sur le plan des télécommunications, le télégraphe électrique (1837) puis le téléphone (inventé par Graham Bell en 1876) permettent pour la première fois de transmettre des messages à distance en quelques secondes.</p>
+      <p><strong>B. XXe siècle : l'ère des médias de masse et des transports rapides</strong><br>
+      Le XXe siècle voit l'apparition de nouveaux moyens de communication de masse : la radio (années 1920), la télévision (années 1950), puis la télévision satellitaire. Les transports s'accélèrent avec l'aviation commerciale (première ligne transatlantique régulière en 1939), le développement des autoroutes, du TGV en France (1981) et du Shinkansen au Japon (1964). La conteneurisation maritime révolutionne le commerce international : les marchandises sont chargées dans des boîtes standardisées, réduisant considérablement les coûts et les délais de transport.</p>
+      <p><strong>C. XXIe siècle : la révolution numérique</strong><br>
+      L'Internet, né dans les années 1990, a bouleversé toutes les formes de communication. Aujourd'hui, plus de 5 milliards d'internautes dans le monde peuvent échanger des informations instantanément et gratuitement. Les smartphones permettent d'accéder à Internet depuis n'importe quel endroit. Les réseaux sociaux (Facebook, WhatsApp, TikTok, Twitter) ont créé de nouvelles formes de communication sociale et politique.</p>
+
+      <h4>II. Deux avantages d'Internet</h4>
+      <p><strong>Avantage politique — La démocratisation de l'information et la liberté d'expression :</strong> Internet a radicalement transformé la façon dont les citoyens s'informent et participent à la vie politique. Dans des pays où la presse traditionnelle était contrôlée par des régimes autoritaires, Internet a permis la diffusion d'informations libres et la coordination de mouvements de protestation. Le Printemps arabe de 2011 (révolutions en Tunisie, Égypte, Libye) a largement utilisé les réseaux sociaux (Facebook, Twitter) pour organiser des manifestations et diffuser des images de répression. Internet permet aussi aux citoyens d'exercer une surveillance citoyenne sur le pouvoir politique (fact-checking, journalisme d'investigation en ligne).</p>
+      <p><strong>Avantage économique — Le commerce en ligne et la mondialisation des échanges :</strong> Internet a créé une révolution dans le commerce mondial. Le commerce électronique (e-commerce) représente des milliers de milliards de dollars d'échanges annuels. Des entreprises comme Amazon, Alibaba ou Jumia permettent à des vendeurs et acheteurs de se connecter directement à l'échelle mondiale, réduisant les intermédiaires et les coûts. Au Sénégal, des plateformes comme Jumia, Dakar Actu ou Wave transforment le commerce local et facilitent les transactions financières sans avoir besoin d'une banque traditionnelle.</p>
+
+      <h4>III. Deux inconvénients d'Internet</h4>
+      <p><strong>Inconvénient politique — La désinformation et les cyberattaques :</strong> Internet est aussi un vecteur de fausses informations (fake news) qui peuvent manipuler l'opinion publique, déstabiliser des gouvernements ou provoquer des violences. Les réseaux sociaux favorisent la propagation virale d'informations non vérifiées. Par ailleurs, les États et groupes criminels utilisent Internet pour mener des cyberattaques contre des infrastructures critiques (centrales électriques, hôpitaux, systèmes bancaires). La surveillance de masse via Internet (espionnage des communications, données personnelles) représente une menace pour la vie privée des citoyens.</p>
+      <p><strong>Inconvénient économique — La fracture numérique et la dépendance :</strong> Malgré son expansion, Internet reste inégalement accessible : on parle de « fracture numérique » entre les pays riches (où plus de 90 % de la population est connectée) et les pays pauvres d'Afrique subsaharienne (où moins de 40 % ont accès à Internet). Cette inégalité d'accès exclut des millions de personnes de l'économie numérique mondiale. De plus, la domination de quelques grandes entreprises américaines (GAFAM : Google, Apple, Facebook, Amazon, Microsoft) crée une dépendance technologique et économique des pays du Sud, qui n'ont pas leurs propres géants du numérique.</p>
+
+      <h4>Conclusion</h4>
+      <p>Depuis la Révolution industrielle, les communications ont connu une évolution extraordinaire : du télégraphe au chemin de fer, de la radio à l'Internet, chaque époque a vu des innovations qui ont rapproché les hommes et les nations. Internet, dernier avatar de cette révolution, offre des avantages considérables en matière de liberté d'expression et de commerce, mais génère aussi des risques réels : désinformation, cyberattaques et fracture numérique. L'enjeu du XXIe siècle est de faire d'Internet un outil au service du développement pour tous, y compris pour les populations les plus défavorisées.</p>
+    </div>
+  </div>
+
+  <!-- COMMENTAIRE -->
+  <div class="section">
+    <div class="section-title">📊 Partie 2 – Commentaire de documents <span class="points">10 pts</span></div>
+
+    <div class="doc-box">
+      <div class="doc-title">Document 1. L'APD belge en pourcentage du revenu national brut</div>
+      <div class="table-wrapper">
+        <table>
+          <tr><th>Année</th><th>2005</th><th>2010</th><th>2015</th><th>2020</th></tr>
+          <tr><td><strong>% du RNB</strong></td><td>0,51</td><td>0,63</td><td>0,42</td><td>0,39</td></tr>
+        </table>
+      </div>
+      <div class="scroll-hint">← Faire glisser pour voir tout le tableau →</div>
+      <div class="doc-source">Source : OCDE, https://www.cncd.be</div>
+    </div>
+
+    <div class="doc-box">
+      <div class="doc-title">Document 2</div>
+      <div style="font-size:.93em;line-height:1.85;text-align:justify;margin-top:6px">
+        « La <span class="souligné">coopération internationale au développement</span> se trouve une fois encore sous le feu de la critique. L'<span class="souligné">aide publique au développement</span> (APD) est souvent perçue comme peu efficace. L'aide peut avoir des effets néfastes et agir comme un frein au <span class="souligné">développement</span> des pays destinataires. Pour les marxistes, l'APD est d'abord un instrument de domination des pays industrialisés sur les pays pauvres. L'aide fournie par la <span class="souligné">Banque mondiale</span> et les pays de l'organisation de coopération et de développement économiques (OCDE) sert avant tout les intérêts des pays occidentaux et de leurs <span class="souligné">entreprises transnationales</span>. L'APD favorise la mainmise sur les ressources des pays en développement par la classe dirigeante des pays occidentaux. »
+      </div>
+      <div class="doc-source">Source : adapté de Gilles Carbonnier, "L'aide au développement une fois de plus sous le feu de la critique", Revue internationale, 1 | 2010, consulté le 05 May 2023.</div>
+    </div>
+
+    <!-- Question 1 -->
+    <div class="q-block">
+      <div class="q-text"><span class="q-num">1</span><span><strong>Définis les termes soulignés dans le document 2 :</strong> <em>coopération internationale au développement, aide publique au développement, développement, Banque mondiale, entreprises transnationales</em> <span class="pts-badge">5 pts</span></span></div>
+      <button class="btn-correction" onclick="toggleCorr('corr-q1')">
+        <span>✅ Voir la correction</span>
+        <span class="arrow" style="margin-left:auto">▼</span>
+      </button>
+      <div class="corr-wrap" id="corr-q1">
+        <p><strong>Coopération internationale au développement :</strong> La coopération internationale au développement désigne l'ensemble des actions et des partenariats établis entre États, organisations internationales et organisations non gouvernementales (ONG) pour favoriser le progrès économique, social et humain des pays les moins avancés. Elle peut prendre la forme d'aide financière, d'assistance technique, de transfert de technologies ou d'échanges culturels. L'objectif officiel est d'aider les pays pauvres à atteindre les Objectifs de Développement Durable (ODD) fixés par l'ONU à l'horizon 2030.</p>
+        <p><strong>Aide publique au développement (APD) :</strong> L'aide publique au développement (APD) désigne l'ensemble des transferts financiers effectués par les gouvernements des pays riches (membres de l'OCDE) vers les pays en développement, sous forme de dons ou de prêts à des conditions très favorables (taux d'intérêt très bas, longues périodes de remboursement). L'objectif fixé par les Nations Unies est que chaque pays riche consacre au moins 0,7 % de son Revenu National Brut (RNB) à l'APD. La Belgique, comme beaucoup de pays, est en dessous de cet objectif depuis 2010.</p>
+        <p><strong>Développement :</strong> Le développement est un processus d'amélioration durable et globale des conditions de vie d'une population. Il comprend les dimensions économique (augmentation du PIB et des revenus), sociale (accès à la santé, à l'éducation, à l'eau potable) et humaine (liberté, égalité, participation citoyenne). Il se mesure notamment par l'Indice de Développement Humain (IDH), qui varie de 0 (très faible) à 1 (très élevé). Le « développement durable » ajoute une dimension environnementale : ne pas compromettre l'avenir de la planète pour les générations futures.</p>
+        <p><strong>Banque mondiale :</strong> La Banque mondiale est une institution financière internationale créée en 1944 (accords de Bretton Woods) et basée à Washington D.C. Elle regroupe actuellement 189 pays membres. Sa mission officielle est de réduire la pauvreté dans le monde en accordant des prêts et des subventions aux pays en développement pour financer des projets d'infrastructure (routes, barrages, écoles, hôpitaux). Cependant, ses prêts sont souvent assortis de conditions économiques strictes (privatisation, libéralisation) que certains économistes critiquent comme des politiques néolibérales imposées aux pays du Sud.</p>
+        <p><strong>Entreprises transnationales (ETN) :</strong> Les entreprises transnationales, aussi appelées firmes multinationales (FMN), sont de grandes entreprises dont le siège social est dans un pays mais qui disposent de filiales de production, de distribution ou de services dans de nombreux autres pays. Elles jouent un rôle majeur dans la mondialisation économique. Des exemples incluent Total (France, pétrole), Nestlé (Suisse, alimentation), Apple (États-Unis, technologie) ou Volkswagen (Allemagne, automobile). Le document les cite car l'APD bénéficierait à leurs activités dans les pays en développement.</p>
+      </div>
+    </div>
+
+    <!-- Question 2 -->
+    <div class="q-block">
+      <div class="q-text"><span class="q-num">2</span><span><strong>Construis une courbe de l'évolution de l'aide publique belge de 2005 à 2020 puis interprète le graphique.</strong> <span class="pts-badge">2,5 pts</span></span></div>
+      <div class="canvas-zone">
+        <canvas id="chartAPD" width="620" height="190"></canvas>
+        <p style="font-size:.83em;color:#555;margin-top:6px">Courbe interactive · Trace la courbe sur ta copie avec axes, titre, unités et légende</p>
+      </div>
+      <button class="btn-correction" onclick="toggleCorr('corr-q2')">
+        <span>✅ Voir l'interprétation du graphique</span>
+        <span class="arrow" style="margin-left:auto">▼</span>
+      </button>
+      <div class="corr-wrap" id="corr-q2">
+        <h4>Comment construire la courbe</h4>
+        <p>Sur ta copie, trace un axe horizontal (abscisse) avec les années 2005, 2010, 2015, 2020 régulièrement espacées. Trace un axe vertical (ordonnée) gradué de 0 à 0,7 % du RNB (par exemple, de 0 en 0,1). Place les points correspondant à chaque valeur (2005 : 0,51 % ; 2010 : 0,63 % ; 2015 : 0,42 % ; 2020 : 0,39 %) et relie-les avec une ligne continue. Donne un titre au graphique : « Évolution de l'APD belge en % du Revenu National Brut (2005–2020) ».</p>
+        <h4>Interprétation</h4>
+        <p>La courbe de l'APD belge révèle une tendance globalement décroissante entre 2005 et 2020, avec une hausse initiale suivie d'une chute progressive. L'aide publique au développement de la Belgique a d'abord augmenté, passant de 0,51 % du RNB en 2005 à 0,63 % en 2010 — se rapprochant ainsi de l'objectif international de 0,7 % fixé par l'ONU. Cependant, à partir de 2010, l'APD belge entame une baisse continue et significative : elle chute à 0,42 % en 2015 puis à 0,39 % en 2020, soit une réduction de 38 % en dix ans par rapport au niveau de 2010.</p>
+        <p>Cette tendance à la baisse s'explique principalement par les politiques d'austérité budgétaire imposées à la Belgique après la crise économique et financière de 2008, qui a contraint les gouvernements successifs à réduire toutes les dépenses publiques, y compris l'aide internationale. Ce désengagement progressif de la Belgique illustre un phénomène observé dans de nombreux pays européens et montre que, malgré les engagements pris, les pays riches ne respectent pas l'objectif de 0,7 % du RNB. Cela affaiblit la coopération internationale et réduit les ressources disponibles pour financer les Objectifs de Développement Durable dans les pays pauvres.</p>
+      </div>
+    </div>
+
+    <!-- Question 3 -->
+    <div class="q-block">
+      <div class="q-text"><span class="q-num">3</span><span><strong>À l'aide du document 2, explique deux inconvénients de l'aide publique au développement avec des exemples précis.</strong> <span class="pts-badge">2,5 pts</span></span></div>
+      <button class="btn-correction" onclick="toggleCorr('corr-q3')">
+        <span>✅ Voir la correction</span>
+        <span class="arrow" style="margin-left:auto">▼</span>
+      </button>
+      <div class="corr-wrap" id="corr-q3">
+        <p>Le document 2, extrait d'un article académique de Gilles Carbonnier (2010), expose une vision critique de l'APD en soulignant ses deux principaux inconvénients :</p>
+        <h4>Inconvénient 1 — L'APD comme instrument de domination néocoloniale</h4>
+        <p>Selon le document 2, « l'APD est d'abord un instrument de domination des pays industrialisés sur les pays pauvres ». Cette critique, d'inspiration marxiste, affirme que l'aide internationale n'est pas désintéressée : elle sert avant tout les intérêts économiques et politiques des pays donateurs. Concrètement, les prêts de la Banque mondiale et du FMI sont souvent conditionnés à des réformes économiques imposées (libéralisation des marchés, privatisation des entreprises publiques, réduction des dépenses sociales) qui favorisent les entreprises transnationales occidentales. Par exemple, dans les années 1980-1990, les « plans d'ajustement structurel » imposés à de nombreux pays africains (dont le Sénégal) ont contraint les gouvernements à réduire les budgets de l'éducation et de la santé, aggravant la pauvreté au lieu de la réduire. L'aide finit ainsi par servir les intérêts des entreprises multinationales qui obtiennent des marchés dans les pays aidés.</p>
+        <h4>Inconvénient 2 — L'APD peut freiner le développement local</h4>
+        <p>Le document affirme également que l'aide peut « agir comme un frein au développement des pays destinataires ». En effet, un afflux massif d'aide peut créer une dépendance chronique des pays bénéficiaires vis-à-vis des donateurs, les décourageant de développer leurs propres ressources fiscales et leurs propres industries. Par exemple, l'aide alimentaire d'urgence envoyée massivement dans certains pays africains (riz, huile de palme, poulets congelés à bas prix) peut concurrencer et détruire la production agricole locale, rendant les paysans locaux incapables de survivre face à des importations bon marché subventionnées. Au Sénégal, l'importation massive de riz brisé a longtemps découragé la culture du riz local dans la vallée du fleuve Sénégal. Ainsi, paradoxalement, l'aide peut renforcer la dépendance économique qu'elle était censée combattre.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>BFEM · Histoire-Géographie 3e · Taté — Plateforme éducative sénégalaise</footer>
+
+<script>
+function toggleCorr(id){
+  const el=document.getElementById(id);
+  const btn=el.previousElementSibling;
+  const isOpen=el.classList.contains('visible');
+  el.classList.toggle('visible',!isOpen);
+  btn.classList.toggle('open',!isOpen);
+  btn.querySelector('.arrow').textContent=isOpen?'▼':'▲';
+  if(!isOpen)setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'nearest'}),50);
+}
+
+window.onload=function(){
+  const c=document.getElementById('chartAPD');if(!c)return;
+  const dpr=window.devicePixelRatio||1;
+  const dW=Math.min(c.parentElement.clientWidth-28,620);
+  const dH=190;
+  c.style.width=dW+'px';c.style.height=dH+'px';
+  c.width=dW*dpr;c.height=dH*dpr;
+  const ctx=c.getContext('2d');ctx.scale(dpr,dpr);
+  const W=dW,H=dH;
+  const years=['2005','2010','2015','2020'];
+  const vals=[0.51,0.63,0.42,0.39];
+  const pad={left:58,right:24,top:28,bottom:44};
+  const cW=W-pad.left-pad.right,cH=H-pad.top-pad.bottom;
+  const minV=0.2,maxV=0.75;
+  ctx.strokeStyle='#154360';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(pad.left,pad.top);ctx.lineTo(pad.left,H-pad.bottom);ctx.lineTo(W-pad.right,H-pad.bottom);ctx.stroke();
+  for(let v=0.2;v<=0.75;v+=0.1){
+    const y=H-pad.bottom-((v-minV)/(maxV-minV))*cH;
+    ctx.fillStyle='#333';ctx.font='10px sans-serif';ctx.textAlign='right';
+    ctx.fillText(v.toFixed(2)+'%',pad.left-5,y+4);
+    ctx.strokeStyle='#eee';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(pad.left,y);ctx.lineTo(W-pad.right,y);ctx.stroke();
+  }
+  // 0.7 target line
+  const yTarget=H-pad.bottom-((0.7-minV)/(maxV-minV))*cH;
+  ctx.strokeStyle='#e74c3c';ctx.lineWidth=1.5;ctx.setLineDash([5,4]);
+  ctx.beginPath();ctx.moveTo(pad.left,yTarget);ctx.lineTo(W-pad.right,yTarget);ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle='#e74c3c';ctx.font='10px sans-serif';ctx.textAlign='left';
+  ctx.fillText('objectif ONU 0,7%',pad.left+5,yTarget-5);
+  const pts=years.map((yr,i)=>({
+    x:pad.left+i*(cW/(years.length-1)),
+    y:H-pad.bottom-((vals[i]-minV)/(maxV-minV))*cH,yr,val:vals[i]
+  }));
+  ctx.strokeStyle='#2E86C1';ctx.lineWidth=2.5;
+  ctx.beginPath();pts.forEach((p,i)=>i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y));ctx.stroke();
+  ctx.fillStyle='rgba(46,134,193,0.1)';
+  ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);
+  pts.forEach(p=>ctx.lineTo(p.x,p.y));
+  ctx.lineTo(pts[pts.length-1].x,H-pad.bottom);
+  ctx.lineTo(pts[0].x,H-pad.bottom);ctx.closePath();ctx.fill();
+  pts.forEach(p=>{
+    ctx.fillStyle='#154360';ctx.beginPath();ctx.arc(p.x,p.y,5,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#154360';ctx.font='bold 11px sans-serif';ctx.textAlign='center';
+    ctx.fillText(p.val+'%',p.x,p.y-9);
+    ctx.fillStyle='#333';ctx.font='11px sans-serif';
+    ctx.fillText(p.yr,p.x,H-pad.bottom+17);
+  });
+  ctx.fillStyle='#154360';ctx.font='bold 12px sans-serif';ctx.textAlign='center';
+  ctx.fillText('APD belge en % du Revenu National Brut (2005–2020)',W/2,14);
+};
+
+let ts=5400,iv=null;
+const te=document.getElementById('timer');
+function fmt(s){return`${Math.floor(s/3600)}:${String(Math.floor((s%3600)/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;}
+function startTimer(){if(iv)return;iv=setInterval(()=>{if(ts<=0){clearInterval(iv);te.style.color='#e53935';return;}ts--;te.textContent=fmt(ts);if(ts<=300)te.style.color='#e53935';},1000);}
+function resetTimer(){clearInterval(iv);iv=null;ts=5400;te.textContent=fmt(ts);te.style.color='#2E86C1';}
+</script>
+</body>
+</html>

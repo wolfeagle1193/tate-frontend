@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 15px; color: #1a1a1a; background: #fff; padding: 16px; line-height: 1.7; }
+  .partie-badge { background: #B7410E; color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 10px; }
+  h1 { font-size: 1.35rem; font-weight: 800; color: #B7410E; border-bottom: 3px solid #E67E22; padding-bottom: 8px; margin-bottom: 18px; }
+  .essentiel { background: linear-gradient(135deg, #FEF9E7, #FDEBD0); border-left: 5px solid #E67E22; border-radius: 10px; padding: 16px 18px; margin-bottom: 22px; }
+  .essentiel-titre { font-size: 1rem; font-weight: 800; color: #B7410E; text-align: center; margin-bottom: 10px; }
+  .essentiel p { font-weight: 600; color: #B7410E; font-size: 14px; }
+  h2 { font-size: 1.05rem; font-weight: 800; color: #B7410E; margin: 22px 0 10px; border-left: 4px solid #E67E22; padding-left: 10px; }
+  h3 { font-size: .95rem; font-weight: 700; color: #922B21; margin: 14px 0 6px; }
+  p { margin-bottom: 10px; }
+  ul { margin-left: 18px; margin-bottom: 10px; }
+  li { margin-bottom: 5px; }
+  .bloc-alliance { border-radius: 10px; padding: 12px 16px; margin: 10px 0; border: 2px solid; }
+  .triplice { background: #FDEDEC; border-color: #E74C3C; }
+  .entente { background: #EBF5FB; border-color: #2E86C1; }
+  .all-titre { font-weight: 800; font-size: 14px; margin-bottom: 6px; }
+  .triplice .all-titre { color: #C0392B; }
+  .entente .all-titre { color: #1A5276; }
+  .cause-card { background: #F8F9FA; border-left: 4px solid #E67E22; border-radius: 6px; padding: 10px 14px; margin: 8px 0; font-size: 13px; }
+  .cause-titre { font-weight: 800; color: #B7410E; margin-bottom: 4px; }
+  .etape-card { border-radius: 10px; padding: 12px 16px; margin: 10px 0; border-left: 5px solid; }
+  .e1 { background: #FEF9E7; border-color: #F39C12; }
+  .e2 { background: #FDEDEC; border-color: #E74C3C; }
+  .e3 { background: #E9F7EF; border-color: #27AE60; }
+  .etape-titre { font-weight: 800; font-size: 14px; margin-bottom: 5px; }
+  .e1 .etape-titre { color: #D68910; }
+  .e2 .etape-titre { color: #C0392B; }
+  .e3 .etape-titre { color: #1E8449; }
+  .consequence-box { background: #F5EEF8; border: 1.5px solid #AF7AC5; border-radius: 8px; padding: 12px 14px; margin: 8px 0; font-size: 13px; }
+  .consequence-titre { font-weight: 800; color: #6C3483; margin-bottom: 6px; }
+  .frise { background: #F8F9FA; border: 1.5px solid #BDC3C7; border-radius: 10px; padding: 14px 16px; margin: 14px 0; }
+  .frise-titre { font-weight: 800; color: #B7410E; margin-bottom: 10px; font-size: 14px; }
+  .frise-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 6px; font-size: 13px; }
+  .frise-date { background: #E67E22; color: #fff; border-radius: 6px; padding: 2px 8px; font-weight: 700; white-space: nowrap; flex-shrink: 0; }
+  .qcm-section { margin-top: 30px; border-top: 3px solid #E67E22; padding-top: 20px; }
+  .qcm-titre { font-size: 1.1rem; font-weight: 800; color: #fff; background: #B7410E; padding: 10px 16px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
+  .question-bloc { background: #FAFAFA; border: 1.5px solid #FDEBD0; border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; }
+  .question-texte { font-weight: 700; color: #1a1a1a; margin-bottom: 10px; font-size: 14px; }
+  .question-num { color: #E67E22; font-weight: 800; }
+  .option { display: flex; align-items: flex-start; gap: 10px; padding: 7px 10px; border-radius: 7px; margin-bottom: 4px; cursor: pointer; border: 1.5px solid transparent; }
+  .option:hover { background: #FEF9E7; border-color: #E67E22; }
+  .option input[type="radio"] { margin-top: 2px; accent-color: #B7410E; flex-shrink: 0; width: 16px; height: 16px; }
+  .option label { cursor: pointer; font-size: 14px; color: #333; }
+</style>
+</head>
+<body>
+
+<div class="partie-badge">Partie 4 — Conflits et révolutions au XXe siècle</div>
+<h1>Leçon 14 — La Première Guerre mondiale : causes et conséquences</h1>
+
+<div class="essentiel">
+  <div class="essentiel-titre">📌 L'essentiel à retenir</div>
+  <p>En 1914 éclate en Europe la Première Guerre mondiale, causée par des rivalités impérialistes et le jeu des alliances. Elle se termine en 1918 après avoir causé la mort de 10 millions de personnes. Cette longue guerre va avoir des conséquences importantes en Europe et en Afrique.</p>
+</div>
+
+<h2>I. Les causes de la Première Guerre mondiale</h2>
+
+<h3>A. Les causes lointaines</h3>
+
+<div class="cause-card">
+  <div class="cause-titre">⚔️ La rivalité franco-allemande</div>
+  Depuis la guerre de <strong>1870</strong>, la France rêve de revanche pour récupérer l'<strong>Alsace et la Lorraine</strong>, territoires perdus au profit de l'Allemagne.
+</div>
+
+<div class="cause-card">
+  <div class="cause-titre">🌍 Le mécontentement né du partage colonial</div>
+  L'Allemagne et l'Italie estiment être lésées par le partage colonial fait par l'Angleterre et la France. Exemple : <strong>la crise du Maroc</strong> (1905-1906, conférence d'Algésiras ; 1911, coup d'Agadir) oppose l'Allemagne et la France.
+</div>
+
+<div class="cause-card">
+  <div class="cause-titre">💣 La course aux armements</div>
+  Dans ce climat tendu, chaque puissance renforce ses effectifs et équipements militaires. Cette course aux armements est facilitée par les progrès de la métallurgie (acier) et de l'industrie chimique (munitions).
+</div>
+
+<h3>B. Les blocs d'alliance</h3>
+
+<div class="bloc-alliance triplice">
+  <div class="all-titre">🔴 La Triple Alliance (TRIPLICE) — 1882 à 1914</div>
+  <p style="font-size:13px;">L'<strong>Allemagne</strong> (soucieuse d'isoler la France) signe une alliance avec l'<strong>Empire d'Autriche-Hongrie</strong> puis avec l'<strong>Italie</strong>. Ces trois pays forment la Triple Alliance ou <strong>Triplice</strong>.</p>
+</div>
+
+<div class="bloc-alliance entente">
+  <div class="all-titre">🔵 La Triple Entente</div>
+  <p style="font-size:13px;">De son côté, la <strong>France</strong> se rapproche de la <strong>Russie</strong> puis du <strong>Royaume-Uni</strong>. Ils forment la <strong>Triple Entente</strong>. L'Europe est ainsi divisée en deux blocs armés.</p>
+</div>
+
+<h3>C. La cause immédiate — L'attentat de Sarajevo</h3>
+<p>À <strong>Sarajevo</strong> (Serbie), <strong>François Ferdinand</strong>, archiduc, héritier du trône d'Autriche-Hongrie et sa femme sont assassinés le <strong>28 juin 1914</strong> par un nationaliste serbe. Ce déclencheur fait jouer le système des alliances :</p>
+<ul>
+  <li>L'<strong>Autriche</strong> envahit la Serbie protégée par la Russie.</li>
+  <li>La Russie mobilise ses troupes le <strong>30 juillet 1914</strong>.</li>
+  <li>L'<strong>Allemagne</strong> déclare la guerre à la Russie le 1er août et à la France le <strong>3 août 1914</strong>.</li>
+  <li>L'<strong>Angleterre</strong>, après la violation de la neutralité de la Belgique par l'Allemagne, déclare la guerre à l'Allemagne le <strong>4 août 1914</strong>.</li>
+</ul>
+
+<h2>II. Les étapes de la Première Guerre mondiale</h2>
+
+<div class="etape-card e1">
+  <div class="etape-titre">⚡ 1re étape : La guerre de mouvement (1914-1915)</div>
+  <ul style="font-size:13px;">
+    <li>Les pays de l'Entente engagent la <strong>bataille de la Marne</strong> (5-12 sept 1914) et la <strong>bataille de Verdun</strong> (21 fév – 18 déc 1916) remportées avec Pétain.</li>
+    <li>Sur le front Est, les Russes sont battus par les Allemands.</li>
+    <li>L'<strong>Italie</strong> rejoint la Triple Entente, la <strong>Turquie</strong> renforce l'Allemagne.</li>
+    <li>Le <strong>Japon</strong> déclare la guerre à l'Allemagne et occupe ses possessions en Chine.</li>
+  </ul>
+</div>
+
+<div class="etape-card e2">
+  <div class="etape-titre">🪖 2e étape : La guerre des tranchées (1916-1917)</div>
+  <ul style="font-size:13px;">
+    <li>Les fronts se stabilisent. Près de <strong>800 km de tranchées</strong> sont creusées de la mer du Nord à la frontière suisse.</li>
+    <li>Les pays de l'Entente imposent un <strong>blocus maritime</strong> aux Allemands.</li>
+    <li>Ces derniers ripostent avec leurs <strong>sous-marins</strong> qui coulent des navires de l'Entente.</li>
+  </ul>
+</div>
+
+<div class="etape-card e3">
+  <div class="etape-titre">🏳️ 3e étape : La rupture de l'équilibre (1917-1918)</div>
+  <ul style="font-size:13px;">
+    <li>La Russie se retire de la guerre en <strong>octobre 1917</strong> (Révolution russe).</li>
+    <li>Les <strong>États-Unis</strong> entrent en guerre aux côtés de l'Entente.</li>
+    <li>Les forces de l'Alliance capitulent. Les généraux allemands signent l'<strong>armistice le 11 novembre 1918</strong> à Rethondes (France).</li>
+  </ul>
+</div>
+
+<h2>III. Les conséquences de la Première Guerre mondiale</h2>
+
+<h3>A. En Europe</h3>
+<div class="consequence-box">
+  <div class="consequence-titre">🇪🇺 Conséquences européennes</div>
+  <ul style="font-size:13px;">
+    <li><strong>Humaines :</strong> 10 millions de morts (surtout des jeunes), des milliers de mutilés.</li>
+    <li><strong>Matérielles :</strong> villes et infrastructures détruites en Europe balkanique, Nord de la France, Belgique et Est de la Pologne.</li>
+    <li><strong>Financières :</strong> les belligérants s'endettent massivement. Les <strong>États-Unis deviennent les créanciers de l'Europe</strong>.</li>
+    <li><strong>Politiques :</strong> l'Allemagne perd l'Alsace-Lorraine (à la France), le corridor de Dantzig (à la Pologne). L'empire d'Autriche-Hongrie est divisé en 4 républiques : <strong>Hongrie, Autriche, Yougoslavie, Tchécoslovaquie</strong>. La conférence de Versailles (28 juin 1919) condamne l'Allemagne et crée la <strong>SDN</strong> (Société des Nations).</li>
+  </ul>
+</div>
+
+<h3>B. En Afrique</h3>
+<div class="consequence-box">
+  <div class="consequence-titre">🌍 Conséquences africaines</div>
+  <ul style="font-size:13px;">
+    <li><strong>Humaines :</strong> La France et l'Angleterre ont mobilisé des millions d'Africains. <strong>200 000 Tirailleurs sénégalais</strong>, 170 000 Algériens et Tunisiens. Total : <strong>56 000 morts africains</strong>.</li>
+    <li><strong>Économiques :</strong> L'Afrique est pillée pour ravitailler l'Europe. Travail forcé imposé, déplacements de populations.</li>
+    <li><strong>Territoriales :</strong> Les colonies allemandes sont redistribuées. Le Togo et le Cameroun → France et Angleterre. Le Rwanda et le Burundi → Belgique. La Namibie → Afrique du Sud. Le Tanganyika (actuelle Tanzanie) → Angleterre.</li>
+    <li><strong>Éveil des consciences :</strong> La non-récompense des sacrifices africains suscite des mécontentements et une remise en cause du colonialisme.</li>
+  </ul>
+</div>
+
+<div class="frise">
+  <div class="frise-titre">📅 Chronologie de la Première Guerre mondiale</div>
+  <div class="frise-item"><span class="frise-date">28 juin 1914</span><span>Attentat de Sarajevo — assassinat de François Ferdinand</span></div>
+  <div class="frise-item"><span class="frise-date">3-4 août 1914</span><span>Déclarations de guerre — la guerre générale éclate en Europe</span></div>
+  <div class="frise-item"><span class="frise-date">Sept 1914</span><span>Bataille de la Marne — arrêt de l'avancée allemande</span></div>
+  <div class="frise-item"><span class="frise-date">Fév-Déc 1916</span><span>Bataille de Verdun — victoire française avec Pétain</span></div>
+  <div class="frise-item"><span class="frise-date">Oct 1917</span><span>Révolution russe — la Russie se retire de la guerre</span></div>
+  <div class="frise-item"><span class="frise-date">1917</span><span>Entrée en guerre des États-Unis aux côtés de l'Entente</span></div>
+  <div class="frise-item"><span class="frise-date">11 nov 1918</span><span>Armistice à Rethondes — fin de la guerre</span></div>
+  <div class="frise-item"><span class="frise-date">28 juin 1919</span><span>Conférence de Versailles — traité de paix, création de la SDN</span></div>
+</div>
+
+<!-- ===== QCM ===== -->
+<div class="qcm-section">
+  <div class="qcm-titre">🎯 Évalue tes connaissances — 25 questions</div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">1.</span> En quelle année a éclaté la Première Guerre mondiale ?</div>
+    <div class="option"><input type="radio" name="q1" value="a"><label>1870</label></div>
+    <div class="option"><input type="radio" name="q1" value="b" data-correct="true"><label>1914</label></div>
+    <div class="option"><input type="radio" name="q1" value="c"><label>1918</label></div>
+    <div class="option"><input type="radio" name="q1" value="d"><label>1912</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">2.</span> Pourquoi la France désirait-elle prendre sa revanche sur l'Allemagne depuis 1870 ?</div>
+    <div class="option"><input type="radio" name="q2" value="a"><label>L'Allemagne avait volé les colonies françaises</label></div>
+    <div class="option"><input type="radio" name="q2" value="b" data-correct="true"><label>La France avait perdu l'Alsace et la Lorraine lors de la guerre de 1870</label></div>
+    <div class="option"><input type="radio" name="q2" value="c"><label>L'Allemagne avait envahi Paris et l'occupait depuis 1870</label></div>
+    <div class="option"><input type="radio" name="q2" value="d"><label>La France devait payer des réparations à l'Allemagne depuis 1870</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">3.</span> Quels pays formaient la Triple Alliance (Triplice) ?</div>
+    <div class="option"><input type="radio" name="q3" value="a"><label>France, Russie et Angleterre</label></div>
+    <div class="option"><input type="radio" name="q3" value="b" data-correct="true"><label>Allemagne, Autriche-Hongrie et Italie</label></div>
+    <div class="option"><input type="radio" name="q3" value="c"><label>France, Allemagne et Autriche</label></div>
+    <div class="option"><input type="radio" name="q3" value="d"><label>Russie, Turquie et Allemagne</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">4.</span> Quels pays formaient la Triple Entente ?</div>
+    <div class="option"><input type="radio" name="q4" value="a"><label>Allemagne, Turquie et Japon</label></div>
+    <div class="option"><input type="radio" name="q4" value="b" data-correct="true"><label>France, Russie et Royaume-Uni</label></div>
+    <div class="option"><input type="radio" name="q4" value="c"><label>États-Unis, France et Belgique</label></div>
+    <div class="option"><input type="radio" name="q4" value="d"><label>France, Italie et Russie</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">5.</span> Quel événement a été la cause immédiate du déclenchement de la Première Guerre mondiale ?</div>
+    <div class="option"><input type="radio" name="q5" value="a"><label>La déclaration de guerre de l'Allemagne à la France</label></div>
+    <div class="option"><input type="radio" name="q5" value="b" data-correct="true"><label>L'assassinat de François Ferdinand à Sarajevo le 28 juin 1914</label></div>
+    <div class="option"><input type="radio" name="q5" value="c"><label>La révolution russe de 1917</label></div>
+    <div class="option"><input type="radio" name="q5" value="d"><label>L'invasion de la Belgique par la France</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">6.</span> Qui était François Ferdinand, victime de l'attentat de Sarajevo ?</div>
+    <div class="option"><input type="radio" name="q6" value="a"><label>Le président de la France</label></div>
+    <div class="option"><input type="radio" name="q6" value="b" data-correct="true"><label>L'archiduc héritier du trône d'Autriche-Hongrie</label></div>
+    <div class="option"><input type="radio" name="q6" value="c"><label>Le tsar de Russie</label></div>
+    <div class="option"><input type="radio" name="q6" value="d"><label>Le roi de Serbie</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">7.</span> Quel pays a rejoint le camp des Alliés (Entente) après le début de la guerre, malgré son appartenance initiale à la Triplice ?</div>
+    <div class="option"><input type="radio" name="q7" value="a"><label>La Turquie</label></div>
+    <div class="option"><input type="radio" name="q7" value="b" data-correct="true"><label>L'Italie</label></div>
+    <div class="option"><input type="radio" name="q7" value="c"><label>L'Autriche-Hongrie</label></div>
+    <div class="option"><input type="radio" name="q7" value="d"><label>La Bulgarie</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">8.</span> Quelle bataille française importante a été remportée en 1914 pour arrêter l'avancée allemande ?</div>
+    <div class="option"><input type="radio" name="q8" value="a"><label>La bataille de Verdun</label></div>
+    <div class="option"><input type="radio" name="q8" value="b" data-correct="true"><label>La bataille de la Marne (5-12 septembre 1914)</label></div>
+    <div class="option"><input type="radio" name="q8" value="c"><label>La bataille de la Somme</label></div>
+    <div class="option"><input type="radio" name="q8" value="d"><label>La bataille de Rethondes</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">9.</span> Quel général français est associé à la victoire de Verdun ?</div>
+    <div class="option"><input type="radio" name="q9" value="a"><label>De Gaulle</label></div>
+    <div class="option"><input type="radio" name="q9" value="b"><label>Foch</label></div>
+    <div class="option"><input type="radio" name="q9" value="c" data-correct="true"><label>Pétain</label></div>
+    <div class="option"><input type="radio" name="q9" value="d"><label>Joffre</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">10.</span> Quelle était la longueur approximative des tranchées creusées pendant la guerre des tranchées ?</div>
+    <div class="option"><input type="radio" name="q10" value="a"><label>200 km</label></div>
+    <div class="option"><input type="radio" name="q10" value="b"><label>400 km</label></div>
+    <div class="option"><input type="radio" name="q10" value="c" data-correct="true"><label>800 km (de la mer du Nord à la frontière suisse)</label></div>
+    <div class="option"><input type="radio" name="q10" value="d"><label>1 500 km</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">11.</span> Quel événement en Russie en octobre 1917 a provoqué son retrait de la guerre ?</div>
+    <div class="option"><input type="radio" name="q11" value="a"><label>L'invasion allemande de Moscou</label></div>
+    <div class="option"><input type="radio" name="q11" value="b" data-correct="true"><label>La Révolution russe (bolchevique)</label></div>
+    <div class="option"><input type="radio" name="q11" value="c"><label>L'épidémie de grippe espagnole</label></div>
+    <div class="option"><input type="radio" name="q11" value="d"><label>L'armistice signé séparément par la Russie</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">12.</span> Quand et où l'armistice mettant fin à la Première Guerre mondiale a-t-il été signé ?</div>
+    <div class="option"><input type="radio" name="q12" value="a"><label>Le 28 juin 1919 à Versailles</label></div>
+    <div class="option"><input type="radio" name="q12" value="b" data-correct="true"><label>Le 11 novembre 1918 à Rethondes (France)</label></div>
+    <div class="option"><input type="radio" name="q12" value="c"><label>Le 4 août 1918 à Berlin</label></div>
+    <div class="option"><input type="radio" name="q12" value="d"><label>Le 1er juillet 1918 à Paris</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">13.</span> Combien de personnes environ ont été tuées lors de la Première Guerre mondiale ?</div>
+    <div class="option"><input type="radio" name="q13" value="a"><label>1 million</label></div>
+    <div class="option"><input type="radio" name="q13" value="b"><label>5 millions</label></div>
+    <div class="option"><input type="radio" name="q13" value="c" data-correct="true"><label>10 millions</label></div>
+    <div class="option"><input type="radio" name="q13" value="d"><label>50 millions</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">14.</span> Quels territoires l'Allemagne a-t-elle perdus en Europe après la guerre (traité de Versailles) ?</div>
+    <div class="option"><input type="radio" name="q14" value="a"><label>La Bavière et la Rhénanie</label></div>
+    <div class="option"><input type="radio" name="q14" value="b" data-correct="true"><label>L'Alsace-Lorraine (à la France) et le corridor de Dantzig (à la Pologne)</label></div>
+    <div class="option"><input type="radio" name="q14" value="c"><label>La Prusse et la Saxe</label></div>
+    <div class="option"><input type="radio" name="q14" value="d"><label>L'Autriche et la Hongrie</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">15.</span> En combien de républiques l'Empire d'Autriche-Hongrie a-t-il été divisé après la guerre ?</div>
+    <div class="option"><input type="radio" name="q15" value="a"><label>2 républiques</label></div>
+    <div class="option"><input type="radio" name="q15" value="b"><label>3 républiques</label></div>
+    <div class="option"><input type="radio" name="q15" value="c" data-correct="true"><label>4 républiques (Hongrie, Autriche, Yougoslavie, Tchécoslovaquie)</label></div>
+    <div class="option"><input type="radio" name="q15" value="d"><label>6 républiques</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">16.</span> Quelle organisation internationale a été créée par la conférence de Versailles pour gérer la paix mondiale ?</div>
+    <div class="option"><input type="radio" name="q16" value="a"><label>L'ONU (Organisation des Nations Unies)</label></div>
+    <div class="option"><input type="radio" name="q16" value="b" data-correct="true"><label>La SDN (Société des Nations)</label></div>
+    <div class="option"><input type="radio" name="q16" value="c"><label>L'OTAN (Organisation du Traité de l'Atlantique Nord)</label></div>
+    <div class="option"><input type="radio" name="q16" value="d"><label>L'UNESCO (Organisation pour l'éducation et la culture)</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">17.</span> À quelle date a été signée la conférence de Versailles ?</div>
+    <div class="option"><input type="radio" name="q17" value="a"><label>11 novembre 1918</label></div>
+    <div class="option"><input type="radio" name="q17" value="b" data-correct="true"><label>28 juin 1919</label></div>
+    <div class="option"><input type="radio" name="q17" value="c"><label>1er janvier 1920</label></div>
+    <div class="option"><input type="radio" name="q17" value="d"><label>4 août 1918</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">18.</span> Combien de Tirailleurs sénégalais ont été mobilisés lors de la Première Guerre mondiale ?</div>
+    <div class="option"><input type="radio" name="q18" value="a"><label>50 000</label></div>
+    <div class="option"><input type="radio" name="q18" value="b" data-correct="true"><label>200 000</label></div>
+    <div class="option"><input type="radio" name="q18" value="c"><label>170 000</label></div>
+    <div class="option"><input type="radio" name="q18" value="d"><label>1 million</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">19.</span> Combien d'Africains sont morts au total lors de la Première Guerre mondiale ?</div>
+    <div class="option"><input type="radio" name="q19" value="a"><label>10 000 morts</label></div>
+    <div class="option"><input type="radio" name="q19" value="b"><label>20 000 morts</label></div>
+    <div class="option"><input type="radio" name="q19" value="c" data-correct="true"><label>56 000 morts africains</label></div>
+    <div class="option"><input type="radio" name="q19" value="d"><label>500 000 morts</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">20.</span> À quel pays européen le Togo et le Cameroun (ex-colonies allemandes) ont-ils été confiés après la guerre ?</div>
+    <div class="option"><input type="radio" name="q20" value="a"><label>Uniquement à la France</label></div>
+    <div class="option"><input type="radio" name="q20" value="b" data-correct="true"><label>À la France ET à l'Angleterre (territoire partagé)</label></div>
+    <div class="option"><input type="radio" name="q20" value="c"><label>À la Belgique</label></div>
+    <div class="option"><input type="radio" name="q20" value="d"><label>À l'Afrique du Sud</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">21.</span> À quel pays les ex-colonies allemandes Rwanda et Burundi ont-elles été confiées après la guerre ?</div>
+    <div class="option"><input type="radio" name="q21" value="a"><label>La France</label></div>
+    <div class="option"><input type="radio" name="q21" value="b" data-correct="true"><label>La Belgique</label></div>
+    <div class="option"><input type="radio" name="q21" value="c"><label>L'Angleterre</label></div>
+    <div class="option"><input type="radio" name="q21" value="d"><label>Le Portugal</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">22.</span> Quel effet la Première Guerre mondiale a-t-elle eu sur la conscience politique des Africains ?</div>
+    <div class="option"><input type="radio" name="q22" value="a"><label>Elle a renforcé leur soutien au colonialisme</label></div>
+    <div class="option"><input type="radio" name="q22" value="b" data-correct="true"><label>La non-récompense des sacrifices africains a suscité un éveil des consciences et une remise en cause du colonialisme</label></div>
+    <div class="option"><input type="radio" name="q22" value="c"><label>Elle n'a eu aucun effet sur les Africains</label></div>
+    <div class="option"><input type="radio" name="q22" value="d"><label>Elle a conduit à l'indépendance immédiate des colonies africaines</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">23.</span> Quel pays est devenu le créancier de l'Europe après la Première Guerre mondiale grâce à l'endettement des belligérants ?</div>
+    <div class="option"><input type="radio" name="q23" value="a"><label>L'Angleterre</label></div>
+    <div class="option"><input type="radio" name="q23" value="b"><label>La France</label></div>
+    <div class="option"><input type="radio" name="q23" value="c" data-correct="true"><label>Les États-Unis</label></div>
+    <div class="option"><input type="radio" name="q23" value="d"><label>Le Japon</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">24.</span> Quelle était la durée totale de la Première Guerre mondiale ?</div>
+    <div class="option"><input type="radio" name="q24" value="a"><label>2 ans (1916-1918)</label></div>
+    <div class="option"><input type="radio" name="q24" value="b" data-correct="true"><label>4 ans (1914-1918)</label></div>
+    <div class="option"><input type="radio" name="q24" value="c"><label>6 ans (1912-1918)</label></div>
+    <div class="option"><input type="radio" name="q24" value="d"><label>5 ans (1913-1918)</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">25.</span> Quelle arme navale l'Allemagne a-t-elle utilisée pour contrer le blocus maritime des Alliés ?</div>
+    <div class="option"><input type="radio" name="q25" value="a"><label>Des cuirassés blindés</label></div>
+    <div class="option"><input type="radio" name="q25" value="b" data-correct="true"><label>Des sous-marins</label></div>
+    <div class="option"><input type="radio" name="q25" value="c"><label>Des porte-avions</label></div>
+    <div class="option"><input type="radio" name="q25" value="d"><label>Des mines flottantes</label></div>
+  </div>
+
+</div>
+</body>
+</html>

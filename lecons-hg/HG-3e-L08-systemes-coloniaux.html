@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 15px; color: #1a1a1a; background: #fff; padding: 16px; line-height: 1.7; }
+  .partie-badge { background: #1A5276; color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 10px; }
+  h1 { font-size: 1.35rem; font-weight: 800; color: #1A5276; border-bottom: 3px solid #2E86C1; padding-bottom: 8px; margin-bottom: 18px; }
+  .essentiel { background: linear-gradient(135deg, #EBF5FB, #D6EAF8); border-left: 5px solid #2E86C1; border-radius: 10px; padding: 16px 18px; margin-bottom: 22px; }
+  .essentiel-titre { font-size: 1rem; font-weight: 800; color: #1A5276; text-align: center; margin-bottom: 10px; }
+  .essentiel p { font-weight: 600; color: #1A5276; font-size: 14px; }
+  h2 { font-size: 1.05rem; font-weight: 800; color: #1A5276; margin: 22px 0 10px; border-left: 4px solid #2E86C1; padding-left: 10px; }
+  h3 { font-size: .95rem; font-weight: 700; color: #154360; margin: 14px 0 6px; }
+  p { margin-bottom: 10px; }
+  ul { margin-left: 18px; margin-bottom: 10px; }
+  li { margin-bottom: 5px; }
+  .systeme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 14px 0; }
+  .systeme-fr { background: linear-gradient(135deg, #EBF5FB, #D6EAF8); border: 2px solid #2E86C1; border-radius: 12px; padding: 14px 16px; }
+  .systeme-uk { background: linear-gradient(135deg, #FEF9E7, #FCF3CF); border: 2px solid #F39C12; border-radius: 12px; padding: 14px 16px; }
+  .systeme-flag { font-size: 1.5rem; margin-bottom: 6px; }
+  .systeme-titre { font-weight: 800; font-size: 14px; margin-bottom: 8px; }
+  .systeme-fr .systeme-titre { color: #1A5276; }
+  .systeme-uk .systeme-titre { color: #D68910; }
+  .type-card { border-radius: 8px; padding: 10px 14px; margin: 8px 0; font-size: 13px; border-left: 4px solid; }
+  .type-fr1 { background: #EBF5FB; border-color: #2E86C1; }
+  .type-fr2 { background: #E8F8F5; border-color: #1ABC9C; }
+  .type-fr3 { background: #F5F0FF; border-color: #8E44AD; }
+  .type-uk1 { background: #FEF9E7; border-color: #F39C12; }
+  .type-uk2 { background: #FFF0F0; border-color: #E74C3C; }
+  .type-uk3 { background: #F0FFF4; border-color: #27AE60; }
+  .type-titre { font-weight: 800; margin-bottom: 4px; }
+  .hierarchie-box { background: #F8F9FA; border: 1.5px solid #BDC3C7; border-radius: 10px; padding: 14px 16px; margin: 14px 0; }
+  .hierarchie-titre { font-weight: 800; color: #1A5276; margin-bottom: 10px; font-size: 14px; }
+  .hier-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .hier-num { background: #2E86C1; color: #fff; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; flex-shrink: 0; }
+  .hier-num-gold { background: #F39C12; color: #fff; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; flex-shrink: 0; }
+  .comparaison-table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 13px; }
+  .comparaison-table th { padding: 10px; text-align: left; font-weight: 800; }
+  .comparaison-table td { padding: 8px 10px; border: 1px solid #D5D8DC; }
+  .comparaison-table tr:nth-child(even) { background: #F8F9FA; }
+  .th-fr { background: #2E86C1; color: #fff; }
+  .th-uk { background: #F39C12; color: #fff; }
+  .th-crit { background: #1A5276; color: #fff; }
+  .qcm-section { margin-top: 30px; border-top: 3px solid #2E86C1; padding-top: 20px; }
+  .qcm-titre { font-size: 1.1rem; font-weight: 800; color: #fff; background: #1A5276; padding: 10px 16px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
+  .question-bloc { background: #FAFAFA; border: 1.5px solid #AED6F1; border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; }
+  .question-texte { font-weight: 700; color: #1a1a1a; margin-bottom: 10px; font-size: 14px; }
+  .question-num { color: #2E86C1; font-weight: 800; }
+  .option { display: flex; align-items: flex-start; gap: 10px; padding: 7px 10px; border-radius: 7px; margin-bottom: 4px; cursor: pointer; border: 1.5px solid transparent; }
+  .option:hover { background: #EBF5FB; border-color: #2E86C1; }
+  .option input[type="radio"] { margin-top: 2px; accent-color: #1A5276; flex-shrink: 0; width: 16px; height: 16px; }
+  .option label { cursor: pointer; font-size: 14px; color: #333; }
+  @media (max-width: 600px) { .systeme-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="partie-badge">Partie 2 — L'impérialisme en Afrique</div>
+<h1>Leçon 8 — Les systèmes coloniaux français et britannique</h1>
+
+<div class="essentiel">
+  <div class="essentiel-titre">📌 L'essentiel à retenir</div>
+  <p>Les puissances coloniales ont appliqué des systèmes d'administration différents dans leurs colonies. La France pratiquait l'<strong>assimilation</strong> et l'<strong>administration directe</strong>, voulant faire des colonisés des "Français". L'Angleterre pratiquait l'<strong>association</strong> et l'<strong>indirect rule</strong>, gouvernant à travers les chefs locaux existants.</p>
+</div>
+
+<h2>I. Le système colonial français</h2>
+
+<h3>A. Les principes fondamentaux</h3>
+<p>La colonisation française repose sur deux idées majeures :</p>
+<ul>
+  <li><strong>L'assimilation</strong> : transformer les colonisés en "Français", leur imposer la langue, la culture, le droit et les institutions françaises.</li>
+  <li><strong>L'administration directe</strong> : les fonctionnaires français administrent directement les territoires sans passer par les chefs africains locaux.</li>
+</ul>
+
+<h3>B. Les types de territoires français</h3>
+
+<div class="type-card type-fr1">
+  <div class="type-titre">🏠 Colonies de peuplement (ex. : Algérie)</div>
+  <p>Rattachées au <strong>Ministère de l'Intérieur</strong> français. Les colons européens s'y installent massivement et bénéficient des mêmes droits que les Français de métropole.</p>
+</div>
+
+<div class="type-card type-fr2">
+  <div class="type-titre">💎 Colonies d'exploitation</div>
+  <p>Gérées par le <strong>Ministère des Colonies</strong>. Créées pour exploiter les ressources naturelles. Les grandes fédérations coloniales françaises :</p>
+  <ul style="font-size:13px;">
+    <li><strong>AOF</strong> (Afrique Occidentale Française) : créée en <strong>1895</strong>, capitale Dakar</li>
+    <li><strong>Madagascar</strong> : colonie depuis <strong>1897</strong></li>
+    <li><strong>AEF</strong> (Afrique Équatoriale Française) : créée en <strong>1910</strong>, capitale Brazzaville</li>
+  </ul>
+</div>
+
+<div class="type-card type-fr3">
+  <div class="type-titre">🤝 Protectorats</div>
+  <p>Sous la tutelle du <strong>Ministère des Affaires étrangères</strong>. L'État local conserve théoriquement sa souveraineté mais est contrôlé par la France (ex. : Tunisie, Maroc).</p>
+</div>
+
+<h3>C. La hiérarchie administrative française</h3>
+
+<div class="hierarchie-box">
+  <div class="hierarchie-titre">🏛️ Pyramide administrative française (AOF)</div>
+  <div class="hier-item"><div class="hier-num">1</div><div><strong>Gouverneur général</strong> de la fédération (siège à Dakar pour l'AOF)</div></div>
+  <div class="hier-item"><div class="hier-num">2</div><div><strong>Gouverneurs</strong> de chaque colonie (Sénégal, Guinée, Mali...)</div></div>
+  <div class="hier-item"><div class="hier-num">3</div><div><strong>Commandants de cercle</strong> (administrateurs locaux)</div></div>
+  <div class="hier-item"><div class="hier-num">4</div><div><strong>Chefs de canton</strong> (souvent des Africains nommés par les Français)</div></div>
+</div>
+
+<h2>II. Le système colonial britannique</h2>
+
+<h3>A. Les principes fondamentaux</h3>
+<p>La colonisation britannique repose sur :</p>
+<ul>
+  <li><strong>L'association</strong> : respecter les structures sociales et politiques locales tout en les contrôlant.</li>
+  <li>L'<strong>indirect rule</strong> (administration indirecte) : gouverner à travers les chefs et institutions locaux existants, qui appliquent les décisions des Britanniques.</li>
+</ul>
+
+<h3>B. Les types de territoires britanniques</h3>
+
+<div class="type-card type-uk1">
+  <div class="type-titre">👑 Colonies de la Couronne (Crown Colonies)</div>
+  <p>Gérées directement par le <strong>Colonial Office</strong> (créé en 1854). Ex. : <strong>Gold Coast</strong> (actuel Ghana). Territoire entièrement sous la tutelle de la Couronne britannique.</p>
+</div>
+
+<div class="type-card type-uk2">
+  <div class="type-titre">📜 Colonies à chartes</div>
+  <p>Administrées par des compagnies privées qui reçoivent une charte (autorisation royale). Ex. : <strong>Nigeria</strong> (British Niger Company), <strong>Rhodésie</strong> (British South Africa Company de Cecil Rhodes).</p>
+</div>
+
+<div class="type-card type-uk3">
+  <div class="type-titre">🌏 Dominions</div>
+  <p>Territoires à majorité de colons européens qui bénéficient d'une large autonomie. Ex. : <strong>Union Sud-Africaine</strong>, Canada, Australie, Nouvelle-Zélande. Ils forment le Commonwealth.</p>
+</div>
+
+<h3>C. La hiérarchie administrative britannique</h3>
+
+<div class="hierarchie-box">
+  <div class="hierarchie-titre">🏛️ Pyramide administrative britannique</div>
+  <div class="hier-item"><div class="hier-num-gold">1</div><div><strong>Gouverneurs généraux</strong> représentant la Couronne britannique</div></div>
+  <div class="hier-item"><div class="hier-num-gold">2</div><div><strong>Résidents</strong> britanniques dans les provinces</div></div>
+  <div class="hier-item"><div class="hier-num-gold">3</div><div><strong>Chefs africains traditionnels</strong> (maintenus en place et utilisés comme intermédiaires)</div></div>
+</div>
+
+<h2>III. Comparaison des deux systèmes</h2>
+
+<table class="comparaison-table">
+  <tr>
+    <th class="th-crit">Critères</th>
+    <th class="th-fr">🇫🇷 Système français</th>
+    <th class="th-uk">🇬🇧 Système britannique</th>
+  </tr>
+  <tr>
+    <td><strong>Principe</strong></td>
+    <td>Assimilation</td>
+    <td>Association</td>
+  </tr>
+  <tr>
+    <td><strong>Méthode</strong></td>
+    <td>Administration directe</td>
+    <td>Indirect rule</td>
+  </tr>
+  <tr>
+    <td><strong>Chefs locaux</strong></td>
+    <td>Souvent remplacés ou marginalisés</td>
+    <td>Maintenus et utilisés comme relais</td>
+  </tr>
+  <tr>
+    <td><strong>Culture locale</strong></td>
+    <td>Remplacée par la culture française</td>
+    <td>Relativement préservée</td>
+  </tr>
+  <tr>
+    <td><strong>Ministère</strong></td>
+    <td>Ministère des Colonies / Intérieur</td>
+    <td>Colonial Office</td>
+  </tr>
+</table>
+
+<!-- ===== QCM ===== -->
+<div class="qcm-section">
+  <div class="qcm-titre">🎯 Évalue tes connaissances — 22 questions</div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">1.</span> Quel est le principe fondamental du système colonial français ?</div>
+    <div class="option"><input type="radio" name="q1" value="a"><label>L'association et l'indirect rule</label></div>
+    <div class="option"><input type="radio" name="q1" value="b" data-correct="true"><label>L'assimilation et l'administration directe</label></div>
+    <div class="option"><input type="radio" name="q1" value="c"><label>L'autonomie et la fédération</label></div>
+    <div class="option"><input type="radio" name="q1" value="d"><label>Le protectorat et l'indépendance</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">2.</span> Que signifie la politique d'assimilation pratiquée par la France ?</div>
+    <div class="option"><input type="radio" name="q2" value="a"><label>Respecter les cultures africaines en les intégrant</label></div>
+    <div class="option"><input type="radio" name="q2" value="b" data-correct="true"><label>Transformer les colonisés en Français en leur imposant la langue, la culture et les lois françaises</label></div>
+    <div class="option"><input type="radio" name="q2" value="c"><label>Laisser les Africains s'administrer eux-mêmes</label></div>
+    <div class="option"><input type="radio" name="q2" value="d"><label>Associer les cultures africaine et française à égalité</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">3.</span> À quel ministère étaient rattachées les colonies de peuplement françaises (comme l'Algérie) ?</div>
+    <div class="option"><input type="radio" name="q3" value="a"><label>Ministère des Affaires étrangères</label></div>
+    <div class="option"><input type="radio" name="q3" value="b" data-correct="true"><label>Ministère de l'Intérieur</label></div>
+    <div class="option"><input type="radio" name="q3" value="c"><label>Ministère des Colonies</label></div>
+    <div class="option"><input type="radio" name="q3" value="d"><label>Ministère de la Défense</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">4.</span> En quelle année l'AOF (Afrique Occidentale Française) a-t-elle été créée ?</div>
+    <div class="option"><input type="radio" name="q4" value="a"><label>1884</label></div>
+    <div class="option"><input type="radio" name="q4" value="b" data-correct="true"><label>1895</label></div>
+    <div class="option"><input type="radio" name="q4" value="c"><label>1897</label></div>
+    <div class="option"><input type="radio" name="q4" value="d"><label>1910</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">5.</span> Quelle est la capitale de l'AOF (Afrique Occidentale Française) ?</div>
+    <div class="option"><input type="radio" name="q5" value="a"><label>Saint-Louis</label></div>
+    <div class="option"><input type="radio" name="q5" value="b" data-correct="true"><label>Dakar</label></div>
+    <div class="option"><input type="radio" name="q5" value="c"><label>Conakry</label></div>
+    <div class="option"><input type="radio" name="q5" value="d"><label>Brazzaville</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">6.</span> En quelle année Madagascar est-elle devenue une colonie française ?</div>
+    <div class="option"><input type="radio" name="q6" value="a"><label>1884</label></div>
+    <div class="option"><input type="radio" name="q6" value="b"><label>1895</label></div>
+    <div class="option"><input type="radio" name="q6" value="c" data-correct="true"><label>1897</label></div>
+    <div class="option"><input type="radio" name="q6" value="d"><label>1910</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">7.</span> En quelle année l'AEF (Afrique Équatoriale Française) a-t-elle été créée, et quelle est sa capitale ?</div>
+    <div class="option"><input type="radio" name="q7" value="a"><label>1895, Dakar</label></div>
+    <div class="option"><input type="radio" name="q7" value="b"><label>1897, Abidjan</label></div>
+    <div class="option"><input type="radio" name="q7" value="c" data-correct="true"><label>1910, Brazzaville</label></div>
+    <div class="option"><input type="radio" name="q7" value="d"><label>1900, Libreville</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">8.</span> Quel ministère français gérait les protectorats coloniaux (Tunisie, Maroc) ?</div>
+    <div class="option"><input type="radio" name="q8" value="a"><label>Ministère de l'Intérieur</label></div>
+    <div class="option"><input type="radio" name="q8" value="b"><label>Ministère des Colonies</label></div>
+    <div class="option"><input type="radio" name="q8" value="c" data-correct="true"><label>Ministère des Affaires étrangères</label></div>
+    <div class="option"><input type="radio" name="q8" value="d"><label>Ministère de la Justice</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">9.</span> Dans la hiérarchie administrative française de l'AOF, qui se situe entre le Gouverneur général et les commandants de cercle ?</div>
+    <div class="option"><input type="radio" name="q9" value="a"><label>Les chefs de canton</label></div>
+    <div class="option"><input type="radio" name="q9" value="b" data-correct="true"><label>Les gouverneurs de chaque colonie</label></div>
+    <div class="option"><input type="radio" name="q9" value="c"><label>Les préfets</label></div>
+    <div class="option"><input type="radio" name="q9" value="d"><label>Les résidents</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">10.</span> Qui est au bas de la hiérarchie administrative française dans les colonies africaines ?</div>
+    <div class="option"><input type="radio" name="q10" value="a"><label>Les gouverneurs</label></div>
+    <div class="option"><input type="radio" name="q10" value="b"><label>Les commandants de cercle</label></div>
+    <div class="option"><input type="radio" name="q10" value="c" data-correct="true"><label>Les chefs de canton</label></div>
+    <div class="option"><input type="radio" name="q10" value="d"><label>Les préfets de région</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">11.</span> Quel est le principe fondamental du système colonial britannique ?</div>
+    <div class="option"><input type="radio" name="q11" value="a"><label>L'assimilation et l'administration directe</label></div>
+    <div class="option"><input type="radio" name="q11" value="b" data-correct="true"><label>L'association et l'indirect rule</label></div>
+    <div class="option"><input type="radio" name="q11" value="c"><label>Le protectorat direct et la fédération</label></div>
+    <div class="option"><input type="radio" name="q11" value="d"><label>L'exploitation et la domination totale</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">12.</span> Que signifie l'indirect rule britannique ?</div>
+    <div class="option"><input type="radio" name="q12" value="a"><label>Refuser d'administrer les territoires africains</label></div>
+    <div class="option"><input type="radio" name="q12" value="b" data-correct="true"><label>Gouverner à travers les chefs et institutions locaux africains existants</label></div>
+    <div class="option"><input type="radio" name="q12" value="c"><label>Administrer directement sans intermédiaires africains</label></div>
+    <div class="option"><input type="radio" name="q12" value="d"><label>Déléguer l'administration à des compagnies privées uniquement</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">13.</span> En quelle année le Colonial Office britannique a-t-il été créé ?</div>
+    <div class="option"><input type="radio" name="q13" value="a"><label>1820</label></div>
+    <div class="option"><input type="radio" name="q13" value="b" data-correct="true"><label>1854</label></div>
+    <div class="option"><input type="radio" name="q13" value="c"><label>1884</label></div>
+    <div class="option"><input type="radio" name="q13" value="d"><label>1900</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">14.</span> Quel est l'exemple de colonie de la Couronne britannique (Crown Colony) cité dans le cours ?</div>
+    <div class="option"><input type="radio" name="q14" value="a"><label>Nigeria</label></div>
+    <div class="option"><input type="radio" name="q14" value="b"><label>Rhodésie</label></div>
+    <div class="option"><input type="radio" name="q14" value="c" data-correct="true"><label>Gold Coast (actuel Ghana)</label></div>
+    <div class="option"><input type="radio" name="q14" value="d"><label>Union Sud-Africaine</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">15.</span> Par qui la Rhodésie était-elle administrée comme colonie à charte ?</div>
+    <div class="option"><input type="radio" name="q15" value="a"><label>La British East Africa Company</label></div>
+    <div class="option"><input type="radio" name="q15" value="b" data-correct="true"><label>La British South Africa Company de Cecil Rhodes</label></div>
+    <div class="option"><input type="radio" name="q15" value="c"><label>La Royal Niger Company</label></div>
+    <div class="option"><input type="radio" name="q15" value="d"><label>Le Colonial Office directement</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">16.</span> Qu'est-ce qu'un Dominion dans le système colonial britannique ?</div>
+    <div class="option"><input type="radio" name="q16" value="a"><label>Une colonie sans aucune autonomie</label></div>
+    <div class="option"><input type="radio" name="q16" value="b" data-correct="true"><label>Un territoire à majorité de colons européens bénéficiant d'une large autonomie</label></div>
+    <div class="option"><input type="radio" name="q16" value="c"><label>Un territoire africain gouverné par ses propres chefs</label></div>
+    <div class="option"><input type="radio" name="q16" value="d"><label>Une colonie exploitée par une compagnie privée</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">17.</span> Lequel de ces territoires était un Dominion britannique ?</div>
+    <div class="option"><input type="radio" name="q17" value="a"><label>Gold Coast</label></div>
+    <div class="option"><input type="radio" name="q17" value="b"><label>Nigeria</label></div>
+    <div class="option"><input type="radio" name="q17" value="c" data-correct="true"><label>Union Sud-Africaine</label></div>
+    <div class="option"><input type="radio" name="q17" value="d"><label>Rhodésie</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">18.</span> Quelle est la principale différence entre le système français et le système britannique concernant les chefs locaux ?</div>
+    <div class="option"><input type="radio" name="q18" value="a"><label>Les deux systèmes traitaient les chefs locaux de la même manière</label></div>
+    <div class="option"><input type="radio" name="q18" value="b" data-correct="true"><label>La France les marginalisait souvent, l'Angleterre les maintenait comme intermédiaires</label></div>
+    <div class="option"><input type="radio" name="q18" value="c"><label>La France les utilisait, l'Angleterre les supprimait</label></div>
+    <div class="option"><input type="radio" name="q18" value="d"><label>Les deux systèmes supprimaient tous les chefs locaux</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">19.</span> Les protectorats français se distinguent des colonies d'exploitation par le fait que :</div>
+    <div class="option"><input type="radio" name="q19" value="a"><label>Ils sont entièrement gouvernés par des Français</label></div>
+    <div class="option"><input type="radio" name="q19" value="b" data-correct="true"><label>L'État local conserve théoriquement sa souveraineté tout en étant contrôlé par la France</label></div>
+    <div class="option"><input type="radio" name="q19" value="c"><label>Ils sont rattachés au Ministère des Colonies</label></div>
+    <div class="option"><input type="radio" name="q19" value="d"><label>Ils sont administrés par des compagnies privées</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">20.</span> Quelle compagnie privée administrait le Nigeria comme colonie à charte ?</div>
+    <div class="option"><input type="radio" name="q20" value="a"><label>La British South Africa Company</label></div>
+    <div class="option"><input type="radio" name="q20" value="b" data-correct="true"><label>La British Niger Company (Royal Niger Company)</label></div>
+    <div class="option"><input type="radio" name="q20" value="c"><label>La British East Africa Company</label></div>
+    <div class="option"><input type="radio" name="q20" value="d"><label>Le Colonial Office</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">21.</span> Comment s'appellent les Dominions formés par les colonies britanniques autonomes ?</div>
+    <div class="option"><input type="radio" name="q21" value="a"><label>L'Empire britannique</label></div>
+    <div class="option"><input type="radio" name="q21" value="b" data-correct="true"><label>Le Commonwealth</label></div>
+    <div class="option"><input type="radio" name="q21" value="c"><label>La Fédération britannique</label></div>
+    <div class="option"><input type="radio" name="q21" value="d"><label>L'Union britannique</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">22.</span> Quel est le point commun entre les systèmes coloniaux français et britannique ?</div>
+    <div class="option"><input type="radio" name="q22" value="a"><label>Ils accordaient tous deux la liberté aux colonisés</label></div>
+    <div class="option"><input type="radio" name="q22" value="b"><label>Ils reposaient tous deux sur l'indirect rule</label></div>
+    <div class="option"><input type="radio" name="q22" value="c" data-correct="true"><label>Ils visaient tous deux à exploiter les ressources africaines au profit de la métropole</label></div>
+    <div class="option"><input type="radio" name="q22" value="d"><label>Ils respectaient tous deux la souveraineté africaine</label></div>
+  </div>
+
+</div>
+</body>
+</html>

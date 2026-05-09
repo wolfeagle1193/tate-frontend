@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BFEM Histoire – S2 : L'Impérialisme européen en Afrique</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#FDF6EC;color:#2c1a00;line-height:1.75;font-size:16px}
+.header{background:linear-gradient(135deg,#7B4100,#C27A00);color:#fff;padding:24px 16px;text-align:center}
+.header .badge{display:inline-block;background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.5);border-radius:30px;padding:5px 18px;font-size:.78em;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.header h1{font-size:clamp(1.1em,4.5vw,1.65em);font-weight:800;line-height:1.3}
+.header p{font-size:.88em;opacity:.9;margin-top:5px}
+.container{max-width:860px;margin:22px auto;padding:0 14px}
+.timer-box{display:flex;align-items:center;gap:12px;background:#fff;border-radius:12px;padding:12px 16px;box-shadow:0 2px 8px rgba(0,0,0,.09);margin-bottom:18px;flex-wrap:wrap}
+.timer-label{font-weight:700;color:#7B4100;white-space:nowrap;font-size:.9em}
+.timer-display{font-size:1.5em;font-weight:800;color:#C27A00;min-width:78px;font-variant-numeric:tabular-nums}
+.btn{padding:8px 16px;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:.85em;transition:.15s}
+.btn-start{background:#7B4100;color:#fff}.btn-start:hover{background:#5a2f00}
+.btn-reset{background:#ede8df;color:#7B4100}
+.methode-box{background:#fff8e1;border:1.5px dashed #F9A825;border-radius:10px;padding:14px 18px;margin-bottom:18px;font-size:.88em;color:#5a3800}
+.methode-box strong{display:block;margin-bottom:6px;font-size:.95em;color:#7B4100}
+.section{background:#fff;border-radius:14px;padding:20px 20px 14px;margin-bottom:20px;box-shadow:0 2px 10px rgba(0,0,0,.08)}
+.section-title{font-size:1em;font-weight:800;color:#fff;background:linear-gradient(90deg,#7B4100,#C27A00);padding:9px 16px;border-radius:8px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px}
+.points{background:rgba(255,255,255,.25);border-radius:20px;padding:2px 10px;font-size:.78em;font-weight:700;white-space:nowrap}
+.contexte-box{background:#FFF8E1;border:1px solid #F9A825;border-radius:8px;padding:12px 16px;margin-bottom:12px;font-style:italic;color:#4a3000;font-size:.92em;line-height:1.7}
+.consigne-box{background:#FFF3CD;border-left:4px solid #C27A00;padding:11px 15px;border-radius:0 8px 8px 0;font-weight:700;color:#4a3000;margin-bottom:16px;font-size:.93em;line-height:1.6}
+.doc-box{background:#fdf8f0;border:1px solid #e8d8b8;border-radius:10px;padding:14px 16px;margin-bottom:14px}
+.doc-title{font-weight:700;color:#7B4100;margin-bottom:8px;font-size:.9em}
+.doc-text{font-size:.91em;line-height:1.85;text-align:justify}
+.doc-source{text-align:right;font-size:.78em;color:#888;margin-top:8px;font-style:italic}
+.souligné{text-decoration:underline;font-weight:600;color:#a04000}
+.table-wrapper{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:10px 0;border-radius:8px;border:1px solid #ddd}
+.table-wrapper::-webkit-scrollbar{height:5px}
+.table-wrapper::-webkit-scrollbar-thumb{background:#C27A00;border-radius:4px}
+.table-wrapper table{border-collapse:collapse;font-size:.87em;min-width:480px;width:100%}
+.table-wrapper th{background:#7B4100;color:#fff;padding:9px 12px;text-align:center;white-space:nowrap}
+.table-wrapper td{border:1px solid #ddd;padding:7px 11px;text-align:center}
+.table-wrapper tr:nth-child(even) td{background:#FFF8E1}
+.scroll-hint{font-size:.75em;color:#C27A00;text-align:right;margin-top:3px;display:none}
+@media(max-width:600px){.scroll-hint{display:block}}
+.questions-list{list-style:none;padding:0;counter-reset:qnum}
+.questions-list>li{counter-increment:qnum;display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:10px;margin-bottom:12px;background:#FFF8E1}
+.questions-list>li::before{content:counter(qnum);background:#C27A00;color:#fff;font-weight:800;width:28px;height:28px;min-width:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.82em;margin-top:1px}
+.q-inner{width:100%}
+.q-texte{font-size:.92em;font-weight:600;color:#4a2000;line-height:1.6}
+.reponse{width:100%;min-height:100px;border:1.5px solid #e8d8b8;border-radius:8px;padding:10px 12px;font-size:.9em;resize:vertical;font-family:inherit;background:#fffdf8;margin-top:8px;color:#2c1a00}
+.reponse:focus{outline:none;border-color:#C27A00;background:#fff}
+.btn-correction{display:flex;align-items:center;gap:8px;margin-top:14px;padding:11px 18px;border:2px solid #27AE60;background:#fff;color:#1A6632;border-radius:10px;cursor:pointer;font-weight:700;font-size:.9em;transition:.2s;width:100%}
+.btn-correction:hover{background:#f0fff4}
+.btn-correction .arrow{transition:transform .25s;display:inline-block}
+.btn-correction.open{background:#f0fff4}
+.btn-correction.open .arrow{transform:rotate(180deg)}
+.corr-wrap{display:none;margin-top:0;border-left:4px solid #27AE60;border-radius:0 10px 10px 0;background:#f0fff8;padding:18px 20px;font-size:.92em;line-height:1.85;color:#0d2b1a}
+.corr-wrap.visible{display:block}
+.corr-wrap h3{color:#1A5276;font-size:1em;font-weight:800;margin:16px 0 6px;padding-bottom:4px;border-bottom:1px solid #bee3cc}
+.corr-wrap h3:first-child{margin-top:0}
+.corr-wrap h4{color:#1A6632;font-size:.93em;font-weight:700;margin:12px 0 4px}
+.corr-wrap p{margin-bottom:10px;text-align:justify}
+.corr-wrap p:last-child{margin-bottom:0}
+.corr-wrap .note-methodo{background:#e8f8f0;border:1px solid #a9dfbf;border-radius:6px;padding:9px 13px;margin-bottom:10px;font-size:.88em;color:#1A5276;font-style:italic}
+.corr-badge{display:inline-flex;align-items:center;gap:6px;background:#27AE60;color:#fff;border-radius:20px;padding:4px 14px;font-size:.8em;font-weight:700;margin-bottom:14px}
+footer{text-align:center;padding:28px 16px;color:#888;font-size:.8em}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="badge">📝 Sujet BFEM — Histoire</div>
+  <h1>L'Impérialisme européen en Afrique</h1>
+  <p>Expansion coloniale · 3<sup>e</sup> · Histoire-Géographie · Année 2024 – Session Normale</p>
+</div>
+
+<div class="container">
+  <div class="timer-box">
+    <span class="timer-label">⏱ Durée :</span>
+    <span class="timer-display" id="timer">1:30:00</span>
+    <button class="btn btn-start" onclick="startTimer()">▶ Démarrer</button>
+    <button class="btn btn-reset" onclick="resetTimer()">↺ Réinitialiser</button>
+  </div>
+  <div class="methode-box">
+    <strong>📐 Rappel méthodologique — La dissertation (BFEM)</strong>
+    <strong>Introduction :</strong> Amorce → Définition des termes clés → Problématique → Plan annoncé en 2 parties.<br>
+    <strong>Développement :</strong> 2 grandes parties avec sous-parties A/B, chaque argument appuyé sur un exemple historique précis.<br>
+    <strong>Conclusion :</strong> Synthèse → Réponse à la problématique → Ouverture.
+  </div>
+
+  <!-- PARTIE 1 -->
+  <div class="section">
+    <div class="section-title">✍️ Partie 1 – Dissertation <span class="points">10 pts</span></div>
+    <div class="contexte-box">À la faveur de la Révolution industrielle, l'Europe s'engage dans un vaste mouvement de recherche de colonies en Afrique.</div>
+    <div class="consigne-box">Consigne : Définis l'impérialisme puis décris les progrès et les difficultés de l'expansion européenne en Afrique entre 1870 et 1914.</div>
+    <textarea class="reponse" style="min-height:220px" placeholder="Rédigez votre dissertation ici…"></textarea>
+    <button class="btn-correction" onclick="toggleCorr('corr-diss')">
+      <span>✅</span><span style="flex:1;text-align:left">Voir la correction complète — Dissertation</span><span class="arrow">▼</span>
+    </button>
+    <div id="corr-diss" class="corr-wrap">
+      <div class="corr-badge">✅ Correction modèle — niveau BFEM</div>
+      <div class="note-methodo">💡 Copie modèle intégrale. Compare avec ta rédaction pour identifier tes points d'amélioration.</div>
+
+      <h3>INTRODUCTION</h3>
+      <p>À partir de 1870, les grandes puissances industrielles d'Europe se lancent dans une conquête systématique de l'Afrique. Ce mouvement, que l'on appelle l'impérialisme, est directement lié à la Révolution industrielle : les usines européennes ont besoin de matières premières (coton, caoutchouc, minerais) et de marchés pour écouler leurs produits. L'impérialisme se définit comme la politique par laquelle une nation soumet d'autres peuples à sa domination politique, économique et militaire en constituant des colonies ou des protectorats. Comment les puissances européennes ont-elles étendu leur domination sur l'Afrique entre 1870 et 1914, et quelles résistances ont-elles rencontrées ? Nous analyserons d'abord les progrès spectaculaires de l'expansion européenne en Afrique, avant d'examiner les nombreuses difficultés qu'elle a rencontrées.</p>
+
+      <h3>DÉVELOPPEMENT</h3>
+      <h4>I. LES PROGRÈS DE L'EXPANSION EUROPÉENNE EN AFRIQUE (1870-1914)</h4>
+      <h4>A. Le « partage de l'Afrique » et la Conférence de Berlin (1884-1885)</h4>
+      <p>Entre 1880 et 1914, les puissances européennes se partagent l'intégralité du continent africain à une vitesse impressionnante. En 1880, seuls 10 % du territoire africain étaient sous contrôle européen. En 1914, ce chiffre atteignait 90 %. Pour éviter que les rivalités coloniales entre puissances européennes ne dégénèrent en guerre, la Conférence de Berlin est organisée du 15 novembre 1884 au 26 février 1885 sous l'égide du chancelier allemand Bismarck. Elle réunit 14 puissances (Angleterre, France, Allemagne, Belgique, Portugal, Espagne…) qui établissent les règles du partage de l'Afrique : toute occupation doit être notifiée aux autres puissances et être effective — c'est le principe de « l'occupation effective ». L'Afrique est ainsi découpée en zones d'influence sans que les populations africaines ne soient consultées.</p>
+      <h4>B. Les méthodes de pénétration et les principaux empires coloniaux</h4>
+      <p>Les puissances européennes utilisent plusieurs méthodes pour s'emparer des territoires africains. La première est la diplomatie et la signature de traités avec les chefs locaux, souvent abusifs car les rois africains ne comprennent pas toujours les implications de ce qu'ils signent. La deuxième méthode est la conquête militaire directe, rendue possible par la supériorité technologique des Européens (fusils à répétition, mitrailleuses, canons) face aux armes traditionnelles africaines. La France constitue un immense empire en Afrique de l'Ouest (Sénégal, Soudan, Côte d'Ivoire, Guinée, Dahomey) et en Afrique équatoriale. Le Royaume-Uni domine l'Afrique orientale (Kenya, Ouganda) et australe (Afrique du Sud, Zimbabwe). L'Allemagne s'implante au Togo, au Cameroun, en Tanzanie et en Namibie. Le roi des Belges Léopold II s'empare à titre personnel du Congo.</p>
+
+      <h4>II. LES DIFFICULTÉS DE L'EXPANSION EUROPÉENNE EN AFRIQUE</h4>
+      <h4>A. Les résistances africaines</h4>
+      <p>L'expansion européenne en Afrique se heurte à de vigoureuses résistances armées de la part des peuples africains. Au Sénégal, le conquérant toucouleur El Hadj Oumar Tall résiste aux Français dès les années 1850-1860, et son fils Ahmadou Tall continue le combat jusqu'en 1893. Samory Touré, chef mandingue, organise une résistance remarquable pendant 18 ans (1882-1898) avant d'être capturé par les Français. En Éthiopie, l'Empereur Ménélik II inflige une défaite cuisante aux Italiens lors de la bataille d'Adoua le 1<sup>er</sup> mars 1896, battant une armée de 20 000 soldats italiens : l'Éthiopie restera l'un des deux seuls pays africains (avec le Liberia) à ne pas être colonisés. Ces résistances, bien que finalement vaincues pour la plupart, obligent les Européens à engager de longs et coûteux conflits militaires.</p>
+      <h4>B. Les rivalités entre puissances européennes</h4>
+      <p>L'expansion coloniale est aussi freinée par les rivalités entre puissances européennes elles-mêmes. La crise de Fachoda (1898) oppose brutalement la France et le Royaume-Uni dans le Soudan : les deux puissances sont au bord de la guerre avant que la France ne cède. Les crises marocaines (1905 et 1911) mettent aux prises la France et l'Allemagne, qui réclame sa part des richesses marocaines. Ces tensions montrent que la colonisation de l'Afrique, loin d'être un processus harmonieux, est l'arène de violentes rivalités entre nations européennes qui failliront plusieurs fois provoquer un conflit armé.</p>
+
+      <h3>CONCLUSION</h3>
+      <p>Entre 1870 et 1914, les puissances européennes ont réussi, grâce à leur supériorité militaire et technologique, à coloniser 90 % du continent africain. La Conférence de Berlin a organisé ce partage, tandis que des figures comme Samory Touré et Ménélik II ont illustré la résistance africaine. Cependant, cette domination coloniale a semé des germes de frustration et d'injustice qui, après la Première Guerre Mondiale, allaient nourrir les premiers mouvements nationalistes africains réclamant l'indépendance.</p>
+    </div>
+  </div>
+
+  <!-- PARTIE 2 -->
+  <div class="section">
+    <div class="section-title">📄 Partie 2 – Commentaire historique <span class="points">10 pts</span></div>
+    <div class="doc-box">
+      <div class="doc-title">Document — J. Bernier, 1976</div>
+      <div class="doc-text">
+        « Dans la deuxième moitié du XIX<sup>e</sup> siècle, la colonisation en Afrique tropicale devint une aventure nationale et la France se vit forcée de gagner le contrôle sur les terres qu'elle revendiquait comme ses possessions. La rivalité politique des puissances européennes et les intérêts impliqués encourageaient une telle évolution (…). L'expansion du joug colonial français sur le Sénégal territorial actuel dura plus de cinquante ans (…). <span class="souligné">L'occupation fut difficile et se buta souvent à la résistance des populations</span> (…). On associe fréquemment l'assimilation au Sénégal tandis qu'on réserve l'association au reste des possessions françaises (…). En fait, le Sénégal a connu en même temps les deux formes d'administration et, loin d'être opposées, toutes deux étaient fondamentalement inspirées par la même attitude, c'est-à-dire une attitude qui rejetait les institutions africaines… »
+      </div>
+      <div class="doc-source">J. Bernier (1976). « La formation territoriale du Sénégal », <em>Cahiers de géographie du Québec</em>, vol. 20, n°51, pp. 447–477.</div>
+    </div>
+
+    <ol class="questions-list">
+      <li>
+        <div class="q-inner">
+          <div class="q-texte">Donne l'idée générale du document. <span style="font-size:.8em;color:#C27A00;font-weight:400">(2 pts)</span></div>
+          <textarea class="reponse" style="min-height:80px" placeholder="Votre réponse…"></textarea>
+          <button class="btn-correction" onclick="toggleCorr('corr-q1')">
+            <span>✅</span><span style="flex:1;text-align:left">Voir la correction — Question 1</span><span class="arrow">▼</span>
+          </button>
+          <div id="corr-q1" class="corr-wrap">
+            <div class="corr-badge">✅ Correction complète</div>
+            <p>Ce document est un extrait d'un article scientifique rédigé en 1976 par le géographe canadien J. Bernier. Il traite de la formation territoriale du Sénégal sous la colonisation française. L'idée générale de ce document est que la conquête coloniale française du Sénégal a été un processus long, difficile et conflictuel, qui a duré plus de cinquante ans. L'auteur montre que malgré la résistance des populations africaines, la France a imposé sa domination sur le Sénégal en y appliquant deux systèmes d'administration — l'assimilation et l'association — qui, bien que différents en apparence, partageaient la même logique fondamentale : rejeter les institutions et les valeurs africaines pour les remplacer par les valeurs françaises.</p>
+          </div>
+        </div>
+      </li>
+      <li>
+        <div class="q-inner">
+          <div class="q-texte">Commente le passage souligné en l'illustrant par des exemples précis. <span style="font-size:.8em;color:#C27A00;font-weight:400">(4 pts)</span></div>
+          <textarea class="reponse" style="min-height:110px" placeholder="Votre réponse…"></textarea>
+          <button class="btn-correction" onclick="toggleCorr('corr-q2')">
+            <span>✅</span><span style="flex:1;text-align:left">Voir la correction — Question 2</span><span class="arrow">▼</span>
+          </button>
+          <div id="corr-q2" class="corr-wrap">
+            <div class="corr-badge">✅ Correction complète</div>
+            <p>Le passage souligné — « L'occupation fut difficile et se buta souvent à la résistance des populations » — signifie que la conquête coloniale française du Sénégal n'a pas été une simple promenade militaire, mais un processus violent et long, freiné par de nombreuses résistances des populations locales.</p>
+            <h4>Exemple 1 : La résistance d'El Hadj Oumar Tall</h4>
+            <p>El Hadj Oumar Tall, fondateur de l'Empire toucouleur, est l'une des figures les plus emblématiques de la résistance anticoloniale au Sénégal. Depuis sa base au Fouta-Toro, il organise une résistance armée contre les Français dès les années 1850. Il attaque les forts français sur le fleuve Sénégal et appelle les populations à un jihad contre les colonisateurs. Après sa mort en 1864, son fils Ahmadou Tall prend le relais et résiste jusqu'en 1893, date à laquelle les Français s'emparent de sa capitale, Ségou.</p>
+            <h4>Exemple 2 : La résistance de Lat Dior</h4>
+            <p>Au Cayor (région du Sénégal actuel), le Damel (roi) Lat Dior s'oppose farouchement à la construction du chemin de fer Dakar-Saint-Louis par les Français, qu'il considère comme un instrument de domination coloniale. Il mène une guérilla contre les forces françaises pendant des années. Il meurt au combat lors de la bataille de Dékheulé le 26 octobre 1886, devenant ainsi un héros national sénégalais. Sa résistance a obligé les Français à retarder et à modifier leurs projets d'implantation dans la région.</p>
+            <h4>Exemple 3 : La résistance d'Alboury Ndiaye</h4>
+            <p>Alboury Ndiaye, Bour du Djolof, refuse de signer les traités que les Français lui proposent et s'exile au Soudan plutôt que de se soumettre à la domination coloniale. Son attitude symbolise le refus de la soumission et l'attachement à la souveraineté africaine. Ces exemples confirment que la colonisation du Sénégal a bien été « difficile » et a nécessité de nombreuses années de combats et de négociations forcées.</p>
+          </div>
+        </div>
+      </li>
+      <li>
+        <div class="q-inner">
+          <div class="q-texte">Est-il vrai que « le Sénégal a connu en même temps les deux formes d'administration » ? Justifie ta réponse à l'aide d'arguments historiques. <span style="font-size:.8em;color:#C27A00;font-weight:400">(4 pts)</span></div>
+          <textarea class="reponse" style="min-height:110px" placeholder="Votre réponse…"></textarea>
+          <button class="btn-correction" onclick="toggleCorr('corr-q3')">
+            <span>✅</span><span style="flex:1;text-align:left">Voir la correction — Question 3</span><span class="arrow">▼</span>
+          </button>
+          <div id="corr-q3" class="corr-wrap">
+            <div class="corr-badge">✅ Correction complète</div>
+            <p>Oui, il est tout à fait exact que le Sénégal a connu simultanément les deux grandes formes d'administration coloniale française : l'assimilation et l'association. Cette dualité est une particularité historique remarquable du Sénégal au sein de l'empire colonial français.</p>
+            <h4>L'assimilation dans les « Quatre Communes »</h4>
+            <p>L'assimilation est une politique coloniale qui vise à faire des colonisés des citoyens français à part entière, en leur imposant la langue, la culture, les lois et les institutions françaises. Au Sénégal, cette politique a été appliquée dans les quatre communes historiques : Saint-Louis, Gorée, Rufisque et Dakar. Les habitants de ces villes — appelés « originaires » — jouissaient de droits politiques quasi équivalents à ceux des citoyens français : ils pouvaient voter pour élire un député à l'Assemblée nationale française (Blaise Diagne fut élu en 1914), accéder à certaines fonctions administratives et bénéficier de l'état civil français.</p>
+            <h4>L'association dans le reste du Sénégal</h4>
+            <p>En dehors de ces quatre communes, la politique appliquée était celle de l'association : les populations africaines restaient des « sujets français » (et non des citoyens), soumises au code de l'indigénat — un ensemble de lois discriminatoires autorisant des punitions arbitraires, le travail forcé et des restrictions de déplacement. Ces sujets ne pouvaient pas voter, ne pouvaient pas accéder aux mêmes tribunaux que les citoyens français et n'avaient pas les mêmes droits. L'idée de l'association était de respecter formellement certaines « coutumes locales » tout en maintenant une domination politique et économique totale.</p>
+            <h4>Une dualité fondée sur le même rejet des institutions africaines</h4>
+            <p>Comme le souligne Bernier, malgré leurs différences apparentes, ces deux systèmes partageaient la même logique : rejeter les institutions africaines et imposer la domination française. L'assimilation niait l'identité africaine en voulant « faire des Africains des Français ». L'association la marginalisait en maintenant les Africains dans un statut juridique inférieur. Cette dualité au sein du même territoire est donc bien attestée historiquement et constitue une singularité du Sénégal dans l'histoire coloniale française en Afrique.</p>
+          </div>
+        </div>
+      </li>
+    </ol>
+  </div>
+</div>
+
+<footer>BFEM · Histoire-Géographie 3<sup>e</sup> · © Taté — Plateforme éducative sénégalaise</footer>
+<script>
+function toggleCorr(id){const el=document.getElementById(id);const btn=el.previousElementSibling;const isOpen=el.classList.contains('visible');el.classList.toggle('visible',!isOpen);btn.classList.toggle('open',!isOpen);btn.querySelector('.arrow').textContent=isOpen?'▼':'▲';if(!isOpen)setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'nearest'}),50);}
+let tSec=5400,iv=null;const timerEl=document.getElementById('timer');
+const fmt=s=>`${Math.floor(s/3600)}:${String(Math.floor((s%3600)/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+function startTimer(){if(iv)return;iv=setInterval(()=>{if(tSec<=0){clearInterval(iv);timerEl.style.color='#E74C3C';return;}tSec--;timerEl.textContent=fmt(tSec);if(tSec<=300)timerEl.style.color='#E74C3C';},1000);}
+function resetTimer(){clearInterval(iv);iv=null;tSec=5400;timerEl.textContent=fmt(tSec);timerEl.style.color='#C27A00';}
+</script>
+</body>
+</html>

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 15px; color: #1a1a1a; background: #fff; padding: 16px; line-height: 1.7; }
+  .partie-badge { background: #154360; color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 10px; }
+  h1 { font-size: 1.35rem; font-weight: 800; color: #154360; border-bottom: 3px solid #2E86C1; padding-bottom: 8px; margin-bottom: 18px; }
+  .essentiel { background: linear-gradient(135deg, #EBF5FB, #D6EAF8); border-left: 5px solid #2E86C1; border-radius: 10px; padding: 16px 18px; margin-bottom: 22px; }
+  .essentiel-titre { font-size: 1rem; font-weight: 800; color: #154360; text-align: center; margin-bottom: 10px; }
+  .essentiel p { font-weight: 600; color: #154360; font-size: 14px; }
+  h2 { font-size: 1.05rem; font-weight: 800; color: #154360; margin: 22px 0 10px; border-left: 4px solid #2E86C1; padding-left: 10px; }
+  h3 { font-size: .95rem; font-weight: 700; color: #1A5276; margin: 14px 0 6px; }
+  p { margin-bottom: 10px; }
+  ul { margin-left: 18px; margin-bottom: 10px; }
+  li { margin-bottom: 5px; }
+  .ressource-card { border-radius: 10px; padding: 12px 16px; margin: 10px 0; border-left: 5px solid; }
+  .renouvelable { background: #E9F7EF; border-color: #27AE60; }
+  .non-renouvelable { background: #FDEDEC; border-color: #E74C3C; }
+  .ressource-titre { font-weight: 800; font-size: 14px; margin-bottom: 6px; }
+  .renouvelable .ressource-titre { color: #1E8449; }
+  .non-renouvelable .ressource-titre { color: #C0392B; }
+  .cycle-card { background: #F8F9FA; border-left: 4px solid #2E86C1; border-radius: 6px; padding: 10px 14px; margin: 8px 0; font-size: 13px; }
+  .cycle-titre { font-weight: 800; color: #154360; margin-bottom: 4px; }
+  .fleche { text-align: center; font-size: 18px; color: #2E86C1; font-weight: 700; margin: 4px 0; }
+  .chaine { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin: 10px 0; font-size: 13px; }
+  .chaine-item { background: #EBF5FB; border: 1.5px solid #2E86C1; border-radius: 8px; padding: 6px 10px; font-weight: 700; color: #154360; }
+  .chaine-arrow { color: #2E86C1; font-size: 18px; font-weight: 700; }
+  .tableau { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  .tableau th { background: #154360; color: #fff; padding: 8px 10px; text-align: left; }
+  .tableau td { padding: 8px 10px; border-bottom: 1px solid #D6EAF8; }
+  .tableau tr:nth-child(even) td { background: #EBF5FB; }
+  .qcm-section { margin-top: 30px; border-top: 3px solid #2E86C1; padding-top: 20px; }
+  .qcm-titre { font-size: 1.1rem; font-weight: 800; color: #fff; background: #154360; padding: 10px 16px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
+  .question-bloc { background: #FAFAFA; border: 1.5px solid #D6EAF8; border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; }
+  .question-texte { font-weight: 700; color: #1a1a1a; margin-bottom: 10px; font-size: 14px; }
+  .question-num { color: #2E86C1; font-weight: 800; }
+  .option { display: flex; align-items: flex-start; gap: 10px; padding: 7px 10px; border-radius: 7px; margin-bottom: 4px; cursor: pointer; border: 1.5px solid transparent; }
+  .option:hover { background: #EBF5FB; border-color: #2E86C1; }
+  .option input[type="radio"] { margin-top: 2px; accent-color: #154360; flex-shrink: 0; width: 16px; height: 16px; }
+  .option label { cursor: pointer; font-size: 14px; color: #333; }
+</style>
+</head>
+<body>
+
+<div class="partie-badge">Géographie — Chapitre I</div>
+<h1>Leçon 2 — La Terre : potentiel et équilibres</h1>
+
+<div class="essentiel">
+  <div class="essentiel-titre">📌 L'essentiel à retenir</div>
+  <p>La Terre est riche en ressources, qu'elles soient renouvelables (halieutiques, forestières, hydriques, énergies vertes) ou non renouvelables (combustibles fossiles, minerais, énergie nucléaire). Ces ressources s'inscrivent dans des équilibres fondamentaux : cycle de l'eau, cycle du carbone et chaîne alimentaire.</p>
+</div>
+
+<h2>I. Les ressources de la Terre</h2>
+
+<h3>A. Les ressources renouvelables</h3>
+
+<div class="ressource-card renouvelable">
+  <div class="ressource-titre">♻️ Ressources renouvelables</div>
+  Ce sont des ressources qui se renouvellent naturellement à un rythme supérieur à leur exploitation.
+  <ul>
+    <li><strong>Ressources halieutiques :</strong> poissons, coquillages, algues (milieu marin et aquatique)</li>
+    <li><strong>Ressources forestières :</strong> faune, flore, biomasse, bois d'œuvre, plantes médicinales</li>
+    <li><strong>Ressources hydriques :</strong> l'eau couvre 78% de la surface terrestre ; les glaces représentent 28 millions de km³ ; elles alimentent 20 milliards de personnes</li>
+    <li><strong>Énergies vertes :</strong> énergie solaire, éolienne, géothermique, marémotrice, biomasse</li>
+  </ul>
+</div>
+
+<h3>B. Les ressources non renouvelables</h3>
+
+<div class="ressource-card non-renouvelable">
+  <div class="ressource-titre">⛽ Ressources non renouvelables</div>
+  Ce sont des ressources qui ne se renouvellent pas (ou très lentement, sur des millions d'années).
+  <ul>
+    <li><strong>Combustibles fossiles :</strong>
+      <ul>
+        <li>Gaz naturel, pétrole, charbon</li>
+        <li>Le <strong>fer</strong> s'est formé il y a <strong>3 milliards d'années</strong></li>
+        <li>Les <strong>hydrocarbures</strong> (pétrole/gaz) il y a <strong>400 millions d'années</strong></li>
+        <li>Le <strong>charbon</strong> il y a <strong>350 millions d'années</strong></li>
+      </ul>
+    </li>
+    <li><strong>Ressources minières ferrugineuses :</strong> fer, nickel</li>
+    <li><strong>Ressources minières non ferrugineuses :</strong> cuivre, aluminium, or, phosphate…</li>
+    <li><strong>Énergie nucléaire :</strong> basée sur l'uranium (ressource fissile limitée)</li>
+  </ul>
+</div>
+
+<h2>II. Les grands équilibres naturels</h2>
+
+<h3>A. Le cycle de l'eau</h3>
+
+<div class="cycle-card">
+  <div class="cycle-titre">💧 Le cycle de l'eau — moteur : le Soleil</div>
+  <div class="chaine">
+    <div class="chaine-item">Évaporation</div>
+    <div class="chaine-arrow">→</div>
+    <div class="chaine-item">Formation des vents</div>
+    <div class="chaine-arrow">→</div>
+    <div class="chaine-item">Condensation</div>
+    <div class="chaine-arrow">→</div>
+    <div class="chaine-item">Précipitations</div>
+    <div class="chaine-arrow">→</div>
+    <div class="chaine-item">Ruissellement / Infiltration</div>
+    <div class="chaine-arrow">→</div>
+    <div class="chaine-item">Nappes phréatiques</div>
+  </div>
+  Le moteur de ce cycle est l'<strong>énergie solaire</strong>. L'eau s'évapore des océans, forme des nuages, tombe sous forme de précipitations, s'écoule en surface (ruissellement) ou s'infiltre dans le sol pour alimenter les nappes phréatiques.
+</div>
+
+<h3>B. Le cycle du carbone</h3>
+
+<div class="cycle-card">
+  <div class="cycle-titre">🌿 Le cycle du carbone</div>
+  Le carbone circule entre plusieurs réservoirs :
+  <ul>
+    <li><strong>Production :</strong> le carbone est libéré par la biosphère (êtres vivants), l'hydrosphère (océans) et la lithosphère (volcans, roches)</li>
+    <li><strong>Synthèse :</strong> réalisée par les <strong>plantes, algues et bactéries</strong> via la photosynthèse</li>
+    <li><strong>Fixation (stockage) :</strong> dans les océans, la biomasse végétale et les roches sédimentaires</li>
+  </ul>
+  La combustion des fossiles perturbe ce cycle en libérant du CO₂ accumulé pendant des millions d'années.
+</div>
+
+<h3>C. La chaîne alimentaire</h3>
+
+<div class="cycle-card">
+  <div class="cycle-titre">🔗 La chaîne alimentaire (réseau trophique)</div>
+  <div class="chaine">
+    <div class="chaine-item">🌱 Producteurs (végétaux)</div>
+    <div class="chaine-arrow">→</div>
+    <div class="chaine-item">🐄 Consommateurs 1 (herbivores)</div>
+    <div class="chaine-arrow">→</div>
+    <div class="chaine-item">🦁 Consommateurs 2 (carnivores)</div>
+    <div class="chaine-arrow">→</div>
+    <div class="chaine-item">🍄 Décomposeurs (bactéries, champignons)</div>
+  </div>
+  Les végétaux (producteurs) captent l'énergie solaire. Les herbivores les consomment, puis sont mangés par les carnivores. Les décomposeurs (bactéries, champignons) recyclent la matière organique en éléments minéraux, bouclant ainsi le cycle.
+</div>
+
+<!-- QCM -->
+<div class="qcm-section">
+<div class="qcm-titre">📝 Évaluation — Questions à Choix Multiples (22 questions)</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">1.</span> Les ressources halieutiques comprennent :</div>
+  <div class="option"><input type="radio" name="q1" value="A" id="q1A"><label for="q1A">A. Le pétrole et le gaz naturel</label></div>
+  <div class="option"><input type="radio" name="q1" value="B" id="q1B" data-correct="true"><label for="q1B">B. Les poissons, coquillages et algues</label></div>
+  <div class="option"><input type="radio" name="q1" value="C" id="q1C"><label for="q1C">C. Les forêts et la biomasse</label></div>
+  <div class="option"><input type="radio" name="q1" value="D" id="q1D"><label for="q1D">D. L'énergie solaire et éolienne</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">2.</span> Parmi les suivantes, quelle énergie est renouvelable ?</div>
+  <div class="option"><input type="radio" name="q2" value="A" id="q2A"><label for="q2A">A. Le charbon</label></div>
+  <div class="option"><input type="radio" name="q2" value="B" id="q2B"><label for="q2B">B. Le pétrole</label></div>
+  <div class="option"><input type="radio" name="q2" value="C" id="q2C" data-correct="true"><label for="q2C">C. L'énergie géothermique</label></div>
+  <div class="option"><input type="radio" name="q2" value="D" id="q2D"><label for="q2D">D. Le gaz naturel</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">3.</span> Quelle proportion de la surface terrestre est couverte d'eau ?</div>
+  <div class="option"><input type="radio" name="q3" value="A" id="q3A"><label for="q3A">A. 50%</label></div>
+  <div class="option"><input type="radio" name="q3" value="B" id="q3B"><label for="q3B">B. 65%</label></div>
+  <div class="option"><input type="radio" name="q3" value="C" id="q3C" data-correct="true"><label for="q3C">C. 78%</label></div>
+  <div class="option"><input type="radio" name="q3" value="D" id="q3D"><label for="q3D">D. 90%</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">4.</span> Les ressources non renouvelables sont :</div>
+  <div class="option"><input type="radio" name="q4" value="A" id="q4A"><label for="q4A">A. Les ressources qui se renouvellent en quelques années</label></div>
+  <div class="option"><input type="radio" name="q4" value="B" id="q4B" data-correct="true"><label for="q4B">B. Des ressources qui ne se renouvellent pas ou très lentement (millions d'années)</label></div>
+  <div class="option"><input type="radio" name="q4" value="C" id="q4C"><label for="q4C">C. Des ressources produites par les végétaux</label></div>
+  <div class="option"><input type="radio" name="q4" value="D" id="q4D"><label for="q4D">D. Des ressources marines uniquement</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">5.</span> Il y a environ combien d'années se sont formés les hydrocarbures (pétrole et gaz) ?</div>
+  <div class="option"><input type="radio" name="q5" value="A" id="q5A"><label for="q5A">A. 3 milliards d'années</label></div>
+  <div class="option"><input type="radio" name="q5" value="B" id="q5B"><label for="q5B">B. 350 millions d'années</label></div>
+  <div class="option"><input type="radio" name="q5" value="C" id="q5C" data-correct="true"><label for="q5C">C. 400 millions d'années</label></div>
+  <div class="option"><input type="radio" name="q5" value="D" id="q5D"><label for="q5D">D. 100 millions d'années</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">6.</span> Le charbon s'est formé il y a environ :</div>
+  <div class="option"><input type="radio" name="q6" value="A" id="q6A"><label for="q6A">A. 400 millions d'années</label></div>
+  <div class="option"><input type="radio" name="q6" value="B" id="q6B" data-correct="true"><label for="q6B">B. 350 millions d'années</label></div>
+  <div class="option"><input type="radio" name="q6" value="C" id="q6C"><label for="q6C">C. 3 milliards d'années</label></div>
+  <div class="option"><input type="radio" name="q6" value="D" id="q6D"><label for="q6D">D. 50 millions d'années</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">7.</span> Le fer est une ressource minière :</div>
+  <div class="option"><input type="radio" name="q7" value="A" id="q7A"><label for="q7A">A. Non ferrugineuse</label></div>
+  <div class="option"><input type="radio" name="q7" value="B" id="q7B" data-correct="true"><label for="q7B">B. Ferrugineuse</label></div>
+  <div class="option"><input type="radio" name="q7" value="C" id="q7C"><label for="q7C">C. Halieutique</label></div>
+  <div class="option"><input type="radio" name="q7" value="D" id="q7D"><label for="q7D">D. Hydraulique</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">8.</span> Le moteur du cycle de l'eau est :</div>
+  <div class="option"><input type="radio" name="q8" value="A" id="q8A"><label for="q8A">A. Le vent</label></div>
+  <div class="option"><input type="radio" name="q8" value="B" id="q8B"><label for="q8B">B. La gravité terrestre</label></div>
+  <div class="option"><input type="radio" name="q8" value="C" id="q8C" data-correct="true"><label for="q8C">C. L'énergie solaire</label></div>
+  <div class="option"><input type="radio" name="q8" value="D" id="q8D"><label for="q8D">D. Le cycle du carbone</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">9.</span> Dans le cycle de l'eau, quelle étape suit la condensation ?</div>
+  <div class="option"><input type="radio" name="q9" value="A" id="q9A"><label for="q9A">A. L'évaporation</label></div>
+  <div class="option"><input type="radio" name="q9" value="B" id="q9B"><label for="q9B">B. L'infiltration</label></div>
+  <div class="option"><input type="radio" name="q9" value="C" id="q9C" data-correct="true"><label for="q9C">C. Les précipitations</label></div>
+  <div class="option"><input type="radio" name="q9" value="D" id="q9D"><label for="q9D">D. Le ruissellement</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">10.</span> Les nappes phréatiques sont alimentées par :</div>
+  <div class="option"><input type="radio" name="q10" value="A" id="q10A"><label for="q10A">A. Le ruissellement en surface</label></div>
+  <div class="option"><input type="radio" name="q10" value="B" id="q10B"><label for="q10B">B. L'évaporation des océans</label></div>
+  <div class="option"><input type="radio" name="q10" value="C" id="q10C" data-correct="true"><label for="q10C">C. L'infiltration de l'eau dans le sol</label></div>
+  <div class="option"><input type="radio" name="q10" value="D" id="q10D"><label for="q10D">D. La condensation dans les nuages</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">11.</span> Dans le cycle du carbone, la synthèse est réalisée par :</div>
+  <div class="option"><input type="radio" name="q11" value="A" id="q11A"><label for="q11A">A. Les animaux carnivores</label></div>
+  <div class="option"><input type="radio" name="q11" value="B" id="q11B"><label for="q11B">B. Les volcans</label></div>
+  <div class="option"><input type="radio" name="q11" value="C" id="q11C" data-correct="true"><label for="q11C">C. Les plantes, algues et bactéries (photosynthèse)</label></div>
+  <div class="option"><input type="radio" name="q11" value="D" id="q11D"><label for="q11D">D. Les roches sédimentaires</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">12.</span> Où le carbone est-il stocké (fixé) dans la nature ?</div>
+  <div class="option"><input type="radio" name="q12" value="A" id="q12A"><label for="q12A">A. Dans l'atmosphère uniquement</label></div>
+  <div class="option"><input type="radio" name="q12" value="B" id="q12B" data-correct="true"><label for="q12B">B. Dans les océans, la biomasse et les roches sédimentaires</label></div>
+  <div class="option"><input type="radio" name="q12" value="C" id="q12C"><label for="q12C">C. Dans le noyau terrestre</label></div>
+  <div class="option"><input type="radio" name="q12" value="D" id="q12D"><label for="q12D">D. Dans les nuages uniquement</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">13.</span> Dans la chaîne alimentaire, les végétaux sont appelés :</div>
+  <div class="option"><input type="radio" name="q13" value="A" id="q13A"><label for="q13A">A. Consommateurs</label></div>
+  <div class="option"><input type="radio" name="q13" value="B" id="q13B"><label for="q13B">B. Décomposeurs</label></div>
+  <div class="option"><input type="radio" name="q13" value="C" id="q13C" data-correct="true"><label for="q13C">C. Producteurs</label></div>
+  <div class="option"><input type="radio" name="q13" value="D" id="q13D"><label for="q13D">D. Herbivores</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">14.</span> Quel est le rôle des décomposeurs dans la chaîne alimentaire ?</div>
+  <div class="option"><input type="radio" name="q14" value="A" id="q14A"><label for="q14A">A. Ils capturent l'énergie solaire</label></div>
+  <div class="option"><input type="radio" name="q14" value="B" id="q14B"><label for="q14B">B. Ils mangent les herbivores</label></div>
+  <div class="option"><input type="radio" name="q14" value="C" id="q14C" data-correct="true"><label for="q14C">C. Ils recyclent la matière organique en éléments minéraux</label></div>
+  <div class="option"><input type="radio" name="q14" value="D" id="q14D"><label for="q14D">D. Ils produisent de l'oxygène</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">15.</span> Les décomposeurs dans la chaîne alimentaire sont :</div>
+  <div class="option"><input type="radio" name="q15" value="A" id="q15A"><label for="q15A">A. Les lions et loups</label></div>
+  <div class="option"><input type="radio" name="q15" value="B" id="q15B" data-correct="true"><label for="q15B">B. Les bactéries et champignons</label></div>
+  <div class="option"><input type="radio" name="q15" value="C" id="q15C"><label for="q15C">C. Les herbes et algues</label></div>
+  <div class="option"><input type="radio" name="q15" value="D" id="q15D"><label for="q15D">D. Les herbivores et omnivores</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">16.</span> Parmi ces énergies, laquelle est une énergie verte (renouvelable) ?</div>
+  <div class="option"><input type="radio" name="q16" value="A" id="q16A"><label for="q16A">A. L'énergie nucléaire</label></div>
+  <div class="option"><input type="radio" name="q16" value="B" id="q16B"><label for="q16B">B. Le charbon</label></div>
+  <div class="option"><input type="radio" name="q16" value="C" id="q16C" data-correct="true"><label for="q16C">C. L'énergie marémotrice</label></div>
+  <div class="option"><input type="radio" name="q16" value="D" id="q16D"><label for="q16D">D. Le gaz naturel</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">17.</span> Les ressources forestières comprennent :</div>
+  <div class="option"><input type="radio" name="q17" value="A" id="q17A"><label for="q17A">A. Le pétrole et le gaz</label></div>
+  <div class="option"><input type="radio" name="q17" value="B" id="q17B"><label for="q17B">B. Les poissons et les algues</label></div>
+  <div class="option"><input type="radio" name="q17" value="C" id="q17C" data-correct="true"><label for="q17C">C. La faune, la flore, la biomasse, le bois et les plantes médicinales</label></div>
+  <div class="option"><input type="radio" name="q17" value="D" id="q17D"><label for="q17D">D. Le fer et le nickel</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">18.</span> La combustion des énergies fossiles perturbe :</div>
+  <div class="option"><input type="radio" name="q18" value="A" id="q18A"><label for="q18A">A. Le cycle de l'eau uniquement</label></div>
+  <div class="option"><input type="radio" name="q18" value="B" id="q18B" data-correct="true"><label for="q18B">B. Le cycle du carbone en libérant du CO₂ stocké depuis des millions d'années</label></div>
+  <div class="option"><input type="radio" name="q18" value="C" id="q18C"><label for="q18C">C. La chaîne alimentaire uniquement</label></div>
+  <div class="option"><input type="radio" name="q18" value="D" id="q18D"><label for="q18D">D. La rotation de la Terre</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">19.</span> Les herbivores dans la chaîne alimentaire sont des :</div>
+  <div class="option"><input type="radio" name="q19" value="A" id="q19A"><label for="q19A">A. Producteurs</label></div>
+  <div class="option"><input type="radio" name="q19" value="B" id="q19B" data-correct="true"><label for="q19B">B. Consommateurs de 1er ordre</label></div>
+  <div class="option"><input type="radio" name="q19" value="C" id="q19C"><label for="q19C">C. Décomposeurs</label></div>
+  <div class="option"><input type="radio" name="q19" value="D" id="q19D"><label for="q19D">D. Consommateurs de 2ème ordre</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">20.</span> Quelle ressource non renouvelable est issue de la fission de l'uranium ?</div>
+  <div class="option"><input type="radio" name="q20" value="A" id="q20A"><label for="q20A">A. L'énergie éolienne</label></div>
+  <div class="option"><input type="radio" name="q20" value="B" id="q20B"><label for="q20B">B. L'énergie géothermique</label></div>
+  <div class="option"><input type="radio" name="q20" value="C" id="q20C" data-correct="true"><label for="q20C">C. L'énergie nucléaire</label></div>
+  <div class="option"><input type="radio" name="q20" value="D" id="q20D"><label for="q20D">D. La biomasse</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">21.</span> Les glaces de la planète représentent :</div>
+  <div class="option"><input type="radio" name="q21" value="A" id="q21A"><label for="q21A">A. 10 millions de km³</label></div>
+  <div class="option"><input type="radio" name="q21" value="B" id="q21B" data-correct="true"><label for="q21B">B. 28 millions de km³</label></div>
+  <div class="option"><input type="radio" name="q21" value="C" id="q21C"><label for="q21C">C. 50 millions de km³</label></div>
+  <div class="option"><input type="radio" name="q21" value="D" id="q21D"><label for="q21D">D. 5 millions de km³</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">22.</span> Parmi ces métaux, lequel est une ressource minière NON ferrugineuse ?</div>
+  <div class="option"><input type="radio" name="q22" value="A" id="q22A"><label for="q22A">A. Le fer</label></div>
+  <div class="option"><input type="radio" name="q22" value="B" id="q22B"><label for="q22B">B. Le nickel</label></div>
+  <div class="option"><input type="radio" name="q22" value="C" id="q22C" data-correct="true"><label for="q22C">C. L'or</label></div>
+  <div class="option"><input type="radio" name="q22" value="D" id="q22D"><label for="q22D">D. Le manganèse</label></div>
+</div>
+
+</div><!-- end qcm-section -->
+</body>
+</html>

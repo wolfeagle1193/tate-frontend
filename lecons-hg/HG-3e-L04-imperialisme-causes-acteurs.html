@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 15px; color: #1a1a1a; background: #fff; padding: 16px; line-height: 1.7; }
+  .partie-badge { background: #7B4F2E; color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 10px; }
+  h1 { font-size: 1.35rem; font-weight: 800; color: #7B4F2E; border-bottom: 3px solid #C9A96E; padding-bottom: 8px; margin-bottom: 18px; }
+  .essentiel { background: linear-gradient(135deg, #FFF8F0, #FFF3E0); border-left: 5px solid #C9A96E; border-radius: 10px; padding: 16px 18px; margin-bottom: 22px; }
+  .essentiel-titre { font-size: 1rem; font-weight: 800; color: #7B4F2E; text-align: center; margin-bottom: 10px; }
+  .essentiel p { font-weight: 600; color: #5D3A1A; font-size: 14px; }
+  h2 { font-size: 1.05rem; font-weight: 800; color: #7B4F2E; margin: 22px 0 10px; border-left: 4px solid #C9A96E; padding-left: 10px; }
+  h3 { font-size: .95rem; font-weight: 700; color: #5D3A1A; margin: 14px 0 6px; }
+  p { margin-bottom: 10px; }
+  ul { margin-left: 18px; margin-bottom: 10px; }
+  li { margin-bottom: 5px; }
+  .cause-card { border-radius: 10px; padding: 12px 16px; margin: 10px 0; border-left: 5px solid; }
+  .cause-eco { background: #FFF8E1; border-color: #F9A825; }
+  .cause-pol { background: #EBF5FB; border-color: #2E86C1; }
+  .cause-demo { background: #FDF2F8; border-color: #8E44AD; }
+  .cause-relig { background: #EAFAF1; border-color: #27AE60; }
+  .cause-titre { font-weight: 800; font-size: 14px; margin-bottom: 5px; }
+  .cause-eco .cause-titre { color: #E65100; }
+  .cause-pol .cause-titre { color: #1A5276; }
+  .cause-demo .cause-titre { color: #7D3C98; }
+  .cause-relig .cause-titre { color: #1E8449; }
+  .acteurs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 14px 0; }
+  .acteur-card { border-radius: 10px; padding: 13px 15px; border: 2px solid; }
+  .acteur-mil { background: #FFF0F0; border-color: #C0392B; }
+  .acteur-marc { background: #FEF9E7; border-color: #F39C12; }
+  .acteur-mission { background: #EAFAF1; border-color: #27AE60; }
+  .acteur-etat { background: #EBF5FB; border-color: #2E86C1; }
+  .acteur-titre { font-weight: 800; font-size: 14px; margin-bottom: 6px; }
+  .acteur-mil .acteur-titre { color: #C0392B; }
+  .acteur-marc .acteur-titre { color: #D68910; }
+  .acteur-mission .acteur-titre { color: #1E8449; }
+  .acteur-etat .acteur-titre { color: #1A5276; }
+  .def-box { background: #F5F5F5; border: 1.5px solid #C9A96E; border-radius: 8px; padding: 12px 16px; margin: 12px 0; }
+  .def-box strong { color: #7B4F2E; }
+  .chro-item { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px; }
+  .chro-date { background: #7B4F2E; color: #fff; border-radius: 8px; padding: 4px 10px; font-weight: 800; font-size: 13px; white-space: nowrap; min-width: 70px; text-align: center; }
+  .chro-text { font-size: 14px; }
+  .conclusion { background: #FFF3E0; border: 1.5px solid #C9A96E; border-radius: 8px; padding: 12px 16px; margin: 18px 0; }
+  .conclusion p { font-weight: 700; color: #7B4F2E; margin: 0; font-size: 14px; }
+  .acquis-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
+  .acquis-item { background: #FFF8E1; border: 1.5px solid #C9A96E; border-radius: 8px; padding: 8px 12px; font-size: 13px; font-weight: 600; color: #5D3A1A; }
+  .qcm-section { margin-top: 30px; border-top: 3px solid #C9A96E; padding-top: 20px; }
+  .qcm-titre { font-size: 1.1rem; font-weight: 800; color: #fff; background: #7B4F2E; padding: 10px 16px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
+  .question-bloc { background: #FAFAFA; border: 1.5px solid #E8D5C0; border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; }
+  .question-texte { font-weight: 700; color: #1a1a1a; margin-bottom: 10px; font-size: 14px; }
+  .question-num { color: #C9A96E; font-weight: 800; }
+  .option { display: flex; align-items: flex-start; gap: 10px; padding: 7px 10px; border-radius: 7px; margin-bottom: 4px; cursor: pointer; border: 1.5px solid transparent; transition: .15s; }
+  .option:hover { background: #FFF3E0; border-color: #C9A96E; }
+  .option input[type="radio"] { margin-top: 2px; accent-color: #7B4F2E; flex-shrink: 0; width: 16px; height: 16px; }
+  .option label { cursor: pointer; font-size: 14px; color: #333; }
+  .feedback { display: none; margin-top: 8px; padding: 8px 12px; border-radius: 7px; font-size: 13px; font-weight: 600; }
+  .feedback.correct { background: #EAFAF1; color: #1E8449; border: 1px solid #A9DFBF; display: block; }
+  .feedback.wrong { background: #FDF2F2; color: #C0392B; border: 1px solid #F1948A; display: block; }
+  .btn-verif { margin-top: 10px; background: #7B4F2E; color: #fff; border: none; border-radius: 8px; padding: 8px 18px; font-weight: 700; font-size: 13px; cursor: pointer; }
+  .btn-verif:hover { background: #5D3A1A; }
+  @media (max-width: 600px) { .acteurs-grid { grid-template-columns: 1fr; } .acquis-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="partie-badge">Partie 1 — Histoire · L'impérialisme</div>
+<h1>Leçon 4 — L'impérialisme : définition, causes et acteurs</h1>
+
+<div class="essentiel">
+  <div class="essentiel-titre">📌 L'essentiel à retenir</div>
+  <p>À partir de la seconde moitié du XIX<sup>e</sup> siècle, les grandes puissances industrielles d'Europe se lancent dans une course à la conquête de territoires en Afrique, en Asie et en Océanie. Ce phénomène s'appelle l'impérialisme. Il est le résultat direct de la Révolution industrielle et répond à des motivations économiques, politiques, démographiques et religieuses.</p>
+</div>
+
+<h2>I. Définition et formes de l'impérialisme</h2>
+
+<div class="def-box">
+  <p><strong>L'impérialisme</strong> est la politique par laquelle une puissance étrangère (la métropole) étend sa domination politique, économique et culturelle sur des peuples et des territoires jugés plus « faibles » ou moins développés, appelés colonies.</p>
+</div>
+
+<p>L'impérialisme prend plusieurs formes :</p>
+<ul>
+  <li><strong>La colonie directe :</strong> la métropole administre entièrement le territoire (ex : l'AOF sous administration française).</li>
+  <li><strong>Le protectorat :</strong> l'État colonisé garde une apparence d'autonomie mais est contrôlé par la métropole (ex : la Tunisie sous protectorat français dès 1881).</li>
+  <li><strong>Le comptoir commercial :</strong> point d'appui côtier pour le commerce sans occupation du pays (ex : les comptoirs anglais en Afrique de l'Ouest).</li>
+  <li><strong>La concession :</strong> cession d'un territoire ou de droits d'exploitation à une compagnie étrangère (ex : les concessions françaises en Chine).</li>
+</ul>
+
+<h2>II. Les causes de l'impérialisme</h2>
+
+<p>L'expansion coloniale est expliquée par plusieurs facteurs qui se renforcent mutuellement :</p>
+
+<div class="cause-card cause-eco">
+  <div class="cause-titre">💰 Les causes économiques — les plus importantes</div>
+  <p style="font-size:13px;">La Révolution industrielle a créé un besoin immense en matières premières (coton, caoutchouc, huile de palme, minerais) et en nouveaux marchés pour vendre les produits fabriqués. Les capitaux accumulés cherchent aussi des pays où les investissements sont plus rentables. Les colonies répondent à ces trois besoins : matières premières, débouchés commerciaux et placement de capitaux.</p>
+</div>
+
+<div class="cause-card cause-pol">
+  <div class="cause-titre">🏳️ Les causes politiques et nationales</div>
+  <p style="font-size:13px;">Après la défaite française contre la Prusse en 1870, la France cherche à retrouver son prestige en construisant un empire colonial. De même, l'Allemagne, unifiée en 1871, veut s'affirmer comme grande puissance mondiale. Pour chaque État européen, posséder des colonies est un signe de puissance et de rayonnement national.</p>
+</div>
+
+<div class="cause-card cause-demo">
+  <div class="cause-titre">👥 Les causes démographiques</div>
+  <p style="font-size:13px;">La Révolution industrielle et les progrès de la médecine ont entraîné une forte croissance démographique en Europe. La surpopulation relative pousse certains gouvernements à chercher des terres vierges pour l'émigration. Des millions d'Européens partent s'installer dans les colonies (Algérie, Afrique du Sud, Australie).</p>
+</div>
+
+<div class="cause-card cause-relig">
+  <div class="cause-titre">✝️ Les causes idéologiques et religieuses</div>
+  <p style="font-size:13px;">Les Européens se croient supérieurs aux autres peuples (théorie du « fardeau de l'homme blanc »). Ils estiment avoir le devoir de « civiliser » les peuples africains et asiatiques. Les missions chrétiennes (catholiques et protestantes) participent à la colonisation en ouvrant des écoles et des hôpitaux, tout en évangélisant les populations.</p>
+</div>
+
+<h2>III. Les acteurs de l'impérialisme</h2>
+
+<p>La colonisation est le résultat de l'action combinée de plusieurs catégories d'acteurs :</p>
+
+<div class="acteurs-grid">
+  <div class="acteur-card acteur-etat">
+    <div class="acteur-titre">🏛️ Les États et gouvernements</div>
+    <p style="font-size:13px;">Ils planifient, financent et protègent militairement la conquête coloniale. La France, l'Angleterre, l'Allemagne, la Belgique, le Portugal et l'Espagne sont les principales puissances colonisatrices.</p>
+  </div>
+  <div class="acteur-card acteur-mil">
+    <div class="acteur-titre">⚔️ Les militaires et explorateurs</div>
+    <p style="font-size:13px;">Ils conquièrent les territoires par les armes (ex : le général Faidherbe au Sénégal) ou les explorent pour les cartographier et les faire connaître (ex : David Livingstone en Afrique centrale).</p>
+  </div>
+  <div class="acteur-card acteur-marc">
+    <div class="acteur-titre">💼 Les marchands et compagnies commerciales</div>
+    <p style="font-size:13px;">Les grandes compagnies à charte (Compagnie Royale du Niger, Compagnie du Mozambique) reçoivent des monopoles commerciaux en échange d'une gestion administrative des territoires.</p>
+  </div>
+  <div class="acteur-card acteur-mission">
+    <div class="acteur-titre">✝️ Les missionnaires</div>
+    <p style="font-size:13px;">Les congrégations religieuses (Pères Blancs, Jésuites, Missions protestantes) s'installent dans les colonies pour évangéliser, mais aussi pour ouvrir des écoles et des dispensaires, préparant ainsi le terrain à l'administration coloniale.</p>
+  </div>
+</div>
+
+<h2>IV. Chronologie des grandes phases de l'expansion coloniale</h2>
+
+<div class="chro-item">
+  <span class="chro-date">1830</span>
+  <span class="chro-text">La France conquiert l'Algérie — début de l'expansion coloniale française en Afrique du Nord.</span>
+</div>
+<div class="chro-item">
+  <span class="chro-date">1857-1858</span>
+  <span class="chro-text">La Grande-Bretagne met fin à la Compagnie des Indes Orientales et prend le contrôle direct de l'Inde.</span>
+</div>
+<div class="chro-item">
+  <span class="chro-date">1869</span>
+  <span class="chro-text">Ouverture du canal de Suez — accélération des échanges entre l'Europe, l'Afrique et l'Asie.</span>
+</div>
+<div class="chro-item">
+  <span class="chro-date">1880-1900</span>
+  <span class="chro-text">Le « scramble for Africa » — course au partage de l'Afrique entre puissances européennes.</span>
+</div>
+<div class="chro-item">
+  <span class="chro-date">1884-1885</span>
+  <span class="chro-text">Conférence de Berlin — règles du partage de l'Afrique fixées entre 15 nations.</span>
+</div>
+
+<div class="conclusion">
+  <p>🔑 L'impérialisme naît de la Révolution industrielle : les besoins en matières premières et en marchés poussent les puissances européennes à conquérir l'Afrique, l'Asie et l'Océanie. Cette conquête implique des États, des militaires, des marchands et des missionnaires qui agissent ensemble pour étendre la domination européenne sur le monde.</p>
+</div>
+
+<div class="acquis-grid">
+  <div class="acquis-item">✅ Définir l'impérialisme et ses formes</div>
+  <div class="acquis-item">✅ Expliquer les causes économiques, politiques et religieuses</div>
+  <div class="acquis-item">✅ Identifier les acteurs de la colonisation</div>
+  <div class="acquis-item">✅ Situer les grandes phases dans le temps</div>
+</div>
+
+<!-- QCM -->
+<div class="qcm-section">
+  <div class="qcm-titre">🧠 Vérifie ta compréhension — QCM</div>
+
+  <div class="question-bloc" id="q1">
+    <div class="question-texte"><span class="question-num">1.</span> Quelle est la cause principale de l'impérialisme selon les historiens ?</div>
+    <div class="option" onclick="select(1,'A')"><input type="radio" name="q1" id="q1A"><label for="q1A">A. Le désir de convertir les peuples africains au christianisme</label></div>
+    <div class="option" onclick="select(1,'B')"><input type="radio" name="q1" id="q1B"><label for="q1B">B. La croissance démographique en Europe</label></div>
+    <div class="option" onclick="select(1,'C')"><input type="radio" name="q1" id="q1C"><label for="q1C">C. Les besoins économiques liés à la Révolution industrielle</label></div>
+    <div class="option" onclick="select(1,'D')"><input type="radio" name="q1" id="q1D"><label for="q1D">D. La peur des autres puissances européennes</label></div>
+    <button class="btn-verif" onclick="verify(1,'C')">Vérifier</button>
+    <div class="feedback" id="fb1"></div>
+  </div>
+
+  <div class="question-bloc" id="q2">
+    <div class="question-texte"><span class="question-num">2.</span> Qu'est-ce qu'un protectorat ?</div>
+    <div class="option" onclick="select(2,'A')"><input type="radio" name="q2" id="q2A"><label for="q2A">A. Un territoire entièrement administré par la métropole</label></div>
+    <div class="option" onclick="select(2,'B')"><input type="radio" name="q2" id="q2B"><label for="q2B">B. Un État qui garde une apparence d'autonomie mais est contrôlé par la métropole</label></div>
+    <div class="option" onclick="select(2,'C')"><input type="radio" name="q2" id="q2C"><label for="q2C">C. Un point d'appui commercial sur la côte</label></div>
+    <div class="option" onclick="select(2,'D')"><input type="radio" name="q2" id="q2D"><label for="q2D">D. Une zone d'émigration européenne</label></div>
+    <button class="btn-verif" onclick="verify(2,'B')">Vérifier</button>
+    <div class="feedback" id="fb2"></div>
+  </div>
+
+  <div class="question-bloc" id="q3">
+    <div class="question-texte"><span class="question-num">3.</span> Quel événement marque le début de l'expansion coloniale française en Afrique ?</div>
+    <div class="option" onclick="select(3,'A')"><input type="radio" name="q3" id="q3A"><label for="q3A">A. La Conférence de Berlin en 1884</label></div>
+    <div class="option" onclick="select(3,'B')"><input type="radio" name="q3" id="q3B"><label for="q3B">B. La conquête de l'Algérie en 1830</label></div>
+    <div class="option" onclick="select(3,'C')"><input type="radio" name="q3" id="q3C"><label for="q3C">C. La défaite française de 1870</label></div>
+    <div class="option" onclick="select(3,'D')"><input type="radio" name="q3" id="q3D"><label for="q3D">D. L'ouverture du canal de Suez en 1869</label></div>
+    <button class="btn-verif" onclick="verify(3,'B')">Vérifier</button>
+    <div class="feedback" id="fb3"></div>
+  </div>
+
+  <div class="question-bloc" id="q4">
+    <div class="question-texte"><span class="question-num">4.</span> Parmi ces acteurs, lequel n'est PAS directement impliqué dans la colonisation ?</div>
+    <div class="option" onclick="select(4,'A')"><input type="radio" name="q4" id="q4A"><label for="q4A">A. Les militaires et explorateurs</label></div>
+    <div class="option" onclick="select(4,'B')"><input type="radio" name="q4" id="q4B"><label for="q4B">B. Les missionnaires religieux</label></div>
+    <div class="option" onclick="select(4,'C')"><input type="radio" name="q4" id="q4C"><label for="q4C">C. Les paysans européens restés dans leur pays</label></div>
+    <div class="option" onclick="select(4,'D')"><input type="radio" name="q4" id="q4D"><label for="q4D">D. Les compagnies commerciales</label></div>
+    <button class="btn-verif" onclick="verify(4,'C')">Vérifier</button>
+    <div class="feedback" id="fb4"></div>
+  </div>
+
+  <div class="question-bloc" id="q5">
+    <div class="question-texte"><span class="question-num">5.</span> Qu'est-ce que la théorie du « fardeau de l'homme blanc » ?</div>
+    <div class="option" onclick="select(5,'A')"><input type="radio" name="q5" id="q5A"><label for="q5A">A. L'idée que les Européens doivent payer pour l'exploitation des colonies</label></div>
+    <div class="option" onclick="select(5,'B')"><input type="radio" name="q5" id="q5B"><label for="q5B">B. La croyance que les Européens ont le devoir de « civiliser » les peuples non-européens</label></div>
+    <div class="option" onclick="select(5,'C')"><input type="radio" name="q5" id="q5C"><label for="q5C">C. La lourde charge fiscale imposée aux colons européens</label></div>
+    <div class="option" onclick="select(5,'D')"><input type="radio" name="q5" id="q5D"><label for="q5D">D. La responsabilité morale des militaires dans les conquêtes</label></div>
+    <button class="btn-verif" onclick="verify(5,'B')">Vérifier</button>
+    <div class="feedback" id="fb5"></div>
+  </div>
+</div>
+
+<script>
+const EXPLANATIONS = {
+  1: { C: "✅ Correct ! La cause principale est économique : les industries européennes cherchent des matières premières et de nouveaux marchés, produits directs de la Révolution industrielle.", wrong: "❌ Incorrect. La cause principale est économique : les besoins en matières premières et en marchés créés par la Révolution industrielle." },
+  2: { B: "✅ Correct ! Dans un protectorat, l'État local garde son chef et ses institutions, mais la métropole contrôle sa politique étrangère, ses finances et son armée (ex : Tunisie sous protectorat français).", wrong: "❌ Incorrect. Le protectorat est un régime intermédiaire où l'État garde une apparence d'autonomie tout en étant contrôlé par la métropole." },
+  3: { B: "✅ Correct ! La conquête de l'Algérie en 1830 marque le début de l'expansion coloniale française en Afrique, sous Charles X.", wrong: "❌ Incorrect. C'est la conquête de l'Algérie en 1830 qui marque le début de l'expansion coloniale française en Afrique." },
+  4: { C: "✅ Correct ! Les paysans restés en Europe ne participent pas directement à la colonisation. Ce sont les États, les militaires, les marchands et les missionnaires qui en sont les acteurs.", wrong: "❌ Incorrect. Les paysans européens restés dans leur pays ne sont pas des acteurs directs de la colonisation." },
+  5: { B: "✅ Correct ! Cette théorie, défendue notamment par le poète anglais Rudyard Kipling, justifie idéologiquement la colonisation : les Européens auraient le devoir moral de « civiliser » les peuples africains et asiatiques.", wrong: "❌ Incorrect. Le 'fardeau de l'homme blanc' est la justification idéologique de la colonisation : le devoir de 'civiliser' les peuples non-européens." }
+};
+
+function select(q, opt) {
+  document.getElementById('q'+q+opt).checked = true;
+}
+function verify(q, correct) {
+  const fb = document.getElementById('fb'+q);
+  const selected = document.querySelector(`input[name="q${q}"]:checked`);
+  if (!selected) { fb.className='feedback wrong'; fb.textContent='⚠️ Choisis une réponse avant de vérifier.'; return; }
+  const val = selected.id.replace('q'+q,'');
+  const info = EXPLANATIONS[q];
+  if (val === correct) {
+    fb.className = 'feedback correct';
+    fb.textContent = info[correct];
+  } else {
+    fb.className = 'feedback wrong';
+    fb.textContent = info.wrong;
+  }
+}
+</script>
+</body>
+</html>

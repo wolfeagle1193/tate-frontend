@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 15px; color: #1a1a1a; background: #fff; padding: 16px; line-height: 1.7; }
+  .partie-badge { background: #154360; color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 10px; }
+  h1 { font-size: 1.35rem; font-weight: 800; color: #154360; border-bottom: 3px solid #2E86C1; padding-bottom: 8px; margin-bottom: 18px; }
+  .essentiel { background: linear-gradient(135deg, #EBF5FB, #D6EAF8); border-left: 5px solid #2E86C1; border-radius: 10px; padding: 16px 18px; margin-bottom: 22px; }
+  .essentiel-titre { font-size: 1rem; font-weight: 800; color: #154360; text-align: center; margin-bottom: 10px; }
+  .essentiel p { font-weight: 600; color: #154360; font-size: 14px; }
+  h2 { font-size: 1.05rem; font-weight: 800; color: #154360; margin: 22px 0 10px; border-left: 4px solid #2E86C1; padding-left: 10px; }
+  h3 { font-size: .95rem; font-weight: 700; color: #1A5276; margin: 14px 0 6px; }
+  p { margin-bottom: 10px; }
+  ul { margin-left: 18px; margin-bottom: 10px; }
+  li { margin-bottom: 5px; }
+  .coop-card { border-radius: 10px; padding: 12px 16px; margin: 10px 0; border-left: 5px solid; }
+  .bilateral { background: #EBF5FB; border-color: #1A5276; }
+  .multilateral { background: #E9F7EF; border-color: #27AE60; }
+  .coop-titre { font-weight: 800; font-size: 14px; margin-bottom: 6px; }
+  .bilateral .coop-titre { color: #1A5276; }
+  .multilateral .coop-titre { color: #1E8449; }
+  .bilan-card { border-radius: 10px; padding: 12px 16px; margin: 10px 0; border-left: 5px solid; }
+  .avantage { background: #E9F7EF; border-color: #27AE60; }
+  .inconvenient { background: #FDEDEC; border-color: #E74C3C; }
+  .bilan-titre { font-weight: 800; font-size: 14px; margin-bottom: 6px; }
+  .avantage .bilan-titre { color: #1E8449; }
+  .inconvenient .bilan-titre { color: #C0392B; }
+  .onu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 10px 0; }
+  .onu-item { background: #F4F6F7; border-radius: 6px; padding: 6px 10px; font-size: 12px; border-left: 3px solid #2E86C1; }
+  .onu-sigle { font-weight: 800; color: #154360; }
+  .info-card { background: #F8F9FA; border-left: 4px solid #2E86C1; border-radius: 6px; padding: 10px 14px; margin: 8px 0; font-size: 13px; }
+  .info-titre { font-weight: 800; color: #154360; margin-bottom: 4px; }
+  .qcm-section { margin-top: 30px; border-top: 3px solid #2E86C1; padding-top: 20px; }
+  .qcm-titre { font-size: 1.1rem; font-weight: 800; color: #fff; background: #154360; padding: 10px 16px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
+  .question-bloc { background: #FAFAFA; border: 1.5px solid #D6EAF8; border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; }
+  .question-texte { font-weight: 700; color: #1a1a1a; margin-bottom: 10px; font-size: 14px; }
+  .question-num { color: #2E86C1; font-weight: 800; }
+  .option { display: flex; align-items: flex-start; gap: 10px; padding: 7px 10px; border-radius: 7px; margin-bottom: 4px; cursor: pointer; border: 1.5px solid transparent; }
+  .option:hover { background: #EBF5FB; border-color: #2E86C1; }
+  .option input[type="radio"] { margin-top: 2px; accent-color: #154360; flex-shrink: 0; width: 16px; height: 16px; }
+  .option label { cursor: pointer; font-size: 14px; color: #333; }
+</style>
+</head>
+<body>
+
+<div class="partie-badge">Géographie — Chapitre IV : La Terre, une planète solidaire ?</div>
+<h1>Leçon 7 — La coopération bilatérale et multilatérale</h1>
+
+<div class="essentiel">
+  <div class="essentiel-titre">📌 L'essentiel à retenir</div>
+  <p>Les inégalités de développement ont suscité un élan de solidarité internationale. Considérée comme un moyen pour corriger les écarts entre les pays riches et les pays pauvres, la coopération internationale revêt deux formes : une forme <strong>bilatérale</strong> (entre deux États) et une forme <strong>multilatérale</strong> (entre plusieurs États via des organisations internationales).</p>
+</div>
+
+<h2>I. La coopération bilatérale</h2>
+
+<div class="coop-card bilateral">
+  <div class="coop-titre">🤝 Coopération bilatérale</div>
+  <ul>
+    <li>Assistance complémentaire et mutuelle <strong>entre deux États</strong>, souvent entre un État mieux nanti et un État pauvre</li>
+    <li>Forme <strong>directe</strong> ou <strong>décentralisée</strong> (relations entre collectivités locales : jumelage, partenariat)</li>
+    <li>Domaines : économique, financier, politique, éducatif, culturel, social</li>
+    <li>Principal instrument : <strong>APD (Aide Publique au Développement)</strong> pour appuyer les projets de développement</li>
+  </ul>
+</div>
+
+<h3>A. Les institutions de la coopération bilatérale</h3>
+<div class="info-card">
+  <div class="info-titre">🏛️ Principales agences de coopération bilatérale</div>
+  <ul>
+    <li><strong>AFD + FAC</strong> (Agence Française de Développement + Fonds d'aide et de coopération) — France</li>
+    <li><strong>USAID</strong> (United States Agency for International Development) — États-Unis</li>
+    <li><strong>JICA</strong> (Japan International Cooperation Agency) — Japon, priorité aux infrastructures (routes, forages, écoles) et à la formation</li>
+  </ul>
+  <p style="margin-top:6px;">Depuis 1974 (signature du <strong>Traité d'amitié</strong>), la France développe avec le Sénégal une coopération dans divers domaines : militaire, éducatif, culturel, financier, économique.</p>
+</div>
+
+<h2>II. La coopération multilatérale</h2>
+
+<div class="coop-card multilateral">
+  <div class="coop-titre">🌐 Coopération multilatérale (multilatéralisme)</div>
+  <ul>
+    <li>Ensemble des rapports de coopération unissant les États dans le cadre <strong>d'organisations internationales ou régionales</strong></li>
+    <li>A pris son développement après la <strong>Deuxième Guerre mondiale</strong></li>
+    <li>Couvre plusieurs domaines : économique, politique, militaire</li>
+  </ul>
+</div>
+
+<h3>A. À l'échelle mondiale : l'ONU et ses institutions spécialisées</h3>
+<div class="onu-grid">
+  <div class="onu-item"><span class="onu-sigle">UNESCO</span> — Éducatif et culturel</div>
+  <div class="onu-item"><span class="onu-sigle">UNICEF</span> — Enfance</div>
+  <div class="onu-item"><span class="onu-sigle">OMS</span> — Santé</div>
+  <div class="onu-item"><span class="onu-sigle">FAO</span> — Agriculture et alimentation</div>
+  <div class="onu-item"><span class="onu-sigle">ONUDI</span> — Industriel</div>
+  <div class="onu-item"><span class="onu-sigle">FNUAP</span> — Population</div>
+  <div class="onu-item"><span class="onu-sigle">FMI</span> — Financier et économique</div>
+  <div class="onu-item"><span class="onu-sigle">Banque mondiale</span> — Développement économique</div>
+</div>
+
+<h3>B. À l'échelle régionale et continentale</h3>
+<p>Les organisations d'intégration régionale : <strong>Union Européenne (UE), Union Africaine (UA), CEDEAO, UEMOA, OMVS, Banque Africaine de Développement (BAD)</strong>.</p>
+
+<h2>III. Bilan de la coopération bilatérale et multilatérale</h2>
+
+<div class="bilan-card avantage">
+  <div class="bilan-titre">✅ Avantages</div>
+  <ul>
+    <li>Réalisation de projets utiles : <strong>infrastructures routières, sanitaires, éducatives</strong></li>
+    <li>Renforcement de la <strong>solidarité interétatique</strong> : gage de paix, sécurité, stabilité</li>
+    <li>Capacité à réagir aux phénomènes mondiaux (changements climatiques, migrations) qui dépassent les capacités des États isolés</li>
+  </ul>
+</div>
+
+<div class="bilan-card inconvenient">
+  <div class="bilan-titre">❌ Inconvénients et limites</div>
+  <ul>
+    <li>L'<strong>APD est souvent détournée</strong> et sert les intérêts du pays donateur</li>
+    <li>Les pays bénéficiaires sont soumis à la loi du donateur pour leurs exportations/importations</li>
+    <li>L'aide humanitaire d'urgence détruit les économies locales et accroît la vulnérabilité</li>
+    <li>L'aide multilatérale <strong>renforce la domination des grandes puissances</strong> (droit de veto)</li>
+    <li>Encourage la <strong>dépendance et l'endettement</strong> des pays du Sud</li>
+    <li>Les prêts du FMI et de la Banque mondiale n'ont pas permis d'éradiquer la pauvreté en Afrique subsaharienne</li>
+    <li>La coopération multilatérale est perçue comme un instrument de <strong>néocolonialisme</strong></li>
+  </ul>
+</div>
+
+<!-- QCM -->
+<div class="qcm-section">
+<div class="qcm-titre">📝 Évaluation — Questions à Choix Multiples (24 questions)</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">1.</span> La coopération bilatérale est :</div>
+  <div class="option"><input type="radio" name="q1" value="A" id="q1A"><label for="q1A">A. Une coopération entre plusieurs pays via des organisations internationales</label></div>
+  <div class="option"><input type="radio" name="q1" value="B" id="q1B" data-correct="true"><label for="q1B">B. Une assistance entre deux États, souvent entre un pays riche et un pays pauvre</label></div>
+  <div class="option"><input type="radio" name="q1" value="C" id="q1C"><label for="q1C">C. Un accord commercial entre cinq États africains</label></div>
+  <div class="option"><input type="radio" name="q1" value="D" id="q1D"><label for="q1D">D. Une organisation de l'ONU pour le développement</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">2.</span> L'APD désigne :</div>
+  <div class="option"><input type="radio" name="q2" value="A" id="q2A"><label for="q2A">A. L'Alliance de la Paix et du Développement</label></div>
+  <div class="option"><input type="radio" name="q2" value="B" id="q2B" data-correct="true"><label for="q2B">B. L'Aide Publique au Développement</label></div>
+  <div class="option"><input type="radio" name="q2" value="C" id="q2C"><label for="q2C">C. L'Agence de Politique du Développement</label></div>
+  <div class="option"><input type="radio" name="q2" value="D" id="q2D"><label for="q2D">D. L'Accord Préférentiel de Développement</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">3.</span> La JICA est l'agence de coopération de :</div>
+  <div class="option"><input type="radio" name="q3" value="A" id="q3A"><label for="q3A">A. La France</label></div>
+  <div class="option"><input type="radio" name="q3" value="B" id="q3B"><label for="q3B">B. Les États-Unis</label></div>
+  <div class="option"><input type="radio" name="q3" value="C" id="q3C" data-correct="true"><label for="q3C">C. Le Japon</label></div>
+  <div class="option"><input type="radio" name="q3" value="D" id="q3D"><label for="q3D">D. La Chine</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">4.</span> L'USAID est l'agence de coopération de :</div>
+  <div class="option"><input type="radio" name="q4" value="A" id="q4A"><label for="q4A">A. L'Union Africaine</label></div>
+  <div class="option"><input type="radio" name="q4" value="B" id="q4B"><label for="q4B">B. L'Union Européenne</label></div>
+  <div class="option"><input type="radio" name="q4" value="C" id="q4C" data-correct="true"><label for="q4C">C. Les États-Unis</label></div>
+  <div class="option"><input type="radio" name="q4" value="D" id="q4D"><label for="q4D">D. Le Royaume-Uni</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">5.</span> En quelle année le Traité d'amitié France-Sénégal a-t-il été signé ?</div>
+  <div class="option"><input type="radio" name="q5" value="A" id="q5A"><label for="q5A">A. 1960</label></div>
+  <div class="option"><input type="radio" name="q5" value="B" id="q5B"><label for="q5B">B. 1980</label></div>
+  <div class="option"><input type="radio" name="q5" value="C" id="q5C" data-correct="true"><label for="q5C">C. 1974</label></div>
+  <div class="option"><input type="radio" name="q5" value="D" id="q5D"><label for="q5D">D. 2000</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">6.</span> La coopération décentralisée implique :</div>
+  <div class="option"><input type="radio" name="q6" value="A" id="q6A"><label for="q6A">A. Des accords entre gouvernements centraux uniquement</label></div>
+  <div class="option"><input type="radio" name="q6" value="B" id="q6B" data-correct="true"><label for="q6B">B. Des relations entre collectivités locales (jumelage, partenariat) entre deux pays</label></div>
+  <div class="option"><input type="radio" name="q6" value="C" id="q6C"><label for="q6C">C. La coopération militaire entre deux États</label></div>
+  <div class="option"><input type="radio" name="q6" value="D" id="q6D"><label for="q6D">D. L'aide d'urgence lors de catastrophes naturelles</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">7.</span> La coopération multilatérale s'est développée principalement après :</div>
+  <div class="option"><input type="radio" name="q7" value="A" id="q7A"><label for="q7A">A. La Première Guerre mondiale (1918)</label></div>
+  <div class="option"><input type="radio" name="q7" value="B" id="q7B" data-correct="true"><label for="q7B">B. La Deuxième Guerre mondiale</label></div>
+  <div class="option"><input type="radio" name="q7" value="C" id="q7C"><label for="q7C">C. La Guerre froide (1991)</label></div>
+  <div class="option"><input type="radio" name="q7" value="D" id="q7D"><label for="q7D">D. La crise économique de 1929</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">8.</span> L'UNESCO s'occupe de :</div>
+  <div class="option"><input type="radio" name="q8" value="A" id="q8A"><label for="q8A">A. La santé mondiale</label></div>
+  <div class="option"><input type="radio" name="q8" value="B" id="q8B"><label for="q8B">B. L'agriculture et l'alimentation</label></div>
+  <div class="option"><input type="radio" name="q8" value="C" id="q8C" data-correct="true"><label for="q8C">C. L'éducation et la culture</label></div>
+  <div class="option"><input type="radio" name="q8" value="D" id="q8D"><label for="q8D">D. La protection de l'enfance</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">9.</span> L'UNICEF est l'organisation de l'ONU chargée de :</div>
+  <div class="option"><input type="radio" name="q9" value="A" id="q9A"><label for="q9A">A. La santé mondiale</label></div>
+  <div class="option"><input type="radio" name="q9" value="B" id="q9B" data-correct="true"><label for="q9B">B. La protection de l'enfance</label></div>
+  <div class="option"><input type="radio" name="q9" value="C" id="q9C"><label for="q9C">C. L'alimentation mondiale</label></div>
+  <div class="option"><input type="radio" name="q9" value="D" id="q9D"><label for="q9D">D. Le financement du développement industriel</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">10.</span> La FAO s'occupe de :</div>
+  <div class="option"><input type="radio" name="q10" value="A" id="q10A"><label for="q10A">A. La santé des populations</label></div>
+  <div class="option"><input type="radio" name="q10" value="B" id="q10B" data-correct="true"><label for="q10B">B. L'agriculture et l'alimentation mondiale</label></div>
+  <div class="option"><input type="radio" name="q10" value="C" id="q10C"><label for="q10C">C. Le développement industriel</label></div>
+  <div class="option"><input type="radio" name="q10" value="D" id="q10D"><label for="q10D">D. Le financement des projets de développement</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">11.</span> La CEDEAO est une organisation :</div>
+  <div class="option"><input type="radio" name="q11" value="A" id="q11A"><label for="q11A">A. Mondiale regroupant tous les pays en développement</label></div>
+  <div class="option"><input type="radio" name="q11" value="B" id="q11B" data-correct="true"><label for="q11B">B. Régionale d'intégration de l'Afrique de l'Ouest</label></div>
+  <div class="option"><input type="radio" name="q11" value="C" id="q11C"><label for="q11C">C. Continentale regroupant tous les pays africains</label></div>
+  <div class="option"><input type="radio" name="q11" value="D" id="q11D"><label for="q11D">D. Spécialisée de l'ONU pour la santé</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">12.</span> Un inconvénient majeur de la coopération bilatérale est que :</div>
+  <div class="option"><input type="radio" name="q12" value="A" id="q12A"><label for="q12A">A. Elle est trop coûteuse pour les pays donateurs</label></div>
+  <div class="option"><input type="radio" name="q12" value="B" id="q12B" data-correct="true"><label for="q12B">B. L'APD est souvent détournée et sert les intérêts du pays donateur</label></div>
+  <div class="option"><input type="radio" name="q12" value="C" id="q12C"><label for="q12C">C. Elle ne concerne que les pays riches entre eux</label></div>
+  <div class="option"><input type="radio" name="q12" value="D" id="q12D"><label for="q12D">D. Elle est trop décentralisée pour être efficace</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">13.</span> La coopération multilatérale est parfois perçue comme un instrument de :</div>
+  <div class="option"><input type="radio" name="q13" value="A" id="q13A"><label for="q13A">A. Libéralisme économique</label></div>
+  <div class="option"><input type="radio" name="q13" value="B" id="q13B" data-correct="true"><label for="q13B">B. Néocolonialisme</label></div>
+  <div class="option"><input type="radio" name="q13" value="C" id="q13C"><label for="q13C">C. Solidarité sans condition</label></div>
+  <div class="option"><input type="radio" name="q13" value="D" id="q13D"><label for="q13D">D. Développement durable</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">14.</span> Le FMI et la Banque mondiale ont pour rôle principal :</div>
+  <div class="option"><input type="radio" name="q14" value="A" id="q14A"><label for="q14A">A. La protection de l'environnement mondial</label></div>
+  <div class="option"><input type="radio" name="q14" value="B" id="q14B" data-correct="true"><label for="q14B">B. Le financement économique et financier du développement</label></div>
+  <div class="option"><input type="radio" name="q14" value="C" id="q14C"><label for="q14C">C. La protection de l'enfance dans les pays pauvres</label></div>
+  <div class="option"><input type="radio" name="q14" value="D" id="q14D"><label for="q14D">D. La gestion des conflits militaires internationaux</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">15.</span> L'un des avantages de la coopération internationale est :</div>
+  <div class="option"><input type="radio" name="q15" value="A" id="q15A"><label for="q15A">A. Elle profite uniquement aux pays donateurs</label></div>
+  <div class="option"><input type="radio" name="q15" value="B" id="q15B" data-correct="true"><label for="q15B">B. Elle permet de réaliser des projets d'infrastructure et renforce la solidarité interétatique</label></div>
+  <div class="option"><input type="radio" name="q15" value="C" id="q15C"><label for="q15C">C. Elle supprime les inégalités de développement définitivement</label></div>
+  <div class="option"><input type="radio" name="q15" value="D" id="q15D"><label for="q15D">D. Elle favorise l'endettement des pays riches</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">16.</span> L'OMVS est une organisation :</div>
+  <div class="option"><input type="radio" name="q16" value="A" id="q16A"><label for="q16A">A. Mondiale pour la santé</label></div>
+  <div class="option"><input type="radio" name="q16" value="B" id="q16B"><label for="q16B">B. Continentale africaine</label></div>
+  <div class="option"><input type="radio" name="q16" value="C" id="q16C" data-correct="true"><label for="q16C">C. Régionale (Organisation pour la Mise en Valeur du fleuve Sénégal)</label></div>
+  <div class="option"><input type="radio" name="q16" value="D" id="q16D"><label for="q16D">D. Mondiale pour le développement industriel</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">17.</span> L'aide humanitaire d'urgence peut nuire aux pays bénéficiaires car :</div>
+  <div class="option"><input type="radio" name="q17" value="A" id="q17A"><label for="q17A">A. Elle est toujours insuffisante</label></div>
+  <div class="option"><input type="radio" name="q17" value="B" id="q17B" data-correct="true"><label for="q17B">B. Elle peut détruire les économies locales et accroître la vulnérabilité des populations</label></div>
+  <div class="option"><input type="radio" name="q17" value="C" id="q17C"><label for="q17C">C. Elle favorise uniquement les ONG étrangères</label></div>
+  <div class="option"><input type="radio" name="q17" value="D" id="q17D"><label for="q17D">D. Elle est toujours détournée par les gouvernements locaux</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">18.</span> La JICA (Japon) donne priorité à :</div>
+  <div class="option"><input type="radio" name="q18" value="A" id="q18A"><label for="q18A">A. L'aide alimentaire d'urgence</label></div>
+  <div class="option"><input type="radio" name="q18" value="B" id="q18B" data-correct="true"><label for="q18B">B. Les infrastructures (routes, forages, écoles) et la formation professionnelle</label></div>
+  <div class="option"><input type="radio" name="q18" value="C" id="q18C"><label for="q18C">C. L'aide militaire et la sécurité</label></div>
+  <div class="option"><input type="radio" name="q18" value="D" id="q18D"><label for="q18D">D. Le financement des universités publiques uniquement</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">19.</span> La BAD est :</div>
+  <div class="option"><input type="radio" name="q19" value="A" id="q19A"><label for="q19A">A. La Banque Américaine de Développement</label></div>
+  <div class="option"><input type="radio" name="q19" value="B" id="q19B" data-correct="true"><label for="q19B">B. La Banque Africaine de Développement</label></div>
+  <div class="option"><input type="radio" name="q19" value="C" id="q19C"><label for="q19C">C. La Banque Asiatique de Développement</label></div>
+  <div class="option"><input type="radio" name="q19" value="D" id="q19D"><label for="q19D">D. La Banque d'Aide au Développement de l'ONU</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">20.</span> L'UEMOA est une organisation :</div>
+  <div class="option"><input type="radio" name="q20" value="A" id="q20A"><label for="q20A">A. Mondiale pour l'éducation</label></div>
+  <div class="option"><input type="radio" name="q20" value="B" id="q20B"><label for="q20B">B. Continentale africaine</label></div>
+  <div class="option"><input type="radio" name="q20" value="C" id="q20C" data-correct="true"><label for="q20C">C. Régionale d'intégration économique et monétaire (Union Économique et Monétaire Ouest-Africaine)</label></div>
+  <div class="option"><input type="radio" name="q20" value="D" id="q20D"><label for="q20D">D. Une agence de l'ONU pour le développement industriel</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">21.</span> La coopération multilatérale permet notamment de :</div>
+  <div class="option"><input type="radio" name="q21" value="A" id="q21A"><label for="q21A">A. Remplacer complètement les États dans la gestion de leur pays</label></div>
+  <div class="option"><input type="radio" name="q21" value="B" id="q21B" data-correct="true"><label for="q21B">B. Réagir collectivement aux phénomènes mondiaux (changements climatiques, migrations)</label></div>
+  <div class="option"><input type="radio" name="q21" value="C" id="q21C"><label for="q21C">C. Éliminer définitivement la pauvreté en Afrique subsaharienne</label></div>
+  <div class="option"><input type="radio" name="q21" value="D" id="q21D"><label for="q21D">D. Supprimer les frontières entre les pays</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">22.</span> Les prêts du FMI accordés aux pays africains ont :</div>
+  <div class="option"><input type="radio" name="q22" value="A" id="q22A"><label for="q22A">A. Permis d'éliminer la pauvreté en Afrique subsaharienne</label></div>
+  <div class="option"><input type="radio" name="q22" value="B" id="q22B" data-correct="true"><label for="q22B">B. Renforcé la dépendance et l'endettement sans éradiquer la pauvreté</label></div>
+  <div class="option"><input type="radio" name="q22" value="C" id="q22C"><label for="q22C">C. Financé uniquement des projets agricoles</label></div>
+  <div class="option"><input type="radio" name="q22" value="D" id="q22D"><label for="q22D">D. Réduit significativement les inégalités entre Nord et Sud</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">23.</span> Greenpeace, Action Contre la Faim et Amnesty International s'inscrivent dans :</div>
+  <div class="option"><input type="radio" name="q23" value="A" id="q23A"><label for="q23A">A. La coopération multilatérale via l'ONU</label></div>
+  <div class="option"><input type="radio" name="q23" value="B" id="q23B" data-correct="true"><label for="q23B">B. La coopération bilatérale (coopération entre États et organisations non étatiques)</label></div>
+  <div class="option"><input type="radio" name="q23" value="C" id="q23C"><label for="q23C">C. Les organisations régionales africaines</label></div>
+  <div class="option"><input type="radio" name="q23" value="D" id="q23D"><label for="q23D">D. La coopération militaire internationale</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">24.</span> L'AFD est l'agence de coopération de :</div>
+  <div class="option"><input type="radio" name="q24" value="A" id="q24A"><label for="q24A">A. L'Afrique du Sud</label></div>
+  <div class="option"><input type="radio" name="q24" value="B" id="q24B"><label for="q24B">B. Les États-Unis</label></div>
+  <div class="option"><input type="radio" name="q24" value="C" id="q24C" data-correct="true"><label for="q24C">C. La France (Agence Française de Développement)</label></div>
+  <div class="option"><input type="radio" name="q24" value="D" id="q24D"><label for="q24D">D. L'Union Africaine</label></div>
+</div>
+
+</div><!-- end qcm-section -->
+</body>
+</html>

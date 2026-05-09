@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 15px; color: #1a1a1a; background: #fff; padding: 16px; line-height: 1.7; }
+  .partie-badge { background: #148F77; color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 10px; }
+  h1 { font-size: 1.35rem; font-weight: 800; color: #148F77; border-bottom: 3px solid #1ABC9C; padding-bottom: 8px; margin-bottom: 18px; }
+  .essentiel { background: linear-gradient(135deg, #E8F8F5, #D1F2EB); border-left: 5px solid #1ABC9C; border-radius: 10px; padding: 16px 18px; margin-bottom: 22px; }
+  .essentiel-titre { font-size: 1rem; font-weight: 800; color: #148F77; text-align: center; margin-bottom: 10px; }
+  .essentiel p { font-weight: 600; color: #148F77; font-size: 14px; }
+  h2 { font-size: 1.05rem; font-weight: 800; color: #148F77; margin: 22px 0 10px; border-left: 4px solid #1ABC9C; padding-left: 10px; }
+  h3 { font-size: .95rem; font-weight: 700; color: #0E6655; margin: 14px 0 6px; }
+  p { margin-bottom: 10px; }
+  ul { margin-left: 18px; margin-bottom: 10px; }
+  li { margin-bottom: 5px; }
+  .cause-card { background: #F8F9FA; border-left: 4px solid #1ABC9C; border-radius: 6px; padding: 10px 14px; margin: 8px 0; font-size: 13px; }
+  .cause-titre { font-weight: 800; color: #148F77; margin-bottom: 4px; }
+  .forme-card { border-radius: 10px; padding: 12px 16px; margin: 10px 0; border-left: 5px solid; }
+  .violente { background: #FDEDEC; border-color: #E74C3C; }
+  .pacifique { background: #E9F7EF; border-color: #27AE60; }
+  .forme-titre { font-weight: 800; font-size: 14px; margin-bottom: 5px; }
+  .violente .forme-titre { color: #C0392B; }
+  .pacifique .forme-titre { color: #1E8449; }
+  .exemple-box { background: #EBF5FB; border: 1.5px solid #2980B9; border-radius: 8px; padding: 12px 14px; margin: 8px 0; font-size: 13px; }
+  .exemple-titre { font-weight: 800; color: #1A5276; margin-bottom: 6px; }
+  .frise { background: #F8F9FA; border: 1.5px solid #BDC3C7; border-radius: 10px; padding: 14px 16px; margin: 14px 0; }
+  .frise-titre { font-weight: 800; color: #148F77; margin-bottom: 10px; font-size: 14px; }
+  .frise-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 6px; font-size: 13px; }
+  .frise-date { background: #1ABC9C; color: #fff; border-radius: 6px; padding: 2px 8px; font-weight: 700; white-space: nowrap; flex-shrink: 0; }
+  .qcm-section { margin-top: 30px; border-top: 3px solid #1ABC9C; padding-top: 20px; }
+  .qcm-titre { font-size: 1.1rem; font-weight: 800; color: #fff; background: #148F77; padding: 10px 16px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
+  .question-bloc { background: #FAFAFA; border: 1.5px solid #D1F2EB; border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; }
+  .question-texte { font-weight: 700; color: #1a1a1a; margin-bottom: 10px; font-size: 14px; }
+  .question-num { color: #1ABC9C; font-weight: 800; }
+  .option { display: flex; align-items: flex-start; gap: 10px; padding: 7px 10px; border-radius: 7px; margin-bottom: 4px; cursor: pointer; border: 1.5px solid transparent; }
+  .option:hover { background: #E8F8F5; border-color: #1ABC9C; }
+  .option input[type="radio"] { margin-top: 2px; accent-color: #148F77; flex-shrink: 0; width: 16px; height: 16px; }
+  .option label { cursor: pointer; font-size: 14px; color: #333; }
+</style>
+</head>
+<body>
+
+<div class="partie-badge">Partie 5 — La décolonisation et l'émergence du Tiers Monde</div>
+<h1>Leçon 19 — Causes et formes de la décolonisation</h1>
+
+<div class="essentiel">
+  <div class="essentiel-titre">📌 L'essentiel à retenir</div>
+  <p>La décolonisation est le processus qui a conduit à l'émancipation et à l'indépendance des peuples dominés d'Afrique et d'Asie. Les causes sont internes et externes, et les formes sont violentes ou pacifiques selon que le colonisateur accepte ou refuse de négocier.</p>
+</div>
+
+<h2>I. Les causes de la décolonisation</h2>
+
+<h3>A. Les causes internes</h3>
+
+<div class="cause-card">
+  <div class="cause-titre">✊ Le sentiment anticolonial</div>
+  La Deuxième Guerre mondiale fait naître un puissant <strong>sentiment anticolonial</strong>. Les anciens combattants, les ouvriers, les paysans et les intellectuels dénoncent les inégalités et les injustices du système colonial. Des organisations se forment pour porter ce combat : syndicats (<strong>UGTAN</strong>), partis politiques, cercles de réflexion et associations culturelles (<strong>FEANF</strong>).
+</div>
+
+<div class="cause-card">
+  <div class="cause-titre">🌍 Les courants nationalistes</div>
+  La prise de conscience est renforcée par de grands courants idéologiques :
+  <ul>
+    <li><strong>Panarabisme</strong> : unité du monde arabe</li>
+    <li><strong>Panasiatisme</strong> : solidarité des peuples d'Asie</li>
+    <li><strong>Panafricanisme</strong> : fraternité de tous les peuples africains</li>
+  </ul>
+  Le <strong>Mouvement des Non-Alignés</strong> réuni à la conférence de <strong>Bandoeng (1955)</strong> et la <strong>Ligue Arabe (1955)</strong> expriment leur solidarité aux peuples sous domination coloniale.
+</div>
+
+<h3>B. Les causes externes</h3>
+
+<div class="cause-card">
+  <div class="cause-titre">🌐 La pression internationale</div>
+  La colonisation est aussi dénoncée par <strong>l'URSS</strong> et les <strong>États-Unis</strong>, qui cherchent à étendre leur influence dans les colonies. La <strong>Charte de l'Atlantique (1941)</strong> réaffirme le droit des peuples à l'autodétermination. Ces principes sont repris par <strong>l'ONU</strong> qui appuie les peuples opprimés.
+</div>
+
+<h2>II. Les formes de la décolonisation</h2>
+
+<div class="forme-card violente">
+  <div class="forme-titre">⚔️ La forme violente</div>
+  Caractérisée par l'affrontement armé, la guérilla, les émeutes et les attentats. Elle s'explique par le refus du colonisateur et le refus des nationalistes de céder sur l'indépendance. Elle s'est manifestée surtout en <strong>Indochine</strong> et en <strong>Algérie</strong>.
+</div>
+
+<div class="exemple-box">
+  <div class="exemple-titre">🇻🇳 L'Indochine (Vietnam)</div>
+  Après le départ des Japonais, les Français refusent de reconnaître l'indépendance proclamée par <strong>Ho Chi Minh</strong> le <strong>2 septembre 1945</strong>. Après l'échec des négociations de Fontainebleau, une guerre éclate entre l'armée française et le <strong>Vietminh</strong>. Elle aboutit à la <strong>défaite française à Dien Bien Phu le 7 mai 1954</strong> et à la signature des <strong>accords de Genève</strong> qui reconnaissent l'indépendance du pays.
+</div>
+
+<div class="exemple-box">
+  <div class="exemple-titre">🇩🇿 L'Algérie</div>
+  Les nationalistes algériens regroupés dans le <strong>Front de Libération Nationale (FLN)</strong> réclament l'indépendance. Le refus de la France conduit à une guerre qui se termine en <strong>1962</strong> par les <strong>accords d'Évian</strong>. La France reconnaît l'indépendance de l'Algérie en 1962.
+</div>
+
+<div class="forme-card pacifique">
+  <div class="forme-titre">🕊️ La forme pacifique</div>
+  Caractérisée par la négociation, la désobéissance civile et le boycott des produits de la métropole. Elle s'explique par le réalisme des métropoles qui acceptent d'accompagner les mouvements d'indépendance pour sauvegarder leurs intérêts. Le Sénégal, l'Inde et la Gold Coast en sont des exemples.
+</div>
+
+<div class="exemple-box">
+  <div class="exemple-titre">🇮🇳 L'Inde</div>
+  Le <strong>Parti du Congrès</strong> de <strong>Gandhi</strong> et la <strong>Ligue Musulmane</strong> de <strong>Jinnah Mohamed Ali</strong> réclament le départ des Anglais. Ils utilisent la <strong>désobéissance civile</strong> (boycott des produits anglais, refus de payer l'impôt, grève de la faim). L'Angleterre accorde l'indépendance en <strong>1947</strong> mais avec une <strong>partition</strong> : l'<strong>Union indienne</strong> (hindoue) et la <strong>République du Pakistan</strong> (musulmane). En 1971, le Pakistan oriental devient le <strong>Bangladesh</strong>.
+</div>
+
+<div class="exemple-box">
+  <div class="exemple-titre">🇬🇭 La Gold Coast (Ghana)</div>
+  La lutte est menée par l'<strong>UGCC</strong> (United Gold Coast Convention) du Dr Danquah et la <strong>CPP</strong> (Convention People Party) de <strong>Kwame Nkrumah</strong>. Nkrumah remporte les élections de <strong>1951</strong> et devient premier ministre en 1952. Après sa victoire aux élections de 1956, il obtient l'indépendance le <strong>6 mars 1957</strong> sous le nom de <strong>Ghana</strong>.
+</div>
+
+<div class="frise">
+  <div class="frise-titre">📅 Chronologie de la décolonisation</div>
+  <div class="frise-item"><span class="frise-date">1941</span> Charte de l'Atlantique — droit à l'autodétermination des peuples</div>
+  <div class="frise-item"><span class="frise-date">2 sept. 1945</span> Ho Chi Minh proclame l'indépendance du Vietnam</div>
+  <div class="frise-item"><span class="frise-date">1947</span> Indépendance de l'Inde et du Pakistan (partition)</div>
+  <div class="frise-item"><span class="frise-date">1951</span> Nkrumah remporte les élections en Gold Coast</div>
+  <div class="frise-item"><span class="frise-date">7 mai 1954</span> Défaite française à Dien Bien Phu</div>
+  <div class="frise-item"><span class="frise-date">1955</span> Conférence de Bandoeng — Mouvement des non-alignés</div>
+  <div class="frise-item"><span class="frise-date">6 mars 1957</span> Indépendance du Ghana (ex-Gold Coast) — Nkrumah</div>
+  <div class="frise-item"><span class="frise-date">1962</span> Accords d'Évian — indépendance de l'Algérie</div>
+  <div class="frise-item"><span class="frise-date">1971</span> Le Pakistan oriental devient le Bangladesh</div>
+</div>
+
+<!-- ==================== QCM ==================== -->
+<div class="qcm-section">
+<div class="qcm-titre">✏️ QCM — Évalue tes connaissances (24 questions)</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">1.</span> Qu'est-ce que la décolonisation ?</div>
+  <label class="option"><input type="radio" name="q1" value="A"> <label>A. Le processus de conquête de nouveaux territoires par les Européens</label></label>
+  <label class="option"><input type="radio" name="q1" value="B" data-correct="true"> <label>B. Le processus d'émancipation et d'indépendance des peuples dominés d'Afrique et d'Asie</label></label>
+  <label class="option"><input type="radio" name="q1" value="C"> <label>C. La redistribution des colonies entre les grandes puissances</label></label>
+  <label class="option"><input type="radio" name="q1" value="D"> <label>D. Le retour des colons dans leur pays d'origine</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">2.</span> Quel grand événement mondial fit naître le sentiment anticolonial ?</div>
+  <label class="option"><input type="radio" name="q2" value="A"> <label>A. La Première Guerre mondiale</label></label>
+  <label class="option"><input type="radio" name="q2" value="B" data-correct="true"> <label>B. La Deuxième Guerre mondiale</label></label>
+  <label class="option"><input type="radio" name="q2" value="C"> <label>C. La Guerre froide</label></label>
+  <label class="option"><input type="radio" name="q2" value="D"> <label>D. La crise de 1929</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">3.</span> Que signifie UGTAN ?</div>
+  <label class="option"><input type="radio" name="q3" value="A"> <label>A. Union Générale des Travailleurs d'Afrique du Nord</label></label>
+  <label class="option"><input type="radio" name="q3" value="B" data-correct="true"> <label>B. Union Générale des Travailleurs d'Afrique Noire</label></label>
+  <label class="option"><input type="radio" name="q3" value="C"> <label>C. Union Générale Transafricaine des Nations</label></label>
+  <label class="option"><input type="radio" name="q3" value="D"> <label>D. Union des Gouvernements et Territoires d'Afrique Noire</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">4.</span> Quel courant défend l'unité et la solidarité de tous les peuples africains ?</div>
+  <label class="option"><input type="radio" name="q4" value="A"> <label>A. Le Panarabisme</label></label>
+  <label class="option"><input type="radio" name="q4" value="B"> <label>B. Le Panasiatisme</label></label>
+  <label class="option"><input type="radio" name="q4" value="C" data-correct="true"> <label>C. Le Panafricanisme</label></label>
+  <label class="option"><input type="radio" name="q4" value="D"> <label>D. Le Non-alignement</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">5.</span> Où et quand se tint la conférence des pays non-alignés qui exprima leur solidarité aux peuples colonisés ?</div>
+  <label class="option"><input type="radio" name="q5" value="A"> <label>A. À Genève en 1944</label></label>
+  <label class="option"><input type="radio" name="q5" value="B" data-correct="true"> <label>B. À Bandoeng en 1955</label></label>
+  <label class="option"><input type="radio" name="q5" value="C"> <label>C. À Dakar en 1960</label></label>
+  <label class="option"><input type="radio" name="q5" value="D"> <label>D. À Belgrade en 1945</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">6.</span> Quelle charte internationale de 1941 réaffirmait le droit des peuples à l'autodétermination ?</div>
+  <label class="option"><input type="radio" name="q6" value="A"> <label>A. La Charte de San Francisco</label></label>
+  <label class="option"><input type="radio" name="q6" value="B" data-correct="true"> <label>B. La Charte de l'Atlantique</label></label>
+  <label class="option"><input type="radio" name="q6" value="C"> <label>C. La Charte des Nations Unies</label></label>
+  <label class="option"><input type="radio" name="q6" value="D"> <label>D. La Charte de Brazzaville</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">7.</span> Quelle organisation internationale appuie les peuples opprimés dans leur lutte pour l'indépendance ?</div>
+  <label class="option"><input type="radio" name="q7" value="A"> <label>A. L'OTAN</label></label>
+  <label class="option"><input type="radio" name="q7" value="B"> <label>B. La SDN</label></label>
+  <label class="option"><input type="radio" name="q7" value="C" data-correct="true"> <label>C. L'ONU</label></label>
+  <label class="option"><input type="radio" name="q7" value="D"> <label>D. Le CAEM</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">8.</span> Quelles sont les deux formes que peut prendre la décolonisation ?</div>
+  <label class="option"><input type="radio" name="q8" value="A"> <label>A. La forme légale et la forme illégale</label></label>
+  <label class="option"><input type="radio" name="q8" value="B" data-correct="true"> <label>B. La forme violente et la forme pacifique</label></label>
+  <label class="option"><input type="radio" name="q8" value="C"> <label>C. La forme militaire et la forme diplomatique</label></label>
+  <label class="option"><input type="radio" name="q8" value="D"> <label>D. La forme africaine et la forme asiatique</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">9.</span> Dans quels pays la décolonisation violente s'est-elle principalement manifestée ?</div>
+  <label class="option"><input type="radio" name="q9" value="A"> <label>A. Au Sénégal et en Inde</label></label>
+  <label class="option"><input type="radio" name="q9" value="B"> <label>B. Au Ghana et au Vietnam</label></label>
+  <label class="option"><input type="radio" name="q9" value="C" data-correct="true"> <label>C. En Indochine (Vietnam) et en Algérie</label></label>
+  <label class="option"><input type="radio" name="q9" value="D"> <label>D. En Chine et au Pakistan</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">10.</span> Qui proclama l'indépendance du Vietnam le 2 septembre 1945 ?</div>
+  <label class="option"><input type="radio" name="q10" value="A"> <label>A. Nkrumah</label></label>
+  <label class="option"><input type="radio" name="q10" value="B"> <label>B. Gandhi</label></label>
+  <label class="option"><input type="radio" name="q10" value="C" data-correct="true"> <label>C. Ho Chi Minh</label></label>
+  <label class="option"><input type="radio" name="q10" value="D"> <label>D. Nasser</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">11.</span> Quelle fut la défaite militaire française qui mit fin à la guerre d'Indochine ?</div>
+  <label class="option"><input type="radio" name="q11" value="A"> <label>A. La bataille de Saïgon</label></label>
+  <label class="option"><input type="radio" name="q11" value="B" data-correct="true"> <label>B. La bataille de Dien Bien Phu (7 mai 1954)</label></label>
+  <label class="option"><input type="radio" name="q11" value="C"> <label>C. La bataille de Hanoï</label></label>
+  <label class="option"><input type="radio" name="q11" value="D"> <label>D. La bataille de Fontainebleau</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">12.</span> Quels accords de 1954 reconnurent l'indépendance du Vietnam ?</div>
+  <label class="option"><input type="radio" name="q12" value="A"> <label>A. Les accords d'Évian</label></label>
+  <label class="option"><input type="radio" name="q12" value="B" data-correct="true"> <label>B. Les accords de Genève</label></label>
+  <label class="option"><input type="radio" name="q12" value="C"> <label>C. Les accords de Fontainebleau</label></label>
+  <label class="option"><input type="radio" name="q12" value="D"> <label>D. Les accords de Paris</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">13.</span> Quel mouvement algérien mena la lutte armée pour l'indépendance ?</div>
+  <label class="option"><input type="radio" name="q13" value="A"> <label>A. L'UGTAN</label></label>
+  <label class="option"><input type="radio" name="q13" value="B"> <label>B. La FEANF</label></label>
+  <label class="option"><input type="radio" name="q13" value="C" data-correct="true"> <label>C. Le FLN (Front de Libération Nationale)</label></label>
+  <label class="option"><input type="radio" name="q13" value="D"> <label>D. Le CPP (Convention People Party)</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">14.</span> Par quels accords la France reconnut-elle l'indépendance de l'Algérie en 1962 ?</div>
+  <label class="option"><input type="radio" name="q14" value="A"> <label>A. Les accords de Genève</label></label>
+  <label class="option"><input type="radio" name="q14" value="B" data-correct="true"> <label>B. Les accords d'Évian</label></label>
+  <label class="option"><input type="radio" name="q14" value="C"> <label>C. Les accords de Brazzaville</label></label>
+  <label class="option"><input type="radio" name="q14" value="D"> <label>D. Les accords d'Alger</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">15.</span> Quelle méthode Gandhi utilisa-t-il pour obtenir l'indépendance de l'Inde ?</div>
+  <label class="option"><input type="radio" name="q15" value="A"> <label>A. La guérilla et les attentats</label></label>
+  <label class="option"><input type="radio" name="q15" value="B" data-correct="true"> <label>B. La désobéissance civile (boycott, refus de l'impôt, grève de la faim)</label></label>
+  <label class="option"><input type="radio" name="q15" value="C"> <label>C. La coopération avec les Anglais pour négocier progressivement</label></label>
+  <label class="option"><input type="radio" name="q15" value="D"> <label>D. L'appel à l'ONU pour sanctionner la Grande-Bretagne</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">16.</span> En quelle année l'Inde obtint-elle son indépendance ?</div>
+  <label class="option"><input type="radio" name="q16" value="A"> <label>A. 1945</label></label>
+  <label class="option"><input type="radio" name="q16" value="B" data-correct="true"> <label>B. 1947</label></label>
+  <label class="option"><input type="radio" name="q16" value="C"> <label>C. 1954</label></label>
+  <label class="option"><input type="radio" name="q16" value="D"> <label>D. 1957</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">17.</span> Comment l'Angleterre partagea-t-elle l'Inde lors de l'indépendance de 1947 ?</div>
+  <label class="option"><input type="radio" name="q17" value="A"> <label>A. En trois États : Inde, Pakistan et Bangladesh</label></label>
+  <label class="option"><input type="radio" name="q17" value="B" data-correct="true"> <label>B. En deux États : l'Union indienne (hindoue) et la République du Pakistan (musulmane)</label></label>
+  <label class="option"><input type="radio" name="q17" value="C"> <label>C. En deux États : l'Inde du Nord et l'Inde du Sud</label></label>
+  <label class="option"><input type="radio" name="q17" value="D"> <label>D. L'Angleterre ne partage pas l'Inde — l'indépendance est accordée sans condition</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">18.</span> Quel leader dirigeait la CPP (Convention People Party) en Gold Coast ?</div>
+  <label class="option"><input type="radio" name="q18" value="A"> <label>A. Dr Danquah</label></label>
+  <label class="option"><input type="radio" name="q18" value="B" data-correct="true"> <label>B. Kwame Nkrumah</label></label>
+  <label class="option"><input type="radio" name="q18" value="C"> <label>C. Jinnah Mohamed Ali</label></label>
+  <label class="option"><input type="radio" name="q18" value="D"> <label>D. Ho Chi Minh</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">19.</span> En quelle année et sous quel nouveau nom la Gold Coast obtint-elle son indépendance ?</div>
+  <label class="option"><input type="radio" name="q19" value="A"> <label>A. 1954 — Côte d'Or</label></label>
+  <label class="option"><input type="radio" name="q19" value="B" data-correct="true"> <label>B. 6 mars 1957 — Ghana</label></label>
+  <label class="option"><input type="radio" name="q19" value="C"> <label>C. 1960 — Volta</label></label>
+  <label class="option"><input type="radio" name="q19" value="D"> <label>D. 1962 — Accra</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">20.</span> Comment s'appelle le parti de Gandhi qui lutta pour l'indépendance de l'Inde ?</div>
+  <label class="option"><input type="radio" name="q20" value="A"> <label>A. La Ligue Musulmane</label></label>
+  <label class="option"><input type="radio" name="q20" value="B"> <label>B. La CPP (Convention People Party)</label></label>
+  <label class="option"><input type="radio" name="q20" value="C" data-correct="true"> <label>C. Le Parti du Congrès</label></label>
+  <label class="option"><input type="radio" name="q20" value="D"> <label>D. L'UGCC (United Gold Coast Convention)</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">21.</span> Quel pays est né en 1971 de la séparation entre le Pakistan oriental et occidental ?</div>
+  <label class="option"><input type="radio" name="q21" value="A"> <label>A. Le Sri Lanka</label></label>
+  <label class="option"><input type="radio" name="q21" value="B" data-correct="true"> <label>B. Le Bangladesh</label></label>
+  <label class="option"><input type="radio" name="q21" value="C"> <label>C. L'Afghanistan</label></label>
+  <label class="option"><input type="radio" name="q21" value="D"> <label>D. Le Myanmar</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">22.</span> Quelle est la principale raison pour laquelle certaines métropoles acceptent de décoloniser pacifiquement ?</div>
+  <label class="option"><input type="radio" name="q22" value="A"> <label>A. Parce que l'ONU les y oblige militairement</label></label>
+  <label class="option"><input type="radio" name="q22" value="B" data-correct="true"> <label>B. Parce qu'elles veulent sauvegarder leurs intérêts économiques dans les nouvelles républiques</label></label>
+  <label class="option"><input type="radio" name="q22" value="C"> <label>C. Parce qu'elles ont été vaincues militairement</label></label>
+  <label class="option"><input type="radio" name="q22" value="D"> <label>D. Parce que les nationalistes avaient des armes nucléaires</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">23.</span> Lequel de ces pays n'est PAS cité comme exemple de décolonisation pacifique dans le livret ?</div>
+  <label class="option"><input type="radio" name="q23" value="A"> <label>A. L'Inde</label></label>
+  <label class="option"><input type="radio" name="q23" value="B"> <label>B. Le Sénégal</label></label>
+  <label class="option"><input type="radio" name="q23" value="C"> <label>C. La Gold Coast (Ghana)</label></label>
+  <label class="option"><input type="radio" name="q23" value="D" data-correct="true"> <label>D. L'Algérie</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">24.</span> Quel mouvement politique représentait les Indiens de confession musulmane dans leur lutte pour l'indépendance ?</div>
+  <label class="option"><input type="radio" name="q24" value="A"> <label>A. Le Parti du Congrès de Gandhi</label></label>
+  <label class="option"><input type="radio" name="q24" value="B" data-correct="true"> <label>B. La Ligue Musulmane de Jinnah Mohamed Ali</label></label>
+  <label class="option"><input type="radio" name="q24" value="C"> <label>C. L'UGCC de Dr Danquah</label></label>
+  <label class="option"><input type="radio" name="q24" value="D"> <label>D. Le FLN algérien</label></label>
+</div>
+
+</div>
+</body>
+</html>

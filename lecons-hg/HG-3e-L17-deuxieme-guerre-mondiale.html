@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 15px; color: #1a1a1a; background: #fff; padding: 16px; line-height: 1.7; }
+  .partie-badge { background: #B7410E; color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 10px; }
+  h1 { font-size: 1.35rem; font-weight: 800; color: #B7410E; border-bottom: 3px solid #E67E22; padding-bottom: 8px; margin-bottom: 18px; }
+  .essentiel { background: linear-gradient(135deg, #FEF9E7, #FDEBD0); border-left: 5px solid #E67E22; border-radius: 10px; padding: 16px 18px; margin-bottom: 22px; }
+  .essentiel-titre { font-size: 1rem; font-weight: 800; color: #B7410E; text-align: center; margin-bottom: 10px; }
+  .essentiel p { font-weight: 600; color: #B7410E; font-size: 14px; }
+  h2 { font-size: 1.05rem; font-weight: 800; color: #B7410E; margin: 22px 0 10px; border-left: 4px solid #E67E22; padding-left: 10px; }
+  h3 { font-size: .95rem; font-weight: 700; color: #922B21; margin: 14px 0 6px; }
+  p { margin-bottom: 10px; }
+  ul { margin-left: 18px; margin-bottom: 10px; }
+  li { margin-bottom: 5px; }
+  .cause-card { background: #F8F9FA; border-left: 4px solid #E67E22; border-radius: 6px; padding: 10px 14px; margin: 8px 0; font-size: 13px; }
+  .cause-titre { font-weight: 800; color: #B7410E; margin-bottom: 4px; }
+  .bloc-alliance { border-radius: 10px; padding: 12px 16px; margin: 10px 0; border: 2px solid; }
+  .axe { background: #FDEDEC; border-color: #E74C3C; }
+  .allies { background: #EBF5FB; border-color: #2E86C1; }
+  .all-titre { font-weight: 800; font-size: 14px; margin-bottom: 6px; }
+  .axe .all-titre { color: #C0392B; }
+  .allies .all-titre { color: #1A5276; }
+  .etape-card { border-radius: 10px; padding: 12px 16px; margin: 10px 0; border-left: 5px solid; }
+  .e1 { background: #FDEDEC; border-color: #E74C3C; }
+  .e2 { background: #E9F7EF; border-color: #27AE60; }
+  .etape-titre { font-weight: 800; font-size: 14px; margin-bottom: 5px; }
+  .e1 .etape-titre { color: #C0392B; }
+  .e2 .etape-titre { color: #1E8449; }
+  .afrique-box { background: #F5EEF8; border: 1.5px solid #AF7AC5; border-radius: 8px; padding: 12px 14px; margin: 8px 0; font-size: 13px; }
+  .afrique-titre { font-weight: 800; color: #6C3483; margin-bottom: 6px; }
+  .frise { background: #F8F9FA; border: 1.5px solid #BDC3C7; border-radius: 10px; padding: 14px 16px; margin: 14px 0; }
+  .frise-titre { font-weight: 800; color: #B7410E; margin-bottom: 10px; font-size: 14px; }
+  .frise-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 6px; font-size: 13px; }
+  .frise-date { background: #E67E22; color: #fff; border-radius: 6px; padding: 2px 8px; font-weight: 700; white-space: nowrap; flex-shrink: 0; }
+  .qcm-section { margin-top: 30px; border-top: 3px solid #E67E22; padding-top: 20px; }
+  .qcm-titre { font-size: 1.1rem; font-weight: 800; color: #fff; background: #B7410E; padding: 10px 16px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
+  .question-bloc { background: #FAFAFA; border: 1.5px solid #FDEBD0; border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; }
+  .question-texte { font-weight: 700; color: #1a1a1a; margin-bottom: 10px; font-size: 14px; }
+  .question-num { color: #E67E22; font-weight: 800; }
+  .option { display: flex; align-items: flex-start; gap: 10px; padding: 7px 10px; border-radius: 7px; margin-bottom: 4px; cursor: pointer; border: 1.5px solid transparent; }
+  .option:hover { background: #FEF9E7; border-color: #E67E22; }
+  .option input[type="radio"] { margin-top: 2px; accent-color: #B7410E; flex-shrink: 0; width: 16px; height: 16px; }
+  .option label { cursor: pointer; font-size: 14px; color: #333; }
+</style>
+</head>
+<body>
+
+<div class="partie-badge">Partie 4 — Conflits et révolutions au XXe siècle</div>
+<h1>Leçon 17 — La Deuxième Guerre mondiale (1939–1945)</h1>
+
+<div class="essentiel">
+  <div class="essentiel-titre">📌 L'essentiel à retenir</div>
+  <p>La Deuxième Guerre mondiale, déclenchée le 1er septembre 1939 par l'invasion de la Pologne par Hitler, est le conflit le plus meurtrier de l'Histoire (50 millions de morts). Elle oppose les pays de l'Axe (Allemagne, Italie, Japon) aux Alliés (France, Angleterre, URSS, États-Unis). Elle se termine en 1945 et engendre un nouvel ordre mondial dominé par les États-Unis et l'URSS.</p>
+</div>
+
+<h2>I. Les causes de la Deuxième Guerre mondiale</h2>
+
+<h3>A. Les causes politiques : la montée des dictatures</h3>
+
+<div class="cause-card">
+  <div class="cause-titre">🇩🇪 L'Allemagne nazie</div>
+  Arrivé au pouvoir en <strong>1933</strong>, <strong>Hitler</strong> viole le traité de Versailles : il réarme l'Allemagne et rétablit le service militaire obligatoire dès <strong>1933</strong>. Il annexe l'Autriche (Anschluss 1938), puis la Tchécoslovaquie.
+</div>
+
+<div class="cause-card">
+  <div class="cause-titre">🇮🇹 L'Italie fasciste</div>
+  Mussolini, déjà au pouvoir depuis 1922, cherche à constituer un empire. <strong>En 1935</strong>, l'Italie envahit l'<strong>Éthiopie</strong>, violant le droit international sans que la SDN ne réagisse efficacement.
+</div>
+
+<div class="cause-card">
+  <div class="cause-titre">🇯🇵 Le Japon impérialiste</div>
+  Dès <strong>1931</strong>, le Japon envahit la <strong>Mandchourie</strong> (Chine). En <strong>1937</strong>, il attaque toute la Chine, déclenchant en Asie un conflit qui annonce la guerre mondiale.
+</div>
+
+<h3>B. La passivité des démocraties et de la SDN</h3>
+<p>Face aux agressions des dictateurs, les démocraties restent passives : la <strong>France</strong> est pacifiste après les horreurs de la Grande Guerre, l'<strong>Angleterre</strong> pratique une politique d'apaisement (Munich, septembre 1938), et les <strong>États-Unis</strong> restent dans l'<strong>isolationnisme</strong>. La <strong>SDN</strong> (Société des Nations), sans armée propre, est incapable de s'imposer.</p>
+
+<h2>II. Les alliances et le déclenchement du conflit</h2>
+
+<div class="bloc-alliance axe">
+  <div class="all-titre">⚔️ Les pays de l'Axe</div>
+  <ul>
+    <li><strong>Pacte Anti-Komintern</strong> (1936-37) : Allemagne et Japon</li>
+    <li><strong>Pacte d'Acier</strong> (1939) : Allemagne et Italie</li>
+    <li><strong>Pacte germano-soviétique</strong> (23 août 1939) : pacte de non-agression secret entre Hitler et Staline, prévoyant le partage de la Pologne</li>
+  </ul>
+</div>
+
+<div class="bloc-alliance allies">
+  <div class="all-titre">🛡️ Les Alliés</div>
+  France, Royaume-Uni, puis URSS (après l'invasion allemande de juin 1941) et États-Unis (après Pearl Harbor, décembre 1941).
+</div>
+
+<p>Le <strong>1er septembre 1939</strong>, l'Allemagne envahit la Pologne (Blitzkrieg — guerre-éclair). Le <strong>3 septembre 1939</strong>, la France et l'Angleterre déclarent la guerre à l'Allemagne.</p>
+
+<h2>III. Les grandes phases de la guerre</h2>
+
+<div class="etape-card e1">
+  <div class="etape-titre">💀 Les succès de l'Axe (1939–1942)</div>
+  <ul>
+    <li>La France capitule le <strong>17 juin 1940</strong> ; le gouvernement collaborateur de <strong>Vichy</strong> est mis en place (Pétain)</li>
+    <li>De Gaulle appelle à la résistance depuis Londres (18 juin 1940)</li>
+    <li>Hitler attaque l'URSS le <strong>22 juin 1941</strong> (opération Barbarossa), brisant le pacte germano-soviétique</li>
+    <li>Le Japon bombarde <strong>Pearl Harbor</strong> le <strong>7 décembre 1941</strong> → les États-Unis entrent en guerre</li>
+  </ul>
+</div>
+
+<div class="etape-card e2">
+  <div class="etape-titre">✅ Les victoires des Alliés (1943–1945)</div>
+  <ul>
+    <li>Batailles de Stalingrad (1942-43) et El Alamein : tournants de la guerre</li>
+    <li>L'<strong>Italie capitule le 3 septembre 1943</strong></li>
+    <li>Débarquement en Normandie (6 juin 1944)</li>
+    <li>L'<strong>Allemagne capitule le 8 mai 1945</strong></li>
+    <li>Bombes atomiques sur <strong>Hiroshima (6 août)</strong> et <strong>Nagasaki (9 août) 1945</strong></li>
+    <li>Le <strong>Japon capitule le 2 septembre 1945</strong> — fin de la guerre</li>
+  </ul>
+</div>
+
+<h2>IV. Les conséquences de la guerre</h2>
+
+<h3>A. Conséquences mondiales</h3>
+<p>La guerre a causé la mort d'environ <strong>50 millions de personnes</strong>. L'Europe est dévastée. Les États-Unis et l'URSS émergent comme les deux <strong>superpuissances</strong> dominantes. L'<strong>ONU</strong> (Organisation des Nations Unies) est créée le <strong>25 juin 1945</strong> à San Francisco pour maintenir la paix mondiale.</p>
+
+<h3>B. Conséquences en Afrique et au Sénégal</h3>
+
+<div class="afrique-box">
+  <div class="afrique-titre">🌍 L'Afrique dans la Deuxième Guerre mondiale</div>
+  <ul>
+    <li><strong>Bataille d'El Alamein</strong> : victoire des Alliés en Afrique du Nord menant à la libération de l'Éthiopie</li>
+    <li><strong>Massacre de Thiaroye (1944)</strong> : des tirailleurs sénégalais réclamant leurs salaires sont massacrés par l'armée française au Sénégal — événement traumatisant pour la conscience africaine</li>
+    <li><strong>Lamine Guèye</strong> et <strong>Léopold Sédar Senghor</strong> rejoignent la <strong>SFIO</strong> (Section Française de l'Internationale Ouvrière) pour défendre les droits des Africains</li>
+    <li><strong>BDS</strong> (Bloc Démocratique Sénégalais) créé en <strong>1948</strong> par <strong>Senghor</strong> et <strong>Mamadou Dia</strong> — premier grand parti politique sénégalais indépendant</li>
+  </ul>
+</div>
+
+<div class="frise">
+  <div class="frise-titre">📅 Chronologie de la Deuxième Guerre mondiale</div>
+  <div class="frise-item"><span class="frise-date">1931</span> Japon envahit la Mandchourie</div>
+  <div class="frise-item"><span class="frise-date">1933</span> Hitler arrive au pouvoir en Allemagne</div>
+  <div class="frise-item"><span class="frise-date">1935</span> Italie envahit l'Éthiopie</div>
+  <div class="frise-item"><span class="frise-date">23 août 1939</span> Pacte germano-soviétique (secret)</div>
+  <div class="frise-item"><span class="frise-date">1er sept. 1939</span> Invasion de la Pologne par Hitler</div>
+  <div class="frise-item"><span class="frise-date">3 sept. 1939</span> France et Angleterre déclarent la guerre à l'Allemagne</div>
+  <div class="frise-item"><span class="frise-date">17 juin 1940</span> France capitule ; gouvernement de Vichy (Pétain)</div>
+  <div class="frise-item"><span class="frise-date">22 juin 1941</span> Hitler attaque l'URSS (opération Barbarossa)</div>
+  <div class="frise-item"><span class="frise-date">7 déc. 1941</span> Pearl Harbor — les États-Unis entrent en guerre</div>
+  <div class="frise-item"><span class="frise-date">3 sept. 1943</span> Capitulation de l'Italie</div>
+  <div class="frise-item"><span class="frise-date">1944</span> Massacre de Thiaroye (Sénégal)</div>
+  <div class="frise-item"><span class="frise-date">8 mai 1945</span> Capitulation de l'Allemagne</div>
+  <div class="frise-item"><span class="frise-date">6–9 août 1945</span> Bombes atomiques sur Hiroshima et Nagasaki</div>
+  <div class="frise-item"><span class="frise-date">2 sept. 1945</span> Capitulation du Japon — fin de la guerre</div>
+  <div class="frise-item"><span class="frise-date">25 juin 1945</span> Création de l'ONU à San Francisco</div>
+  <div class="frise-item"><span class="frise-date">1948</span> Création du BDS par Senghor et Mamadou Dia</div>
+</div>
+
+<!-- ==================== QCM ==================== -->
+<div class="qcm-section">
+<div class="qcm-titre">✏️ QCM — Évalue tes connaissances (25 questions)</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">1.</span> En quelle année Hitler arrive-t-il au pouvoir en Allemagne ?</div>
+  <label class="option"><input type="radio" name="q1" value="A"> <label>A. 1929</label></label>
+  <label class="option"><input type="radio" name="q1" value="B" data-correct="true"> <label>B. 1933</label></label>
+  <label class="option"><input type="radio" name="q1" value="C"> <label>C. 1936</label></label>
+  <label class="option"><input type="radio" name="q1" value="D"> <label>D. 1939</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">2.</span> Quel traité Hitler viole-t-il en réarmant l'Allemagne ?</div>
+  <label class="option"><input type="radio" name="q2" value="A"> <label>A. Le traité de Brest-Litovsk</label></label>
+  <label class="option"><input type="radio" name="q2" value="B" data-correct="true"> <label>B. Le traité de Versailles</label></label>
+  <label class="option"><input type="radio" name="q2" value="C"> <label>C. Le traité de Berlin</label></label>
+  <label class="option"><input type="radio" name="q2" value="D"> <label>D. Le traité de Paris</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">3.</span> Quel pays l'Italie fasciste de Mussolini envahit-elle en 1935 ?</div>
+  <label class="option"><input type="radio" name="q3" value="A"> <label>A. La Libye</label></label>
+  <label class="option"><input type="radio" name="q3" value="B"> <label>B. L'Égypte</label></label>
+  <label class="option"><input type="radio" name="q3" value="C" data-correct="true"> <label>C. L'Éthiopie</label></label>
+  <label class="option"><input type="radio" name="q3" value="D"> <label>D. Le Maroc</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">4.</span> En quelle année le Japon envahit-il la Mandchourie ?</div>
+  <label class="option"><input type="radio" name="q4" value="A"> <label>A. 1929</label></label>
+  <label class="option"><input type="radio" name="q4" value="B" data-correct="true"> <label>B. 1931</label></label>
+  <label class="option"><input type="radio" name="q4" value="C"> <label>C. 1937</label></label>
+  <label class="option"><input type="radio" name="q4" value="D"> <label>D. 1941</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">5.</span> Comment appelle-t-on la politique de non-intervention des États-Unis avant Pearl Harbor ?</div>
+  <label class="option"><input type="radio" name="q5" value="A"> <label>A. Le pacifisme</label></label>
+  <label class="option"><input type="radio" name="q5" value="B"> <label>B. Le neutralisme</label></label>
+  <label class="option"><input type="radio" name="q5" value="C" data-correct="true"> <label>C. L'isolationnisme</label></label>
+  <label class="option"><input type="radio" name="q5" value="D"> <label>D. Le protectionnisme</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">6.</span> Que prévoyait le Pacte germano-soviétique du 23 août 1939 ?</div>
+  <label class="option"><input type="radio" name="q6" value="A"> <label>A. Une alliance militaire contre la France et l'Angleterre</label></label>
+  <label class="option"><input type="radio" name="q6" value="B" data-correct="true"> <label>B. Un pacte de non-agression avec un accord secret sur le partage de la Pologne</label></label>
+  <label class="option"><input type="radio" name="q6" value="C"> <label>C. La cession de la Tchécoslovaquie à l'URSS</label></label>
+  <label class="option"><input type="radio" name="q6" value="D"> <label>D. L'entrée de l'URSS dans les pays de l'Axe</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">7.</span> À quelle date l'Allemagne envahit-elle la Pologne ?</div>
+  <label class="option"><input type="radio" name="q7" value="A"> <label>A. 3 septembre 1939</label></label>
+  <label class="option"><input type="radio" name="q7" value="B" data-correct="true"> <label>B. 1er septembre 1939</label></label>
+  <label class="option"><input type="radio" name="q7" value="C"> <label>C. 23 août 1939</label></label>
+  <label class="option"><input type="radio" name="q7" value="D"> <label>D. 15 septembre 1939</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">8.</span> Quel pays français collabora avec l'Allemagne nazie après la défaite de 1940 ?</div>
+  <label class="option"><input type="radio" name="q8" value="A"> <label>A. Le gouvernement de De Gaulle à Londres</label></label>
+  <label class="option"><input type="radio" name="q8" value="B" data-correct="true"> <label>B. Le gouvernement de Vichy sous Pétain</label></label>
+  <label class="option"><input type="radio" name="q8" value="C"> <label>C. Le gouvernement républicain de Paris</label></label>
+  <label class="option"><input type="radio" name="q8" value="D"> <label>D. Le gouvernement de résistance de Lyon</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">9.</span> À quelle date la France capitule-t-elle devant l'Allemagne ?</div>
+  <label class="option"><input type="radio" name="q9" value="A"> <label>A. 3 septembre 1940</label></label>
+  <label class="option"><input type="radio" name="q9" value="B"> <label>B. 18 juin 1940</label></label>
+  <label class="option"><input type="radio" name="q9" value="C" data-correct="true"> <label>C. 17 juin 1940</label></label>
+  <label class="option"><input type="radio" name="q9" value="D"> <label>D. 14 juillet 1940</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">10.</span> Comment s'appelle l'opération par laquelle Hitler attaqua l'URSS le 22 juin 1941 ?</div>
+  <label class="option"><input type="radio" name="q10" value="A"> <label>A. Opération Overlord</label></label>
+  <label class="option"><input type="radio" name="q10" value="B" data-correct="true"> <label>B. Opération Barbarossa</label></label>
+  <label class="option"><input type="radio" name="q10" value="C"> <label>C. Opération Blitzkrieg</label></label>
+  <label class="option"><input type="radio" name="q10" value="D"> <label>D. Opération Torch</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">11.</span> Quel événement poussa les États-Unis à entrer en guerre en décembre 1941 ?</div>
+  <label class="option"><input type="radio" name="q11" value="A"> <label>A. L'invasion de la Pologne par Hitler</label></label>
+  <label class="option"><input type="radio" name="q11" value="B"> <label>B. La capitulation de la France</label></label>
+  <label class="option"><input type="radio" name="q11" value="C" data-correct="true"> <label>C. L'attaque japonaise sur Pearl Harbor</label></label>
+  <label class="option"><input type="radio" name="q11" value="D"> <label>D. L'attaque de l'Allemagne contre l'Angleterre</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">12.</span> À quelle date eut lieu l'attaque de Pearl Harbor ?</div>
+  <label class="option"><input type="radio" name="q12" value="A"> <label>A. 22 juin 1941</label></label>
+  <label class="option"><input type="radio" name="q12" value="B"> <label>B. 3 septembre 1943</label></label>
+  <label class="option"><input type="radio" name="q12" value="C" data-correct="true"> <label>C. 7 décembre 1941</label></label>
+  <label class="option"><input type="radio" name="q12" value="D"> <label>D. 6 juin 1944</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">13.</span> Quel est le premier pays de l'Axe à capituler ?</div>
+  <label class="option"><input type="radio" name="q13" value="A"> <label>A. L'Allemagne</label></label>
+  <label class="option"><input type="radio" name="q13" value="B"> <label>B. Le Japon</label></label>
+  <label class="option"><input type="radio" name="q13" value="C" data-correct="true"> <label>C. L'Italie</label></label>
+  <label class="option"><input type="radio" name="q13" value="D"> <label>D. La Hongrie</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">14.</span> À quelle date l'Allemagne nazie capitule-t-elle ?</div>
+  <label class="option"><input type="radio" name="q14" value="A"> <label>A. 3 septembre 1943</label></label>
+  <label class="option"><input type="radio" name="q14" value="B"> <label>B. 2 septembre 1945</label></label>
+  <label class="option"><input type="radio" name="q14" value="C" data-correct="true"> <label>C. 8 mai 1945</label></label>
+  <label class="option"><input type="radio" name="q14" value="D"> <label>D. 11 novembre 1945</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">15.</span> Quelle ville japonaise fut frappée par la bombe atomique le 6 août 1945 ?</div>
+  <label class="option"><input type="radio" name="q15" value="A"> <label>A. Tokyo</label></label>
+  <label class="option"><input type="radio" name="q15" value="B" data-correct="true"> <label>B. Hiroshima</label></label>
+  <label class="option"><input type="radio" name="q15" value="C"> <label>C. Nagasaki</label></label>
+  <label class="option"><input type="radio" name="q15" value="D"> <label>D. Osaka</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">16.</span> Quelle ville japonaise fut frappée par la deuxième bombe atomique le 9 août 1945 ?</div>
+  <label class="option"><input type="radio" name="q16" value="A"> <label>A. Hiroshima</label></label>
+  <label class="option"><input type="radio" name="q16" value="B"> <label>B. Kyoto</label></label>
+  <label class="option"><input type="radio" name="q16" value="C" data-correct="true"> <label>C. Nagasaki</label></label>
+  <label class="option"><input type="radio" name="q16" value="D"> <label>D. Yokohama</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">17.</span> Combien de morts la Deuxième Guerre mondiale a-t-elle causés ?</div>
+  <label class="option"><input type="radio" name="q17" value="A"> <label>A. 10 millions</label></label>
+  <label class="option"><input type="radio" name="q17" value="B"> <label>B. 20 millions</label></label>
+  <label class="option"><input type="radio" name="q17" value="C" data-correct="true"> <label>C. 50 millions</label></label>
+  <label class="option"><input type="radio" name="q17" value="D"> <label>D. 100 millions</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">18.</span> Où et quand fut créée l'Organisation des Nations Unies (ONU) ?</div>
+  <label class="option"><input type="radio" name="q18" value="A"> <label>A. À Paris, le 28 juin 1945</label></label>
+  <label class="option"><input type="radio" name="q18" value="B" data-correct="true"> <label>B. À San Francisco, le 25 juin 1945</label></label>
+  <label class="option"><input type="radio" name="q18" value="C"> <label>C. À New York, le 2 septembre 1945</label></label>
+  <label class="option"><input type="radio" name="q18" value="D"> <label>D. À Genève, le 8 mai 1945</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">19.</span> Quel événement traumatisant impliquant des soldats africains eut lieu au Sénégal en 1944 ?</div>
+  <label class="option"><input type="radio" name="q19" value="A"> <label>A. La rébellion de Dakar contre les Allemands</label></label>
+  <label class="option"><input type="radio" name="q19" value="B" data-correct="true"> <label>B. Le massacre de Thiaroye : des tirailleurs sénégalais réclamant leurs salaires furent tués par l'armée française</label></label>
+  <label class="option"><input type="radio" name="q19" value="C"> <label>C. L'invasion du Sénégal par les troupes japonaises</label></label>
+  <label class="option"><input type="radio" name="q19" value="D"> <label>D. La capitulation du Sénégal face aux forces de l'Axe</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">20.</span> Qui fonda le BDS (Bloc Démocratique Sénégalais) en 1948 ?</div>
+  <label class="option"><input type="radio" name="q20" value="A"> <label>A. Lamine Guèye et Blaise Diagne</label></label>
+  <label class="option"><input type="radio" name="q20" value="B" data-correct="true"> <label>B. Léopold Sédar Senghor et Mamadou Dia</label></label>
+  <label class="option"><input type="radio" name="q20" value="C"> <label>C. Cheikh Anta Diop et Mamadou Dia</label></label>
+  <label class="option"><input type="radio" name="q20" value="D"> <label>D. Senghor et Lamine Guèye</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">21.</span> À quelle date le Japon capitule-t-il officiellement, mettant fin à la Deuxième Guerre mondiale ?</div>
+  <label class="option"><input type="radio" name="q21" value="A"> <label>A. 6 août 1945</label></label>
+  <label class="option"><input type="radio" name="q21" value="B"> <label>B. 9 août 1945</label></label>
+  <label class="option"><input type="radio" name="q21" value="C" data-correct="true"> <label>C. 2 septembre 1945</label></label>
+  <label class="option"><input type="radio" name="q21" value="D"> <label>D. 8 mai 1945</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">22.</span> Quelle bataille en Afrique du Nord marqua le tournant de la guerre en faveur des Alliés ?</div>
+  <label class="option"><input type="radio" name="q22" value="A"> <label>A. La bataille de Dakar</label></label>
+  <label class="option"><input type="radio" name="q22" value="B" data-correct="true"> <label>B. La bataille d'El Alamein</label></label>
+  <label class="option"><input type="radio" name="q22" value="C"> <label>C. La bataille de Tobrouk</label></label>
+  <label class="option"><input type="radio" name="q22" value="D"> <label>D. La bataille de Tunis</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">23.</span> Quel pacte signé en août 1939 permit à Hitler d'envahir la Pologne sans craindre l'URSS ?</div>
+  <label class="option"><input type="radio" name="q23" value="A"> <label>A. Le Pacte d'Acier</label></label>
+  <label class="option"><input type="radio" name="q23" value="B"> <label>B. Le Pacte Anti-Komintern</label></label>
+  <label class="option"><input type="radio" name="q23" value="C" data-correct="true"> <label>C. Le Pacte germano-soviétique</label></label>
+  <label class="option"><input type="radio" name="q23" value="D"> <label>D. Le Pacte de Varsovie</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">24.</span> Quelles deux puissances émergent comme superpuissances dominantes après 1945 ?</div>
+  <label class="option"><input type="radio" name="q24" value="A"> <label>A. La France et l'Angleterre</label></label>
+  <label class="option"><input type="radio" name="q24" value="B" data-correct="true"> <label>B. Les États-Unis et l'URSS</label></label>
+  <label class="option"><input type="radio" name="q24" value="C"> <label>C. L'Allemagne et le Japon reconstruits</label></label>
+  <label class="option"><input type="radio" name="q24" value="D"> <label>D. La Chine et les États-Unis</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">25.</span> Quel parti politique sénégalais Senghor et Lamine Guèye rejoignirent-ils pour défendre les droits des Africains après la guerre ?</div>
+  <label class="option"><input type="radio" name="q25" value="A"> <label>A. Le BDS (Bloc Démocratique Sénégalais)</label></label>
+  <label class="option"><input type="radio" name="q25" value="B" data-correct="true"> <label>B. La SFIO (Section Française de l'Internationale Ouvrière)</label></label>
+  <label class="option"><input type="radio" name="q25" value="C"> <label>C. Le Parti Communiste Français</label></label>
+  <label class="option"><input type="radio" name="q25" value="D"> <label>D. La FEANF (Fédération des Étudiants d'Afrique Noire en France)</label></label>
+</div>
+
+</div>
+</body>
+</html>

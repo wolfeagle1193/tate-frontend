@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 15px; color: #1a1a1a; background: #fff; padding: 16px; line-height: 1.7; }
+  .partie-badge { background: #154360; color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 10px; }
+  h1 { font-size: 1.35rem; font-weight: 800; color: #154360; border-bottom: 3px solid #2E86C1; padding-bottom: 8px; margin-bottom: 18px; }
+  .essentiel { background: linear-gradient(135deg, #EBF5FB, #D6EAF8); border-left: 5px solid #2E86C1; border-radius: 10px; padding: 16px 18px; margin-bottom: 22px; }
+  .essentiel-titre { font-size: 1rem; font-weight: 800; color: #154360; text-align: center; margin-bottom: 10px; }
+  .essentiel p { font-weight: 600; color: #154360; font-size: 14px; }
+  h2 { font-size: 1.05rem; font-weight: 800; color: #154360; margin: 22px 0 10px; border-left: 4px solid #2E86C1; padding-left: 10px; }
+  h3 { font-size: .95rem; font-weight: 700; color: #1A5276; margin: 14px 0 6px; }
+  p { margin-bottom: 10px; }
+  ul { margin-left: 18px; margin-bottom: 10px; }
+  li { margin-bottom: 5px; }
+  .forme-card { border-radius: 10px; padding: 12px 16px; margin: 10px 0; border-left: 5px solid; }
+  .terrestre { background: #E9F7EF; border-color: #27AE60; }
+  .maritime { background: #EBF5FB; border-color: #2980B9; }
+  .telecom { background: #F4ECF7; border-color: #8E44AD; }
+  .pipeline { background: #FEF9E7; border-color: #F39C12; }
+  .forme-titre { font-weight: 800; font-size: 14px; margin-bottom: 6px; }
+  .terrestre .forme-titre { color: #1E8449; }
+  .maritime .forme-titre { color: #1A5276; }
+  .telecom .forme-titre { color: #6C3483; }
+  .pipeline .forme-titre { color: #B7770D; }
+  .probleme-card { border-radius: 10px; padding: 12px 16px; margin: 10px 0; border-left: 5px solid #E74C3C; background: #FDEDEC; }
+  .probleme-titre { font-weight: 800; font-size: 14px; margin-bottom: 6px; color: #C0392B; }
+  .qcm-section { margin-top: 30px; border-top: 3px solid #2E86C1; padding-top: 20px; }
+  .qcm-titre { font-size: 1.1rem; font-weight: 800; color: #fff; background: #154360; padding: 10px 16px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
+  .question-bloc { background: #FAFAFA; border: 1.5px solid #D6EAF8; border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; }
+  .question-texte { font-weight: 700; color: #1a1a1a; margin-bottom: 10px; font-size: 14px; }
+  .question-num { color: #2E86C1; font-weight: 800; }
+  .option { display: flex; align-items: flex-start; gap: 10px; padding: 7px 10px; border-radius: 7px; margin-bottom: 4px; cursor: pointer; border: 1.5px solid transparent; }
+  .option:hover { background: #EBF5FB; border-color: #2E86C1; }
+  .option input[type="radio"] { margin-top: 2px; accent-color: #154360; flex-shrink: 0; width: 16px; height: 16px; }
+  .option label { cursor: pointer; font-size: 14px; color: #333; }
+</style>
+</head>
+<body>
+
+<div class="partie-badge">Géographie — Chapitre IV : La Terre, une planète solidaire ?</div>
+<h1>Leçon 8 — Les formes et problèmes de communication</h1>
+
+<div class="essentiel">
+  <div class="essentiel-titre">📌 L'essentiel à retenir</div>
+  <p>Le XXe siècle a été marqué par l'essor fulgurant des transports et des communications. Si la communication a permis d'accélérer la mondialisation, elle ne manque pas cependant de poser de nombreux problèmes. Avec l'essor des NTIC et les progrès des modes traditionnels de communication, le monde s'est rétréci.</p>
+</div>
+
+<h2>I. Les formes de communication</h2>
+
+<p>La <strong>communication</strong> désigne le déplacement d'objets matériels ou immatériels pour rapprocher les hommes. Les formes de communication n'ont cessé de se développer et de se diversifier.</p>
+
+<div class="forme-card terrestre">
+  <div class="forme-titre">🚂 Communications terrestres et aériennes</div>
+  <ul>
+    <li>Développées depuis la <strong>seconde révolution industrielle (milieu du XIXe siècle)</strong> avec l'automobile, l'avion et le chemin de fer</li>
+    <li>L'augmentation de la vitesse a permis le développement :
+      <ul>
+        <li>Transports terrestres : <strong>TGV français</strong>, <strong>Shinkansen japonais</strong></li>
+        <li>Transports aériens : <strong>Airbus</strong>, <strong>Concorde</strong></li>
+      </ul>
+    </li>
+  </ul>
+</div>
+
+<div class="forme-card maritime">
+  <div class="forme-titre">🚢 Communications maritimes</div>
+  <ul>
+    <li>Étendues et massifiées grâce à des navires de plus en plus puissants et spécialisés</li>
+    <li>Transport de voyageurs et de marchandises : <strong>méthaniers</strong> (gaz), <strong>minéraliers</strong> (minerais), <strong>pétroliers</strong></li>
+    <li>La <strong>conteneurisation</strong> a joué un rôle majeur dans la massification et le renforcement des liaisons maritimes</li>
+  </ul>
+</div>
+
+<div class="forme-card telecom">
+  <div class="forme-titre">📡 Télécommunications et NTIC</div>
+  <ul>
+    <li>Permettent de transmettre des informations à distance : révolution sans précédent</li>
+    <li><strong>Radio, télévision, téléphone, réseaux informatiques (Internet)</strong> et réseaux télématiques</li>
+    <li>Outils de rapprochement des hommes et de réduction des distances</li>
+    <li>Les télécommunications sont devenues un <strong>facteur important de développement économique</strong></li>
+  </ul>
+</div>
+
+<div class="forme-card pipeline">
+  <div class="forme-titre">🛢️ Transport par conduites et réseaux</div>
+  <ul>
+    <li><strong>Oléoducs</strong> : transport de produits pétroliers</li>
+    <li><strong>Gazoducs</strong> : transport de gaz naturel</li>
+    <li>Transport de produits solides : charbons, minerais</li>
+    <li>Transport de l'énergie électrique</li>
+  </ul>
+</div>
+
+<h2>II. Les problèmes de la communication</h2>
+
+<p>Malgré les avantages qu'elle procure, la communication est source de nombreux problèmes :</p>
+
+<div class="probleme-card">
+  <div class="probleme-titre">⚠️ Renforcement des inégalités Nord/Sud</div>
+  <p>Les communications contribuent au renforcement des inégalités économiques entre le Nord et le Sud. En monopolisant le pouvoir que procurent ces nouveaux moyens technologiques, les pays du Nord renforcent leur domination sur les pays du Sud. Elles accentuent la <strong>fracture numérique</strong> en favorisant l'intégration des pays du Nord contrairement au Sud où les infrastructures sont insuffisantes et moins performantes.</p>
+</div>
+
+<div class="probleme-card">
+  <div class="probleme-titre">📺 Occidentalisation du monde</div>
+  <p>Le monopole de l'information et de la communication par les <strong>grands groupes de communication</strong> (CNN, Fox News) accentue le phénomène de l'<strong>occidentalisation du monde</strong>. La culture et les valeurs occidentales s'imposent partout.</p>
+</div>
+
+<div class="probleme-card">
+  <div class="probleme-titre">🌍 Conséquences écologiques</div>
+  <p>La densité des communications et la saturation des trafics ont des <strong>conséquences écologiques désastreuses</strong> : pollution de l'air, des eaux et des sols. Le développement des transports contribue à l'augmentation des émissions de GES.</p>
+</div>
+
+<div class="probleme-card">
+  <div class="probleme-titre">🏙️ Inégalités territoriales</div>
+  <p>Le développement de la communication renforce également les <strong>inégalités territoriales</strong> au niveau des États en favorisant les régions mieux équipées et en marginalisant les zones rurales ou isolées.</p>
+</div>
+
+<!-- QCM -->
+<div class="qcm-section">
+<div class="qcm-titre">📝 Évaluation — Questions à Choix Multiples (22 questions)</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">1.</span> La communication désigne :</div>
+  <div class="option"><input type="radio" name="q1" value="A" id="q1A"><label for="q1A">A. Le transport de marchandises par voie maritime uniquement</label></div>
+  <div class="option"><input type="radio" name="q1" value="B" id="q1B" data-correct="true"><label for="q1B">B. Le déplacement d'objets matériels ou immatériels pour rapprocher les hommes</label></div>
+  <div class="option"><input type="radio" name="q1" value="C" id="q1C"><label for="q1C">C. La diffusion de la culture occidentale dans le monde</label></div>
+  <div class="option"><input type="radio" name="q1" value="D" id="q1D"><label for="q1D">D. Le transfert de capitaux entre pays développés et pays pauvres</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">2.</span> Les communications terrestres et aériennes modernes se sont développées principalement depuis :</div>
+  <div class="option"><input type="radio" name="q2" value="A" id="q2A"><label for="q2A">A. La Première Guerre mondiale</label></div>
+  <div class="option"><input type="radio" name="q2" value="B" id="q2B" data-correct="true"><label for="q2B">B. La seconde révolution industrielle (milieu du XIXe siècle)</label></div>
+  <div class="option"><input type="radio" name="q2" value="C" id="q2C"><label for="q2C">C. La Deuxième Guerre mondiale</label></div>
+  <div class="option"><input type="radio" name="q2" value="D" id="q2D"><label for="q2D">D. La Révolution française</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">3.</span> Le TGV est un exemple de :</div>
+  <div class="option"><input type="radio" name="q3" value="A" id="q3A"><label for="q3A">A. Communication maritime</label></div>
+  <div class="option"><input type="radio" name="q3" value="B" id="q3B"><label for="q3B">B. Télécommunication</label></div>
+  <div class="option"><input type="radio" name="q3" value="C" id="q3C" data-correct="true"><label for="q3C">C. Transport terrestre rapide (France)</label></div>
+  <div class="option"><input type="radio" name="q3" value="D" id="q3D"><label for="q3D">D. Transport de marchandises par oléoduc</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">4.</span> Le Shinkansen est un train rapide de :</div>
+  <div class="option"><input type="radio" name="q4" value="A" id="q4A"><label for="q4A">A. La France</label></div>
+  <div class="option"><input type="radio" name="q4" value="B" id="q4B"><label for="q4B">B. La Chine</label></div>
+  <div class="option"><input type="radio" name="q4" value="C" id="q4C" data-correct="true"><label for="q4C">C. Le Japon</label></div>
+  <div class="option"><input type="radio" name="q4" value="D" id="q4D"><label for="q4D">D. L'Allemagne</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">5.</span> Les méthaniers sont des navires spécialisés dans le transport de :</div>
+  <div class="option"><input type="radio" name="q5" value="A" id="q5A"><label for="q5A">A. Pétrole</label></div>
+  <div class="option"><input type="radio" name="q5" value="B" id="q5B" data-correct="true"><label for="q5B">B. Gaz naturel</label></div>
+  <div class="option"><input type="radio" name="q5" value="C" id="q5C"><label for="q5C">C. Minerais</label></div>
+  <div class="option"><input type="radio" name="q5" value="D" id="q5D"><label for="q5D">D. Produits alimentaires</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">6.</span> La conteneurisation a eu pour effet :</div>
+  <div class="option"><input type="radio" name="q6" value="A" id="q6A"><label for="q6A">A. La réduction du trafic maritime</label></div>
+  <div class="option"><input type="radio" name="q6" value="B" id="q6B" data-correct="true"><label for="q6B">B. La massification et le renforcement des liaisons maritimes</label></div>
+  <div class="option"><input type="radio" name="q6" value="C" id="q6C"><label for="q6C">C. La disparition des ports traditionnels</label></div>
+  <div class="option"><input type="radio" name="q6" value="D" id="q6D"><label for="q6D">D. L'augmentation des prix du transport</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">7.</span> Les télécommunications permettent de :</div>
+  <div class="option"><input type="radio" name="q7" value="A" id="q7A"><label for="q7A">A. Transporter des marchandises à grande vitesse</label></div>
+  <div class="option"><input type="radio" name="q7" value="B" id="q7B" data-correct="true"><label for="q7B">B. Transmettre des informations à distance (radio, TV, téléphone, Internet)</label></div>
+  <div class="option"><input type="radio" name="q7" value="C" id="q7C"><label for="q7C">C. Transporter du pétrole par pipelines</label></div>
+  <div class="option"><input type="radio" name="q7" value="D" id="q7D"><label for="q7D">D. Relier les ports maritimes entre eux</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">8.</span> Un oléoduc sert à transporter :</div>
+  <div class="option"><input type="radio" name="q8" value="A" id="q8A"><label for="q8A">A. Du gaz naturel</label></div>
+  <div class="option"><input type="radio" name="q8" value="B" id="q8B"><label for="q8B">B. De l'eau potable</label></div>
+  <div class="option"><input type="radio" name="q8" value="C" id="q8C" data-correct="true"><label for="q8C">C. Des produits pétroliers</label></div>
+  <div class="option"><input type="radio" name="q8" value="D" id="q8D"><label for="q8D">D. Des minerais solides</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">9.</span> Un gazoduc sert à transporter :</div>
+  <div class="option"><input type="radio" name="q9" value="A" id="q9A"><label for="q9A">A. Du pétrole</label></div>
+  <div class="option"><input type="radio" name="q9" value="B" id="q9B" data-correct="true"><label for="q9B">B. Du gaz naturel</label></div>
+  <div class="option"><input type="radio" name="q9" value="C" id="q9C"><label for="q9C">C. De l'électricité</label></div>
+  <div class="option"><input type="radio" name="q9" value="D" id="q9D"><label for="q9D">D. Du charbon</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">10.</span> La fracture numérique désigne l'inégalité entre :</div>
+  <div class="option"><input type="radio" name="q10" value="A" id="q10A"><label for="q10A">A. Les pays producteurs et importateurs de pétrole</label></div>
+  <div class="option"><input type="radio" name="q10" value="B" id="q10B" data-correct="true"><label for="q10B">B. Les pays ayant accès aux technologies numériques et ceux qui n'y ont pas accès</label></div>
+  <div class="option"><input type="radio" name="q10" value="C" id="q10C"><label for="q10C">C. Les utilisateurs de smartphones et d'ordinateurs</label></div>
+  <div class="option"><input type="radio" name="q10" value="D" id="q10D"><label for="q10D">D. Les pays riches en ressources minières et les autres</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">11.</span> CNN et Fox News sont des exemples de :</div>
+  <div class="option"><input type="radio" name="q11" value="A" id="q11A"><label for="q11A">A. Réseaux de transport maritime</label></div>
+  <div class="option"><input type="radio" name="q11" value="B" id="q11B" data-correct="true"><label for="q11B">B. Grands groupes de communication qui monopolisent l'information (occidentalisation)</label></div>
+  <div class="option"><input type="radio" name="q11" value="C" id="q11C"><label for="q11C">C. Organisations internationales de coopération</label></div>
+  <div class="option"><input type="radio" name="q11" value="D" id="q11D"><label for="q11D">D. Compagnies aériennes mondiales</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">12.</span> L'occidentalisation du monde est favorisée par :</div>
+  <div class="option"><input type="radio" name="q12" value="A" id="q12A"><label for="q12A">A. Le développement des transports maritimes</label></div>
+  <div class="option"><input type="radio" name="q12" value="B" id="q12B"><label for="q12B">B. La conteneurisation des marchandises</label></div>
+  <div class="option"><input type="radio" name="q12" value="C" id="q12C" data-correct="true"><label for="q12C">C. Le monopole des grands groupes de communication des pays du Nord sur l'information</label></div>
+  <div class="option"><input type="radio" name="q12" value="D" id="q12D"><label for="q12D">D. La construction de gazoducs et oléoducs</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">13.</span> Les pétroliers sont des navires spécialisés dans le transport de :</div>
+  <div class="option"><input type="radio" name="q13" value="A" id="q13A"><label for="q13A">A. Gaz naturel</label></div>
+  <div class="option"><input type="radio" name="q13" value="B" id="q13B"><label for="q13B">B. Minerais</label></div>
+  <div class="option"><input type="radio" name="q13" value="C" id="q13C" data-correct="true"><label for="q13C">C. Pétrole</label></div>
+  <div class="option"><input type="radio" name="q13" value="D" id="q13D"><label for="q13D">D. Marchandises en conteneurs</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">14.</span> Lequel de ces éléments est une conséquence écologique des communications ?</div>
+  <div class="option"><input type="radio" name="q14" value="A" id="q14A"><label for="q14A">A. La réduction des inégalités entre Nord et Sud</label></div>
+  <div class="option"><input type="radio" name="q14" value="B" id="q14B" data-correct="true"><label for="q14B">B. La pollution causée par la densité et la saturation des trafics</label></div>
+  <div class="option"><input type="radio" name="q14" value="C" id="q14C"><label for="q14C">C. L'augmentation de la biodiversité marine</label></div>
+  <div class="option"><input type="radio" name="q14" value="D" id="q14D"><label for="q14D">D. La diminution des émissions de CO₂</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">15.</span> Les NTIC désignent :</div>
+  <div class="option"><input type="radio" name="q15" value="A" id="q15A"><label for="q15A">A. Les Navires de Transport International de Conteneurs</label></div>
+  <div class="option"><input type="radio" name="q15" value="B" id="q15B" data-correct="true"><label for="q15B">B. Les Nouvelles Technologies de l'Information et de la Communication</label></div>
+  <div class="option"><input type="radio" name="q15" value="C" id="q15C"><label for="q15C">C. Les Nations Terrestres et Intercontinentales de Commerce</label></div>
+  <div class="option"><input type="radio" name="q15" value="D" id="q15D"><label for="q15D">D. Les Normes Techniques Internationales de Communication</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">16.</span> La communication renforce les inégalités territoriales en favorisant :</div>
+  <div class="option"><input type="radio" name="q16" value="A" id="q16A"><label for="q16A">A. Les zones rurales et isolées</label></div>
+  <div class="option"><input type="radio" name="q16" value="B" id="q16B" data-correct="true"><label for="q16B">B. Les régions mieux équipées en infrastructures de communication</label></div>
+  <div class="option"><input type="radio" name="q16" value="C" id="q16C"><label for="q16C">C. Les pays en voie de développement</label></div>
+  <div class="option"><input type="radio" name="q16" value="D" id="q16D"><label for="q16D">D. Les pays les moins avancés (PMA)</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">17.</span> L'Airbus et le Concorde sont des exemples de :</div>
+  <div class="option"><input type="radio" name="q17" value="A" id="q17A"><label for="q17A">A. Navires de transport maritime</label></div>
+  <div class="option"><input type="radio" name="q17" value="B" id="q17B"><label for="q17B">B. Trains à grande vitesse</label></div>
+  <div class="option"><input type="radio" name="q17" value="C" id="q17C" data-correct="true"><label for="q17C">C. Moyens de transport aérien</label></div>
+  <div class="option"><input type="radio" name="q17" value="D" id="q17D"><label for="q17D">D. Réseaux de télécommunications</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">18.</span> Les télécommunications sont considérées comme :</div>
+  <div class="option"><input type="radio" name="q18" value="A" id="q18A"><label for="q18A">A. Un facteur de dégradation de l'environnement uniquement</label></div>
+  <div class="option"><input type="radio" name="q18" value="B" id="q18B" data-correct="true"><label for="q18B">B. Un facteur important de développement économique et de rapprochement des hommes</label></div>
+  <div class="option"><input type="radio" name="q18" value="C" id="q18C"><label for="q18C">C. Un monopole des pays pauvres</label></div>
+  <div class="option"><input type="radio" name="q18" value="D" id="q18D"><label for="q18D">D. Un moyen de transport physique des personnes</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">19.</span> Les minéraliers sont des navires qui transportent :</div>
+  <div class="option"><input type="radio" name="q19" value="A" id="q19A"><label for="q19A">A. Du gaz naturel</label></div>
+  <div class="option"><input type="radio" name="q19" value="B" id="q19B"><label for="q19B">B. Du pétrole</label></div>
+  <div class="option"><input type="radio" name="q19" value="C" id="q19C" data-correct="true"><label for="q19C">C. Des minerais</label></div>
+  <div class="option"><input type="radio" name="q19" value="D" id="q19D"><label for="q19D">D. Des passagers</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">20.</span> Quel problème la domination des pays du Nord sur les communications crée-t-elle pour les pays du Sud ?</div>
+  <div class="option"><input type="radio" name="q20" value="A" id="q20A"><label for="q20A">A. Une amélioration de leur IDH</label></div>
+  <div class="option"><input type="radio" name="q20" value="B" id="q20B" data-correct="true"><label for="q20B">B. Un renforcement de la fracture numérique et de leur dépendance</label></div>
+  <div class="option"><input type="radio" name="q20" value="C" id="q20C"><label for="q20C">C. Une augmentation de leurs exportations</label></div>
+  <div class="option"><input type="radio" name="q20" value="D" id="q20D"><label for="q20D">D. Une réduction du chômage</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">21.</span> Internet est classé dans la catégorie des :</div>
+  <div class="option"><input type="radio" name="q21" value="A" id="q21A"><label for="q21A">A. Communications maritimes</label></div>
+  <div class="option"><input type="radio" name="q21" value="B" id="q21B"><label for="q21B">B. Transports terrestres</label></div>
+  <div class="option"><input type="radio" name="q21" value="C" id="q21C" data-correct="true"><label for="q21C">C. Télécommunications / réseaux informatiques (NTIC)</label></div>
+  <div class="option"><input type="radio" name="q21" value="D" id="q21D"><label for="q21D">D. Communications par conduites (pipelines)</label></div>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">22.</span> Quelle affirmation sur la communication est correcte ?</div>
+  <div class="option"><input type="radio" name="q22" value="A" id="q22A"><label for="q22A">A. La communication n'a aucun impact sur les inégalités entre pays</label></div>
+  <div class="option"><input type="radio" name="q22" value="B" id="q22B"><label for="q22B">B. La communication a uniquement des effets positifs sur la société</label></div>
+  <div class="option"><input type="radio" name="q22" value="C" id="q22C" data-correct="true"><label for="q22C">C. La communication accélère la mondialisation mais renforce aussi les inégalités et pose des problèmes écologiques</label></div>
+  <div class="option"><input type="radio" name="q22" value="D" id="q22D"><label for="q22D">D. La communication a permis d'éliminer la fracture numérique</label></div>
+</div>
+
+</div><!-- end qcm-section -->
+</body>
+</html>

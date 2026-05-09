@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 15px; color: #1a1a1a; background: #fff; padding: 16px; line-height: 1.7; }
+  .partie-badge { background: #B7410E; color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 10px; }
+  h1 { font-size: 1.35rem; font-weight: 800; color: #B7410E; border-bottom: 3px solid #E67E22; padding-bottom: 8px; margin-bottom: 18px; }
+  .essentiel { background: linear-gradient(135deg, #FEF9E7, #FDEBD0); border-left: 5px solid #E67E22; border-radius: 10px; padding: 16px 18px; margin-bottom: 22px; }
+  .essentiel-titre { font-size: 1rem; font-weight: 800; color: #B7410E; text-align: center; margin-bottom: 10px; }
+  .essentiel p { font-weight: 600; color: #B7410E; font-size: 14px; }
+  h2 { font-size: 1.05rem; font-weight: 800; color: #B7410E; margin: 22px 0 10px; border-left: 4px solid #E67E22; padding-left: 10px; }
+  h3 { font-size: .95rem; font-weight: 700; color: #922B21; margin: 14px 0 6px; }
+  p { margin-bottom: 10px; }
+  ul { margin-left: 18px; margin-bottom: 10px; }
+  li { margin-bottom: 5px; }
+  .perso-card { border-radius: 10px; padding: 12px 16px; margin: 10px 0; border: 2px solid; }
+  .nat { background: #EBF5FB; border-color: #2E86C1; }
+  .com { background: #FDEDEC; border-color: #E74C3C; }
+  .perso-nom { font-weight: 800; font-size: 14px; margin-bottom: 5px; }
+  .nat .perso-nom { color: #1A5276; }
+  .com .perso-nom { color: #C0392B; }
+  .frise { background: #F8F9FA; border: 1.5px solid #BDC3C7; border-radius: 10px; padding: 14px 16px; margin: 14px 0; }
+  .frise-titre { font-weight: 800; color: #B7410E; margin-bottom: 10px; font-size: 14px; }
+  .frise-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 6px; font-size: 13px; }
+  .frise-date { background: #E67E22; color: #fff; border-radius: 6px; padding: 2px 8px; font-weight: 700; white-space: nowrap; flex-shrink: 0; }
+  .principe-card { background: #EBF5FB; border: 1.5px solid #2E86C1; border-radius: 8px; padding: 10px 14px; margin: 6px 0; font-size: 13px; }
+  .conclusion { background: #FEF9E7; border: 1.5px solid #E67E22; border-radius: 8px; padding: 12px 16px; margin: 18px 0; }
+  .conclusion p { font-weight: 700; color: #B7410E; margin: 0; font-size: 14px; }
+  .qcm-section { margin-top: 30px; border-top: 3px solid #E67E22; padding-top: 20px; }
+  .qcm-titre { font-size: 1.1rem; font-weight: 800; color: #fff; background: #B7410E; padding: 10px 16px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
+  .question-bloc { background: #FAFAFA; border: 1.5px solid #FDEBD0; border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; }
+  .question-texte { font-weight: 700; color: #1a1a1a; margin-bottom: 10px; font-size: 14px; }
+  .question-num { color: #E67E22; font-weight: 800; }
+  .option { display: flex; align-items: flex-start; gap: 10px; padding: 7px 10px; border-radius: 7px; margin-bottom: 4px; cursor: pointer; border: 1.5px solid transparent; }
+  .option:hover { background: #FEF9E7; border-color: #E67E22; }
+  .option input[type="radio"] { margin-top: 2px; accent-color: #B7410E; flex-shrink: 0; width: 16px; height: 16px; }
+  .option label { cursor: pointer; font-size: 14px; color: #333; }
+</style>
+</head>
+<body>
+
+<div class="partie-badge">Partie 4 — Conflits et révolutions au XXe siècle</div>
+<h1>Leçon 13 — Les révolutions chinoises : de Sun Wen à Mao Zedong</h1>
+
+<div class="essentiel">
+  <div class="essentiel-titre">📌 L'essentiel à retenir</div>
+  <p>Au cours du XXe siècle, la Chine est secouée par des troubles qui débouchent d'abord sur la proclamation de la première République en 1911 avec Sun Wen, puis sur la République populaire communiste en 1949 avec Mao Zedong. En moins d'un demi-siècle, la Chine passe d'un empire féodal à une république communiste.</p>
+</div>
+
+<h2>I. La révolution de 1911 et la naissance de la République</h2>
+
+<p>Au début du XIXe siècle, la Chine est un pays <strong>féodal et arriéré</strong>. La domination étrangère, la misère et la pauvreté suscitent un mécontentement et des troubles. Ceux-ci entraînent la <strong>chute de l'empire</strong> (Révolte à Wuchang en 1911, fin de la dynastie Mandchoue des Qing) et :</p>
+
+<div class="perso-card nat">
+  <div class="perso-nom">🇨🇳 Sun Wen (Sun Yat-Sen) — Père de la République chinoise</div>
+  <ul style="font-size:13px;">
+    <li>Président du parti nationaliste, le <strong>GUOMINDANG</strong>.</li>
+    <li><strong>1er janvier 1912</strong> : Proclamation de la République à Nankin, dirigée par Sun Wen.</li>
+    <li>Écarté du pouvoir par <strong>Yuan Che Kai</strong> installé à Pékin.</li>
+    <li>À la mort de Yuan Che Kai en 1916, Sun Wen redevient président.</li>
+    <li>Sa politique repose sur trois principes : <strong>nationalisme, démocratie et subsistance du peuple</strong>.</li>
+    <li><strong>1925</strong> : Mort de Sun Wen (Sun Yixian).</li>
+  </ul>
+</div>
+
+<div class="perso-card nat">
+  <div class="perso-nom">⚔️ Tchang Kaï-Chek (Jiang Jieshi) — Général nationaliste</div>
+  <ul style="font-size:13px;">
+    <li>En <strong>1925</strong>, le général Tchang Kaï-Chek confisque le pouvoir et installe un régime autoritaire.</li>
+    <li>Il devient président de la Chine en <strong>1928</strong>, avec Nanjing comme capitale.</li>
+    <li>Il s'oppose violemment aux communistes : massacres de Shanghaï en avril 1927.</li>
+    <li>Soutenu par les <strong>États-Unis</strong> après la Seconde Guerre mondiale.</li>
+    <li>En 1949, vaincu par Mao, il se réfugie à <strong>Formose (Taïwan)</strong> où il crée la Chine nationaliste.</li>
+  </ul>
+</div>
+
+<h2>II. La révolution de 1949 et l'avènement du communisme</h2>
+
+<h3>A. La naissance du PCC et la guerre civile (1927-1937)</h3>
+
+<div class="perso-card com">
+  <div class="perso-nom">☭ Mao Zedong — Fondateur de la Chine communiste</div>
+  <ul style="font-size:13px;">
+    <li>En <strong>1920</strong>, Mao et ses partisans fondent le <strong>Parti Communiste Chinois (PCC)</strong> qui aspire à une révolution avec l'appui des paysans.</li>
+    <li>En <strong>1927</strong>, la guerre civile éclate entre nationalistes (Guomindang) et communistes.</li>
+    <li><strong>1934-1935 :</strong> Harcelés par les nationalistes, les communistes entament la <em>Longue Marche</em> de plus de <strong>10 000 km</strong>, du Sud à l'Ouest.</li>
+    <li>Mao s'impose comme le principal dirigeant du PCC à l'issue de la Longue Marche.</li>
+  </ul>
+</div>
+
+<h3>B. La guerre sino-japonaise (1937-1945)</h3>
+<p>À partir de <strong>1936</strong>, l'invasion de la Chine par le Japon oblige les nationalistes et les communistes à former un <strong>front uni antinippon</strong>. De <strong>1937 à 1945</strong>, les Communistes mènent des combats hardis et parviennent à chasser les Japonais du pays en 1945.</p>
+
+<h3>C. Le triomphe du communisme (1947-1949)</h3>
+<p>En <strong>1947</strong>, la guerre civile reprend entre les nationalistes (soutenus par les États-Unis) et les communistes. Après deux ans de résistance, les partisans de Mao passent à la contre-offensive et écrasent les nationalistes.</p>
+<ul>
+  <li>Chang Kaï-Chek se réfugie à <strong>Formose (Taïwan)</strong> où il crée l'État de Taïwan soutenu par les Américains.</li>
+  <li><strong>1er octobre 1949</strong> : Mao proclame la <strong>République Populaire de Chine</strong> à Pékin. Il installe un État communiste et entame la reconstruction du pays.</li>
+</ul>
+
+<div class="frise">
+  <div class="frise-titre">📅 Chronologie des révolutions chinoises</div>
+  <div class="frise-item"><span class="frise-date">1911</span><span>Révolte à Wuchang — chute de la dynastie mandchoue des Qing</span></div>
+  <div class="frise-item"><span class="frise-date">1er jan 1912</span><span>Sun Wen proclame la République à Nankin — fondation du Guomindang</span></div>
+  <div class="frise-item"><span class="frise-date">1920</span><span>Mao et ses partisans fondent le Parti Communiste Chinois (PCC)</span></div>
+  <div class="frise-item"><span class="frise-date">1925</span><span>Mort de Sun Wen — Tchang Kaï-Chek prend le pouvoir</span></div>
+  <div class="frise-item"><span class="frise-date">1927</span><span>Guerre civile entre nationalistes et communistes — massacres de Shanghaï</span></div>
+  <div class="frise-item"><span class="frise-date">1934-1935</span><span>La Longue Marche communiste (10 000 km) du Sud vers l'Ouest</span></div>
+  <div class="frise-item"><span class="frise-date">1937-1945</span><span>Guerre sino-japonaise — front uni contre le Japon</span></div>
+  <div class="frise-item"><span class="frise-date">1947</span><span>Reprise de la guerre civile — offensive finale des communistes</span></div>
+  <div class="frise-item"><span class="frise-date">1er oct 1949</span><span>Mao proclame la République Populaire de Chine — Tchang se réfugie à Taïwan</span></div>
+</div>
+
+<div class="conclusion">
+  <p>💡 En moins d'un demi-siècle, la Chine est passée d'un empire féodal à une république communiste, le second État socialiste après l'URSS. Cette révolution aura des répercussions mondiales considérables.</p>
+</div>
+
+<!-- ===== QCM ===== -->
+<div class="qcm-section">
+  <div class="qcm-titre">🎯 Évalue tes connaissances — 24 questions</div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">1.</span> Comment s'appelait la révolte de 1911 qui a provoqué la chute de la dynastie mandchoue en Chine ?</div>
+    <div class="option"><input type="radio" name="q1" value="a"><label>La révolte des Taiping</label></div>
+    <div class="option"><input type="radio" name="q1" value="b"><label>La révolution Meiji</label></div>
+    <div class="option"><input type="radio" name="q1" value="c" data-correct="true"><label>La révolte à Wuchang</label></div>
+    <div class="option"><input type="radio" name="q1" value="d"><label>La Longue Marche</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">2.</span> Quel parti politique nationaliste Sun Wen présidait-il ?</div>
+    <div class="option"><input type="radio" name="q2" value="a"><label>Le PCC (Parti Communiste Chinois)</label></div>
+    <div class="option"><input type="radio" name="q2" value="b" data-correct="true"><label>Le Guomindang</label></div>
+    <div class="option"><input type="radio" name="q2" value="c"><label>Le Parti républicain chinois</label></div>
+    <div class="option"><input type="radio" name="q2" value="d"><label>La Triade impériale</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">3.</span> Quand et où Sun Wen a-t-il proclamé la République chinoise ?</div>
+    <div class="option"><input type="radio" name="q3" value="a"><label>Le 1er octobre 1912 à Pékin</label></div>
+    <div class="option"><input type="radio" name="q3" value="b" data-correct="true"><label>Le 1er janvier 1912 à Nankin</label></div>
+    <div class="option"><input type="radio" name="q3" value="c"><label>Le 1er mai 1911 à Shanghai</label></div>
+    <div class="option"><input type="radio" name="q3" value="d"><label>Le 1er janvier 1920 à Pékin</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">4.</span> Qui a écarté Sun Wen du pouvoir après la proclamation de la République ?</div>
+    <div class="option"><input type="radio" name="q4" value="a"><label>Mao Zedong</label></div>
+    <div class="option"><input type="radio" name="q4" value="b"><label>Tchang Kaï-Chek</label></div>
+    <div class="option"><input type="radio" name="q4" value="c" data-correct="true"><label>Yuan Che Kai</label></div>
+    <div class="option"><input type="radio" name="q4" value="d"><label>Jiang Jieshi</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">5.</span> Sur quels trois principes reposait la politique de Sun Wen ?</div>
+    <div class="option"><input type="radio" name="q5" value="a"><label>Liberté, égalité, fraternité</label></div>
+    <div class="option"><input type="radio" name="q5" value="b" data-correct="true"><label>Nationalisme, démocratie et subsistance du peuple</label></div>
+    <div class="option"><input type="radio" name="q5" value="c"><label>Communisme, travail et révolution</label></div>
+    <div class="option"><input type="radio" name="q5" value="d"><label>Empire, armée et expansion</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">6.</span> En quelle année Tchang Kaï-Chek a-t-il confisqué le pouvoir ?</div>
+    <div class="option"><input type="radio" name="q6" value="a"><label>1912</label></div>
+    <div class="option"><input type="radio" name="q6" value="b"><label>1920</label></div>
+    <div class="option"><input type="radio" name="q6" value="c" data-correct="true"><label>1925</label></div>
+    <div class="option"><input type="radio" name="q6" value="d"><label>1927</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">7.</span> En quelle année Mao Zedong et ses partisans ont-ils fondé le Parti Communiste Chinois (PCC) ?</div>
+    <div class="option"><input type="radio" name="q7" value="a"><label>1912</label></div>
+    <div class="option"><input type="radio" name="q7" value="b"><label>1915</label></div>
+    <div class="option"><input type="radio" name="q7" value="c" data-correct="true"><label>1920</label></div>
+    <div class="option"><input type="radio" name="q7" value="d"><label>1927</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">8.</span> Sur quelle classe sociale Mao s'appuyait-il pour sa révolution communiste ?</div>
+    <div class="option"><input type="radio" name="q8" value="a"><label>Les militaires</label></div>
+    <div class="option"><input type="radio" name="q8" value="b"><label>La bourgeoisie</label></div>
+    <div class="option"><input type="radio" name="q8" value="c" data-correct="true"><label>Les paysans</label></div>
+    <div class="option"><input type="radio" name="q8" value="d"><label>Les ouvriers industriels</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">9.</span> En quelle année la guerre civile a-t-elle éclaté entre nationalistes et communistes ?</div>
+    <div class="option"><input type="radio" name="q9" value="a"><label>1920</label></div>
+    <div class="option"><input type="radio" name="q9" value="b" data-correct="true"><label>1927</label></div>
+    <div class="option"><input type="radio" name="q9" value="c"><label>1934</label></div>
+    <div class="option"><input type="radio" name="q9" value="d"><label>1937</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">10.</span> Qu'est-ce que la « Longue Marche » des communistes chinois (1934-1935) ?</div>
+    <div class="option"><input type="radio" name="q10" value="a"><label>Un défilé militaire à Pékin pour célébrer la révolution</label></div>
+    <div class="option"><input type="radio" name="q10" value="b" data-correct="true"><label>Une retraite de 10 000 km du Sud à l'Ouest pour échapper aux nationalistes</label></div>
+    <div class="option"><input type="radio" name="q10" value="c"><label>Une marche pacifique pour demander des réformes au gouvernement</label></div>
+    <div class="option"><input type="radio" name="q10" value="d"><label>Une campagne militaire pour conquérir le Nord de la Chine</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">11.</span> Pourquoi nationalistes et communistes ont-ils formé un front uni en 1936-1937 ?</div>
+    <div class="option"><input type="radio" name="q11" value="a"><label>Pour renverser ensemble la République</label></div>
+    <div class="option"><input type="radio" name="q11" value="b" data-correct="true"><label>Pour résister ensemble à l'invasion japonaise de la Chine</label></div>
+    <div class="option"><input type="radio" name="q11" value="c"><label>Pour obtenir l'aide des États-Unis</label></div>
+    <div class="option"><input type="radio" name="q11" value="d"><label>Pour partager le pouvoir après la mort de Sun Wen</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">12.</span> Combien d'années a duré la guerre sino-japonaise (deuxième phase) ?</div>
+    <div class="option"><input type="radio" name="q12" value="a"><label>3 ans (1934-1937)</label></div>
+    <div class="option"><input type="radio" name="q12" value="b" data-correct="true"><label>8 ans (1937-1945)</label></div>
+    <div class="option"><input type="radio" name="q12" value="c"><label>10 ans (1935-1945)</label></div>
+    <div class="option"><input type="radio" name="q12" value="d"><label>2 ans (1943-1945)</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">13.</span> Quelle puissance étrangère soutenait Tchang Kaï-Chek lors de la guerre civile finale (1947-1949) ?</div>
+    <div class="option"><input type="radio" name="q13" value="a"><label>L'Union soviétique</label></div>
+    <div class="option"><input type="radio" name="q13" value="b" data-correct="true"><label>Les États-Unis</label></div>
+    <div class="option"><input type="radio" name="q13" value="c"><label>Le Japon</label></div>
+    <div class="option"><input type="radio" name="q13" value="d"><label>L'Angleterre</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">14.</span> Où Tchang Kaï-Chek s'est-il réfugié après sa défaite en 1949 ?</div>
+    <div class="option"><input type="radio" name="q14" value="a"><label>Au Japon</label></div>
+    <div class="option"><input type="radio" name="q14" value="b"><label>Aux États-Unis</label></div>
+    <div class="option"><input type="radio" name="q14" value="c" data-correct="true"><label>À Formose (Taïwan)</label></div>
+    <div class="option"><input type="radio" name="q14" value="d"><label>En Corée du Sud</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">15.</span> Quand Mao a-t-il proclamé la République Populaire de Chine ?</div>
+    <div class="option"><input type="radio" name="q15" value="a"><label>Le 1er janvier 1949</label></div>
+    <div class="option"><input type="radio" name="q15" value="b" data-correct="true"><label>Le 1er octobre 1949</label></div>
+    <div class="option"><input type="radio" name="q15" value="c"><label>Le 1er mai 1949</label></div>
+    <div class="option"><input type="radio" name="q15" value="d"><label>Le 1er octobre 1950</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">16.</span> Quelle est la signification historique de la République Populaire de Chine de 1949 ?</div>
+    <div class="option"><input type="radio" name="q16" value="a"><label>La Chine devient le premier État communiste du monde</label></div>
+    <div class="option"><input type="radio" name="q16" value="b" data-correct="true"><label>La Chine devient le second État socialiste après l'URSS</label></div>
+    <div class="option"><input type="radio" name="q16" value="c"><label>La Chine rejoint le bloc atlantique occidental</label></div>
+    <div class="option"><input type="radio" name="q16" value="d"><label>La Chine devient une monarchie constitutionnelle</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">17.</span> Quelle est la différence essentielle entre le Guomindang et le PCC ?</div>
+    <div class="option"><input type="radio" name="q17" value="a"><label>Le Guomindang était pro-japonais, le PCC était pro-américain</label></div>
+    <div class="option"><input type="radio" name="q17" value="b" data-correct="true"><label>Le Guomindang était nationaliste et bourgeois, le PCC était communiste et s'appuyait sur les paysans</label></div>
+    <div class="option"><input type="radio" name="q17" value="c"><label>Le Guomindang voulait l'indépendance, le PCC voulait rester sous domination étrangère</label></div>
+    <div class="option"><input type="radio" name="q17" value="d"><label>Il n'y avait pas de différence idéologique entre les deux partis</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">18.</span> En quelle année Sun Wen est-il décédé ?</div>
+    <div class="option"><input type="radio" name="q18" value="a"><label>1920</label></div>
+    <div class="option"><input type="radio" name="q18" value="b" data-correct="true"><label>1925</label></div>
+    <div class="option"><input type="radio" name="q18" value="c"><label>1928</label></div>
+    <div class="option"><input type="radio" name="q18" value="d"><label>1931</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">19.</span> Quelle était la capitale de la Chine nationaliste sous Tchang Kaï-Chek à partir de 1928 ?</div>
+    <div class="option"><input type="radio" name="q19" value="a"><label>Pékin</label></div>
+    <div class="option"><input type="radio" name="q19" value="b"><label>Shanghaï</label></div>
+    <div class="option"><input type="radio" name="q19" value="c" data-correct="true"><label>Nanjing (Nankin)</label></div>
+    <div class="option"><input type="radio" name="q19" value="d"><label>Wuchang</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">20.</span> Qu'est-ce que les « massacres de Shanghaï » d'avril 1927 ?</div>
+    <div class="option"><input type="radio" name="q20" value="a"><label>Un massacre de civils par les Japonais</label></div>
+    <div class="option"><input type="radio" name="q20" value="b" data-correct="true"><label>Une purge sanglante des communistes par les nationalistes de Tchang Kaï-Chek</label></div>
+    <div class="option"><input type="radio" name="q20" value="c"><label>Une attaque américaine contre les forces communistes</label></div>
+    <div class="option"><input type="radio" name="q20" value="d"><label>Un soulèvement populaire contre l'Empereur Mandchou</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">21.</span> Combien de km la Longue Marche communiste a-t-elle parcouru ?</div>
+    <div class="option"><input type="radio" name="q21" value="a"><label>5 000 km</label></div>
+    <div class="option"><input type="radio" name="q21" value="b" data-correct="true"><label>Plus de 10 000 km</label></div>
+    <div class="option"><input type="radio" name="q21" value="c"><label>2 000 km</label></div>
+    <div class="option"><input type="radio" name="q21" value="d"><label>15 000 km</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">22.</span> Quelle est la durée totale de la période révolutionnaire chinoise de 1911 à 1949 ?</div>
+    <div class="option"><input type="radio" name="q22" value="a"><label>25 ans</label></div>
+    <div class="option"><input type="radio" name="q22" value="b"><label>30 ans</label></div>
+    <div class="option"><input type="radio" name="q22" value="c" data-correct="true"><label>38 ans (de 1911 à 1949)</label></div>
+    <div class="option"><input type="radio" name="q22" value="d"><label>50 ans</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">23.</span> Quelle autre appellation utilise-t-on pour Sun Wen ?</div>
+    <div class="option"><input type="radio" name="q23" value="a"><label>Jiang Jieshi</label></div>
+    <div class="option"><input type="radio" name="q23" value="b" data-correct="true"><label>Sun Yat-Sen</label></div>
+    <div class="option"><input type="radio" name="q23" value="c"><label>Yuan Che Kai</label></div>
+    <div class="option"><input type="radio" name="q23" value="d"><label>Sun Yixian uniquement</label></div>
+  </div>
+
+  <div class="question-bloc">
+    <div class="question-texte"><span class="question-num">24.</span> Laquelle de ces affirmations sur Mao Zedong est EXACTE ?</div>
+    <div class="option"><input type="radio" name="q24" value="a"><label>Il a fondé le Guomindang en 1912</label></div>
+    <div class="option"><input type="radio" name="q24" value="b"><label>Il a été soutenu par les États-Unis dans la guerre civile</label></div>
+    <div class="option"><input type="radio" name="q24" value="c" data-correct="true"><label>Il a fondé le PCC en 1920 et proclamé la République Populaire en 1949</label></div>
+    <div class="option"><input type="radio" name="q24" value="d"><label>Il a mené la guerre contre le Japon seul, sans l'aide des nationalistes</label></div>
+  </div>
+
+</div>
+</body>
+</html>

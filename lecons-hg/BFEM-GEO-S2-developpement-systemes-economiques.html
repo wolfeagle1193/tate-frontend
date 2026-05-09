@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BFEM Géographie – S2 : Développement et systèmes économiques</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:#EEF4FB;color:#0d2137;line-height:1.7;font-size:clamp(.93em,2.2vw,1em)}
+  .header{background:linear-gradient(135deg,#154360,#2E86C1);color:#fff;padding:28px 20px;text-align:center}
+  .header .badge{display:inline-block;background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.5);border-radius:30px;padding:6px 22px;font-size:.85em;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+  .header h1{font-size:clamp(1.2em,4vw,1.65em);font-weight:800}
+  .header p{font-size:.95em;opacity:.9}
+  .container{max-width:860px;margin:30px auto;padding:0 14px}
+  .section{background:#fff;border-radius:12px;padding:22px 20px;margin-bottom:22px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+  .section-title{font-size:1.05em;font-weight:700;color:#fff;background:linear-gradient(90deg,#154360,#2E86C1);padding:10px 16px;border-radius:8px;margin-bottom:18px}
+  .contexte-box{background:#EAF4FE;border:1px solid #AED6F1;border-radius:8px;padding:13px 16px;margin-bottom:12px;font-style:italic;color:#154360}
+  .consigne-box{background:#D6EAF8;border-left:4px solid #2E86C1;padding:11px 15px;border-radius:0 8px 8px 0;font-weight:600;color:#154360;margin-bottom:14px}
+  .doc-box{background:#f5f9ff;border:1px solid #AED6F1;border-radius:8px;padding:14px 18px;margin-bottom:14px}
+  .doc-title{font-weight:700;color:#154360;margin-bottom:8px;text-align:center}
+  .doc-source{text-align:right;font-size:.82em;color:#666;margin-top:8px;font-style:italic}
+  .souligné{text-decoration:underline;font-weight:600}
+  .table-wrapper{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:10px 0;border-radius:8px;border:1px solid #ddd}
+  .table-wrapper table{min-width:500px;width:100%;border-collapse:collapse;font-size:.89em}
+  .table-wrapper th{background:#154360;color:#fff;padding:8px 11px;text-align:center}
+  .table-wrapper td{border:1px solid #ddd;padding:7px 11px;text-align:center}
+  .table-wrapper tr:nth-child(even){background:#f0f6ff}
+  .scroll-hint{font-size:.75em;color:#888;text-align:right;margin-top:3px;display:none}
+  @media(max-width:600px){.scroll-hint{display:block}}
+  .q-block{background:#EAF4FE;border-radius:8px;padding:13px 15px;margin-bottom:14px}
+  .q-num{display:inline-block;background:#2E86C1;color:#fff;font-weight:700;width:26px;height:26px;border-radius:50%;text-align:center;line-height:26px;font-size:.85em;margin-right:8px;flex-shrink:0}
+  .q-text{font-weight:600;color:#154360;display:flex;align-items:flex-start;gap:6px}
+  .pts-badge{font-size:.78em;background:#154360;color:#fff;border-radius:12px;padding:1px 9px;font-weight:700;margin-left:6px;white-space:nowrap}
+  .btn-correction{display:flex;align-items:center;gap:8px;margin-top:12px;padding:10px 16px;border:2px solid #27AE60;background:#fff;color:#1A6632;border-radius:10px;cursor:pointer;font-weight:700;font-size:.88em;transition:.2s;width:100%}
+  .btn-correction:hover{background:#f0fff4}
+  .btn-correction.open{background:#f0fff4}
+  .btn-correction .arrow{transition:transform .25s;font-style:normal}
+  .btn-correction.open .arrow{transform:rotate(180deg)}
+  .corr-wrap{display:none;border-left:4px solid #27AE60;border-radius:0 10px 10px 0;background:#f0fff8;padding:16px 18px;font-size:.91em;line-height:1.85;margin-top:6px}
+  .corr-wrap.visible{display:block}
+  .corr-wrap h4{color:#1A6632;font-size:.95em;margin:12px 0 5px;border-bottom:1px solid #c3e6cb;padding-bottom:3px}
+  .corr-wrap h4:first-child{margin-top:0}
+  .corr-wrap p{margin-bottom:9px;text-align:justify}
+  .canvas-zone{border:2px dashed #AED6F1;border-radius:8px;padding:12px;margin-top:10px;text-align:center;background:#f9fcff;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .canvas-zone canvas{max-width:100%;height:auto}
+  .timer-box{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:#fff;border-radius:10px;padding:12px 18px;box-shadow:0 2px 8px rgba(0,0,0,.08);margin-bottom:22px}
+  .timer-display{font-size:1.5em;font-weight:800;color:#2E86C1;min-width:88px}
+  .btn{padding:9px 20px;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:.88em}
+  .btn-start{background:#154360;color:#fff}
+  .btn-reset{background:#ddd;color:#333}
+  .points{float:right;background:#154360;color:#fff;border-radius:20px;padding:2px 12px;font-size:.78em;font-weight:700}
+  footer{text-align:center;padding:24px;color:#888;font-size:.82em}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="badge">📝 Sujet BFEM — Géographie</div>
+  <h1>Développement et systèmes économiques</h1>
+  <p>Chapitre III – La Terre divisée · 3<sup>e</sup> · Histoire-Géographie</p>
+</div>
+
+<div class="container">
+  <div class="timer-box">
+    <strong style="color:#154360">⏱ Durée :</strong>
+    <span class="timer-display" id="timer">1:30:00</span>
+    <button class="btn btn-start" onclick="startTimer()">Démarrer</button>
+    <button class="btn btn-reset" onclick="resetTimer()">Réinitialiser</button>
+  </div>
+
+  <!-- DISSERTATION -->
+  <div class="section">
+    <div class="section-title">✍️ Partie 1 – Dissertation <span class="points">10 pts</span></div>
+    <div class="contexte-box">
+      De plus en plus, la notion d'émergence s'impose dans le langage des économistes.
+    </div>
+    <div class="consigne-box">
+      Consigne : À l'aide d'exemples précis, explique la différence entre le développement et l'émergence.
+    </div>
+
+    <button class="btn-correction" onclick="toggleCorr('corr-diss')">
+      <span>📝 Voir la correction – Dissertation complète</span>
+      <span class="arrow" style="margin-left:auto">▼</span>
+    </button>
+    <div class="corr-wrap" id="corr-diss">
+      <h4>Introduction</h4>
+      <p>Depuis la fin du XXe siècle, de nouveaux acteurs ont transformé profondément l'économie mondiale. Des pays comme la Chine, le Brésil ou l'Inde, longtemps considérés comme « en développement », ont connu une croissance économique spectaculaire qui les a propulsés sur la scène mondiale. Cette montée en puissance a conduit les économistes à forger un nouveau terme : l'émergence. Mais cette notion se distingue-t-elle vraiment du développement classique ?</p>
+      <p>Le développement désigne l'amélioration durable des conditions de vie d'une population dans ses dimensions économiques (PIB par habitant), sociales (accès à la santé, à l'éducation) et humaines (libertés). Il se mesure notamment par l'Indice de Développement Humain (IDH), de 0 à 1. L'émergence, quant à elle, désigne une forme de développement accéléré caractérisée par une industrialisation rapide, une forte croissance du PIB et une intégration dans les échanges mondiaux.</p>
+      <p><strong>Problématique :</strong> En quoi le développement et l'émergence désignent-ils des réalités économiques distinctes, et quels exemples concrets illustrent cette différence ?</p>
+      <p><strong>Plan :</strong> Nous analyserons d'abord les caractéristiques du développement économique classique, puis nous examinerons les traits spécifiques des pays émergents.</p>
+
+      <h4>I. Le développement économique : définition et caractéristiques</h4>
+      <p>Le développement économique est le processus par lequel un pays améliore de façon durable le niveau de vie de sa population. Il se caractérise par un IDH élevé (supérieur à 0,800), un PIB par habitant fort (généralement supérieur à 15 000 dollars), un accès généralisé aux services de base (eau potable, électricité, santé, éducation) et une économie diversifiée (industries, services, agriculture modernisée).</p>
+      <p>Les pays développés forment ce que l'on appelle la Triade : les États-Unis (PIB/habitant de plus de 65 000 $/hab.), l'Europe occidentale (France, Allemagne, Royaume-Uni) et le Japon. Ces pays disposent d'infrastructures avancées, d'un système éducatif performant, d'une espérance de vie élevée (80 ans et plus) et d'une mortalité infantile très faible (moins de 5 ‰). Leur développement est le résultat de plusieurs siècles d'industrialisation et d'accumulation de capital.</p>
+
+      <h4>II. L'émergence : une nouvelle forme de développement accéléré</h4>
+      <p>L'émergence désigne la montée en puissance économique rapide de pays qui n'appartiennent pas encore aux pays développés mais qui s'en rapprochent à grande vitesse. Les pays émergents se caractérisent par un taux de croissance annuel du PIB très élevé (souvent supérieur à 5 ou 6 % par an), une industrialisation massive et rapide, une montée en puissance dans le commerce mondial et une intégration croissante dans les flux financiers mondiaux.</p>
+      <p>Le meilleur exemple est la Chine : en 40 ans, elle est passée de pays pauvre agricole à deuxième puissance économique mondiale, avec un PIB qui dépasse aujourd'hui 17 000 milliards de dollars. Les BRICS (Brésil, Russie, Inde, Chine, Afrique du Sud) illustrent également ce phénomène. Cependant, les pays émergents se distinguent des pays développés par des inégalités internes souvent très fortes. En Chine, les zones côtières urbanisées sont très développées tandis que les régions rurales de l'intérieur restent pauvres. Le Brésil est l'un des pays les plus inégalitaires du monde malgré sa puissance économique.</p>
+
+      <h4>III. Les différences essentielles entre développement et émergence</h4>
+      <p>La principale différence réside dans la durabilité et l'équité. Les pays développés ont atteint un niveau de développement humain généralement élevé et relativement stable (IDH > 0,900 pour les meilleurs). Les pays émergents connaissent une croissance économique rapide mais inégalement répartie : le PIB global augmente fortement, mais l'IDH reste moyen (entre 0,555 et 0,750) et des millions de personnes demeurent dans la pauvreté. Autre différence : les pays développés ont souvent un secteur des services dominant (plus de 70 % du PIB), tandis que les pays émergents s'appuient davantage sur l'industrie manufacturière exportatrice (usines textiles, électronique, etc.).</p>
+
+      <h4>Conclusion</h4>
+      <p>Le développement et l'émergence sont deux étapes distinctes mais liées du progrès économique. Le développement désigne un état avancé et durable d'amélioration des conditions de vie, mesuré par un IDH élevé. L'émergence désigne un processus accéléré de rattrapage économique, illustré par des pays comme la Chine, l'Inde ou le Brésil. Ces deux notions nous rappellent que la croissance économique seule ne suffit pas : le vrai développement nécessite aussi l'équité sociale, l'accès aux services de base et la durabilité environnementale.</p>
+    </div>
+  </div>
+
+  <!-- COMMENTAIRE -->
+  <div class="section">
+    <div class="section-title">📊 Partie 2 – Commentaire de documents <span class="points">10 pts</span></div>
+    <p style="font-weight:700;color:#154360;margin-bottom:12px">Thème : Développement et système économique</p>
+
+    <div class="doc-box">
+      <div class="doc-title">Document 1</div>
+      <div class="table-wrapper">
+        <table>
+          <tr>
+            <th>Pays</th><th>PIB/hbt ($)</th><th>IDH</th>
+            <th>Espérance de vie (ans)</th>
+            <th>Médecins pour 1000 hbts</th>
+            <th>Taux mortalité infantile (‰)</th>
+          </tr>
+          <tr><td><strong>États-Unis</strong></td><td>55 800</td><td>0,920</td><td>78</td><td>2</td><td>5,6</td></tr>
+          <tr><td><strong>Cuba</strong></td><td>20 600</td><td>0,776</td><td>79</td><td>7</td><td>4</td></tr>
+        </table>
+      </div>
+      <div class="scroll-hint">← Faire glisser pour voir tout le tableau →</div>
+      <div class="doc-source">Source : L'Année Stratégique (2018)</div>
+    </div>
+
+    <div class="doc-box">
+      <div class="doc-title">Document 2. Le système de santé cubain, succès du modèle socialiste ?</div>
+      <div style="font-size:.93em;line-height:1.85;text-align:justify;margin-top:6px">
+        « S'il existe un domaine où Cuba peut se permettre de rivaliser avec les États-Unis ou avec d'autres pays capitalistes, c'est bien dans le secteur sanitaire. Le système de santé cubain a longtemps été considéré comme un des meilleurs au monde (…). Si Cuba est doté de qualités incontestables en matière de <span class="souligné">sécurité sociale</span>, c'est entre autre dû à l'<span class="souligné">économie de type socialiste</span> sur laquelle le système se base. Puisque les autorités imposent le prix des services et des médicaments (…). La <span class="souligné">sécurité sociale</span> américaine représenterait tout ce que Cuba éviterait par idéologie : l'inégalité de traitement et par conséquent le rejet des plus nécessiteux. À l'inverse, tous les Cubains sans distinction auraient accès aux mêmes soins, aux mêmes médicaments et aux mêmes prix, c'est-à-dire de façon gratuite ou quasi gratuite. »
+      </div>
+      <div class="doc-source">Panchire Anaximandre · Source : http://www.polemicacubana.fr, consulté le 30.04.23</div>
+    </div>
+
+    <!-- Question 1 -->
+    <div class="q-block">
+      <div class="q-text"><span class="q-num">1</span><span><strong>Définis les termes suivants mentionnés dans le document 2 :</strong> <em>pays capitalistes, économie de type socialiste, sécurité sociale</em> <span class="pts-badge">3 pts</span></span></div>
+      <button class="btn-correction" onclick="toggleCorr('corr-q1')">
+        <span>✅ Voir la correction</span>
+        <span class="arrow" style="margin-left:auto">▼</span>
+      </button>
+      <div class="corr-wrap" id="corr-q1">
+        <p><strong>Pays capitalistes :</strong> Les pays capitalistes sont des pays dont l'économie est fondée sur la propriété privée des moyens de production (usines, terres, capitaux), la libre entreprise et la libre concurrence sur le marché. Dans ce système, la production et la distribution des biens et services sont principalement déterminées par les mécanismes du marché (loi de l'offre et de la demande) et non par l'État. Les États-Unis sont le plus grand exemple de pays capitaliste, avec une économie de marché très libérale où les entreprises privées dominent tous les secteurs, y compris la santé.</p>
+        <p><strong>Économie de type socialiste :</strong> L'économie de type socialiste est un système économique dans lequel l'État contrôle et planifie l'ensemble de la production et de la distribution des richesses. Les moyens de production (usines, terres, ressources naturelles) appartiennent à la collectivité et sont gérés par l'État au nom du peuple. Il n'y a pas de propriété privée des moyens de production ni de libre concurrence. À Cuba, sous la direction du Parti Communiste depuis 1959 (Fidel Castro), l'État fixe les prix, gère les hôpitaux, les écoles et distribue gratuitement les services essentiels à la population.</p>
+        <p><strong>Sécurité sociale :</strong> La sécurité sociale est un ensemble de mécanismes de protection collective qui garantissent aux individus une couverture contre les principaux risques de la vie : maladie, vieillesse, accident du travail, chômage, maternité. À Cuba, la sécurité sociale est universelle et financée par l'État : tous les citoyens ont accès gratuitement aux soins médicaux, aux médicaments et aux retraites, quelle que soit leur situation financière. Aux États-Unis, en revanche, la sécurité sociale est partielle et dépend largement des assurances privées, excluant ainsi les populations les plus pauvres.</p>
+      </div>
+    </div>
+
+    <!-- Question 2 -->
+    <div class="q-block">
+      <div class="q-text"><span class="q-num">2</span><span><strong>À l'aide du document 1, construis un diagramme à barres du nombre de médecins par habitants des États-Unis et de Cuba. Interprète le graphique.</strong> <span class="pts-badge">3 pts</span></span></div>
+      <div class="canvas-zone">
+        <canvas id="chartMedecins" width="500" height="190"></canvas>
+        <p style="font-size:.83em;color:#555;margin-top:6px">Graphique interactif · Reproduis sur ta copie avec axes, titre et unités</p>
+      </div>
+      <button class="btn-correction" onclick="toggleCorr('corr-q2')">
+        <span>✅ Voir l'interprétation</span>
+        <span class="arrow" style="margin-left:auto">▼</span>
+      </button>
+      <div class="corr-wrap" id="corr-q2">
+        <h4>Comment construire le graphique</h4>
+        <p>Pour construire ce diagramme à barres sur ta copie, trace un axe vertical (ordonnée) gradué de 0 à 8 médecins pour 1000 habitants, et un axe horizontal (abscisse) avec les deux pays (États-Unis et Cuba). Trace une barre bleue pour les États-Unis à hauteur de 2, et une barre rouge pour Cuba à hauteur de 7. Donne un titre : « Nombre de médecins pour 1000 habitants (États-Unis et Cuba, 2018) ».</p>
+        <h4>Interprétation du graphique</h4>
+        <p>Le document 1 révèle un paradoxe frappant entre les systèmes de santé des États-Unis et de Cuba. Les États-Unis, avec un PIB par habitant de 55 800 dollars — soit près de trois fois celui de Cuba (20 600 dollars) — ne comptent que 2 médecins pour 1 000 habitants. Cuba, malgré un PIB par habitant bien plus modeste, dispose de 7 médecins pour 1 000 habitants, soit 3,5 fois plus que son voisin nord-américain.</p>
+        <p>Ce contraste se confirme dans les autres indicateurs sanitaires : l'espérance de vie cubaine (79 ans) dépasse légèrement celle des États-Unis (78 ans), et le taux de mortalité infantile cubain (4 ‰) est inférieur à celui américain (5,6 ‰). Ces données montrent que le système socialiste cubain, en faisant de la santé une priorité nationale financée et organisée par l'État, a réussi à obtenir des résultats sanitaires comparables — voire supérieurs — à ceux d'un pays beaucoup plus riche. Cela illustre que la richesse économique ne garantit pas automatiquement un bon système de santé si elle n'est pas redistribuée équitablement.</p>
+      </div>
+    </div>
+
+    <!-- Question 3 -->
+    <div class="q-block">
+      <div class="q-text"><span class="q-num">3</span><span><strong>À l'aide des documents 1 et 2 et de tes connaissances, décris deux avantages et deux faiblesses du système économique américain et du système économique cubain.</strong> <span class="pts-badge">4 pts</span></span></div>
+      <button class="btn-correction" onclick="toggleCorr('corr-q3')">
+        <span>✅ Voir la correction</span>
+        <span class="arrow" style="margin-left:auto">▼</span>
+      </button>
+      <div class="corr-wrap" id="corr-q3">
+        <h4>Le système économique américain (capitalisme libéral)</h4>
+        <p><strong>Avantage 1 — La puissance économique et l'innovation :</strong> Avec un PIB par habitant de 55 800 dollars (Doc. 1) et un IDH de 0,920, les États-Unis affichent une richesse nationale exceptionnelle. Le capitalisme américain stimule l'innovation technologique et entrepreneuriale : les grandes entreprises mondiales (Apple, Google, Amazon, Microsoft) sont américaines. Le pays est le premier bénéficiaire des investissements dans la recherche et développement, ce qui lui confère une suprématie technologique durable.</p>
+        <p><strong>Avantage 2 — Les libertés économiques et individuelles :</strong> Dans le système capitaliste américain, chaque individu est libre d'entreprendre, de s'enrichir, de consommer les biens et services de son choix. Cette liberté favorise la compétitivité, la diversité de l'offre et une grande réactivité de l'économie aux besoins des consommateurs.</p>
+        <p><strong>Faiblesse 1 — Les inégalités sociales criantes :</strong> Le document 2 souligne que le système américain exclut les plus nécessiteux. Malgré sa richesse, les États-Unis présentent un taux de mortalité infantile de 5,6 ‰ — supérieur à celui de Cuba — parce que les soins médicaux sont très coûteux et non accessibles à tous. Selon l'OCDE, plus de 37 millions d'Américains vivent en-dessous du seuil de pauvreté, sans couverture médicale suffisante.</p>
+        <p><strong>Faiblesse 2 — L'accès inégalitaire aux soins :</strong> Le système de santé américain est essentiellement privé et basé sur les assurances. Une personne sans assurance peut se voir refuser des soins ou faire face à des factures médicales astronomiques. C'est ce que critique le document 2 : « l'inégalité de traitement et par conséquent le rejet des plus nécessiteux ».</p>
+
+        <h4>Le système économique cubain (socialisme d'État)</h4>
+        <p><strong>Avantage 1 — La santé universelle et gratuite :</strong> Le document 1 illustre parfaitement cet avantage : 7 médecins pour 1000 habitants, espérance de vie de 79 ans, mortalité infantile de 4 ‰. Cuba exporte même des milliers de médecins dans des pays d'Afrique et d'Amérique latine (programme « Médecins cubains »). Le document 2 confirme que « tous les Cubains sans distinction » ont accès aux mêmes soins, gratuitement.</p>
+        <p><strong>Avantage 2 — La réduction des inégalités sociales :</strong> La planification socialiste a permis à Cuba d'assurer un accès quasi universel à l'éducation, avec un taux d'alphabétisation de 99,7 %. L'État garantit un logement, la sécurité alimentaire de base et la protection sociale à l'ensemble de la population, réduisant ainsi les extrêmes de pauvreté et de richesse.</p>
+        <p><strong>Faiblesse 1 — La faiblesse de la production et les pénuries :</strong> Avec un PIB par habitant de 20 600 dollars (Doc. 1), l'économie cubaine produit peu de richesses. La planification centralisée est souvent inefficace : elle génère des pénuries récurrentes de biens de consommation (nourriture, médicaments, équipements électroniques). Les magasins d'État sont souvent peu fournis, et les Cubains font face à des difficultés quotidiennes.</p>
+        <p><strong>Faiblesse 2 — Les restrictions des libertés individuelles :</strong> Le système socialiste cubain impose une surveillance de l'État sur les activités économiques et sociales. La liberté d'entreprendre est très limitée : les entreprises privées n'étaient quasiment pas autorisées jusqu'aux réformes récentes. Les médias sont contrôlés par l'État, et l'opposition politique est réprimée, ce qui contraste avec les libertés civiles des démocraties capitalistes.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>BFEM · Histoire-Géographie 3e · Taté — Plateforme éducative sénégalaise</footer>
+
+<script>
+function toggleCorr(id){
+  const el=document.getElementById(id);
+  const btn=el.previousElementSibling;
+  const isOpen=el.classList.contains('visible');
+  el.classList.toggle('visible',!isOpen);
+  btn.classList.toggle('open',!isOpen);
+  btn.querySelector('.arrow').textContent=isOpen?'▼':'▲';
+  if(!isOpen)setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'nearest'}),50);
+}
+
+window.onload=function(){
+  const c=document.getElementById('chartMedecins');if(!c)return;
+  const dpr=window.devicePixelRatio||1;
+  const dW=Math.min(c.parentElement.clientWidth-28,500);
+  const dH=190;
+  c.style.width=dW+'px';c.style.height=dH+'px';
+  c.width=dW*dpr;c.height=dH*dpr;
+  const ctx=c.getContext('2d');ctx.scale(dpr,dpr);
+  const W=dW,H=dH;
+  const pays=['États-Unis','Cuba'];
+  const vals=[2,7];
+  const colors=['#2E86C1','#C0392B'];
+  const pad={left:50,right:20,top:30,bottom:52};
+  const cW=W-pad.left-pad.right,cH=H-pad.top-pad.bottom;
+  const maxV=8,bW=cW/pays.length*0.42;
+  ctx.strokeStyle='#154360';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(pad.left,pad.top);ctx.lineTo(pad.left,H-pad.bottom);ctx.lineTo(W-pad.right,H-pad.bottom);ctx.stroke();
+  for(let v=0;v<=8;v+=2){
+    const y=H-pad.bottom-(v/maxV)*cH;
+    ctx.fillStyle='#333';ctx.font='11px sans-serif';ctx.textAlign='right';
+    ctx.fillText(v,pad.left-5,y+4);
+    ctx.strokeStyle='#eee';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(pad.left,y);ctx.lineTo(W-pad.right,y);ctx.stroke();
+  }
+  pays.forEach((p,i)=>{
+    const x=pad.left+(i+0.5)*(cW/pays.length)-bW/2;
+    const bH=(vals[i]/maxV)*cH;
+    const y=H-pad.bottom-bH;
+    const g=ctx.createLinearGradient(0,y,0,H-pad.bottom);
+    g.addColorStop(0,colors[i]);g.addColorStop(1,colors[i]+'aa');
+    ctx.fillStyle=g;ctx.fillRect(x,y,bW,bH);
+    ctx.fillStyle='#fff';ctx.font='bold 14px sans-serif';ctx.textAlign='center';
+    ctx.fillText(vals[i],x+bW/2,y+22);
+    ctx.fillStyle='#333';ctx.font='12px sans-serif';
+    ctx.fillText(p,x+bW/2,H-pad.bottom+20);
+  });
+  ctx.fillStyle='#154360';ctx.font='bold 12px sans-serif';ctx.textAlign='center';
+  ctx.fillText('Médecins pour 1000 habitants (2018)',W/2,16);
+};
+
+let ts=5400,iv=null;
+const te=document.getElementById('timer');
+function fmt(s){return`${Math.floor(s/3600)}:${String(Math.floor((s%3600)/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;}
+function startTimer(){if(iv)return;iv=setInterval(()=>{if(ts<=0){clearInterval(iv);te.style.color='#e53935';return;}ts--;te.textContent=fmt(ts);if(ts<=300)te.style.color='#e53935';},1000);}
+function resetTimer(){clearInterval(iv);iv=null;ts=5400;te.textContent=fmt(ts);te.style.color='#2E86C1';}
+</script>
+</body>
+</html>

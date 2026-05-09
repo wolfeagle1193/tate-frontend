@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 15px; color: #1a1a1a; background: #fff; padding: 16px; line-height: 1.7; }
+  .partie-badge { background: #148F77; color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 10px; }
+  h1 { font-size: 1.35rem; font-weight: 800; color: #148F77; border-bottom: 3px solid #1ABC9C; padding-bottom: 8px; margin-bottom: 18px; }
+  .essentiel { background: linear-gradient(135deg, #E8F8F5, #D1F2EB); border-left: 5px solid #1ABC9C; border-radius: 10px; padding: 16px 18px; margin-bottom: 22px; }
+  .essentiel-titre { font-size: 1rem; font-weight: 800; color: #148F77; text-align: center; margin-bottom: 10px; }
+  .essentiel p { font-weight: 600; color: #148F77; font-size: 14px; }
+  h2 { font-size: 1.05rem; font-weight: 800; color: #148F77; margin: 22px 0 10px; border-left: 4px solid #1ABC9C; padding-left: 10px; }
+  h3 { font-size: .95rem; font-weight: 700; color: #0E6655; margin: 14px 0 6px; }
+  p { margin-bottom: 10px; }
+  ul { margin-left: 18px; margin-bottom: 10px; }
+  li { margin-bottom: 5px; }
+  .etape-card { border-radius: 10px; padding: 12px 16px; margin: 10px 0; border-left: 5px solid; }
+  .e1 { background: #EBF5FB; border-color: #2980B9; }
+  .e2 { background: #FEF9E7; border-color: #F39C12; }
+  .e3 { background: #E9F7EF; border-color: #27AE60; }
+  .e4 { background: #FDEDEC; border-color: #E74C3C; }
+  .etape-titre { font-weight: 800; font-size: 14px; margin-bottom: 5px; }
+  .e1 .etape-titre { color: #1A5276; }
+  .e2 .etape-titre { color: #D68910; }
+  .e3 .etape-titre { color: #1E8449; }
+  .e4 .etape-titre { color: #C0392B; }
+  .perso-box { background: #F5EEF8; border: 1.5px solid #AF7AC5; border-radius: 8px; padding: 12px 14px; margin: 8px 0; font-size: 13px; }
+  .perso-titre { font-weight: 800; color: #6C3483; margin-bottom: 6px; }
+  .frise { background: #F8F9FA; border: 1.5px solid #BDC3C7; border-radius: 10px; padding: 14px 16px; margin: 14px 0; }
+  .frise-titre { font-weight: 800; color: #148F77; margin-bottom: 10px; font-size: 14px; }
+  .frise-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 6px; font-size: 13px; }
+  .frise-date { background: #1ABC9C; color: #fff; border-radius: 6px; padding: 2px 8px; font-weight: 700; white-space: nowrap; flex-shrink: 0; }
+  .qcm-section { margin-top: 30px; border-top: 3px solid #1ABC9C; padding-top: 20px; }
+  .qcm-titre { font-size: 1.1rem; font-weight: 800; color: #fff; background: #148F77; padding: 10px 16px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
+  .question-bloc { background: #FAFAFA; border: 1.5px solid #D1F2EB; border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; }
+  .question-texte { font-weight: 700; color: #1a1a1a; margin-bottom: 10px; font-size: 14px; }
+  .question-num { color: #1ABC9C; font-weight: 800; }
+  .option { display: flex; align-items: flex-start; gap: 10px; padding: 7px 10px; border-radius: 7px; margin-bottom: 4px; cursor: pointer; border: 1.5px solid transparent; }
+  .option:hover { background: #E8F8F5; border-color: #1ABC9C; }
+  .option input[type="radio"] { margin-top: 2px; accent-color: #148F77; flex-shrink: 0; width: 16px; height: 16px; }
+  .option label { cursor: pointer; font-size: 14px; color: #333; }
+</style>
+</head>
+<body>
+
+<div class="partie-badge">Partie 5 — La décolonisation et l'émergence du Tiers Monde</div>
+<h1>Leçon 20 — Le Sénégal : vie politique de 1944 à 1962</h1>
+
+<div class="essentiel">
+  <div class="essentiel-titre">📌 L'essentiel à retenir</div>
+  <p>Après la Seconde Guerre mondiale, le Sénégal, longtemps soumis à la domination coloniale française, s'engage dans un processus pacifique qui aboutit à l'indépendance en 1960. Mais la jeune République doit faire face à deux crises qui faillirent ébranler sa stabilité politique.</p>
+</div>
+
+<h2>I. De la Conférence de Brazzaville (1944) à l'Union française (1946)</h2>
+
+<div class="etape-card e1">
+  <div class="etape-titre">🏛️ La Conférence de Brazzaville (30 janv. – 8 fév. 1944)</div>
+  Convoquée par <strong>De Gaulle</strong>, elle prend des décisions remarquables :
+  <ul>
+    <li>Suppression de <strong>l'indigénat</strong></li>
+    <li>Création d'<strong>Assemblées territoriales</strong></li>
+    <li>Développement de <strong>l'éducation</strong></li>
+  </ul>
+  Mais elle <strong>rejette toute idée d'indépendance</strong>.
+</div>
+
+<div class="etape-card e2">
+  <div class="etape-titre">🇫🇷 L'Union Française (1946)</div>
+  Les élites sénégalaises profitent des réformes pour faire évoluer le statut de la colonie. En <strong>1946</strong>, l'<strong>Union Française</strong> transforme les colonies françaises en <strong>Territoires d'Outre-Mer (TOM)</strong>, dotés chacun d'une Assemblée territoriale et représentés au Parlement français. Le Sénégal est représenté par <strong>Lamine Guèye</strong> et <strong>Léopold Sédar Senghor</strong>. Les habitants de la colonie deviennent ainsi des <strong>citoyens français</strong> (suppression de l'indigénat).
+</div>
+
+<div class="perso-box">
+  <div class="perso-titre">👤 Les grands acteurs de la décolonisation sénégalaise</div>
+  <ul>
+    <li><strong>Lamine Guèye</strong> : premier élu sénégalais au Parlement français</li>
+    <li><strong>Léopold Sédar Senghor</strong> : poète et homme politique, co-fondateur du BDS en 1948, premier président du Sénégal</li>
+    <li><strong>Mamadou Dia</strong> : co-fondateur du BDS, vice-président de la Fédération du Mali, puis président du Conseil du Sénégal indépendant</li>
+  </ul>
+</div>
+
+<p>En <strong>1948</strong>, Léopold Sédar Senghor quitte la <strong>SFIO</strong> (Section Française de l'Internationale Ouvrière) et fonde avec <strong>Mamadou Dia</strong> le <strong>Bloc Démocratique Sénégalais (BDS)</strong> qui remporte les élections de 1951.</p>
+
+<h2>II. De la loi-cadre (1956) à l'indépendance (1960)</h2>
+
+<div class="etape-card e3">
+  <div class="etape-titre">📜 La loi-cadre du 23 juin 1956 (loi Gaston Deferre)</div>
+  À partir de 1954, la France change de politique et décide d'accompagner les colonies vers l'indépendance. Elle adopte la <strong>loi-cadre (loi Gaston Deferre)</strong> qui crée dans chaque colonie un <strong>gouvernement local</strong> doté de larges pouvoirs.
+</div>
+
+<div class="etape-card e2">
+  <div class="etape-titre">🗳️ Le référendum de 1958 et la Communauté Franco-Africaine</div>
+  En <strong>1958</strong>, De Gaulle propose un projet de Constitution établissant une <strong>Communauté Franco-Africaine</strong> dans laquelle les colonies deviendraient des républiques autonomes. Au référendum du <strong>28 septembre 1958</strong>, le Sénégal vote "<strong>oui</strong>". La République est proclamée le <strong>25 novembre 1958</strong>. <strong>Mamadou Dia</strong> est nommé président du conseil du gouvernement.
+</div>
+
+<div class="etape-card e1">
+  <div class="etape-titre">🌍 La Fédération du Mali et l'indépendance (1960)</div>
+  Pour éviter la "balkanisation" des pays ouest-africains francophones, le <strong>Soudan français</strong> et le <strong>Sénégal</strong> forment la <strong>Fédération du Mali</strong> :
+  <ul>
+    <li><strong>Modibo Keita</strong> : chef du gouvernement fédéral</li>
+    <li><strong>Senghor</strong> : président de l'Assemblée Fédérale</li>
+    <li><strong>Mamadou Dia</strong> : vice-président</li>
+  </ul>
+  La France transfère le pouvoir à la Fédération le <strong>4 avril 1960</strong>. Mais la Fédération éclate le <strong>20 août 1960</strong>. Le Sénégal proclame son indépendance et choisit la date du <strong>4 avril</strong> pour la célébrer.
+</div>
+
+<h2>III. De l'indépendance à la crise de 1962</h2>
+
+<p>En 1960, <strong>Léopold Sédar Senghor</strong> devient <strong>Président de la République</strong> et <strong>Mamadou Dia</strong> <strong>Président du Conseil du gouvernement</strong>. Le régime parlementaire est <strong>bicéphale</strong> (pouvoir partagé entre deux têtes).</p>
+
+<div class="etape-card e4">
+  <div class="etape-titre">⚠️ La crise de décembre 1962</div>
+  Des divergences sur la gestion du pouvoir et les choix économiques provoquent un conflit entre Senghor et Mamadou Dia. Le <strong>17 décembre 1962</strong>, le gouvernement de Mamadou Dia est renversé par une motion de censure. <strong>Mamadou Dia et ses compagnons sont arrêtés et emprisonnés</strong>. Cette crise politique marquera durablement le Sénégal.
+</div>
+
+<div class="frise">
+  <div class="frise-titre">📅 Chronologie — Le Sénégal de 1944 à 1962</div>
+  <div class="frise-item"><span class="frise-date">30 jan. 1944</span> Conférence de Brazzaville — suppression indigénat, assemblées territoriales</div>
+  <div class="frise-item"><span class="frise-date">1946</span> Union Française — colonies → TOM, citoyenneté française</div>
+  <div class="frise-item"><span class="frise-date">1948</span> Senghor et Mamadou Dia fondent le BDS</div>
+  <div class="frise-item"><span class="frise-date">1951</span> Victoire électorale du BDS</div>
+  <div class="frise-item"><span class="frise-date">23 juin 1956</span> Loi-cadre (loi Gaston Deferre) — gouvernements locaux</div>
+  <div class="frise-item"><span class="frise-date">28 sept. 1958</span> Référendum : Sénégal vote "oui" à la Communauté Franco-Africaine</div>
+  <div class="frise-item"><span class="frise-date">25 nov. 1958</span> République du Sénégal proclamée — Mamadou Dia président du Conseil</div>
+  <div class="frise-item"><span class="frise-date">4 avril 1960</span> France transfère le pouvoir à la Fédération du Mali</div>
+  <div class="frise-item"><span class="frise-date">20 août 1960</span> Éclatement de la Fédération du Mali</div>
+  <div class="frise-item"><span class="frise-date">4 avril</span> Date choisie pour célébrer l'indépendance du Sénégal</div>
+  <div class="frise-item"><span class="frise-date">17 déc. 1962</span> Crise politique : Mamadou Dia arrêté et emprisonné</div>
+</div>
+
+<!-- ==================== QCM ==================== -->
+<div class="qcm-section">
+<div class="qcm-titre">✏️ QCM — Évalue tes connaissances (25 questions)</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">1.</span> Qui convoqua la Conférence de Brazzaville en 1944 ?</div>
+  <label class="option"><input type="radio" name="q1" value="A"> <label>A. Lamine Guèye</label></label>
+  <label class="option"><input type="radio" name="q1" value="B" data-correct="true"> <label>B. De Gaulle</label></label>
+  <label class="option"><input type="radio" name="q1" value="C"> <label>C. Senghor</label></label>
+  <label class="option"><input type="radio" name="q1" value="D"> <label>D. Mamadou Dia</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">2.</span> Quelles furent les dates de la Conférence de Brazzaville ?</div>
+  <label class="option"><input type="radio" name="q2" value="A"> <label>A. 25 juin – 4 juillet 1944</label></label>
+  <label class="option"><input type="radio" name="q2" value="B" data-correct="true"> <label>B. 30 janvier – 8 février 1944</label></label>
+  <label class="option"><input type="radio" name="q2" value="C"> <label>C. 14 – 28 juillet 1944</label></label>
+  <label class="option"><input type="radio" name="q2" value="D"> <label>D. 1er – 15 mars 1944</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">3.</span> Quelle institution coloniale oppressive la Conférence de Brazzaville décida-t-elle de supprimer ?</div>
+  <label class="option"><input type="radio" name="q3" value="A"> <label>A. Le gouvernorat général</label></label>
+  <label class="option"><input type="radio" name="q3" value="B" data-correct="true"> <label>B. L'indigénat</label></label>
+  <label class="option"><input type="radio" name="q3" value="C"> <label>C. Le Parlement colonial</label></label>
+  <label class="option"><input type="radio" name="q3" value="D"> <label>D. Le Conseil colonial</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">4.</span> Quelle était la position de la Conférence de Brazzaville sur l'indépendance des colonies ?</div>
+  <label class="option"><input type="radio" name="q4" value="A"> <label>A. Elle la planifiait pour 1946</label></label>
+  <label class="option"><input type="radio" name="q4" value="B"> <label>B. Elle l'accordait immédiatement</label></label>
+  <label class="option"><input type="radio" name="q4" value="C" data-correct="true"> <label>C. Elle la rejetait totalement</label></label>
+  <label class="option"><input type="radio" name="q4" value="D"> <label>D. Elle proposait un référendum dans chaque colonie</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">5.</span> Que signifie TOM dans le cadre de l'Union Française de 1946 ?</div>
+  <label class="option"><input type="radio" name="q5" value="A"> <label>A. Territoire Ouvert au Marché</label></label>
+  <label class="option"><input type="radio" name="q5" value="B" data-correct="true"> <label>B. Territoire d'Outre-Mer</label></label>
+  <label class="option"><input type="radio" name="q5" value="C"> <label>C. Territoire Obligatoire Métropolitain</label></label>
+  <label class="option"><input type="radio" name="q5" value="D"> <label>D. Territoire d'Organisation Monarchique</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">6.</span> Qui représentait le Sénégal au Parlement français après l'Union Française de 1946 ?</div>
+  <label class="option"><input type="radio" name="q6" value="A"> <label>A. Senghor et Mamadou Dia</label></label>
+  <label class="option"><input type="radio" name="q6" value="B" data-correct="true"> <label>B. Lamine Guèye et Léopold Sédar Senghor</label></label>
+  <label class="option"><input type="radio" name="q6" value="C"> <label>C. Modibo Keita et Lamine Guèye</label></label>
+  <label class="option"><input type="radio" name="q6" value="D"> <label>D. Mamadou Dia et Blaise Diagne</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">7.</span> Quel fut le statut accordé aux habitants des colonies dans l'Union Française de 1946 ?</div>
+  <label class="option"><input type="radio" name="q7" value="A"> <label>A. Sujets français</label></label>
+  <label class="option"><input type="radio" name="q7" value="B" data-correct="true"> <label>B. Citoyens français</label></label>
+  <label class="option"><input type="radio" name="q7" value="C"> <label>C. Résidents français</label></label>
+  <label class="option"><input type="radio" name="q7" value="D"> <label>D. Associés français</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">8.</span> En quelle année Senghor quitte-t-il la SFIO pour fonder le BDS ?</div>
+  <label class="option"><input type="radio" name="q8" value="A"> <label>A. 1944</label></label>
+  <label class="option"><input type="radio" name="q8" value="B"> <label>B. 1946</label></label>
+  <label class="option"><input type="radio" name="q8" value="C" data-correct="true"> <label>C. 1948</label></label>
+  <label class="option"><input type="radio" name="q8" value="D"> <label>D. 1951</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">9.</span> Que signifie BDS ?</div>
+  <label class="option"><input type="radio" name="q9" value="A"> <label>A. Bureau Démocratique du Sénégal</label></label>
+  <label class="option"><input type="radio" name="q9" value="B" data-correct="true"> <label>B. Bloc Démocratique Sénégalais</label></label>
+  <label class="option"><input type="radio" name="q9" value="C"> <label>C. Bloc de Décolonisation du Sahel</label></label>
+  <label class="option"><input type="radio" name="q9" value="D"> <label>D. Bureau de Développement du Sénégal</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">10.</span> Qui sont les co-fondateurs du BDS en 1948 ?</div>
+  <label class="option"><input type="radio" name="q10" value="A"> <label>A. Lamine Guèye et Blaise Diagne</label></label>
+  <label class="option"><input type="radio" name="q10" value="B" data-correct="true"> <label>B. Léopold Sédar Senghor et Mamadou Dia</label></label>
+  <label class="option"><input type="radio" name="q10" value="C"> <label>C. Senghor et Modibo Keita</label></label>
+  <label class="option"><input type="radio" name="q10" value="D"> <label>D. Mamadou Dia et Lamine Guèye</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">11.</span> Quelle loi de 1956 créa des gouvernements locaux dans chaque colonie française ?</div>
+  <label class="option"><input type="radio" name="q11" value="A"> <label>A. La loi De Gaulle</label></label>
+  <label class="option"><input type="radio" name="q11" value="B" data-correct="true"> <label>B. La loi-cadre (loi Gaston Deferre)</label></label>
+  <label class="option"><input type="radio" name="q11" value="C"> <label>C. La loi Brazzaville</label></label>
+  <label class="option"><input type="radio" name="q11" value="D"> <label>D. La loi de l'Union Française</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">12.</span> À quelle date fut adoptée la loi-cadre de Gaston Deferre ?</div>
+  <label class="option"><input type="radio" name="q12" value="A"> <label>A. 4 avril 1960</label></label>
+  <label class="option"><input type="radio" name="q12" value="B"> <label>B. 25 novembre 1958</label></label>
+  <label class="option"><input type="radio" name="q12" value="C" data-correct="true"> <label>C. 23 juin 1956</label></label>
+  <label class="option"><input type="radio" name="q12" value="D"> <label>D. 28 septembre 1958</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">13.</span> Quel projet De Gaulle proposa-t-il aux colonies en 1958 ?</div>
+  <label class="option"><input type="radio" name="q13" value="A"> <label>A. L'indépendance totale et immédiate de toutes les colonies</label></label>
+  <label class="option"><input type="radio" name="q13" value="B" data-correct="true"> <label>B. Une Communauté Franco-Africaine où les colonies deviendraient des républiques autonomes</label></label>
+  <label class="option"><input type="radio" name="q13" value="C"> <label>C. L'intégration des colonies comme départements français</label></label>
+  <label class="option"><input type="radio" name="q13" value="D"> <label>D. La dissolution de l'Union Française</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">14.</span> Comment le Sénégal vota-t-il lors du référendum du 28 septembre 1958 ?</div>
+  <label class="option"><input type="radio" name="q14" value="A"> <label>A. Non — pour l'indépendance immédiate</label></label>
+  <label class="option"><input type="radio" name="q14" value="B" data-correct="true"> <label>B. Oui — pour rejoindre la Communauté Franco-Africaine</label></label>
+  <label class="option"><input type="radio" name="q14" value="C"> <label>C. Il s'abstint de voter</label></label>
+  <label class="option"><input type="radio" name="q14" value="D"> <label>D. Le vote fut annulé pour fraude</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">15.</span> À quelle date la République du Sénégal fut-elle officiellement proclamée ?</div>
+  <label class="option"><input type="radio" name="q15" value="A"> <label>A. 28 septembre 1958</label></label>
+  <label class="option"><input type="radio" name="q15" value="B" data-correct="true"> <label>B. 25 novembre 1958</label></label>
+  <label class="option"><input type="radio" name="q15" value="C"> <label>C. 4 avril 1960</label></label>
+  <label class="option"><input type="radio" name="q15" value="D"> <label>D. 20 août 1960</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">16.</span> Quels deux pays formèrent la Fédération du Mali ?</div>
+  <label class="option"><input type="radio" name="q16" value="A"> <label>A. Le Sénégal et la Guinée</label></label>
+  <label class="option"><input type="radio" name="q16" value="B" data-correct="true"> <label>B. Le Sénégal et le Soudan français</label></label>
+  <label class="option"><input type="radio" name="q16" value="C"> <label>C. Le Sénégal et la Haute-Volta</label></label>
+  <label class="option"><input type="radio" name="q16" value="D"> <label>D. Le Sénégal et le Dahomey</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">17.</span> Quel rôle Senghor occupa-t-il au sein de la Fédération du Mali ?</div>
+  <label class="option"><input type="radio" name="q17" value="A"> <label>A. Chef du gouvernement fédéral</label></label>
+  <label class="option"><input type="radio" name="q17" value="B" data-correct="true"> <label>B. Président de l'Assemblée Fédérale</label></label>
+  <label class="option"><input type="radio" name="q17" value="C"> <label>C. Vice-président de la Fédération</label></label>
+  <label class="option"><input type="radio" name="q17" value="D"> <label>D. Ministre des affaires étrangères</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">18.</span> Qui était le chef du gouvernement fédéral de la Fédération du Mali ?</div>
+  <label class="option"><input type="radio" name="q18" value="A"> <label>A. Senghor</label></label>
+  <label class="option"><input type="radio" name="q18" value="B" data-correct="true"> <label>B. Modibo Keita</label></label>
+  <label class="option"><input type="radio" name="q18" value="C"> <label>C. Mamadou Dia</label></label>
+  <label class="option"><input type="radio" name="q18" value="D"> <label>D. Lamine Guèye</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">19.</span> À quelle date la France transféra-t-elle le pouvoir à la Fédération du Mali ?</div>
+  <label class="option"><input type="radio" name="q19" value="A"> <label>A. 25 novembre 1958</label></label>
+  <label class="option"><input type="radio" name="q19" value="B" data-correct="true"> <label>B. 4 avril 1960</label></label>
+  <label class="option"><input type="radio" name="q19" value="C"> <label>C. 20 août 1960</label></label>
+  <label class="option"><input type="radio" name="q19" value="D"> <label>D. 17 décembre 1962</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">20.</span> À quelle date la Fédération du Mali éclata-t-elle ?</div>
+  <label class="option"><input type="radio" name="q20" value="A"> <label>A. 4 avril 1960</label></label>
+  <label class="option"><input type="radio" name="q20" value="B" data-correct="true"> <label>B. 20 août 1960</label></label>
+  <label class="option"><input type="radio" name="q20" value="C"> <label>C. 25 novembre 1958</label></label>
+  <label class="option"><input type="radio" name="q20" value="D"> <label>D. 17 décembre 1962</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">21.</span> Quelle date le Sénégal choisit-il pour célébrer son indépendance et pourquoi ?</div>
+  <label class="option"><input type="radio" name="q21" value="A"> <label>A. Le 20 août — date de l'éclatement de la Fédération du Mali</label></label>
+  <label class="option"><input type="radio" name="q21" value="B" data-correct="true"> <label>B. Le 4 avril — date du transfert du pouvoir par la France</label></label>
+  <label class="option"><input type="radio" name="q21" value="C"> <label>C. Le 25 novembre — date de la proclamation de la République</label></label>
+  <label class="option"><input type="radio" name="q21" value="D"> <label>D. Le 28 septembre — date du référendum constitutionnel</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">22.</span> Qui devint le premier Président de la République du Sénégal indépendant ?</div>
+  <label class="option"><input type="radio" name="q22" value="A"> <label>A. Mamadou Dia</label></label>
+  <label class="option"><input type="radio" name="q22" value="B"> <label>B. Lamine Guèye</label></label>
+  <label class="option"><input type="radio" name="q22" value="C" data-correct="true"> <label>C. Léopold Sédar Senghor</label></label>
+  <label class="option"><input type="radio" name="q22" value="D"> <label>D. Modibo Keita</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">23.</span> Comment s'appelle un régime politique où le pouvoir exécutif est partagé entre deux chefs ?</div>
+  <label class="option"><input type="radio" name="q23" value="A"> <label>A. Un régime bicaméral</label></label>
+  <label class="option"><input type="radio" name="q23" value="B" data-correct="true"> <label>B. Un régime bicéphale</label></label>
+  <label class="option"><input type="radio" name="q23" value="C"> <label>C. Un régime fédéral</label></label>
+  <label class="option"><input type="radio" name="q23" value="D"> <label>D. Un régime présidentiel pur</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">24.</span> Que se passa-t-il le 17 décembre 1962 au Sénégal ?</div>
+  <label class="option"><input type="radio" name="q24" value="A"> <label>A. Senghor démissionna de la présidence</label></label>
+  <label class="option"><input type="radio" name="q24" value="B" data-correct="true"> <label>B. Mamadou Dia fut renversé par une motion de censure puis arrêté et emprisonné</label></label>
+  <label class="option"><input type="radio" name="q24" value="C"> <label>C. Le Sénégal réintégra la Fédération du Mali</label></label>
+  <label class="option"><input type="radio" name="q24" value="D"> <label>D. Des élections présidentielles eurent lieu</label></label>
+</div>
+
+<div class="question-bloc">
+  <div class="question-texte"><span class="question-num">25.</span> Quelle était la principale cause de la crise politique de décembre 1962 entre Senghor et Mamadou Dia ?</div>
+  <label class="option"><input type="radio" name="q25" value="A"> <label>A. Des querelles ethniques entre les deux hommes</label></label>
+  <label class="option"><input type="radio" name="q25" value="B" data-correct="true"> <label>B. Des divergences sur la gestion du pouvoir et les choix économiques</label></label>
+  <label class="option"><input type="radio" name="q25" value="C"> <label>C. Un coup d'État militaire contre les deux dirigeants</label></label>
+  <label class="option"><input type="radio" name="q25" value="D"> <label>D. Une intervention de la France pour destituer Mamadou Dia</label></label>
+</div>
+
+</div>
+</body>
+</html>
