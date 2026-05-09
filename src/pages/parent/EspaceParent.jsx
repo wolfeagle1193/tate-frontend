@@ -151,12 +151,18 @@ function DetailEnfant({ enfant, sessions, progression, devoirs }) {
     return { nom: 'Autre matière', code: '?' };
   };
 
-  // ── Toutes les dates de travail (calendrier) ──
-  const allDates = progression
+  // ── Toutes les dates de travail (calendrier) — deux sources ──
+  // Source 1 : résultats QCM (progression)
+  const datesResultats = progression
     .flatMap(c => c.tentatives.map(t => t.completedAt))
     .filter(Boolean)
     .map(d => new Date(d).toISOString().slice(0, 10));
-  const activeDays = new Set(allDates);
+  // Source 2 : sessions IA (completedAt ou startedAt)
+  const datesSessions = sessions
+    .map(s => s.completedAt || s.startedAt)
+    .filter(Boolean)
+    .map(d => new Date(d).toISOString().slice(0, 10));
+  const activeDays = new Set([...datesResultats, ...datesSessions]);
 
   // ── Calendrier 28 derniers jours ──
   const last28 = Array.from({ length: 28 }, (_, i) => {
@@ -193,23 +199,43 @@ function DetailEnfant({ enfant, sessions, progression, devoirs }) {
     .sort((a, b) => b.tentatives.length - a.tentatives.length);
 
   // ── Chapitres maîtrisés (triés du plus récent) ──
-  const chapMaitrises = progression
-    .filter(c => c.maitrise)
+  // Source 1 : QCM résultats (progression)
+  const chapMaisQcm = progression.filter(c => c.maitrise);
+  // Source 2 : sessions IA maîtrisées (groupées par chapitre, non déjà dans QCM)
+  const qcmIds = new Set(chapMaisQcm.map(c => c.chapitreId?._id?.toString() || c.chapitreId?.toString()));
+  const sessMaisMap = {};
+  for (const s of sessions) {
+    if (!s.maitrise) continue;
+    const cid = s.chapitreId?._id?.toString() || s.chapitreId?.toString();
+    if (!cid || qcmIds.has(cid)) continue;
+    if (!sessMaisMap[cid]) sessMaisMap[cid] = { cid, chapitreId: s.chapitreId, titre: s.chapitreId?.titre || 'Chapitre', tentatives: [], maitrise: true, meilleurScore: 0, derniereAt: null, source: 'session' };
+    sessMaisMap[cid].tentatives.push({ score: s.scorePct, maitrise: true, completedAt: s.completedAt });
+    if (s.scorePct > sessMaisMap[cid].meilleurScore) sessMaisMap[cid].meilleurScore = s.scorePct;
+    if (!sessMaisMap[cid].derniereAt || new Date(s.completedAt) > new Date(sessMaisMap[cid].derniereAt)) sessMaisMap[cid].derniereAt = s.completedAt;
+  }
+  const chapMaitrises = [...chapMaisQcm, ...Object.values(sessMaisMap)]
     .sort((a, b) => new Date(b.derniereAt || 0) - new Date(a.derniereAt || 0));
 
-  // ── Score moyen global (basé sur meilleur score par chapitre) ──
-  const scoresValides = progression.map(c => clamp(c.meilleurScore)).filter(s => s > 0);
+  // ── Score moyen global — QCM en priorité, sessions en fallback ──
+  const scoresQcm = progression.map(c => clamp(c.meilleurScore)).filter(s => s > 0);
+  const scoresSess = sessions.map(s => clamp(s.scorePct)).filter(s => s > 0);
+  const scoresValides = scoresQcm.length > 0 ? scoresQcm : scoresSess;
   const scoreMoyen = scoresValides.length > 0
     ? clamp(scoresValides.reduce((a, b) => a + b, 0) / scoresValides.length)
     : null;
   const niv = scoreMoyen != null ? niveauLabel(scoreMoyen) : null;
 
-  // ── Tendance (3 dernières sessions vs 3 précédentes) ──
-  const allScoresChron = progression
+  // ── Tendance — QCM en priorité, sessions en fallback ──
+  const allScoresChronQcm = progression
     .flatMap(c => c.tentatives.map(t => ({ score: clamp(t.score || 0), date: t.completedAt })))
     .filter(t => t.date)
     .sort((a, b) => new Date(b.date) - new Date(a.date))
     .map(t => t.score);
+  const allScoresChronSess = sessions
+    .filter(s => s.completedAt || s.startedAt)
+    .sort((a, b) => new Date(b.completedAt || b.startedAt) - new Date(a.completedAt || a.startedAt))
+    .map(s => clamp(s.scorePct));
+  const allScoresChron = allScoresChronQcm.length >= 4 ? allScoresChronQcm : allScoresChronSess;
   const tendance = (() => {
     if (allScoresChron.length < 4) return null;
     const recent    = allScoresChron.slice(0, 3).reduce((a, b) => a + b, 0) / 3;
@@ -266,8 +292,12 @@ function DetailEnfant({ enfant, sessions, progression, devoirs }) {
             color: 'text-emerald-600',
           },
           {
-            val: progression.length,
-            label: 'Chapitres tentés',
+            val: (() => {
+              const idsQcm  = new Set(progression.map(c => c.chapitreId?._id?.toString() || c.chapitreId?.toString()).filter(Boolean));
+              const idsSess = new Set(sessions.map(s => s.chapitreId?._id?.toString() || s.chapitreId?.toString()).filter(Boolean));
+              return new Set([...idsQcm, ...idsSess]).size;
+            })(),
+            label: 'Chapitres travaillés',
             color: 'text-tate-terre',
           },
           {
@@ -847,32 +877,30 @@ export function EspaceParent() {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const chargerEnfant = async (eleveId, niveau) => {
-    try {
-      const [sessRes, progRes, devRes, chapRes] = await Promise.allSettled([
-        api.get(`/stats/eleve/${eleveId}`),
-        api.get(`/resultats/progression/${eleveId}`),
-        api.get(`/planning/enfant/${eleveId}`),
-        niveau ? api.get(`/chapitres?niveau=${niveau}`) : Promise.resolve({ data:{ data:[] } }),
-      ]);
+    const [sessRes, progRes, devRes, chapRes] = await Promise.allSettled([
+      api.get(`/stats/eleve/${eleveId}`),
+      api.get(`/resultats/progression/${eleveId}`),
+      api.get(`/planning/enfant/${eleveId}`),
+      niveau ? api.get(`/chapitres?niveau=${niveau}`) : Promise.resolve({ data:{ data:[] } }),
+    ]);
 
-      if (sessRes.status === 'fulfilled') {
-        const raw = sessRes.value.data.data || [];
-        setSessions(raw.map(s => ({ ...s, scorePct: clamp(s.scorePct) })));
-      } else { setSessions([]); }
+    // stats/eleve renvoie { sessions:[], chapitresValides:N, totalSessions:N, tauxReussite:N }
+    if (sessRes.status === 'fulfilled') {
+      const payload = sessRes.value.data.data || {};
+      const liste   = Array.isArray(payload) ? payload : (payload.sessions || []);
+      setSessions(liste.map(s => ({ ...s, scorePct: clamp(s.scorePct) })));
+    } else { setSessions([]); }
 
-      if (progRes.status === 'fulfilled') {
-        setProgression(progRes.value.data.data || []);
-      } else { setProgression([]); }
+    if (progRes.status === 'fulfilled') {
+      setProgression(progRes.value.data.data || []);
+    } else { setProgression([]); }
 
-      if (devRes.status === 'fulfilled') {
-        setDevoirs(devRes.value.data.data || []);
-      } else { setDevoirs([]); }
+    if (devRes.status === 'fulfilled') {
+      setDevoirs(devRes.value.data.data || []);
+    } else { setDevoirs([]); }
 
-      if (chapRes.status === 'fulfilled') {
-        setNbChapTotal((chapRes.value.data.data || []).length);
-      }
-    } catch {
-      setSessions([]); setProgression([]); setDevoirs([]);
+    if (chapRes.status === 'fulfilled') {
+      setNbChapTotal((chapRes.value.data.data || []).length);
     }
   };
 
