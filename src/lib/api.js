@@ -2,6 +2,11 @@ import axios from 'axios';
 
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
+// ── helpers localStorage sécurisés (Safari privé lève SecurityError) ──
+const lsGet = (key) => { try { return localStorage.getItem(key); } catch { return null; } };
+const lsSet = (key, val) => { try { localStorage.setItem(key, val); } catch { /* silencieux */ } };
+const lsRemove = (...keys) => { try { keys.forEach(k => localStorage.removeItem(k)); } catch { /* silencieux */ } };
+
 const api = axios.create({
   baseURL: BASE_URL,
   headers: { 'Content-Type': 'application/json' },
@@ -9,7 +14,7 @@ const api = axios.create({
 
 // Injecter le token JWT à chaque requête
 api.interceptors.request.use(cfg => {
-  const token = localStorage.getItem('accessToken');
+  const token = lsGet('accessToken');
   if (token) cfg.headers.Authorization = `Bearer ${token}`;
   return cfg;
 });
@@ -24,13 +29,13 @@ const onRefreshed = (token) => {
 };
 
 const doRefresh = async () => {
-  const refresh = localStorage.getItem('refreshToken');
+  const refresh = lsGet('refreshToken');
   if (!refresh) throw new Error('Pas de refresh token');
   const { data } = await axios.post(`${BASE_URL}/auth/refresh`, { refreshToken: refresh });
   const newAccess  = data.data.accessToken;
   const newRefresh = data.data.refreshToken;
-  localStorage.setItem('accessToken',  newAccess);
-  localStorage.setItem('refreshToken', newRefresh);
+  lsSet('accessToken',  newAccess);
+  lsSet('refreshToken', newRefresh);
   return newAccess;
 };
 
@@ -39,9 +44,7 @@ api.interceptors.response.use(
   async err => {
     const original = err.config;
 
-    // Déclencher le refresh sur TOKEN_EXPIRED OU tout 401 sauf la route login/refresh elle-même
     const status = err.response?.status;
-    const code   = err.response?.data?.code;
     const url    = original?.url || '';
     const isAuthRoute = url.includes('/auth/login') || url.includes('/auth/refresh');
 
@@ -73,21 +76,15 @@ api.interceptors.response.use(
         refreshSubscribers = [];
         onRefreshed(null);
 
-        // Ne déconnecter que si le serveur a explicitement rejeté le refresh token
-        // (401 de l'endpoint /auth/refresh) — PAS pour des erreurs réseau ou rate limit
         const refreshStatus = refreshErr?.response?.status;
         const isHardLogout = refreshStatus === 401 || refreshStatus === 403;
 
         if (isHardLogout) {
-          localStorage.removeItem('accessToken');
-          localStorage.removeItem('refreshToken');
-          localStorage.removeItem('user');
+          lsRemove('accessToken', 'refreshToken', 'user');
           if (!window.location.pathname.includes('/login')) {
             window.location.href = '/login';
           }
         }
-        // Sinon : erreur réseau/timeout/rate-limit → on garde la session locale
-        // L'élève reste connecté et réessaiera automatiquement
         return Promise.reject(refreshErr);
       } finally {
         isRefreshing = false;
@@ -98,22 +95,18 @@ api.interceptors.response.use(
   }
 );
 
-// ── Vérification proactive au démarrage de l'app ──────────────
-// Décode le JWT localement pour voir s'il expire dans les 3 prochains jours
-// Si oui, on rafraîchit silencieusement sans attendre une erreur 401
+// ── Vérification proactive au démarrage ──────────────────────
 export const proactiveTokenRefresh = async () => {
   try {
-    const token = localStorage.getItem('accessToken');
+    const token = lsGet('accessToken');
     if (!token) return;
-    // Décoder le payload (sans vérification de signature, juste pour lire exp)
     const payload = JSON.parse(atob(token.split('.')[1]));
-    const expiresIn = payload.exp * 1000 - Date.now(); // ms restantes
-    // Rafraîchir si moins de 7 jours restants (marge généreuse pour les élèves)
+    const expiresIn = payload.exp * 1000 - Date.now();
     if (expiresIn < 7 * 24 * 60 * 60 * 1000) {
       await doRefresh();
     }
   } catch {
-    // Silencieux — le rafraîchissement proactif n'est pas critique
+    // Silencieux
   }
 };
 

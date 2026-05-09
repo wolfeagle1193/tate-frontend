@@ -1,8 +1,9 @@
 // Taté Service Worker — Cache Shell + API NetworkFirst
-const CACHE_NAME = 'tate-v1';
+// ⚠️  Incrémenter CACHE_NAME à chaque déploiement pour invalider le cache mobile
+const CACHE_NAME = 'tate-v3';
 const SHELL = ['/', '/index.html'];
 
-// Installation : mise en cache du shell
+// Installation : mise en cache du shell uniquement
 self.addEventListener('install', (e) => {
   e.waitUntil(
     caches.open(CACHE_NAME).then(c => c.addAll(SHELL))
@@ -10,27 +11,44 @@ self.addEventListener('install', (e) => {
   self.skipWaiting();
 });
 
-// Activation : supprime les anciens caches
+// Activation : supprime TOUS les anciens caches (force refresh mobile)
 self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
-    )
+      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => {
+        console.log('[SW] Suppression cache obsolète :', k);
+        return caches.delete(k);
+      }))
+    ).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
 // Fetch : stratégies selon l'URL
 self.addEventListener('fetch', (e) => {
   const url = new URL(e.request.url);
 
-  // API → NetworkFirst (fraîcheur des données)
+  // Ne pas intercepter les requêtes non-GET
+  if (e.request.method !== 'GET') return;
+
+  // API → NetworkFirst SANS cache (données toujours fraîches)
   if (url.pathname.startsWith('/api') || url.hostname.includes('onrender.com')) {
+    e.respondWith(
+      fetch(e.request).catch(() => caches.match(e.request))
+    );
+    return;
+  }
+
+  // Chunks JS/CSS hachés → NetworkFirst (Vite génère des hashes uniques)
+  // On ne les met PAS en cache pour éviter de servir de vieux bundles
+  if (url.pathname.match(/\.(js|css)$/) && url.pathname.includes('/assets/')) {
     e.respondWith(
       fetch(e.request)
         .then(res => {
-          const clone = res.clone();
-          caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
+          // Mettre en cache uniquement les réponses valides
+          if (res.ok) {
+            const clone = res.clone();
+            caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
+          }
           return res;
         })
         .catch(() => caches.match(e.request))
@@ -38,18 +56,18 @@ self.addEventListener('fetch', (e) => {
     return;
   }
 
-  // Assets statiques → CacheFirst
-  if (url.pathname.match(/\.(js|css|png|svg|ico|woff2?)$/)) {
+  // Images/fonts → CacheFirst (immutables)
+  if (url.pathname.match(/\.(png|svg|ico|woff2?|jpg|webp)$/)) {
     e.respondWith(
       caches.match(e.request).then(cached => cached || fetch(e.request).then(res => {
-        caches.open(CACHE_NAME).then(c => c.put(e.request, res.clone()));
+        if (res.ok) caches.open(CACHE_NAME).then(c => c.put(e.request, res.clone()));
         return res;
       }))
     );
     return;
   }
 
-  // Navigation → retour au shell si hors-ligne
+  // Navigation HTML → NetworkFirst avec fallback shell (SPA)
   if (e.request.mode === 'navigate') {
     e.respondWith(
       fetch(e.request).catch(() => caches.match('/index.html'))

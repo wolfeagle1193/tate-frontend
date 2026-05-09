@@ -1,25 +1,43 @@
 import { create } from 'zustand';
 import api from '../lib/api';
 
+// ── Helpers localStorage sécurisés (Safari privé lève SecurityError) ──
+const lsGet = (key, fallback = null) => {
+  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
+  catch { return fallback; }
+};
+const lsSet = (key, value) => {
+  try { localStorage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value)); }
+  catch { /* quota dépassé ou privé — silencieux */ }
+};
+const lsRemove = (...keys) => {
+  try { keys.forEach(k => localStorage.removeItem(k)); }
+  catch { /* silencieux */ }
+};
+const lsGetRaw = (key) => {
+  try { return localStorage.getItem(key); }
+  catch { return null; }
+};
+
 export const useAuthStore = create((set, get) => ({
-  user:    JSON.parse(localStorage.getItem('user') || 'null'),
+  user:    lsGet('user'),
   loading: false,
   error:   null,
 
   // ── Mettre à jour l'utilisateur localement (après validation QCM, etc.)
   setUser: (user) => {
-    localStorage.setItem('user', JSON.stringify(user));
+    lsSet('user', user);
     set({ user });
   },
 
   // ── Rafraîchir le profil utilisateur depuis l'API (chapitresValides à jour)
   rafraichirUser: async () => {
     try {
-      const token = localStorage.getItem('accessToken');
+      const token = lsGetRaw('accessToken');
       if (!token) return;
       const { data } = await api.get('/auth/me');
       const user = data.data;
-      localStorage.setItem('user', JSON.stringify(user));
+      lsSet('user', user);
       set({ user });
       return user;
     } catch {
@@ -32,7 +50,6 @@ export const useAuthStore = create((set, get) => ({
     const current = get().user;
     if (!current) return;
     const chapitresValides = current.chapitresValides || [];
-    // Éviter les doublons
     const exists = chapitresValides.some(
       c => String(c.chapitreId) === String(chapitreValide.chapitreId)
     );
@@ -43,7 +60,7 @@ export const useAuthStore = create((set, get) => ({
       : [...chapitresValides, chapitreValide];
 
     const updatedUser = { ...current, chapitresValides: updated };
-    localStorage.setItem('user', JSON.stringify(updatedUser));
+    lsSet('user', updatedUser);
     set({ user: updatedUser });
   },
 
@@ -54,9 +71,9 @@ export const useAuthStore = create((set, get) => ({
         ? { telephone: identifiant, password }
         : { email: identifiant, password };
       const { data } = await api.post('/auth/login', payload);
-      localStorage.setItem('accessToken',  data.data.accessToken);
-      localStorage.setItem('refreshToken', data.data.refreshToken);
-      localStorage.setItem('user',         JSON.stringify(data.data.user));
+      lsSet('accessToken',  data.data.accessToken);
+      lsSet('refreshToken', data.data.refreshToken);
+      lsSet('user',         data.data.user);
       set({ user: data.data.user, loading: false });
       return data.data.user;
     } catch (e) {
@@ -71,9 +88,7 @@ export const useAuthStore = create((set, get) => ({
     } catch (_e) {
       // Déconnexion locale même si l'API échoue
     }
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('user');
+    lsRemove('accessToken', 'refreshToken', 'user');
     set({ user: null });
   },
 }));
