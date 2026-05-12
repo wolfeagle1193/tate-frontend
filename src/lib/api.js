@@ -96,17 +96,20 @@ api.interceptors.response.use(
 );
 
 // ── Vérification proactive au démarrage ──────────────────────
+// Rafraîchit le token si < 20 jours restants (au lieu de 7j),
+// ce qui couvre mieux les élèves qui reviennent après une pause.
 export const proactiveTokenRefresh = async () => {
   try {
     const token = lsGet('accessToken');
     if (!token) return;
     const payload = JSON.parse(atob(token.split('.')[1]));
     const expiresIn = payload.exp * 1000 - Date.now();
-    if (expiresIn < 7 * 24 * 60 * 60 * 1000) {
+    // Rafraîchir si < 20 jours restants OU déjà expiré
+    if (expiresIn < 20 * 24 * 60 * 60 * 1000) {
       await doRefresh();
     }
   } catch {
-    // Silencieux
+    // Silencieux — ne pas déconnecter si simple erreur réseau
   }
 };
 

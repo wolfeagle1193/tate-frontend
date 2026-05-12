@@ -49,18 +49,20 @@ function typeBadge(user) {
 
 // ─── Config matières ─────────────────────────────────────────────
 const MATIERES = [
-  { id:'FR', nom:'Français',   icone:'📖', code:'FR',
+  { id:'FR', nom:'Français',        icone:'📖', code:'FR',
     gradient:'from-orange-400 to-orange-600',  bg:'bg-orange-50',  border:'border-orange-200',  text:'text-orange-800',  dot:'bg-orange-500'  },
-  { id:'MA', nom:'Maths',      icone:'📐', code:'MA',
+  { id:'MA', nom:'Maths',           icone:'📐', code:'MA',
     gradient:'from-blue-400 to-blue-600',     bg:'bg-blue-50',   border:'border-blue-200',   text:'text-blue-800',   dot:'bg-blue-500'   },
-  { id:'AN', nom:'Anglais',    icone:'🇬🇧', code:'AN',
+  { id:'AN', nom:'Anglais',         icone:'🇬🇧', code:'AN',
     gradient:'from-emerald-400 to-green-600', bg:'bg-emerald-50',border:'border-emerald-200',text:'text-emerald-800',dot:'bg-emerald-500' },
-  { id:'HI', nom:'Histoire',   icone:'🏛️', code:'HI',
+  { id:'HI', nom:'Histoire',        icone:'🏛️', code:'HI',
     gradient:'from-purple-400 to-violet-600', bg:'bg-purple-50', border:'border-purple-200', text:'text-purple-800', dot:'bg-purple-500'  },
-  { id:'GE', nom:'Géographie', icone:'🌍', code:'GE',
+  { id:'GE', nom:'Géographie',      icone:'🌍', code:'GE',
     gradient:'from-teal-400 to-cyan-600',     bg:'bg-teal-50',   border:'border-teal-200',   text:'text-teal-800',   dot:'bg-teal-500'    },
-  { id:'SC', nom:'Sciences',   icone:'🔬', code:'SC',
+  { id:'SC', nom:'Sciences',        icone:'🔬', code:'SC',
     gradient:'from-rose-400 to-pink-600',     bg:'bg-rose-50',   border:'border-rose-200',   text:'text-rose-800',   dot:'bg-rose-500'    },
+  { id:'PC', nom:'Physique-Chimie', icone:'⚗️', code:'PC',
+    gradient:'from-violet-500 to-purple-700', bg:'bg-violet-50', border:'border-violet-200', text:'text-violet-800', dot:'bg-violet-500'  },
 ];
 
 // ─── Config sections Français ────────────────────────────────────
@@ -72,6 +74,18 @@ const SECTIONS_FR = [
 ];
 const NIVEAUX_4_SECTIONS = ['CM1','CM2','6eme','5eme','4eme','3eme'];
 const getSectionChap = (chap) => chap.sectionFr || null;
+
+// ─── Config sections Physique-Chimie ──────────────────────────────
+const SECTIONS_PC = [
+  { key:'Physique', label:'Physique', icone:'🔭', couleur:'border-blue-300 bg-blue-50 text-blue-800',    bar:'bg-blue-500'    },
+  { key:'Chimie',   label:'Chimie',   icone:'🧪', couleur:'border-green-300 bg-green-50 text-green-800', bar:'bg-green-500'   },
+];
+// Chapitres ordre 1-7 = Physique, ordre 8-11 = Chimie
+const getSectionPC = (chap) => {
+  if (!chap) return 'Physique';
+  const ordre = chap.ordre ?? 99;
+  return ordre <= 7 ? 'Physique' : 'Chimie';
+};
 
 // ─────────────────────────────────────────────────────────────────
 // Petits composants utilitaires
@@ -2755,6 +2769,403 @@ function FrancaisOnglets({ chapitres, isValide, isVerrouille, matiere, onDemarre
 }
 
 // ─────────────────────────────────────────────────────────────────
+// PC ONGLETS — Physique / Chimie (calqué sur FrancaisOnglets)
+// ─────────────────────────────────────────────────────────────────
+const SEC_TOUS_PC = { key:'__tous__', label:'Tout', icone:'⚗️', couleur:'border-violet-300 bg-violet-50 text-violet-800', bar:'bg-violet-500' };
+
+function PCOnglets({ chapitres, isValide, isVerrouille, matiere, onDemarrer }) {
+  const [onglet, setOnglet] = useState('__tous__');
+
+  const secAvecChap = SECTIONS_PC.filter(s => chapitres.some(c => getSectionPC(c) === s.key));
+  const onglets = [SEC_TOUS_PC, ...secAvecChap];
+
+  const chapsOnglet = onglet === '__tous__'
+    ? chapitres
+    : chapitres.filter(c => getSectionPC(c) === onglet);
+
+  const secActive = onglet === '__tous__' ? SEC_TOUS_PC : (SECTIONS_PC.find(s => s.key === onglet) || SEC_TOUS_PC);
+
+  return (
+    <div>
+      {/* Onglets */}
+      <div className="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-hide">
+        {onglets.map(sec => {
+          const total   = sec.key === '__tous__' ? chapitres.length : chapitres.filter(c => getSectionPC(c) === sec.key).length;
+          const valides = sec.key === '__tous__'
+            ? chapitres.filter(c => isValide(c._id)).length
+            : chapitres.filter(c => getSectionPC(c) === sec.key && isValide(c._id)).length;
+          const actif = onglet === sec.key;
+          return (
+            <button key={sec.key} onClick={() => setOnglet(sec.key)}
+              className={`flex-shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-xl border-2 text-xs font-semibold transition-all
+                ${actif ? `${sec.couleur} shadow-sm` : 'border-tate-border bg-white text-tate-terre/60 hover:bg-tate-doux'}`}>
+              <span>{sec.icone}</span>
+              <span>{sec.label}</span>
+              {total > 0 && (
+                <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold ${actif ? 'bg-white/60' : 'bg-tate-doux'}`}>
+                  {valides}/{total}
+                </span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Description de la section active */}
+      {onglet !== '__tous__' && (
+        <div className={`mb-3 px-3 py-2 rounded-xl text-xs font-medium ${secActive.couleur} border`}>
+          {onglet === 'Physique'
+            ? '🔭 Lentilles · Lumière · Forces · Travail · Électricité · Énergie'
+            : '🧪 Solutions · Acides-Bases · Métaux · Hydrocarbures'}
+        </div>
+      )}
+
+      <AnimatePresence mode="wait">
+        <motion.div key={onglet} initial={{ opacity:0, y:5 }} animate={{ opacity:1, y:0 }} exit={{ opacity:0 }} transition={{ duration:0.15 }}>
+          {chapsOnglet.length === 0 ? (
+            <div className="text-center py-12 bg-tate-creme rounded-2xl border-2 border-dashed border-tate-border">
+              <span className="text-4xl block mb-3">{secActive?.icone}</span>
+              <p className="text-sm font-semibold text-tate-terre/50">Aucun chapitre disponible</p>
+              <p className="text-xs text-tate-terre/30 mt-1">Le contenu sera bientôt ajouté</p>
+            </div>
+          ) : (
+            <div className="space-y-2.5">
+              {chapsOnglet.map((chap) => {
+                const globalIdx = chapitres.findIndex(c => c._id === chap._id);
+                const verr = isVerrouille ? isVerrouille(globalIdx) : false;
+                const frontierGlobalIdx = chapitres.findIndex((c, gi) =>
+                  !isValide(c._id) && !(isVerrouille ? isVerrouille(gi) : false)
+                );
+                return (
+                  <CarteChapitreBeauty key={chap._id} chap={chap} index={globalIdx}
+                    isValide={isValide} matiere={matiere}
+                    onClick={() => onDemarrer(chap)}
+                    verrouille={verr}
+                    frontiere={globalIdx === frontierGlobalIdx}
+                  />
+                );
+              })}
+            </div>
+          )}
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────
+// SECTION ENTRAÎNEMENTS PC — Exercices BST Joseph Turpin
+// ─────────────────────────────────────────────────────────────────
+function SectionEntrainenementsPC({ niveau, user }) {
+  const [items,          setItems]          = useState([]);
+  const [loading,        setLoading]        = useState(true);
+  const [sectionFiltree, setSectionFiltree] = useState('__tous__');
+  const [detail,         setDetail]         = useState(null);   // objet entrainement sélectionné
+  const [detailFull,     setDetailFull]     = useState(null);   // chargé avec contenuHTML/correctionHTML
+  const [voirCorr,       setVoirCorr]       = useState(false);
+  const [loadingDetail,  setLoadingDetail]  = useState(false);
+
+  const isPremium = user?.abonnement === 'premium';
+
+  // Charger la liste
+  useEffect(() => {
+    setLoading(true);
+    axios.get(`${API}/entrainements`, {
+      headers: { Authorization: `Bearer ${getToken()}` },
+      params:  { niveau: niveau || '3eme', matiere: 'Physique-Chimie' },
+    })
+      .then(r => setItems(r.data.data || []))
+      .catch(() => setItems([]))
+      .finally(() => setLoading(false));
+  }, [niveau]);
+
+  // Charger le détail (avec correction si premium)
+  const ouvrirDetail = async (item) => {
+    setDetail(item);
+    setVoirCorr(false);
+    setLoadingDetail(true);
+    setDetailFull(null);
+    try {
+      const params = { corrections: isPremium ? 'true' : 'false' };
+      const r = await axios.get(`${API}/entrainements/${item._id}`, {
+        headers: { Authorization: `Bearer ${getToken()}` }, params,
+      });
+      setDetailFull(r.data.data || item);
+    } catch { setDetailFull(item); }
+    finally { setLoadingDetail(false); }
+  };
+
+  const sectionsPC = [
+    { key:'__tous__', label:'Tout',     icone:'⚗️', couleur:'border-violet-300 bg-violet-50 text-violet-800' },
+    { key:'Physique', label:'Physique', icone:'🔭', couleur:'border-blue-300 bg-blue-50 text-blue-800' },
+    { key:'Chimie',   label:'Chimie',   icone:'🧪', couleur:'border-green-300 bg-green-50 text-green-800' },
+  ];
+
+  const itemsFiltres = sectionFiltree === '__tous__'
+    ? items
+    : items.filter(i => i.section === sectionFiltree);
+
+  // ── Vue détail ──────────────────────────────────────────────
+  if (detail) {
+    const html = detailFull?.contenuHTML || '';
+    const corr = detailFull?.correctionHTML || null;
+    return (
+      <motion.div initial={{ opacity:0, x:20 }} animate={{ opacity:1, x:0 }} transition={{ duration:0.2 }}>
+        <button onClick={() => { setDetail(null); setDetailFull(null); setVoirCorr(false); }}
+          className="flex items-center gap-1.5 mb-4 px-3 py-2 rounded-xl bg-white border-2 border-tate-border text-tate-terre font-semibold text-sm hover:bg-tate-doux transition-all shadow-card">
+          <ChevronLeft size={16} /> ← Retour aux entraînements
+        </button>
+
+        {/* Titre */}
+        <div className="bg-gradient-to-r from-violet-500 to-purple-700 rounded-2xl p-4 mb-4 text-white">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-lg">{detail.section === 'Physique' ? '🔭' : '🧪'}</span>
+            <span className="text-[10px] font-bold bg-white/20 rounded-full px-2 py-0.5">{detail.section}</span>
+          </div>
+          <h3 className="font-serif font-bold text-lg leading-tight">{detail.chapitre}</h3>
+          <p className="text-white/70 text-xs mt-1">{detail.source} · {detail.nbExercices} exercices</p>
+        </div>
+
+        {loadingDetail ? (
+          <LoadingTate message="Chargement des exercices…" />
+        ) : (
+          <>
+            {/* Exercices */}
+            <div className="bg-white rounded-2xl border border-tate-border overflow-hidden mb-4 shadow-card">
+              <div className="px-4 py-2 bg-violet-50 border-b border-violet-100 flex items-center gap-2">
+                <BookOpen size={14} className="text-violet-600" />
+                <span className="text-xs font-bold text-violet-700">Exercices</span>
+              </div>
+              <iframe
+                key={`enonce-${detail._id}`}
+                srcDoc={html}
+                title="Exercices"
+                className="w-full border-0"
+                style={{ height: '480px' }}
+                onLoad={e => {
+                  try {
+                    const h = e.target.contentDocument?.body?.scrollHeight;
+                    if (h && h > 100) e.target.style.height = Math.min(h + 20, 900) + 'px';
+                  } catch {}
+                }}
+                sandbox="allow-same-origin"
+              />
+            </div>
+
+            {/* Corrections */}
+            {isPremium ? (
+              <div className="bg-white rounded-2xl border border-tate-border overflow-hidden mb-4 shadow-card">
+                <button
+                  onClick={() => setVoirCorr(v => !v)}
+                  className="w-full px-4 py-3 bg-emerald-50 border-b border-emerald-100 flex items-center justify-between hover:bg-emerald-100 transition-colors">
+                  <div className="flex items-center gap-2">
+                    <Eye size={14} className="text-emerald-600" />
+                    <span className="text-xs font-bold text-emerald-700">
+                      {voirCorr ? 'Masquer les corrections' : 'Voir les corrections'}
+                    </span>
+                  </div>
+                  <ChevronRight size={14} className={`text-emerald-600 transition-transform ${voirCorr ? 'rotate-90' : ''}`} />
+                </button>
+                {voirCorr && corr && (
+                  <iframe
+                    key={`corr-${detail._id}`}
+                    srcDoc={corr}
+                    title="Corrections"
+                    className="w-full border-0"
+                    style={{ height: '480px' }}
+                    onLoad={e => {
+                      try {
+                        const h = e.target.contentDocument?.body?.scrollHeight;
+                        if (h && h > 100) e.target.style.height = Math.min(h + 20, 900) + 'px';
+                      } catch {}
+                    }}
+                    sandbox="allow-same-origin"
+                  />
+                )}
+              </div>
+            ) : (
+              <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-start gap-3">
+                <Lock size={16} className="text-amber-600 mt-0.5 flex-shrink-0" />
+                <div>
+                  <p className="text-sm font-bold text-amber-800">Corrections Premium</p>
+                  <p className="text-xs text-amber-700 mt-0.5">
+                    Les corrections détaillées sont réservées aux abonnés Premium. Abonne-toi pour les débloquer !
+                  </p>
+                </div>
+              </div>
+            )}
+          </>
+        )}
+      </motion.div>
+    );
+  }
+
+  // ── Vue liste ───────────────────────────────────────────────
+  return (
+    <div>
+      {/* Filtre section */}
+      <div className="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-hide">
+        {sectionsPC.map(sec => {
+          const cnt = sec.key === '__tous__' ? items.length : items.filter(i => i.section === sec.key).length;
+          const actif = sectionFiltree === sec.key;
+          return (
+            <button key={sec.key} onClick={() => setSectionFiltree(sec.key)}
+              className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl border-2 text-xs font-semibold transition-all
+                ${actif ? `${sec.couleur} shadow-sm` : 'border-tate-border bg-white text-tate-terre/60 hover:bg-tate-doux'}`}>
+              <span>{sec.icone}</span><span>{sec.label}</span>
+              <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold ${actif ? 'bg-white/60' : 'bg-tate-doux'}`}>{cnt}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {loading ? (
+        <LoadingTate message="Chargement des entraînements…" />
+      ) : itemsFiltres.length === 0 ? (
+        <div className="text-center py-16 rounded-2xl border-2 border-dashed border-tate-border bg-white">
+          <span className="text-5xl block mb-3">🏋️</span>
+          <p className="font-semibold text-tate-terre">Aucun entraînement disponible</p>
+          <p className="text-xs text-tate-terre/40 mt-1">Le contenu sera bientôt ajouté</p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {/* Source info */}
+          <div className="text-xs text-tate-terre/50 px-1 pb-1">
+            📄 Source : BST Joseph Turpin de Kaolack — 2019-2020
+          </div>
+          {itemsFiltres.map(item => {
+            const secColor = item.section === 'Physique'
+              ? 'bg-blue-500' : 'bg-green-500';
+            const secBg    = item.section === 'Physique'
+              ? 'bg-blue-50 border-blue-200 text-blue-700'
+              : 'bg-green-50 border-green-200 text-green-700';
+            return (
+              <motion.button key={item._id} whileTap={{ scale:0.97 }}
+                onClick={() => ouvrirDetail(item)}
+                className="w-full text-left bg-white rounded-2xl border-2 border-tate-border p-4 shadow-card hover:shadow-tate hover:border-violet-300 transition-all active:scale-[0.97]">
+                <div className="flex items-start gap-3">
+                  <div className={`w-10 h-10 rounded-xl ${secColor} flex items-center justify-center text-white text-lg flex-shrink-0`}>
+                    {item.section === 'Physique' ? '🔭' : '🧪'}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-0.5">
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${secBg}`}>
+                        {item.section}
+                      </span>
+                    </div>
+                    <p className="font-semibold text-tate-terre text-sm leading-snug">{item.chapitre}</p>
+                    <p className="text-xs text-tate-terre/50 mt-1">
+                      {item.nbExercices} exercices · avec corrections
+                    </p>
+                  </div>
+                  <ChevronRight size={16} className="text-tate-terre/30 flex-shrink-0 mt-1" />
+                </div>
+              </motion.button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────
+// VUE CHAPITRES PC — avec onglets Physique / Chimie + Entraînements
+// ─────────────────────────────────────────────────────────────────
+function VueChapitresPC({ matiere, chapitres, isValide, isVerrouille, nbValides, chargement, onDemarrer, onRetour, user }) {
+  const [vue, setVue] = useState('cours'); // 'cours' | 'entrainements'
+  const niveau = user?.niveau || '3eme';
+
+  return (
+    <motion.div initial={{ opacity:0, x:20 }} animate={{ opacity:1, x:0 }} exit={{ opacity:0, x:-20 }}
+      transition={{ duration:0.2 }}>
+
+      <button onClick={onRetour}
+        className="flex items-center gap-1.5 mb-4 px-3 py-2 rounded-xl bg-white border-2 border-tate-border text-tate-terre font-semibold text-sm hover:bg-tate-doux transition-all shadow-card">
+        <ChevronLeft size={16} className="text-tate-terre" />
+        ← Retour aux matières
+      </button>
+
+      {/* En-tête */}
+      <div className={`rounded-2xl p-4 mb-4 bg-gradient-to-r ${matiere.gradient} relative overflow-hidden`}>
+        <div className="absolute -right-4 -top-4 w-20 h-20 rounded-full bg-white/10" />
+        <div className="absolute -right-2 top-6 w-10 h-10 rounded-full bg-white/10" />
+        <div className="flex items-center gap-3 relative z-10">
+          <span className="text-3xl leading-none">{matiere.icone}</span>
+          <div>
+            <h2 className="font-serif font-bold text-white text-xl leading-tight">{matiere.nom}</h2>
+            <p className="text-white/70 text-xs mt-0.5">
+              {chargement ? 'Chargement…' : `${chapitres.length} chapitres · ${nbValides} validés`}
+            </p>
+          </div>
+        </div>
+        {!chargement && chapitres.length > 0 && (
+          <div className="mt-3 h-1.5 rounded-full bg-white/30 overflow-hidden relative z-10">
+            <motion.div initial={{ width:0 }} animate={{ width:`${Math.min(Math.round((nbValides/chapitres.length)*100),100)}%` }}
+              transition={{ duration:0.8, delay:0.2 }}
+              className="h-full rounded-full bg-white/80" />
+          </div>
+        )}
+        {/* Badges */}
+        <div className="flex gap-2 mt-3 relative z-10">
+          <span className="bg-white/20 text-white text-[10px] font-bold px-2 py-1 rounded-full">🔭 Physique</span>
+          <span className="bg-white/20 text-white text-[10px] font-bold px-2 py-1 rounded-full">🧪 Chimie</span>
+        </div>
+      </div>
+
+      {/* Navigation Cours / Entraînements */}
+      <div className="flex gap-2 mb-5">
+        <button onClick={() => setVue('cours')}
+          className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 text-sm font-bold transition-all
+            ${vue === 'cours'
+              ? 'bg-violet-600 border-violet-600 text-white shadow-sm'
+              : 'bg-white border-tate-border text-tate-terre/60 hover:bg-tate-doux'}`}>
+          <BookOpen size={15} />
+          <span>Cours</span>
+        </button>
+        <button onClick={() => setVue('entrainements')}
+          className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 text-sm font-bold transition-all
+            ${vue === 'entrainements'
+              ? 'bg-violet-600 border-violet-600 text-white shadow-sm'
+              : 'bg-white border-tate-border text-tate-terre/60 hover:bg-tate-doux'}`}>
+          <span>🏋️</span>
+          <span>Entraînements</span>
+        </button>
+      </div>
+
+      {/* Contenu selon vue */}
+      <AnimatePresence mode="wait">
+        {vue === 'cours' ? (
+          <motion.div key="cours" initial={{ opacity:0, y:5 }} animate={{ opacity:1, y:0 }} exit={{ opacity:0 }}>
+            {chargement ? (
+              <LoadingTate message="Chargement des chapitres de Physique-Chimie…" />
+            ) : chapitres.length === 0 ? (
+              <div className="text-center py-16 rounded-2xl border-2 border-dashed border-tate-border bg-white">
+                <span className="text-5xl block mb-3">{matiere.icone}</span>
+                <p className="font-semibold text-tate-terre">Aucun chapitre disponible</p>
+                <p className="text-xs text-tate-terre/40 mt-1">Le contenu sera bientôt publié</p>
+              </div>
+            ) : (
+              <PCOnglets
+                chapitres={chapitres}
+                isValide={isValide}
+                isVerrouille={isVerrouille}
+                matiere={matiere}
+                onDemarrer={onDemarrer}
+              />
+            )}
+          </motion.div>
+        ) : (
+          <motion.div key="entrainements" initial={{ opacity:0, y:5 }} animate={{ opacity:1, y:0 }} exit={{ opacity:0 }}>
+            <SectionEntrainenementsPC niveau={niveau} user={user} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────
 // Carte matière — design attrayant
 // ─────────────────────────────────────────────────────────────────
 function CarteMatiere({ matiere, nbChapitres, nbValides, onClick }) {
@@ -2793,7 +3204,9 @@ function CarteMatiere({ matiere, nbChapitres, nbValides, onClick }) {
         {/* Compteurs compacts */}
         <div className="flex justify-between text-[9px] text-tate-terre/40 mt-1 font-medium">
           <span className="text-succes/80">{nbValides} ✓</span>
-          <span>{nbRestants > 0 ? `${nbRestants} restants` : 'Terminé !'}</span>
+          <span>
+            {nbChapitres === 0 ? 'Disponible →' : nbRestants > 0 ? `${nbRestants} restants` : 'Terminé !'}
+          </span>
         </div>
       </div>
     </motion.button>
@@ -3088,6 +3501,7 @@ export function AccueilEleve() {
   ).length;
 
   const afficherSectionsFr = matiereActive === 'FR';
+  const afficherSectionsPC = matiereActive === 'PC';
 
   const handleDemarrer = async (chap) => {
     if (!aAcces) {
@@ -3137,6 +3551,18 @@ export function AccueilEleve() {
                 chargement={chargement}
                 onDemarrer={handleDemarrer}
                 onRetour={handleRetour}
+              />
+            ) : afficherSectionsPC ? (
+              <VueChapitresPC
+                matiere={matiereObj}
+                chapitres={chapitres}
+                isValide={isValide}
+                isVerrouille={isVerrouille}
+                nbValides={nbValidesMatiere}
+                chargement={chargement}
+                onDemarrer={handleDemarrer}
+                onRetour={handleRetour}
+                user={user}
               />
             ) : (
               <VueChapitres
@@ -3421,16 +3847,20 @@ export function AccueilEleve() {
               <p className="text-xs font-bold text-tate-terre/60 uppercase tracking-wider">Choisir une matière</p>
             </div>
 
-            {/* Grille matières */}
+            {/* Grille matières — si nombre impair, dernière carte occupe toute la largeur */}
             <div className="grid grid-cols-2 gap-3 mb-5">
-              {MATIERES.map(mat => (
-                <CarteMatiere
+              {MATIERES.map((mat, index) => (
+                <div
                   key={mat.id}
-                  matiere={mat}
-                  nbChapitres={nbChapitresParMat[mat.code] || 0}
-                  nbValides={nbValidesParMat[mat.code] || 0}
-                  onClick={() => handleSelectMatiere(mat)}
-                />
+                  className={MATIERES.length % 2 !== 0 && index === MATIERES.length - 1 ? 'col-span-2' : ''}
+                >
+                  <CarteMatiere
+                    matiere={mat}
+                    nbChapitres={nbChapitresParMat[mat.code] || 0}
+                    nbValides={nbValidesParMat[mat.code] || 0}
+                    onClick={() => handleSelectMatiere(mat)}
+                  />
+                </div>
               ))}
             </div>
 
