@@ -118,7 +118,7 @@ export function LayoutEleve({ children, activeTab = 'cours' }) {
           {badge === 'abonne' && (
             <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200">✨ Abonné</span>
           )}
-          <button onClick={() => { logout(); navigate('/login'); }}
+          <button onClick={() => { logout(); navigate('/login', { replace: true }); }}
             className="w-8 h-8 rounded-full bg-tate-doux border border-tate-border flex items-center justify-center text-tate-terre/50 hover:text-alerte hover:border-alerte/40 hover:bg-red-50 transition-all"
             title="Se déconnecter">
             <LogOut size={14} />

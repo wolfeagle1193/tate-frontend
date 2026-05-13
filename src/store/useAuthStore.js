@@ -82,13 +82,12 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
-  logout: async () => {
-    try {
-      await api.post('/auth/logout');
-    } catch (_e) {
-      // Déconnexion locale même si l'API échoue
-    }
+  logout: () => {
+    // Vider immédiatement (synchrone) pour éviter tout re-render sur une page protégée
     lsRemove('accessToken', 'refreshToken', 'user');
+    lsRemove('tate_matiereActive');
     set({ user: null });
+    // Appel API en arrière-plan (fire & forget)
+    api.post('/auth/logout').catch(() => {});
   },
 }));
