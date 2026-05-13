@@ -2606,14 +2606,15 @@ function CarteChapitreBeauty({ chap, index, isValide, matiere, onClick, verrouil
     <motion.div
       initial={{ opacity:0, y:10 }}
       animate={{ opacity:1, y:0 }}
-      transition={{ delay: index * 0.04 }}>
+      transition={{ delay: index * 0.04 }}
+      className="relative">
       {/* Halo "débloqué / prochaine étape" */}
       {frontiere && !verrouille && !valide && (
         <motion.div
-          animate={{ opacity: [0.4, 0.9, 0.4] }}
+          animate={{ opacity: [0.5, 1, 0.5] }}
           transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
           className="absolute inset-0 rounded-2xl pointer-events-none"
-          style={{ boxShadow: '0 0 0 2px rgba(249,115,22,0.5), 0 0 18px rgba(249,115,22,0.2)', zIndex: 1 }}
+          style={{ boxShadow: '0 0 0 2px rgba(249,115,22,0.45)', zIndex: 1 }}
         />
       )}
       <button
