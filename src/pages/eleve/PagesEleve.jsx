@@ -133,10 +133,10 @@ export function LayoutEleve({ children, activeTab = 'cours' }) {
       <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-tate-border z-20 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
         <div className="flex items-center max-w-lg mx-auto">
           {[
-            { id:'cours',    icon: BookOpen,      label:'Cours',      path:'/eleve'          },
-            { id:'tutorat',  icon: GraduationCap, label:'Tutorat',    path:'/eleve/tutorat'  },
-            { id:'epreuves', icon: Trophy,        label:'Examens',    path:'/eleve/epreuves' },
-          ].map(tab => {
+            { id:'cours',    icon: BookOpen,      label:'Cours',      path:'/eleve',          show: true },
+            { id:'tutorat',  icon: GraduationCap, label:'Tutorat',    path:'/eleve/tutorat',  show: badge !== 'domicile' },
+            { id:'epreuves', icon: Trophy,        label:'Examens',    path:'/eleve/epreuves', show: true },
+          ].filter(tab => tab.show).map(tab => {
             const Icon = tab.icon;
             const active = activeTab === tab.id;
             return (
