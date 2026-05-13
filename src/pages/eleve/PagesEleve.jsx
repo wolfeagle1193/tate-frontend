@@ -140,7 +140,7 @@ export function LayoutEleve({ children, activeTab = 'cours' }) {
             const Icon = tab.icon;
             const active = activeTab === tab.id;
             return (
-              <button key={tab.id} onClick={() => navigate(tab.path)}
+              <button key={tab.id} onClick={() => navigate(tab.path, { replace: true })}
                 className={`flex-1 flex flex-col items-center gap-0.5 py-3 px-2 transition-all ${active ? 'text-tate-soleil' : 'text-tate-terre/40 hover:text-tate-terre/60'}`}>
                 <div className={`relative ${active ? 'scale-110' : ''} transition-transform`}>
                   <Icon size={20} strokeWidth={active ? 2.5 : 1.8} />

@@ -68,6 +68,31 @@ function RootRedirect() {
   return <Navigate to={routes[user.role] || '/login'} replace />;
 }
 
+// ── Garde anti-swipe-back : empêche de retomber sur /login quand connecté ──
+// Trois niveaux de protection :
+//   1. navigate(..., { replace }) au login → /login éjecté de l'historique JS
+//   2. Login.jsx rend <Navigate replace> synchronement si user est présent
+//   3. Ce composant écoute popstate (geste natif du navigateur) et redirige
+function BackGuard() {
+  const { user } = useAuthStore();
+  const navigate  = useNavigate();
+  useEffect(() => {
+    const onPop = () => {
+      if (user && (window.location.pathname === '/login' || window.location.pathname === '/')) {
+        navigate(
+          user.role === 'admin' ? '/admin' :
+          user.role === 'prof'  ? '/prof'  :
+          user.role === 'parent'? '/parent': '/eleve',
+          { replace: true }
+        );
+      }
+    };
+    window.addEventListener('popstate', onPop);
+    return () => window.removeEventListener('popstate', onPop);
+  }, [user, navigate]);
+  return null;
+}
+
 // ── Initialisation : rafraîchit le profil silencieusement au démarrage
 function AuthInit() {
   const { user, rafraichirUser } = useAuthStore();
@@ -89,6 +114,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthInit />
+      <BackGuard />
       <Toaster
         position="top-center"
         toastOptions={{

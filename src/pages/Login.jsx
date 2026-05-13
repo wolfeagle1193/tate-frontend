@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Phone, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
@@ -31,14 +31,12 @@ export function Login() {
   const navigate  = useNavigate();
   const googleRef = useRef(null);
 
-  // ── Si l'utilisateur est déjà connecté, le rediriger immédiatement ──
-  // (évite d'afficher la page login lors d'un swipe-back)
-  useEffect(() => {
-    if (user) {
-      const routes = { admin: '/admin', prof: '/prof', eleve: '/eleve', parent: '/parent' };
-      navigate(routes[user.role] || '/eleve', { replace: true });
-    }
-  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
+  // ── Si déjà connecté : redirection SYNCHRONE au rendu (avant tout affichage) ──
+  // useEffect serait trop tard (formulaire flasherait 1 frame) — on court-circuite le rendu
+  if (user) {
+    const routes = { admin: '/admin', prof: '/prof', eleve: '/eleve', parent: '/parent' };
+    return <Navigate to={routes[user.role] || '/eleve'} replace />;
+  }
 
   // ── Initialiser Google Identity Services ─────────────────
   useEffect(() => {
