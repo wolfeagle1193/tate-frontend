@@ -31,14 +31,9 @@ export function Login() {
   const navigate  = useNavigate();
   const googleRef = useRef(null);
 
-  // ── Si déjà connecté : redirection SYNCHRONE au rendu (avant tout affichage) ──
-  // useEffect serait trop tard (formulaire flasherait 1 frame) — on court-circuite le rendu
-  if (user) {
-    const routes = { admin: '/admin', prof: '/prof', eleve: '/eleve', parent: '/parent' };
-    return <Navigate to={routes[user.role] || '/eleve'} replace />;
-  }
+  // ── TOUS les hooks doivent être appelés AVANT tout return conditionnel ──
 
-  // ── Initialiser Google Identity Services ─────────────────
+  // Initialiser Google Identity Services
   useEffect(() => {
     if (!GOOGLE_CLIENT_ID || !window.google) return;
     window.google.accounts.id.initialize({
@@ -47,14 +42,19 @@ export function Login() {
       auto_select: false,
     });
     if (googleRef.current) {
-      // width adaptatif selon la largeur de l'écran
       const w = Math.min(window.innerWidth - 32, 380);
       window.google.accounts.id.renderButton(googleRef.current, {
         theme: 'outline', size: 'large', text: 'continue_with',
         shape: 'rectangular', logo_alignment: 'left', width: w,
       });
     }
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ── Redirection si déjà connecté (après tous les hooks) ──
+  if (user) {
+    const routes = { admin: '/admin', prof: '/prof', eleve: '/eleve', parent: '/parent' };
+    return <Navigate to={routes[user.role] || '/eleve'} replace />;
+  }
 
   const handleGoogleCallback = async (response) => {
     setGoogleLoading(true);
