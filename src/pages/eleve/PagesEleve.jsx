@@ -59,8 +59,6 @@ const MATIERES = [
     gradient:'from-purple-400 to-violet-600', bg:'bg-purple-50', border:'border-purple-200', text:'text-purple-800', dot:'bg-purple-500'  },
   { id:'GE', nom:'Géographie',      icone:'🌍', code:'GE',
     gradient:'from-teal-400 to-cyan-600',     bg:'bg-teal-50',   border:'border-teal-200',   text:'text-teal-800',   dot:'bg-teal-500'    },
-  { id:'SC', nom:'Sciences',        icone:'🔬', code:'SC',
-    gradient:'from-rose-400 to-pink-600',     bg:'bg-rose-50',   border:'border-rose-200',   text:'text-rose-800',   dot:'bg-rose-500'    },
   { id:'PC', nom:'Physique-Chimie', icone:'⚗️', code:'PC',
     gradient:'from-violet-500 to-purple-700', bg:'bg-violet-50', border:'border-violet-200', text:'text-violet-800', dot:'bg-violet-500'  },
 ];
@@ -3355,9 +3353,12 @@ export function AccueilEleve() {
     matiereRetour, setMatiereRetour, clearMatiereRetour,
   } = useEleveStore();
 
-  // Initialiser la matière depuis le store : si on revient d'un chapitre,
-  // matiereRetour est défini dans le store Zustand (persisté même après démontage du composant)
-  const [matiereActive,  setMatiereActive]  = useState(() => useEleveStore.getState().matiereRetour || null);
+  // Initialiser la matière : priorité → matiereRetour (retour d'un chapitre) → localStorage (retour de l'app)
+  const [matiereActive,  setMatiereActive]  = useState(() => {
+    const fromStore = useEleveStore.getState().matiereRetour;
+    if (fromStore) return fromStore;
+    try { return localStorage.getItem('tate_matiereActive') || null; } catch { return null; }
+  });
   const [showPaywall,    setShowPaywall]    = useState(false);
   const [motifPaywall,   setMotifPaywall]   = useState('general');
   const [erreurCours,    setErreurCours]    = useState('');
@@ -3374,9 +3375,13 @@ export function AccueilEleve() {
     const storedMatiereRetour = useEleveStore.getState().matiereRetour;
     if (storedMatiereRetour) {
       clearMatiereRetour();
-      // Recharger les chapitres pour s'assurer que la liste est à jour
-      if (user?.niveau) {
-        chargerChapitres(user.niveau, storedMatiereRetour);
+      if (user?.niveau) chargerChapitres(user.niveau, storedMatiereRetour);
+    } else {
+      // Restaurer depuis localStorage (retour depuis un autre site)
+      const lsMatiere = (() => { try { return localStorage.getItem('tate_matiereActive'); } catch { return null; } })();
+      if (lsMatiere && user?.niveau) {
+        const mat = MATIERES.find(m => m.id === lsMatiere);
+        if (mat) chargerChapitres(user.niveau, mat.code);
       }
     }
 
@@ -3439,6 +3444,7 @@ export function AccueilEleve() {
 
   const handleSelectMatiere = useCallback((mat) => {
     setMatiereActive(mat.id);
+    try { localStorage.setItem('tate_matiereActive', mat.id); } catch { /* silencieux */ }
     setErreurCours('');
     chargerChapitres(user?.niveau, mat.code);
   }, [chargerChapitres, user?.niveau]);
@@ -3493,6 +3499,19 @@ export function AccueilEleve() {
     const prev = chapitres[index - 1];
     return prev ? !isValide(prev._id) : false;
   }, [chapitres, chapitresValides]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Verrouillage avec conscience des sections PC (Physique → Chimie = frontière libre)
+  // Le 1er chapitre de Chimie n'exige PAS que le dernier chapitre de Physique soit validé
+  const isVerrouillePCSafe = useCallback((index) => {
+    if (index <= 0) return false;
+    const chap = chapitres[index];
+    const prev = chapitres[index - 1];
+    if (!prev || !chap) return false;
+    // Ne pas verrouiller à la frontière Physique → Chimie
+    if (getSectionPC(chap) !== getSectionPC(prev)) return false;
+    return !isValide(prev._id);
+  }, [chapitres, chapitresValides]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const nbValidesMat  = chapitresValides.length;
 
   const matiereObj = MATIERES.find(m => m.id === matiereActive);
@@ -3521,6 +3540,7 @@ export function AccueilEleve() {
 
   const handleRetour = () => {
     setMatiereActive(null);
+    try { localStorage.removeItem('tate_matiereActive'); } catch { /* silencieux */ }
     setErreurCours('');
   };
 
@@ -3557,7 +3577,7 @@ export function AccueilEleve() {
                 matiere={matiereObj}
                 chapitres={chapitres}
                 isValide={isValide}
-                isVerrouille={isVerrouille}
+                isVerrouille={isVerrouillePCSafe}
                 nbValides={nbValidesMatiere}
                 chargement={chargement}
                 onDemarrer={handleDemarrer}

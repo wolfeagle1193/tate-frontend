@@ -27,9 +27,18 @@ export function Login() {
   const [password,    setPassword]   = useState('');
   const [showPwd,     setShowPwd]    = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
-  const { login, loading, setUser } = useAuthStore();
+  const { login, loading, setUser, user } = useAuthStore();
   const navigate  = useNavigate();
   const googleRef = useRef(null);
+
+  // ── Si l'utilisateur est déjà connecté, le rediriger immédiatement ──
+  // (évite d'afficher la page login lors d'un swipe-back)
+  useEffect(() => {
+    if (user) {
+      const routes = { admin: '/admin', prof: '/prof', eleve: '/eleve', parent: '/parent' };
+      navigate(routes[user.role] || '/eleve', { replace: true });
+    }
+  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Initialiser Google Identity Services ─────────────────
   useEffect(() => {
@@ -60,10 +69,10 @@ export function Login() {
       toast.success(`Bienvenue, ${user.nom.split(' ')[0]} ! 👋`);
       // Si l'élève n'a pas encore choisi son niveau, on le redirige vers la config
       if (user.isNew && user.role === 'eleve') {
-        navigate('/eleve/profil');
+        navigate('/eleve/profil', { replace: true });
       } else {
         const routes = { admin: '/admin', prof: '/prof', eleve: '/eleve', parent: '/parent' };
-        navigate(routes[user.role] || '/eleve');
+        navigate(routes[user.role] || '/eleve', { replace: true });
       }
     } catch (e) {
       toast.error(e.response?.data?.error || 'Connexion Google échouée');
@@ -80,7 +89,7 @@ export function Login() {
       const user = await login(identifiant.trim(), password, mode);
       toast.success(`Bienvenue, ${user.nom.split(' ')[0]} ! 👋`);
       const routes = { admin: '/admin', prof: '/prof', eleve: '/eleve', parent: '/parent' };
-      navigate(routes[user.role] || '/login');
+      navigate(routes[user.role] || '/eleve', { replace: true });
     } catch (err) {
       toast.error(err.response?.data?.error || 'Identifiant ou mot de passe incorrect');
     }
