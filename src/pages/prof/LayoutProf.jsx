@@ -31,7 +31,7 @@ function NavItem({ item, active, onClick }) {
   );
 }
 
-function SidebarProf({ user, onLogout, onNavigate, currentPath, onClose }) {
+function SidebarProf({ user, onLogout, loggingOut, onNavigate, currentPath, onClose }) {
   return (
     <div className="flex flex-col h-full">
       <div className="p-5 border-b border-tate-border">
@@ -54,9 +54,13 @@ function SidebarProf({ user, onLogout, onNavigate, currentPath, onClose }) {
         ))}
       </nav>
       <div className="p-4 border-t border-tate-border">
-        <button onClick={onLogout}
-          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-alerte hover:bg-orange-50 transition-all">
-          <LogOut size={18} /><span>Déconnexion</span>
+        <button onClick={onLogout} disabled={loggingOut}
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-alerte hover:bg-orange-50 transition-all disabled:opacity-60">
+          {loggingOut
+            ? <span className="w-4 h-4 border-2 border-alerte/30 border-t-alerte rounded-full animate-spin flex-shrink-0" />
+            : <LogOut size={18} />
+          }
+          <span>{loggingOut ? 'Déconnexion…' : 'Déconnexion'}</span>
         </button>
       </div>
     </div>
@@ -140,12 +144,16 @@ export function LayoutProf({ children, titre, action }) {
     setNbNonLues(0);
   };
 
-  const handleLogout = async () => { await logout(); navigate('/login'); };
+  const [loggingOut, setLoggingOut] = useState(false);
+  const handleLogout = () => {
+    setLoggingOut(true);
+    setTimeout(() => { logout(); navigate('/login', { replace: true }); }, 350);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
       <aside className="hidden lg:flex flex-col w-64 bg-white border-r border-tate-border fixed h-full z-20">
-        <SidebarProf user={user} onLogout={handleLogout} onNavigate={navigate} currentPath={location.pathname} />
+        <SidebarProf user={user} onLogout={handleLogout} loggingOut={loggingOut} onNavigate={navigate} currentPath={location.pathname} />
       </aside>
       <AnimatePresence>
         {open && (
@@ -154,7 +162,7 @@ export function LayoutProf({ children, titre, action }) {
               className="fixed inset-0 bg-black/30 z-30 lg:hidden" onClick={() => setOpen(false)} />
             <motion.aside initial={{ x:-280 }} animate={{ x:0 }} exit={{ x:-280 }} transition={{ type:'spring', damping:25 }}
               className="fixed left-0 top-0 h-full w-64 bg-white border-r border-tate-border z-40 lg:hidden">
-              <SidebarProf user={user} onLogout={handleLogout} onNavigate={navigate} currentPath={location.pathname} onClose={() => setOpen(false)} />
+              <SidebarProf user={user} onLogout={handleLogout} loggingOut={loggingOut} onNavigate={navigate} currentPath={location.pathname} onClose={() => setOpen(false)} />
             </motion.aside>
           </>
         )}

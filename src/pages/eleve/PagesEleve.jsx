@@ -92,6 +92,15 @@ export function LayoutEleve({ children, activeTab = 'cours' }) {
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
   const badge = typeBadge(user);
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  const handleLogout = () => {
+    setLoggingOut(true);
+    setTimeout(() => {
+      logout();
+      navigate('/login', { replace: true });
+    }, 350);
+  };
 
   return (
     <div className="min-h-screen bg-tate-creme flex flex-col">
@@ -118,10 +127,13 @@ export function LayoutEleve({ children, activeTab = 'cours' }) {
           {badge === 'abonne' && (
             <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200">✨ Abonné</span>
           )}
-          <button onClick={() => { logout(); navigate('/login', { replace: true }); }}
-            className="w-8 h-8 rounded-full bg-tate-doux border border-tate-border flex items-center justify-center text-tate-terre/50 hover:text-alerte hover:border-alerte/40 hover:bg-red-50 transition-all"
+          <button onClick={handleLogout} disabled={loggingOut}
+            className="w-8 h-8 rounded-full bg-tate-doux border border-tate-border flex items-center justify-center text-tate-terre/50 hover:text-alerte hover:border-alerte/40 hover:bg-red-50 transition-all disabled:opacity-60"
             title="Se déconnecter">
-            <LogOut size={14} />
+            {loggingOut
+              ? <span className="w-3.5 h-3.5 border-2 border-tate-terre/30 border-t-tate-terre/70 rounded-full animate-spin" />
+              : <LogOut size={14} />
+            }
           </button>
         </div>
       </header>

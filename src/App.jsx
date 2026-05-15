@@ -1,5 +1,6 @@
-import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Toaster } from 'react-hot-toast';
 import { useAuthStore }  from './store/useAuthStore';
 import { useEleveStore } from './store/useEleveStore';
@@ -49,9 +50,7 @@ function PrivateRoute({ children, roles }) {
 // ── Router adaptatif pour l'espace élève ──────
 function RouterEleve() {
   const { leconActive } = useEleveStore();
-  // Si une leçon est chargée, afficher le cours HTML plein écran
   if (leconActive) return <PageCours />;
-  // Sinon, afficher l'accueil avec la liste des chapitres
   return <AccueilEleve />;
 }
 
@@ -59,20 +58,11 @@ function RouterEleve() {
 function RootRedirect() {
   const { user } = useAuthStore();
   if (!user) return <Navigate to="/login" replace />;
-  const routes = {
-    admin:  '/admin',
-    prof:   '/prof',
-    eleve:  '/eleve',
-    parent: '/parent',
-  };
+  const routes = { admin: '/admin', prof: '/prof', eleve: '/eleve', parent: '/parent' };
   return <Navigate to={routes[user.role] || '/login'} replace />;
 }
 
-// ── Garde anti-swipe-back : empêche de retomber sur /login quand connecté ──
-// Trois niveaux de protection :
-//   1. navigate(..., { replace }) au login → /login éjecté de l'historique JS
-//   2. Login.jsx rend <Navigate replace> synchronement si user est présent
-//   3. Ce composant écoute popstate (geste natif du navigateur) et redirige
+// ── Garde anti-swipe-back ─────────────────────
 function BackGuard() {
   const { user } = useAuthStore();
   const navigate  = useNavigate();
@@ -93,21 +83,141 @@ function BackGuard() {
   return null;
 }
 
-// ── Initialisation : rafraîchit le profil silencieusement au démarrage
+// ── Initialisation silencieuse du profil ──────
 function AuthInit() {
   const { user, rafraichirUser } = useAuthStore();
   useEffect(() => {
     if (user && localStorage.getItem('accessToken')) {
-      // 1. Rafraîchir le token proactivement si < 3 jours restants
-      proactiveTokenRefresh().then(() => {
-        // 2. Puis rafraîchir le profil utilisateur (chapitresValides, etc.)
-        rafraichirUser().catch(() => {});
-      }).catch(() => {
-        rafraichirUser().catch(() => {});
-      });
+      proactiveTokenRefresh()
+        .then(() => rafraichirUser().catch(() => {}))
+        .catch(() => rafraichirUser().catch(() => {}));
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
   return null;
+}
+
+// ── Variantes d'animation de page ────────────
+const pageVariants = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1, transition: { duration: 0.22, ease: 'easeOut' } },
+  exit:    { opacity: 0, transition: { duration: 0.16, ease: 'easeIn'  } },
+};
+
+// ── Contenu principal avec transitions de page ─
+// (doit être à l'intérieur de BrowserRouter pour accéder à useLocation)
+function AppContent() {
+  const location = useLocation();
+  // Clé = premier segment du chemin → transition uniquement entre sections
+  // (login↔admin, login↔eleve, etc.) mais pas sur la nav interne (admin/users, admin/stats…)
+  const sectionKey = location.pathname.split('/')[1] || 'root';
+
+  return (
+    <AnimatePresence mode="wait" initial={false}>
+      <motion.div
+        key={sectionKey}
+        variants={pageVariants}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        style={{ minHeight: '100vh' }}
+      >
+        <Routes location={location}>
+          {/* ── PUBLIC ─────────────────────────────────── */}
+          <Route path="/login"            element={<Login />} />
+          <Route path="/register/eleve"   element={<RegisterEleve />} />
+          <Route path="/register/parent"  element={<RegisterParent />} />
+          <Route path="/register/prof"    element={<RegisterProf />} />
+          <Route path="/"                 element={<RootRedirect />} />
+
+          {/* ── ADMIN ──────────────────────────────────── */}
+          <Route path="/admin" element={
+            <PrivateRoute roles={['admin']}><Dashboard /></PrivateRoute>
+          } />
+          <Route path="/admin/users" element={
+            <PrivateRoute roles={['admin']}><GestionUsers /></PrivateRoute>
+          } />
+          <Route path="/admin/chapitres" element={
+            <PrivateRoute roles={['admin']}><GestionChapitres /></PrivateRoute>
+          } />
+          <Route path="/admin/preparer" element={
+            <PrivateRoute roles={['admin','prof']}><PreparerCours /></PrivateRoute>
+          } />
+          <Route path="/admin/lecons" element={
+            <PrivateRoute roles={['admin']}><GestionLecons /></PrivateRoute>
+          } />
+          <Route path="/admin/reservations" element={
+            <PrivateRoute roles={['admin']}><GestionReservations /></PrivateRoute>
+          } />
+          <Route path="/admin/stats" element={
+            <PrivateRoute roles={['admin']}><StatsAdmin /></PrivateRoute>
+          } />
+          <Route path="/admin/epreuves" element={
+            <PrivateRoute roles={['admin']}><GestionEpreuves /></PrivateRoute>
+          } />
+          <Route path="/admin/qcm" element={
+            <PrivateRoute roles={['admin']}><GestionQCM Layout={LayoutAdmin} /></PrivateRoute>
+          } />
+          <Route path="/admin/suivi-eleves" element={
+            <PrivateRoute roles={['admin']}><SuiviEleves Layout={LayoutAdmin} /></PrivateRoute>
+          } />
+          <Route path="/admin/matieres" element={
+            <PrivateRoute roles={['admin']}><GestionMatieres /></PrivateRoute>
+          } />
+          <Route path="/admin/sessions" element={
+            <PrivateRoute roles={['admin']}><SessionsVirtuelles /></PrivateRoute>
+          } />
+
+          {/* ── PROF ───────────────────────────────────── */}
+          <Route path="/prof" element={
+            <PrivateRoute roles={['prof','admin']}><DashboardProf /></PrivateRoute>
+          } />
+          <Route path="/prof/preparer" element={
+            <PrivateRoute roles={['prof','admin']}><PreparerCours /></PrivateRoute>
+          } />
+          <Route path="/prof/mes-eleves" element={
+            <PrivateRoute roles={['prof','admin']}><MesEleves /></PrivateRoute>
+          } />
+          <Route path="/prof/mes-lecons" element={
+            <PrivateRoute roles={['prof','admin']}><MesLecons /></PrivateRoute>
+          } />
+          <Route path="/prof/qcm" element={
+            <PrivateRoute roles={['prof','admin']}><GestionQCM Layout={LayoutProf} /></PrivateRoute>
+          } />
+          <Route path="/prof/reservations" element={
+            <PrivateRoute roles={['prof','admin']}><MesReservationsProf /></PrivateRoute>
+          } />
+          <Route path="/prof/suivi-eleves" element={
+            <PrivateRoute roles={['prof','admin']}><SuiviEleves Layout={LayoutProf} /></PrivateRoute>
+          } />
+
+          {/* ── ÉLÈVE ──────────────────────────────────── */}
+          <Route path="/eleve" element={
+            <PrivateRoute roles={['eleve']}><RouterEleve /></PrivateRoute>
+          } />
+          <Route path="/eleve/tutorat" element={
+            <PrivateRoute roles={['eleve']}><Tutorat /></PrivateRoute>
+          } />
+          <Route path="/eleve/epreuves" element={
+            <PrivateRoute roles={['eleve']}><SectionEpreuves /></PrivateRoute>
+          } />
+          <Route path="/eleve/qcm/:chapitreId" element={
+            <PrivateRoute roles={['eleve']}><PageQCM /></PrivateRoute>
+          } />
+
+          {/* ── PARENT ─────────────────────────────────── */}
+          <Route path="/parent" element={
+            <PrivateRoute roles={['parent']}><EspaceParent /></PrivateRoute>
+          } />
+          <Route path="/parent/tutorat" element={
+            <PrivateRoute roles={['parent']}><Tutorat /></PrivateRoute>
+          } />
+
+          {/* Fallback */}
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
+      </motion.div>
+    </AnimatePresence>
+  );
 }
 
 export default function App() {
@@ -130,100 +240,7 @@ export default function App() {
         }}
       />
       <InstallPWA />
-      <Routes>
-        {/* ── PUBLIC ────────────────────────────────────── */}
-        <Route path="/login"            element={<Login />} />
-        <Route path="/register/eleve"   element={<RegisterEleve />} />
-        <Route path="/register/parent"  element={<RegisterParent />} />
-        <Route path="/register/prof"    element={<RegisterProf />} />
-        <Route path="/"                 element={<RootRedirect />} />
-
-        {/* ── ADMIN ─────────────────────────────────────── */}
-        <Route path="/admin" element={
-          <PrivateRoute roles={['admin']}><Dashboard /></PrivateRoute>
-        } />
-        <Route path="/admin/users" element={
-          <PrivateRoute roles={['admin']}><GestionUsers /></PrivateRoute>
-        } />
-        <Route path="/admin/chapitres" element={
-          <PrivateRoute roles={['admin']}><GestionChapitres /></PrivateRoute>
-        } />
-        <Route path="/admin/preparer" element={
-          <PrivateRoute roles={['admin','prof']}><PreparerCours /></PrivateRoute>
-        } />
-        <Route path="/admin/lecons" element={
-          <PrivateRoute roles={['admin']}><GestionLecons /></PrivateRoute>
-        } />
-        <Route path="/admin/reservations" element={
-          <PrivateRoute roles={['admin']}><GestionReservations /></PrivateRoute>
-        } />
-        <Route path="/admin/stats" element={
-          <PrivateRoute roles={['admin']}><StatsAdmin /></PrivateRoute>
-        } />
-        <Route path="/admin/epreuves" element={
-          <PrivateRoute roles={['admin']}><GestionEpreuves /></PrivateRoute>
-        } />
-        <Route path="/admin/qcm" element={
-          <PrivateRoute roles={['admin']}><GestionQCM Layout={LayoutAdmin} /></PrivateRoute>
-        } />
-        <Route path="/admin/suivi-eleves" element={
-          <PrivateRoute roles={['admin']}><SuiviEleves Layout={LayoutAdmin} /></PrivateRoute>
-        } />
-        <Route path="/admin/matieres" element={
-          <PrivateRoute roles={['admin']}><GestionMatieres /></PrivateRoute>
-        } />
-        <Route path="/admin/sessions" element={
-          <PrivateRoute roles={['admin']}><SessionsVirtuelles /></PrivateRoute>
-        } />
-
-        {/* ── PROF ──────────────────────────────────────── */}
-        <Route path="/prof" element={
-          <PrivateRoute roles={['prof','admin']}><DashboardProf /></PrivateRoute>
-        } />
-        <Route path="/prof/preparer" element={
-          <PrivateRoute roles={['prof','admin']}><PreparerCours /></PrivateRoute>
-        } />
-        <Route path="/prof/mes-eleves" element={
-          <PrivateRoute roles={['prof','admin']}><MesEleves /></PrivateRoute>
-        } />
-        <Route path="/prof/mes-lecons" element={
-          <PrivateRoute roles={['prof','admin']}><MesLecons /></PrivateRoute>
-        } />
-        <Route path="/prof/qcm" element={
-          <PrivateRoute roles={['prof','admin']}><GestionQCM Layout={LayoutProf} /></PrivateRoute>
-        } />
-        <Route path="/prof/reservations" element={
-          <PrivateRoute roles={['prof','admin']}><MesReservationsProf /></PrivateRoute>
-        } />
-        <Route path="/prof/suivi-eleves" element={
-          <PrivateRoute roles={['prof','admin']}><SuiviEleves Layout={LayoutProf} /></PrivateRoute>
-        } />
-
-        {/* ── ÉLÈVE ─────────────────────────────────────── */}
-        <Route path="/eleve" element={
-          <PrivateRoute roles={['eleve']}><RouterEleve /></PrivateRoute>
-        } />
-        <Route path="/eleve/tutorat" element={
-          <PrivateRoute roles={['eleve']}><Tutorat /></PrivateRoute>
-        } />
-        <Route path="/eleve/epreuves" element={
-          <PrivateRoute roles={['eleve']}><SectionEpreuves /></PrivateRoute>
-        } />
-        <Route path="/eleve/qcm/:chapitreId" element={
-          <PrivateRoute roles={['eleve']}><PageQCM /></PrivateRoute>
-        } />
-
-        {/* ── PARENT ────────────────────────────────────── */}
-        <Route path="/parent" element={
-          <PrivateRoute roles={['parent']}><EspaceParent /></PrivateRoute>
-        } />
-        <Route path="/parent/tutorat" element={
-          <PrivateRoute roles={['parent']}><Tutorat /></PrivateRoute>
-        } />
-
-        {/* Fallback */}
-        <Route path="*" element={<Navigate to="/login" replace />} />
-      </Routes>
+      <AppContent />
     </BrowserRouter>
   );
 }

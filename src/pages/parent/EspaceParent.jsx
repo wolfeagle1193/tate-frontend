@@ -67,40 +67,13 @@ function LayoutParent({ children }) {
   const navigate = useNavigate();
   const [loggingOut, setLoggingOut] = useState(false);
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
     setLoggingOut(true);
-    // Laisser l'animation se jouer 700ms puis déconnecter
-    await new Promise(r => setTimeout(r, 700));
-    await logout();
-    navigate('/login');
+    setTimeout(() => { logout(); navigate('/login', { replace: true }); }, 350);
   };
 
   return (
     <div className="min-h-screen bg-tate-creme">
-      {/* ── Overlay de déconnexion ── */}
-      <AnimatePresence>
-        {loggingOut && (
-          <motion.div
-            key="logout-overlay"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="fixed inset-0 z-50 flex flex-col items-center justify-center"
-            style={{ background: 'linear-gradient(135deg,#F97316,#EA580C)' }}>
-            <motion.div
-              initial={{ scale: 0.7, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.1, type: 'spring', stiffness: 260, damping: 20 }}
-              className="flex flex-col items-center gap-4">
-              <div className="w-16 h-16 rounded-3xl bg-white/20 flex items-center justify-center shadow-lg">
-                <LogOut size={28} className="text-white" />
-              </div>
-              <p className="text-white font-serif font-bold text-xl">À bientôt !</p>
-              <p className="text-white/70 text-sm">Déconnexion en cours…</p>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       <header className="bg-white border-b border-tate-border px-4 py-3
                          flex items-center justify-between sticky top-0 z-10 shadow-card">
         <div className="flex items-center gap-2">
@@ -114,8 +87,11 @@ function LayoutParent({ children }) {
         <div className="flex items-center gap-3">
           <span className="text-sm text-tate-terre/60 hidden sm:block">{user?.nom}</span>
           <button onClick={handleLogout} disabled={loggingOut}
-            className="p-2 rounded-xl hover:bg-red-50 text-tate-terre/50 hover:text-red-500 transition-colors disabled:opacity-40">
-            <LogOut size={18} />
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl hover:bg-red-50 text-tate-terre/50 hover:text-red-500 transition-colors disabled:opacity-40">
+            {loggingOut
+              ? <span className="w-4 h-4 border-2 border-red-300 border-t-red-500 rounded-full animate-spin" />
+              : <LogOut size={18} />
+            }
           </button>
         </div>
       </header>
