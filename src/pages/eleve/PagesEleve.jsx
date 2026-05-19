@@ -3513,6 +3513,27 @@ export function AccueilEleve() {
     return prev ? !isValide(prev._id) : false;
   }, [chapitres, chapitresValides]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Verrouillage Français section-aware :
+  // Un chapitre est verrouillé seulement si le précédent chapitre DE LA MÊME SECTION n'est pas validé.
+  // Le 1er chapitre d'une section est toujours déverrouillé (frontière libre entre sections).
+  const isVerrouilleFrSafe = useCallback((index) => {
+    if (index <= 0) return false;
+    const chap = chapitres[index];
+    if (!chap) return false;
+    const chapSection = getSectionChap(chap);
+    // Trouver le chapitre précédent dans la MÊME section
+    let prevDansSection = null;
+    for (let i = index - 1; i >= 0; i--) {
+      if (getSectionChap(chapitres[i]) === chapSection) {
+        prevDansSection = chapitres[i];
+        break;
+      }
+    }
+    // 1er chapitre de sa section → toujours accessible
+    if (!prevDansSection) return false;
+    return !isValide(prevDansSection._id);
+  }, [chapitres, chapitresValides]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // Verrouillage avec conscience des sections PC (Physique → Chimie = frontière libre)
   // Le 1er chapitre de Chimie n'exige PAS que le dernier chapitre de Physique soit validé
   const isVerrouillePCSafe = useCallback((index) => {
@@ -3579,7 +3600,7 @@ export function AccueilEleve() {
                 matiere={matiereObj}
                 chapitres={chapitres}
                 isValide={isValide}
-                isVerrouille={isVerrouille}
+                isVerrouille={isVerrouilleFrSafe}
                 nbValides={nbValidesMatiere}
                 chargement={chargement}
                 onDemarrer={handleDemarrer}
