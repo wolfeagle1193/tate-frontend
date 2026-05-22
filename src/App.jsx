@@ -13,9 +13,10 @@ import { RegisterParent } from './pages/RegisterParent';
 import { RegisterProf }   from './pages/RegisterProf';
 
 import { AccueilEleve, PageCours } from './pages/eleve/PagesEleve';
-import { Tutorat }         from './pages/eleve/Tutorat';
-import { SectionEpreuves } from './pages/eleve/SectionEpreuves';
-import { PageQCM }         from './pages/eleve/PageQCM';
+import { Tutorat }               from './pages/eleve/Tutorat';
+import { SectionEpreuves }       from './pages/eleve/SectionEpreuves';
+import { PageQCM }               from './pages/eleve/PageQCM';
+import { TablesMultiplication }  from './pages/eleve/TablesMultiplication';
 
 import { Dashboard }             from './pages/admin/Dashboard';
 import { GestionUsers }          from './pages/admin/GestionUsers';
@@ -202,6 +203,9 @@ function AppContent() {
           } />
           <Route path="/eleve/qcm/:chapitreId" element={
             <PrivateRoute roles={['eleve']}><PageQCM /></PrivateRoute>
+          } />
+          <Route path="/eleve/automatismes" element={
+            <PrivateRoute roles={['eleve']}><TablesMultiplication /></PrivateRoute>
           } />
 
           {/* ── PARENT ─────────────────────────────────── */}
