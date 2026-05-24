@@ -214,6 +214,13 @@ function MiniBar({ pct, color = 'bg-tate-soleil' }) {
 function DetailEnfant({ enfant, sessions, progression, devoirs }) {
   const [onglet, setOnglet] = useState('bilan');
 
+  // ── Séparer QCM, tables de multiplication et tables d'addition ──
+  const progQCM    = progression.filter(c => c.type !== 'table_multiplication' && c.type !== 'table_addition');
+  const progMult   = progression.filter(c => c.type === 'table_multiplication').sort((a, b) => a.tableNumero - b.tableNumero);
+  const progAdd    = progression.filter(c => c.type === 'table_addition').sort((a, b) => a.tableNumero - b.tableNumero);
+  // Alias rétrocompat
+  const progTables = progMult;
+
   // ── Nom de matière depuis un chapitre ──
   const getMat = (chap) => {
     const mid = chap.chapitreId?.matiereId;
@@ -223,9 +230,11 @@ function DetailEnfant({ enfant, sessions, progression, devoirs }) {
   };
 
   // ── Toutes les dates de travail (calendrier) — deux sources ──
-  // Source 1 : résultats QCM (progression)
-  const datesResultats = progression
-    .flatMap(c => c.tentatives.map(t => t.completedAt))
+  // Source 1a : résultats QCM
+  const datesResultats = [
+    ...progQCM.flatMap(c => (c.tentatives || []).map(t => t.completedAt)),
+    ...progTables.filter(t => t.derniereAt).map(t => t.derniereAt),
+  ]
     .filter(Boolean)
     .map(d => new Date(d).toISOString().slice(0, 10));
   // Source 2 : sessions IA (completedAt ou startedAt)
@@ -246,7 +255,7 @@ function DetailEnfant({ enfant, sessions, progression, devoirs }) {
 
   // ── Statistiques par matière ──
   const matiereMap = {};
-  for (const chap of progression) {
+  for (const chap of progQCM) {
     const { nom, code } = getMat(chap);
     if (!matiereMap[nom]) {
       matiereMap[nom] = { nom, code, chapitres: [], maitrises: 0, scores: [] };
@@ -265,13 +274,13 @@ function DetailEnfant({ enfant, sessions, progression, devoirs }) {
     .sort((a, b) => b.scoreMoyen - a.scoreMoyen);
 
   // ── Chapitres en difficulté (≥ 3 tentatives sans maîtrise) ──
-  const chapDiff = progression
-    .filter(c => !c.maitrise && c.tentatives.length >= 3)
+  const chapDiff = progQCM
+    .filter(c => !c.maitrise && (c.tentatives || []).length >= 3)
     .sort((a, b) => b.tentatives.length - a.tentatives.length);
 
   // ── Chapitres maîtrisés (triés du plus récent) ──
-  // Source 1 : QCM résultats (progression)
-  const chapMaisQcm = progression.filter(c => c.maitrise);
+  // Source 1 : QCM résultats
+  const chapMaisQcm = progQCM.filter(c => c.maitrise);
   // Source 2 : sessions IA maîtrisées (groupées par chapitre, non déjà dans QCM)
   const qcmIds = new Set(chapMaisQcm.map(c => c.chapitreId?._id?.toString() || c.chapitreId?.toString()));
   const sessMaisMap = {};
@@ -288,7 +297,7 @@ function DetailEnfant({ enfant, sessions, progression, devoirs }) {
     .sort((a, b) => new Date(b.derniereAt || 0) - new Date(a.derniereAt || 0));
 
   // ── Score moyen global — QCM en priorité, sessions en fallback ──
-  const scoresQcm = progression.map(c => clamp(c.meilleurScore)).filter(s => s > 0);
+  const scoresQcm = progQCM.map(c => clamp(c.meilleurScore)).filter(s => s > 0);
   const scoresSess = sessions.map(s => clamp(s.scorePct)).filter(s => s > 0);
   const scoresValides = scoresQcm.length > 0 ? scoresQcm : scoresSess;
   const scoreMoyen = scoresValides.length > 0
@@ -297,8 +306,8 @@ function DetailEnfant({ enfant, sessions, progression, devoirs }) {
   const niv = scoreMoyen != null ? niveauLabel(scoreMoyen) : null;
 
   // ── Tendance — QCM en priorité, sessions en fallback ──
-  const allScoresChronQcm = progression
-    .flatMap(c => c.tentatives.map(t => ({ score: clamp(t.score || 0), date: t.completedAt })))
+  const allScoresChronQcm = progQCM
+    .flatMap(c => (c.tentatives || []).map(t => ({ score: clamp(t.score || 0), date: t.completedAt })))
     .filter(t => t.date)
     .sort((a, b) => new Date(b.date) - new Date(a.date))
     .map(t => t.score);
@@ -548,6 +557,90 @@ function DetailEnfant({ enfant, sessions, progression, devoirs }) {
                     </p>
                   )}
                 </div>
+              </div>
+            )}
+
+            {/* ── Tables de multiplication ── */}
+            {progMult.length > 0 && (
+              <div className="card">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-lg">⚡</span>
+                  <p className="text-sm font-bold text-tate-terre">
+                    Automatismes — Tables de multiplication
+                  </p>
+                  <span className="text-xs font-semibold text-tate-terre/40 ml-auto">
+                    {progMult.filter(t => t.maitrise).length}/{progMult.length} maîtrisées
+                  </span>
+                </div>
+                <div className="grid grid-cols-4 gap-2">
+                  {progMult.map((t, i) => {
+                    const filled = t.maitrise ? 4 : Object.keys(t.niveaux || {}).length;
+                    return (
+                      <div key={i}
+                        className={`rounded-xl border-2 py-3 text-center transition-all ${
+                          t.maitrise
+                            ? 'border-emerald-200 bg-emerald-50'
+                            : filled > 0
+                            ? 'border-amber-200 bg-amber-50/30'
+                            : 'border-tate-border bg-white'
+                        }`}>
+                        <div className="text-xl font-black text-tate-soleil">×{t.tableNumero}</div>
+                        <div className="text-[10px] mt-1 tracking-wide">
+                          {'⭐'.repeat(filled)}{'☆'.repeat(4 - filled)}
+                        </div>
+                        {t.maitrise && <div className="text-[9px] text-emerald-600 font-bold mt-0.5">✓ Maîtrisée</div>}
+                        {!t.maitrise && filled > 0 && <div className="text-[9px] text-amber-600 font-bold mt-0.5">Niv. {filled}/4</div>}
+                      </div>
+                    );
+                  })}
+                </div>
+                {progMult.filter(t => t.maitrise).length === progMult.length && (
+                  <p className="text-xs text-emerald-700 font-medium mt-3 bg-emerald-50 border border-emerald-100 rounded-xl px-3 py-2 text-center">
+                    🏆 {prenom} maîtrise toutes ses tables de multiplication !
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* ── Tables d'addition ── */}
+            {progAdd.length > 0 && (
+              <div className="card">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-lg">➕</span>
+                  <p className="text-sm font-bold text-tate-terre">
+                    Automatismes — Tables d'addition
+                  </p>
+                  <span className="text-xs font-semibold text-tate-terre/40 ml-auto">
+                    {progAdd.filter(t => t.maitrise).length}/{progAdd.length} maîtrisées
+                  </span>
+                </div>
+                <div className="grid grid-cols-4 gap-2">
+                  {progAdd.map((t, i) => {
+                    const filled = t.maitrise ? 4 : Object.keys(t.niveaux || {}).length;
+                    return (
+                      <div key={i}
+                        className={`rounded-xl border-2 py-3 text-center transition-all ${
+                          t.maitrise
+                            ? 'border-blue-200 bg-blue-50'
+                            : filled > 0
+                            ? 'border-blue-100 bg-blue-50/30'
+                            : 'border-tate-border bg-white'
+                        }`}>
+                        <div className="text-xl font-black text-blue-500">+{t.tableNumero}</div>
+                        <div className="text-[10px] mt-1 tracking-wide">
+                          {'⭐'.repeat(filled)}{'☆'.repeat(4 - filled)}
+                        </div>
+                        {t.maitrise && <div className="text-[9px] text-blue-600 font-bold mt-0.5">✓ Maîtrisée</div>}
+                        {!t.maitrise && filled > 0 && <div className="text-[9px] text-blue-500 font-bold mt-0.5">Niv. {filled}/4</div>}
+                      </div>
+                    );
+                  })}
+                </div>
+                {progAdd.filter(t => t.maitrise).length === progAdd.length && (
+                  <p className="text-xs text-blue-700 font-medium mt-3 bg-blue-50 border border-blue-100 rounded-xl px-3 py-2 text-center">
+                    🏆 {prenom} maîtrise toutes ses tables d'addition !
+                  </p>
+                )}
               </div>
             )}
 

@@ -17,6 +17,7 @@ import { Tutorat }               from './pages/eleve/Tutorat';
 import { SectionEpreuves }       from './pages/eleve/SectionEpreuves';
 import { PageQCM }               from './pages/eleve/PageQCM';
 import { TablesMultiplication }  from './pages/eleve/TablesMultiplication';
+import { TablesAddition }        from './pages/eleve/TablesAddition';
 
 import { Dashboard }             from './pages/admin/Dashboard';
 import { GestionUsers }          from './pages/admin/GestionUsers';
@@ -206,6 +207,9 @@ function AppContent() {
           } />
           <Route path="/eleve/automatismes" element={
             <PrivateRoute roles={['eleve']}><TablesMultiplication /></PrivateRoute>
+          } />
+          <Route path="/eleve/automatismes/addition" element={
+            <PrivateRoute roles={['eleve']}><TablesAddition /></PrivateRoute>
           } />
 
           {/* ── PARENT ─────────────────────────────────── */}

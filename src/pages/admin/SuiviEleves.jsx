@@ -136,14 +136,23 @@ function ModalDetailEleve({ eleve, onClose }) {
           `${API}/resultats/eleve/${eleve._id}`,
           { headers: hdrs() }
         );
-        const resultats = data.data || [];
-        const totalSessions = resultats.length;
-        const maitrises = resultats.filter(r => r.maitrise).length;
-        const scoreMoyen = totalSessions > 0
-          ? Math.round(resultats.reduce((acc, r) => acc + r.score, 0) / totalSessions)
+        const resultats    = data.data || [];
+        // Séparer QCM, tables multiplication et tables addition
+        const qcmResultats   = resultats.filter(r => r.type !== 'table_multiplication' && r.type !== 'table_addition');
+        const multResultats  = resultats.filter(r => r.type === 'table_multiplication');
+        const addResultats   = resultats.filter(r => r.type === 'table_addition');
+
+        const totalSessions = qcmResultats.length;
+        const maitrises     = qcmResultats.filter(r => r.maitrise).length;
+        const scoreMoyen    = totalSessions > 0
+          ? Math.round(qcmResultats.reduce((acc, r) => acc + r.score, 0) / totalSessions)
           : null;
 
-        const sessions = resultats.slice(0, 30).map(r => ({
+        // Tables maîtrisées par type
+        const tablesMaitrises    = new Set(multResultats.filter(r => r.maitrise).map(r => r.tableNumero)).size;
+        const additionsMaitrises = new Set(addResultats.filter(r => r.maitrise).map(r => r.tableNumero)).size;
+
+        const sessions = qcmResultats.slice(0, 30).map(r => ({
           chapitreTitre:  r.chapitreId?.titre  || 'Chapitre',
           chapitreNiveau: r.chapitreId?.niveau || '—',
           scorePct:       r.score,
@@ -153,7 +162,7 @@ function ModalDetailEleve({ eleve, onClose }) {
 
         // Calculer chapitres en difficulté et maîtrisés
         const chapStats = {};
-        resultats.forEach(r => {
+        qcmResultats.forEach(r => {
           const cid = (r.chapitreId?._id || r.chapitreId)?.toString();
           if (!cid) return;
           if (!chapStats[cid]) {
@@ -185,6 +194,8 @@ function ModalDetailEleve({ eleve, onClose }) {
           sessions,
           chapitresEnDifficulte,
           chapitresMaitrises,
+          tablesMaitrises,
+          additionsMaitrises,
           dernierAt: resultats[0]?.completedAt || eleve.dernierAt || null,
         });
       } catch {
@@ -447,6 +458,29 @@ function ModalDetailEleve({ eleve, onClose }) {
             </div>
           )}
 
+          {/* Automatismes maîtrisés */}
+          {(liveStats.tablesMaitrises > 0 || liveStats.additionsMaitrises > 0) && (
+            <div className="space-y-1.5">
+              {liveStats.tablesMaitrises > 0 && (
+                <div className="flex items-center gap-2">
+                  <span className="text-sm">⚡</span>
+                  <p className="text-xs font-bold text-amber-600">
+                    Tables ×  : {liveStats.tablesMaitrises} maîtrisée{liveStats.tablesMaitrises > 1 ? 's' : ''}
+                  </p>
+                </div>
+              )}
+              {liveStats.additionsMaitrises > 0 && (
+                <div className="flex items-center gap-2">
+                  <span className="text-sm">➕</span>
+                  <p className="text-xs font-bold text-blue-600">
+                    Tables +  : {liveStats.additionsMaitrises} maîtrisée{liveStats.additionsMaitrises > 1 ? 's' : ''}
+                  </p>
+                </div>
+              )}
+              <p className="text-xs text-tate-terre/40">Voir l'onglet "Chapitres" pour le détail.</p>
+            </div>
+          )}
+
           {/* Historique sessions récentes */}
           {liveStats.sessions?.length > 0 && (
             <div>
@@ -500,113 +534,184 @@ function ModalDetailEleve({ eleve, onClose }) {
           </>} {/* fin onglet apercu */}
 
           {/* ═══════════ ONGLET PAR CHAPITRE ═══════════ */}
-          {onglet === 'chapitres' && (
-            <>
-              {loadProg ? (
-                <div className="flex flex-col items-center py-12 gap-3">
-                  <div className="w-8 h-8 rounded-full border-4 border-tate-soleil border-t-transparent animate-spin" />
-                  <p className="text-sm text-tate-terre/40">Chargement de l'historique…</p>
-                </div>
-              ) : progression.length === 0 ? (
-                <div className="text-center py-12">
-                  <p className="text-4xl mb-2">📊</p>
-                  <p className="text-sm text-tate-terre/50">Aucun résultat de QCM enregistré</p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {progression.map((chap, i) => {
-                    const best = Math.max(...chap.tentatives.map(t => t.score));
-                    const chapId = chap.chapitreId?._id?.toString() || chap.chapitreId?.toString();
-                    const isConfirmingReset = resetConfirmId === chapId;
-                    return (
-                      <div key={i} className={`rounded-2xl border-2 overflow-hidden ${
-                        chap.maitrise ? 'border-green-200 bg-green-50/30' : 'border-tate-border bg-white'
-                      }`}>
-                        {/* En-tête chapitre */}
-                        <div className="flex items-center gap-3 px-4 py-3">
-                          <div className={`text-xl flex-shrink-0 ${chap.maitrise ? '' : 'opacity-50'}`}>
-                            {chap.maitrise
-                              ? (chap.tentatives.find(t => t.maitrise)?.nbErreurs === 0 ? '🥇' :
-                                 chap.tentatives.find(t => t.maitrise)?.nbErreurs === 1 ? '🏆' : '⭐')
-                              : '📚'}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="font-semibold text-tate-terre text-sm truncate">{chap.titre}</p>
-                            <p className="text-xs text-tate-terre/40">{chap.niveau} · {chap.tentatives.length} tentative{chap.tentatives.length > 1 ? 's' : ''}</p>
-                          </div>
-                          <div className="text-right flex-shrink-0">
-                            <p className={`text-base font-bold ${couleurScore(best)}`}>{best}%</p>
-                            <p className="text-xs text-tate-terre/40">meilleur</p>
-                          </div>
-                          {/* Bouton réinitialisation (uniquement si chapitre maîtrisé) */}
-                          {chap.maitrise && (
-                            <button
-                              onClick={() => setResetConfirmId(isConfirmingReset ? null : chapId)}
-                              title="Réinitialiser ce chapitre (démonstration)"
-                              className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 transition-all ${
-                                isConfirmingReset
-                                  ? 'bg-red-100 text-alerte'
-                                  : 'text-tate-terre/25 hover:text-alerte hover:bg-red-50'
-                              }`}>
-                              <RotateCcw size={13} />
-                            </button>
-                          )}
-                        </div>
+          {onglet === 'chapitres' && (() => {
+            // Séparer QCM, multiplication et addition
+            const progQCM    = progression.filter(p => p.type !== 'table_multiplication' && p.type !== 'table_addition');
+            const progTables = progression.filter(p => p.type === 'table_multiplication').sort((a, b) => a.tableNumero - b.tableNumero);
+            const progAdd    = progression.filter(p => p.type === 'table_addition').sort((a, b) => a.tableNumero - b.tableNumero);
+            return (
+              <>
+                {loadProg ? (
+                  <div className="flex flex-col items-center py-12 gap-3">
+                    <div className="w-8 h-8 rounded-full border-4 border-tate-soleil border-t-transparent animate-spin" />
+                    <p className="text-sm text-tate-terre/40">Chargement de l'historique…</p>
+                  </div>
+                ) : progression.length === 0 ? (
+                  <div className="text-center py-12">
+                    <p className="text-4xl mb-2">📊</p>
+                    <p className="text-sm text-tate-terre/50">Aucun résultat enregistré</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
 
-                        {/* Confirmation réinitialisation */}
-                        {isConfirmingReset && (
-                          <div className="border-t border-red-100 bg-red-50 px-4 py-2.5 flex items-center gap-3">
-                            <p className="text-xs text-red-700 flex-1 leading-tight">
-                              Supprimer tous les résultats et dévalider ce chapitre ?
+                    {/* ── Automatismes : tables de multiplication ── */}
+                    {progTables.length > 0 && (
+                      <div className="rounded-2xl border-2 border-tate-border bg-white overflow-hidden">
+                        <div className="px-4 py-3 flex items-center gap-2 border-b border-tate-border/40">
+                          <span className="text-lg">⚡</span>
+                          <div className="flex-1">
+                            <p className="font-semibold text-tate-terre text-sm">Automatismes — Tables de multiplication</p>
+                            <p className="text-xs text-tate-terre/40">
+                              {progTables.filter(t => t.maitrise).length}/{progTables.length} table{progTables.length > 1 ? 's' : ''} maîtrisée{progTables.length > 1 ? 's' : ''}
                             </p>
-                            <button
-                              onClick={() => setResetConfirmId(null)}
-                              className="text-xs text-tate-terre/50 hover:text-tate-terre px-2 py-1 rounded-lg hover:bg-white transition-all flex-shrink-0">
-                              Annuler
-                            </button>
-                            <button
-                              onClick={() => reinitialiserChapitre(chapId)}
-                              className="text-xs font-bold text-white bg-alerte hover:bg-red-600 px-3 py-1 rounded-lg transition-all flex-shrink-0">
-                              Réinitialiser
-                            </button>
                           </div>
-                        )}
-
-                        {/* Historique tentatives */}
-                        <div className="border-t border-tate-border/40 px-4 py-2 space-y-1.5">
-                          {chap.tentatives.map((t, j) => {
-                            const nbErr = t.nbErreurs ?? (t.nbTotal - t.nbCorrectes);
+                        </div>
+                        <div className="grid grid-cols-4 gap-2 p-3">
+                          {progTables.map((t, i) => {
+                            const filled = t.maitrise ? 4 : Object.keys(t.niveaux || {}).length;
                             return (
-                              <div key={j} className="flex items-center gap-2 text-xs">
-                                <span className="text-tate-terre/30 w-5 flex-shrink-0">#{t.tentative}</span>
-                                <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold ${
-                                  t.maitrise ? 'bg-succes text-white' : 'bg-alerte/20 text-alerte'
+                              <div key={i}
+                                className={`rounded-xl border-2 py-2.5 text-center ${
+                                  t.maitrise ? 'border-emerald-200 bg-emerald-50' : filled > 0 ? 'border-amber-200 bg-amber-50/30' : 'border-tate-border'
                                 }`}>
-                                  {t.maitrise ? '✓' : '✗'}
-                                </div>
-                                <div className="flex-1 h-4 bg-tate-doux rounded-full overflow-hidden">
-                                  <div
-                                    className={`h-full rounded-full ${t.maitrise ? 'bg-succes' : t.score >= 60 ? 'bg-amber-400' : 'bg-alerte'}`}
-                                    style={{ width: `${t.score}%` }} />
-                                </div>
-                                <span className={`font-bold w-10 text-right ${couleurScore(t.score)}`}>{t.score}%</span>
-                                <span className={`px-1.5 py-0.5 rounded-lg text-[10px] font-semibold ${bgFautes(nbErr)}`}>
-                                  {nbErr} faute{nbErr !== 1 ? 's' : ''}
-                                </span>
-                                <span className="text-tate-terre/30 text-[10px] hidden sm:block">
-                                  {dateFr(t.completedAt)}
-                                </span>
+                                <div className="text-lg font-black text-tate-soleil">×{t.tableNumero}</div>
+                                <div className="text-[9px] mt-0.5">{'⭐'.repeat(filled)}{'☆'.repeat(4 - filled)}</div>
+                                {t.maitrise
+                                  ? <div className="text-[8px] text-emerald-600 font-bold mt-0.5">✓ Maîtrisée</div>
+                                  : filled > 0
+                                  ? <div className="text-[8px] text-amber-600 mt-0.5">Niv. {filled}/4</div>
+                                  : null
+                                }
                               </div>
                             );
                           })}
                         </div>
                       </div>
-                    );
-                  })}
-                </div>
-              )}
-            </>
-          )}
+                    )}
+
+                    {/* ── Automatismes : tables d'addition ── */}
+                    {progAdd.length > 0 && (
+                      <div className="rounded-2xl border-2 border-blue-100 bg-white overflow-hidden">
+                        <div className="px-4 py-3 flex items-center gap-2 border-b border-blue-100">
+                          <span className="text-lg">➕</span>
+                          <div className="flex-1">
+                            <p className="font-semibold text-tate-terre text-sm">Automatismes — Tables d'addition</p>
+                            <p className="text-xs text-tate-terre/40">
+                              {progAdd.filter(t => t.maitrise).length}/{progAdd.length} table{progAdd.length > 1 ? 's' : ''} maîtrisée{progAdd.length > 1 ? 's' : ''}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-4 gap-2 p-3">
+                          {progAdd.map((t, i) => {
+                            const filled = t.maitrise ? 4 : Object.keys(t.niveaux || {}).length;
+                            return (
+                              <div key={i}
+                                className={`rounded-xl border-2 py-2.5 text-center ${
+                                  t.maitrise ? 'border-blue-200 bg-blue-50' : filled > 0 ? 'border-blue-100 bg-blue-50/30' : 'border-tate-border'
+                                }`}>
+                                <div className="text-lg font-black text-blue-500">+{t.tableNumero}</div>
+                                <div className="text-[9px] mt-0.5">{'⭐'.repeat(filled)}{'☆'.repeat(4 - filled)}</div>
+                                {t.maitrise
+                                  ? <div className="text-[8px] text-blue-600 font-bold mt-0.5">✓ Maîtrisée</div>
+                                  : filled > 0
+                                  ? <div className="text-[8px] text-blue-500 mt-0.5">Niv. {filled}/4</div>
+                                  : null
+                                }
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* ── Chapitres QCM ── */}
+                    {progQCM.map((chap, i) => {
+                      const best = Math.max(...(chap.tentatives || []).map(t => t.score), 0);
+                      const chapId = chap.chapitreId?._id?.toString() || chap.chapitreId?.toString();
+                      const isConfirmingReset = resetConfirmId === chapId;
+                      return (
+                        <div key={i} className={`rounded-2xl border-2 overflow-hidden ${
+                          chap.maitrise ? 'border-green-200 bg-green-50/30' : 'border-tate-border bg-white'
+                        }`}>
+                          {/* En-tête chapitre */}
+                          <div className="flex items-center gap-3 px-4 py-3">
+                            <div className={`text-xl flex-shrink-0 ${chap.maitrise ? '' : 'opacity-50'}`}>
+                              {chap.maitrise
+                                ? ((chap.tentatives || []).find(t => t.maitrise)?.nbErreurs === 0 ? '🥇' :
+                                   (chap.tentatives || []).find(t => t.maitrise)?.nbErreurs === 1 ? '🏆' : '⭐')
+                                : '📚'}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="font-semibold text-tate-terre text-sm truncate">{chap.titre}</p>
+                              <p className="text-xs text-tate-terre/40">{chap.niveau} · {(chap.tentatives || []).length} tentative{(chap.tentatives || []).length > 1 ? 's' : ''}</p>
+                            </div>
+                            <div className="text-right flex-shrink-0">
+                              <p className={`text-base font-bold ${couleurScore(best)}`}>{best}%</p>
+                              <p className="text-xs text-tate-terre/40">meilleur</p>
+                            </div>
+                            {chap.maitrise && (
+                              <button
+                                onClick={() => setResetConfirmId(isConfirmingReset ? null : chapId)}
+                                title="Réinitialiser ce chapitre"
+                                className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 transition-all ${
+                                  isConfirmingReset ? 'bg-red-100 text-alerte' : 'text-tate-terre/25 hover:text-alerte hover:bg-red-50'
+                                }`}>
+                                <RotateCcw size={13} />
+                              </button>
+                            )}
+                          </div>
+
+                          {isConfirmingReset && (
+                            <div className="border-t border-red-100 bg-red-50 px-4 py-2.5 flex items-center gap-3">
+                              <p className="text-xs text-red-700 flex-1 leading-tight">
+                                Supprimer tous les résultats et dévalider ce chapitre ?
+                              </p>
+                              <button onClick={() => setResetConfirmId(null)}
+                                className="text-xs text-tate-terre/50 hover:text-tate-terre px-2 py-1 rounded-lg hover:bg-white transition-all flex-shrink-0">
+                                Annuler
+                              </button>
+                              <button onClick={() => reinitialiserChapitre(chapId)}
+                                className="text-xs font-bold text-white bg-alerte hover:bg-red-600 px-3 py-1 rounded-lg transition-all flex-shrink-0">
+                                Réinitialiser
+                              </button>
+                            </div>
+                          )}
+
+                          <div className="border-t border-tate-border/40 px-4 py-2 space-y-1.5">
+                            {(chap.tentatives || []).map((t, j) => {
+                              const nbErr = t.nbErreurs ?? (t.nbTotal - t.nbCorrectes);
+                              return (
+                                <div key={j} className="flex items-center gap-2 text-xs">
+                                  <span className="text-tate-terre/30 w-5 flex-shrink-0">#{t.tentative}</span>
+                                  <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold ${
+                                    t.maitrise ? 'bg-succes text-white' : 'bg-alerte/20 text-alerte'
+                                  }`}>
+                                    {t.maitrise ? '✓' : '✗'}
+                                  </div>
+                                  <div className="flex-1 h-4 bg-tate-doux rounded-full overflow-hidden">
+                                    <div
+                                      className={`h-full rounded-full ${t.maitrise ? 'bg-succes' : t.score >= 60 ? 'bg-amber-400' : 'bg-alerte'}`}
+                                      style={{ width: `${t.score}%` }} />
+                                  </div>
+                                  <span className={`font-bold w-10 text-right ${couleurScore(t.score)}`}>{t.score}%</span>
+                                  <span className={`px-1.5 py-0.5 rounded-lg text-[10px] font-semibold ${bgFautes(nbErr)}`}>
+                                    {nbErr} faute{nbErr !== 1 ? 's' : ''}
+                                  </span>
+                                  <span className="text-tate-terre/30 text-[10px] hidden sm:block">
+                                    {dateFr(t.completedAt)}
+                                  </span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </>
+            );
+          })()}
 
           {/* ═══════════ ONGLET PROGRAMMER ═══════════ */}
           {onglet === 'planning' && (

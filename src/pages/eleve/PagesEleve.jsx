@@ -3924,22 +3924,52 @@ export function AccueilEleve() {
                 initial={{ opacity:0, y:6 }} animate={{ opacity:1, y:0 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => navigate('/eleve/automatismes')}
-                className="w-full mb-4 rounded-2xl overflow-hidden border-2 border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50 hover:border-blue-400 hover:shadow-md transition-all group text-left">
+                className="w-full mb-3 rounded-2xl overflow-hidden border-2 border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50 hover:border-amber-400 hover:shadow-md transition-all group text-left">
                 <div className="px-4 py-3.5 flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-xl bg-blue-100 group-hover:bg-blue-200 flex items-center justify-center flex-shrink-0 transition-all text-xl">
+                  <div className="w-11 h-11 rounded-xl bg-amber-100 group-hover:bg-amber-200 flex items-center justify-center flex-shrink-0 transition-all text-xl">
                     ⚡
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-0.5">
-                      <p className="font-bold text-blue-800 text-sm leading-tight">Automatismes · Tables de multiplication</p>
+                      <p className="font-bold text-amber-800 text-sm leading-tight">Automatismes · Tables de multiplication</p>
+                      <span className="text-[10px] bg-amber-200 text-amber-800 font-bold px-2 py-0.5 rounded-full flex-shrink-0">
+                        {user?.niveau}
+                      </span>
+                    </div>
+                    <p className="text-xs text-amber-700/60 leading-tight">
+                      Maîtrise les tables ×2 à ×9 en moins de 2 secondes
+                    </p>
+                    <p className="text-[11px] text-amber-600/50 mt-0.5">
+                      4 niveaux de vitesse · 5s → 4s → 3s → 2s ⚡
+                    </p>
+                  </div>
+                  <div className="text-amber-400 group-hover:text-amber-600 group-hover:translate-x-0.5 transition-all flex-shrink-0">
+                    <ChevronRight size={18} />
+                  </div>
+                </div>
+              </motion.button>
+            )}
+
+            {/* ── Automatismes : Tables d'addition (CM1 / CM2 / 6ème) ── */}
+            {['CM1','CM2','6eme'].includes(user?.niveau) && (
+              <motion.button
+                initial={{ opacity:0, y:6 }} animate={{ opacity:1, y:0 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => navigate('/eleve/automatismes/addition')}
+                className="w-full mb-4 rounded-2xl overflow-hidden border-2 border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50 hover:border-blue-400 hover:shadow-md transition-all group text-left">
+                <div className="px-4 py-3.5 flex items-center gap-3">
+                  <div className="w-11 h-11 rounded-xl bg-blue-100 group-hover:bg-blue-200 flex items-center justify-center flex-shrink-0 transition-all text-xl">
+                    ➕
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-0.5">
+                      <p className="font-bold text-blue-800 text-sm leading-tight">Automatismes · Tables d'addition</p>
                       <span className="text-[10px] bg-blue-200 text-blue-800 font-bold px-2 py-0.5 rounded-full flex-shrink-0">
                         {user?.niveau}
                       </span>
                     </div>
                     <p className="text-xs text-blue-700/60 leading-tight">
-                      {user?.niveau === 'CM1'
-                        ? 'Maîtrise les tables ×2 à ×5 en moins de 2 secondes'
-                        : 'Maîtrise les tables ×2 à ×9 en moins de 2 secondes'}
+                      Maîtrise les additions +1 à +9 en moins de 2 secondes
                     </p>
                     <p className="text-[11px] text-blue-600/50 mt-0.5">
                       4 niveaux de vitesse · 5s → 4s → 3s → 2s ⚡
