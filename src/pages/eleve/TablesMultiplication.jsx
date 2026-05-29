@@ -595,18 +595,17 @@ export function TablesMultiplication() {
       fanfare();
     }
 
-    // ── Envoyer le résultat à l'API (fire & forget, ne bloque pas l'UI) ──
-    if (passed) {
-      const pctScore = Math.round((score / N_QS) * 100);
-      api.post('/resultats/soumettre', {
-        type:          'table_multiplication',
-        tableNumero:   table,
-        niveauVitesse: level + 1,  // 1-indexé (1=5s, 2=4s, 3=3s, 4=2s)
-        score:         pctScore,
-        nbCorrectes:   score,
-        nbTotal:       N_QS,
-      }).catch(() => {}); // Silencieux — localStorage reste la source locale
-    }
+    // ── Envoyer le résultat à l'API (fire & forget, toujours — pas seulement si réussi) ──
+    // On envoie même en cas d'échec pour que l'admin/parent voient les tentatives
+    const pctScore = Math.round((score / N_QS) * 100);
+    api.post('/resultats/soumettre', {
+      type:          'table_multiplication',
+      tableNumero:   table,
+      niveauVitesse: level + 1,  // 1-indexé (1=5s, 2=4s, 3=3s, 4=2s)
+      score:         pctScore,
+      nbCorrectes:   score,
+      nbTotal:       N_QS,
+    }).catch(() => {}); // Silencieux — localStorage reste la source locale
 
     setResultData({ score, passed, isLast: passed && isLast, nextLevel });
     setScreen('result');
