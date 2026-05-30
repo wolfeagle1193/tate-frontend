@@ -3155,7 +3155,10 @@ function SectionRevisionsHiGe({ chapitres, matiere }) {
     setChargement(true);
     setChapitreActif(chapitre);
     try {
-      const res = await fetch(`/api/lecons/${chapitre._id}`);
+      const token = getToken();
+      const res = await fetch(`${API}/lecons/${chapitre._id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       const json = await res.json();
       const lecon = json.success ? json.data : json;
       const lecons = Array.isArray(lecon) ? lecon : [lecon];
