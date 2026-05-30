@@ -3086,7 +3086,7 @@ function SectionEntrainenementsPC({ niveau, user }) {
 
 // ── FLASHCARD (Histoire & Géographie) ─────────────────────────────
 function Flashcard({ question, reponse, explication, index, total, gradient }) {
-  const [revele, setRevele] = React.useState(false);
+  const [revele, setRevele] = useState(false);
   return (
     <div className={`rounded-2xl bg-gradient-to-br ${gradient} p-1 mb-4 shadow-lg`}>
       <div className="bg-white rounded-xl p-5">
@@ -3123,9 +3123,9 @@ function Flashcard({ question, reponse, explication, index, total, gradient }) {
 }
 
 function SectionRevisionsHiGe({ chapitres, matiere }) {
-  const [chapitreActif, setChapitreActif] = React.useState(null);
-  const [flashcards, setFlashcards] = React.useState([]);
-  const [chargement, setChargement] = React.useState(false);
+  const [chapitreActif, setChapitreActif] = useState(null);
+  const [flashcards, setFlashcards] = useState([]);
+  const [chargement, setChargement] = useState(false);
   const cfg = matiere.id === 'GE'
     ? { grad: 'from-teal-500 to-cyan-700', icone: '🌍' }
     : { grad: 'from-purple-500 to-violet-700', icone: '🏛️' };
@@ -3196,7 +3196,7 @@ function SectionRevisionsHiGe({ chapitres, matiere }) {
 }
 
 function VueChapitresHiGe({ matiere, chapitres, isValide, isVerrouille, nbValides, chargement, onDemarrer, onRetour }) {
-  const [vue, setVue] = React.useState('cours');
+  const [vue, setVue] = useState('cours');
   const cfg = matiere.id === 'GE'
     ? { grad: 'from-teal-500 to-cyan-700', color: 'teal', icone: '🌍' }
     : { grad: 'from-purple-500 to-violet-700', color: 'violet', icone: '🏛️' };
