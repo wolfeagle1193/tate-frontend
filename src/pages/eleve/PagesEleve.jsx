@@ -3156,9 +3156,10 @@ function SectionRevisionsHiGe({ chapitres, matiere }) {
     setChapitreActif(chapitre);
     try {
       const res = await fetch(`/api/lecons/${chapitre._id}`);
-      const data = await res.json();
-      const lecons = Array.isArray(data) ? data : [data];
-      const cards = lecons.flatMap(l => (l.contenuFormate?.correctionsTypes || []));
+      const json = await res.json();
+      const lecon = json.success ? json.data : json;
+      const lecons = Array.isArray(lecon) ? lecon : [lecon];
+      const cards = lecons.flatMap(l => (l?.contenuFormate?.correctionsTypes || []));
       setFlashcards(cards);
     } catch (e) {
       setFlashcards([]);
