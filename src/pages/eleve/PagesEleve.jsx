@@ -3081,274 +3081,170 @@ function SectionEntrainenementsPC({ niveau, user }) {
 }
 
 // ─────────────────────────────────────────────────────────────────
-// FLASHCARD — une carte question/réponse interactive
+// VUE CHAPITRES PC — avec onglets Physique / Chimie + Entraînements
 // ─────────────────────────────────────────────────────────────────
+
+// ── FLASHCARD (Histoire & Géographie) ─────────────────────────────
 function Flashcard({ question, reponse, explication, index, total, gradient }) {
-  const [revele, setRevele] = useState(false);
+  const [revele, setRevele] = React.useState(false);
   return (
-    <motion.div
-      initial={{ opacity:0, y:10 }} animate={{ opacity:1, y:0 }}
-      transition={{ delay: index * 0.04 }}
-      className="bg-white rounded-2xl border-2 border-tate-border shadow-card overflow-hidden mb-4">
-      {/* En-tête numéro */}
-      <div className={`px-4 py-2 bg-gradient-to-r ${gradient} flex items-center justify-between`}>
-        <span className="text-xs font-bold text-white/80">Question {index + 1} / {total}</span>
-        {revele && <span className="text-xs font-bold text-white bg-white/20 rounded-full px-2 py-0.5">✅ Réponse visible</span>}
-      </div>
-
-      {/* Question */}
-      <div className="px-4 pt-4 pb-3">
-        <p className="font-semibold text-tate-terre text-sm leading-snug">{question}</p>
-      </div>
-
-      {/* Zone réponse */}
-      {revele ? (
-        <motion.div
-          initial={{ opacity:0, height:0 }} animate={{ opacity:1, height:'auto' }}
-          className="px-4 pb-4">
-          <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3">
-            <p className="text-xs font-bold text-emerald-700 mb-1">✅ Réponse :</p>
-            <p className="text-sm text-emerald-900 leading-snug">{reponse}</p>
-            {explication && (
-              <p className="text-xs text-emerald-700/70 mt-2 italic">{explication}</p>
-            )}
-          </div>
-          <button
-            onClick={() => setRevele(false)}
-            className="mt-2 text-xs text-tate-terre/40 hover:text-tate-terre/70 transition-colors w-full text-center">
-            Masquer la réponse
-          </button>
-        </motion.div>
-      ) : (
-        <div className="px-4 pb-4">
+    <div className={`rounded-2xl bg-gradient-to-br ${gradient} p-1 mb-4 shadow-lg`}>
+      <div className="bg-white rounded-xl p-5">
+        <div className="flex justify-between text-xs text-gray-400 mb-3">
+          <span>Révision {index + 1}/{total}</span>
+        </div>
+        <p className="font-semibold text-gray-800 text-base mb-4">❓ {question}</p>
+        {!revele ? (
           <button
             onClick={() => setRevele(true)}
-            className="w-full py-2.5 rounded-xl border-2 border-dashed border-tate-border text-sm font-semibold text-tate-terre/50 hover:border-tate-soleil/50 hover:text-tate-soleil hover:bg-amber-50 transition-all active:scale-[0.97]">
+            className={`w-full py-3 rounded-xl text-white font-medium bg-gradient-to-r ${gradient} text-sm`}
+          >
             👆 Appuie pour voir la réponse
           </button>
-        </div>
-      )}
-    </motion.div>
+        ) : (
+          <div>
+            <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-2">
+              <p className="font-bold text-green-800 text-sm">✅ {reponse}</p>
+            </div>
+            {explication && (
+              <p className="text-xs text-gray-500 italic">{explication}</p>
+            )}
+            <button
+              onClick={() => setRevele(false)}
+              className="mt-3 text-xs text-gray-400 underline"
+            >
+              🔄 Masquer la réponse
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
 
-// ─────────────────────────────────────────────────────────────────
-// SECTION RÉVISIONS — Histoire & Géographie (flashcards)
-// ─────────────────────────────────────────────────────────────────
 function SectionRevisionsHiGe({ chapitres, matiere }) {
-  const [chapitreSelectionne, setChapitreSelectionne] = useState(null);
-  const [flashcards,          setFlashcards]          = useState([]);
-  const [loading,             setLoading]             = useState(false);
+  const [chapitreActif, setChapitreActif] = React.useState(null);
+  const [flashcards, setFlashcards] = React.useState([]);
+  const [chargement, setChargement] = React.useState(false);
+  const cfg = matiere.id === 'GE'
+    ? { grad: 'from-teal-500 to-cyan-700', icone: '🌍' }
+    : { grad: 'from-purple-500 to-violet-700', icone: '🏛️' };
 
-  const couleurMap = {
-    'HI': { grad:'from-purple-500 to-violet-700', icone:'🏛️' },
-    'GE': { grad:'from-teal-500 to-cyan-700',     icone:'🌍' },
-  };
-  const cfg = couleurMap[matiere.id] || couleurMap['HI'];
-
-  const ouvrirRevision = async (chap) => {
-    setChapitreSelectionne(chap);
-    setLoading(true);
-    setFlashcards([]);
+  const chargerFlashcards = async (chapitre) => {
+    setChargement(true);
+    setChapitreActif(chapitre);
     try {
-      const r = await axios.get(`${API}/lecons/${chap._id}`, {
-        headers: { Authorization: `Bearer ${getToken()}` },
-      });
-      const lecon = r.data.data || r.data;
-      const cards = lecon?.contenuFormate?.correctionsTypes || [];
+      const res = await fetch(`/api/lecons/${chapitre._id}`);
+      const data = await res.json();
+      const lecons = Array.isArray(data) ? data : [data];
+      const cards = lecons.flatMap(l => (l.contenuFormate?.correctionsTypes || []));
       setFlashcards(cards);
-    } catch { setFlashcards([]); }
-    finally { setLoading(false); }
+    } catch (e) {
+      setFlashcards([]);
+    } finally {
+      setChargement(false);
+    }
   };
 
-  // ── Vue flashcards ──────────────────────────────────────────
-  if (chapitreSelectionne) {
+  if (chapitreActif) {
     return (
-      <motion.div initial={{ opacity:0, x:20 }} animate={{ opacity:1, x:0 }} transition={{ duration:0.2 }}>
-        <button
-          onClick={() => { setChapitreSelectionne(null); setFlashcards([]); }}
-          className="flex items-center gap-1.5 mb-4 px-3 py-2 rounded-xl bg-white border-2 border-tate-border text-tate-terre font-semibold text-sm hover:bg-tate-doux transition-all shadow-card">
-          <ChevronLeft size={16} /> ← Retour aux révisions
+      <div>
+        <button onClick={() => { setChapitreActif(null); setFlashcards([]); }}
+          className="flex items-center gap-2 text-sm text-gray-500 mb-4 hover:text-gray-700">
+          ← Retour aux leçons
         </button>
-
-        {/* En-tête chapitre */}
-        <div className={`bg-gradient-to-r ${cfg.grad} rounded-2xl p-4 mb-5 text-white`}>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-lg">{cfg.icone}</span>
-            <span className="text-[10px] font-bold bg-white/20 rounded-full px-2 py-0.5">Révisions</span>
-          </div>
-          <h3 className="font-serif font-bold text-lg leading-tight">{chapitreSelectionne.titre}</h3>
-          {!loading && <p className="text-white/70 text-xs mt-1">{flashcards.length} questions à réviser</p>}
-        </div>
-
-        {loading ? (
-          <LoadingTate message="Chargement des révisions…" />
+        <h3 className="font-bold text-gray-800 mb-4">{cfg.icone} {chapitreActif.titre}</h3>
+        {chargement ? (
+          <p className="text-center text-gray-400 py-8">Chargement des révisions…</p>
         ) : flashcards.length === 0 ? (
-          <div className="text-center py-16 rounded-2xl border-2 border-dashed border-tate-border bg-white">
-            <span className="text-5xl block mb-3">📭</span>
-            <p className="font-semibold text-tate-terre">Aucune question disponible</p>
-          </div>
+          <p className="text-center text-gray-400 py-8">Aucune révision disponible.</p>
         ) : (
-          <>
-            <p className="text-xs text-tate-terre/50 mb-4 px-1">
-              💡 Lis la question, réfléchis, puis appuie pour voir la réponse.
-            </p>
-            {flashcards.map((card, i) => (
-              <Flashcard
-                key={i}
-                index={i}
-                total={flashcards.length}
-                question={card.question}
-                reponse={card.reponse}
-                explication={card.explication}
-                gradient={cfg.grad}
-              />
-            ))}
-            <div className="mt-2 text-center">
-              <p className="text-xs text-tate-terre/40">🎉 Tu as révisé toutes les questions !</p>
-            </div>
-          </>
+          flashcards.map((fc, i) => (
+            <Flashcard
+              key={i}
+              question={fc.question}
+              reponse={fc.reponse}
+              explication={fc.explication}
+              index={i}
+              total={flashcards.length}
+              gradient={cfg.grad}
+            />
+          ))
         )}
-      </motion.div>
+      </div>
     );
   }
 
-  // ── Vue liste des chapitres ─────────────────────────────────
   return (
     <div>
-      <p className="text-xs text-tate-terre/50 mb-4 px-1">
-        📚 Choisis une leçon pour commencer tes révisions.
-      </p>
-      {chapitres.length === 0 ? (
-        <div className="text-center py-16 rounded-2xl border-2 border-dashed border-tate-border bg-white">
-          <span className="text-5xl block mb-3">{cfg.icone}</span>
-          <p className="font-semibold text-tate-terre">Aucune leçon disponible</p>
-        </div>
+      <p className="text-sm text-gray-500 mb-4">Choisis une leçon pour réviser :</p>
+      {chapitres.map((ch, i) => (
+        <button
+          key={ch._id}
+          onClick={() => chargerFlashcards(ch)}
+          className={`w-full text-left flex items-center gap-3 p-4 rounded-xl mb-3 bg-gradient-to-r ${cfg.grad} text-white shadow`}
+        >
+          <span className="text-2xl">{cfg.icone}</span>
+          <div>
+            <p className="font-semibold text-sm">{ch.titre}</p>
+            <p className="text-xs opacity-80">Appuie pour réviser</p>
+          </div>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function VueChapitresHiGe({ matiere, chapitres, isValide, isVerrouille, nbValides, chargement, onDemarrer, onRetour }) {
+  const [vue, setVue] = React.useState('cours');
+  const cfg = matiere.id === 'GE'
+    ? { grad: 'from-teal-500 to-cyan-700', color: 'teal', icone: '🌍' }
+    : { grad: 'from-purple-500 to-violet-700', color: 'violet', icone: '🏛️' };
+
+  return (
+    <div>
+      {/* Tabs */}
+      <div className="flex gap-2 mb-6">
+        <button
+          onClick={() => setVue('cours')}
+          className={`flex-1 py-2.5 rounded-xl font-semibold text-sm transition-all ${
+            vue === 'cours'
+              ? `bg-gradient-to-r ${cfg.grad} text-white shadow`
+              : 'bg-gray-100 text-gray-500'
+          }`}
+        >
+          📖 Cours
+        </button>
+        <button
+          onClick={() => setVue('revisions')}
+          className={`flex-1 py-2.5 rounded-xl font-semibold text-sm transition-all ${
+            vue === 'revisions'
+              ? `bg-gradient-to-r ${cfg.grad} text-white shadow`
+              : 'bg-gray-100 text-gray-500'
+          }`}
+        >
+          🔁 Révisions
+        </button>
+      </div>
+
+      {vue === 'cours' ? (
+        <VueChapitres
+          matiere={matiere}
+          chapitres={chapitres}
+          isValide={isValide}
+          isVerrouille={isVerrouille}
+          nbValides={nbValides}
+          chargement={chargement}
+          onDemarrer={onDemarrer}
+          onRetour={onRetour}
+        />
       ) : (
-        <div className="space-y-3">
-          {chapitres.map((chap, i) => (
-            <motion.button key={chap._id} whileTap={{ scale:0.97 }}
-              onClick={() => ouvrirRevision(chap)}
-              className="w-full text-left bg-white rounded-2xl border-2 border-tate-border p-4 shadow-card hover:shadow-tate hover:border-amber-300 transition-all active:scale-[0.97]">
-              <div className="flex items-start gap-3">
-                <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${cfg.grad} flex items-center justify-center text-white font-bold text-sm flex-shrink-0`}>
-                  {i + 1}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-tate-terre text-sm leading-snug">{chap.titre}</p>
-                  <p className="text-xs text-tate-terre/50 mt-1">Flashcards · question / réponse</p>
-                </div>
-                <ChevronRight size={16} className="text-tate-terre/30 flex-shrink-0 mt-1" />
-              </div>
-            </motion.button>
-          ))}
-        </div>
+        <SectionRevisionsHiGe chapitres={chapitres} matiere={matiere} />
       )}
     </div>
   );
 }
 
-// ─────────────────────────────────────────────────────────────────
-// VUE CHAPITRES Histoire & Géographie — avec onglets Cours + Révisions
-// ─────────────────────────────────────────────────────────────────
-function VueChapitresHiGe({ matiere, chapitres, isValide, isVerrouille, nbValides, chargement, onDemarrer, onRetour, user }) {
-  const [vue, setVue] = useState('cours'); // 'cours' | 'revisions'
-
-  return (
-    <motion.div initial={{ opacity:0, x:20 }} animate={{ opacity:1, x:0 }} exit={{ opacity:0, x:-20 }}
-      transition={{ duration:0.2 }}>
-
-      <button onClick={onRetour}
-        className="flex items-center gap-1.5 mb-4 px-3 py-2 rounded-xl bg-white border-2 border-tate-border text-tate-terre font-semibold text-sm hover:bg-tate-doux transition-all shadow-card">
-        <ChevronLeft size={16} className="text-tate-terre" />
-        ← Retour aux matières
-      </button>
-
-      {/* En-tête */}
-      <div className={`rounded-2xl p-4 mb-4 bg-gradient-to-r ${matiere.gradient} relative overflow-hidden`}>
-        <div className="absolute -right-4 -top-4 w-20 h-20 rounded-full bg-white/10" />
-        <div className="absolute -right-2 top-6 w-10 h-10 rounded-full bg-white/10" />
-        <div className="flex items-center gap-3 relative z-10">
-          <span className="text-3xl leading-none">{matiere.icone}</span>
-          <div>
-            <h2 className="font-serif font-bold text-white text-xl leading-tight">{matiere.nom}</h2>
-            <p className="text-white/70 text-xs mt-0.5">
-              {chargement ? 'Chargement…' : `${chapitres.length} chapitres · ${nbValides} validés`}
-            </p>
-          </div>
-        </div>
-        {!chargement && chapitres.length > 0 && (
-          <div className="mt-3 h-1.5 rounded-full bg-white/30 overflow-hidden relative z-10">
-            <motion.div initial={{ width:0 }} animate={{ width:`${Math.min(Math.round((nbValides/chapitres.length)*100),100)}%` }}
-              transition={{ duration:0.8, delay:0.2 }}
-              className="h-full rounded-full bg-white/80" />
-          </div>
-        )}
-      </div>
-
-      {/* Onglets Cours / Révisions */}
-      <div className="flex gap-2 mb-5">
-        <button onClick={() => setVue('cours')}
-          className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 text-sm font-bold transition-all
-            ${vue === 'cours'
-              ? 'bg-tate-soleil border-tate-soleil text-white shadow-sm'
-              : 'bg-white border-tate-border text-tate-terre/60 hover:bg-tate-doux'}`}>
-          <BookOpen size={15} />
-          <span>Cours</span>
-        </button>
-        <button onClick={() => setVue('revisions')}
-          className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 text-sm font-bold transition-all
-            ${vue === 'revisions'
-              ? 'bg-tate-soleil border-tate-soleil text-white shadow-sm'
-              : 'bg-white border-tate-border text-tate-terre/60 hover:bg-tate-doux'}`}>
-          <span>🔁</span>
-          <span>Révisions</span>
-        </button>
-      </div>
-
-      {/* Contenu selon vue */}
-      <AnimatePresence mode="wait">
-        {vue === 'cours' ? (
-          <motion.div key="cours" initial={{ opacity:0, y:5 }} animate={{ opacity:1, y:0 }} exit={{ opacity:0 }}>
-            {chargement ? (
-              <LoadingTate message={`Chargement des chapitres de ${matiere.nom}…`} />
-            ) : chapitres.length === 0 ? (
-              <div className="text-center py-16 rounded-2xl border-2 border-dashed border-tate-border bg-white">
-                <span className="text-5xl block mb-3">{matiere.icone}</span>
-                <p className="font-semibold text-tate-terre">Aucun chapitre disponible</p>
-                <p className="text-xs text-tate-terre/40 mt-1">Le contenu sera bientôt publié</p>
-              </div>
-            ) : (
-              <div className="space-y-2.5">
-                {(() => {
-                  const frontierIdx = chapitres.findIndex((ch, i) =>
-                    !isValide(ch._id) && !(isVerrouille ? isVerrouille(i) : false)
-                  );
-                  return chapitres.map((chap, i) => (
-                    <CarteChapitreBeauty key={chap._id} chap={chap} index={i}
-                      isValide={isValide} matiere={matiere}
-                      onClick={() => onDemarrer(chap)}
-                      verrouille={isVerrouille ? isVerrouille(i) : false}
-                      frontiere={i === frontierIdx}
-                    />
-                  ));
-                })()}
-              </div>
-            )}
-          </motion.div>
-        ) : (
-          <motion.div key="revisions" initial={{ opacity:0, y:5 }} animate={{ opacity:1, y:0 }} exit={{ opacity:0 }}>
-            <SectionRevisionsHiGe chapitres={chapitres} matiere={matiere} />
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
-  );
-}
-
-// ─────────────────────────────────────────────────────────────────
-// VUE CHAPITRES PC — avec onglets Physique / Chimie + Entraînements
-// ─────────────────────────────────────────────────────────────────
 function VueChapitresPC({ matiere, chapitres, isValide, isVerrouille, nbValides, chargement, onDemarrer, onRetour, user }) {
   const [vue, setVue] = useState('cours'); // 'cours' | 'entrainements'
   const niveau = user?.niveau || '3eme';
@@ -3819,8 +3715,8 @@ export function AccueilEleve() {
     chapitres.some(ch => (ch._id === c.chapitreId || ch._id === c.chapitreId?._id))
   ).length;
 
-  const afficherSectionsFr   = matiereActive === 'FR';
-  const afficherSectionsPC   = matiereActive === 'PC';
+  const afficherSectionsFr = matiereActive === 'FR';
+  const afficherSectionsPC = matiereActive === 'PC';
   const afficherSectionsHiGe = matiereActive === 'HI' || matiereActive === 'GE';
 
   const handleDemarrer = async (chap) => {
@@ -3895,7 +3791,6 @@ export function AccueilEleve() {
                 chargement={chargement}
                 onDemarrer={handleDemarrer}
                 onRetour={handleRetour}
-                user={user}
               />
             ) : (
               <VueChapitres
