@@ -3081,165 +3081,162 @@ function SectionEntrainenementsPC({ niveau, user }) {
 }
 
 // ─────────────────────────────────────────────────────────────────
-// SECTION QUIZ — Histoire & Géographie
+// FLASHCARD — une carte question/réponse interactive
 // ─────────────────────────────────────────────────────────────────
-function SectionQuizHiGe({ niveau, matiere, user }) {
-  const [items,         setItems]         = useState([]);
-  const [loading,       setLoading]       = useState(true);
-  const [detail,        setDetail]        = useState(null);
-  const [detailFull,    setDetailFull]    = useState(null);
-  const [voirCorr,      setVoirCorr]      = useState(false);
-  const [loadingDetail, setLoadingDetail] = useState(false);
+function Flashcard({ question, reponse, explication, index, total, gradient }) {
+  const [revele, setRevele] = useState(false);
+  return (
+    <motion.div
+      initial={{ opacity:0, y:10 }} animate={{ opacity:1, y:0 }}
+      transition={{ delay: index * 0.04 }}
+      className="bg-white rounded-2xl border-2 border-tate-border shadow-card overflow-hidden mb-4">
+      {/* En-tête numéro */}
+      <div className={`px-4 py-2 bg-gradient-to-r ${gradient} flex items-center justify-between`}>
+        <span className="text-xs font-bold text-white/80">Question {index + 1} / {total}</span>
+        {revele && <span className="text-xs font-bold text-white bg-white/20 rounded-full px-2 py-0.5">✅ Réponse visible</span>}
+      </div>
 
-  const isPremium = user?.abonnement === 'premium';
+      {/* Question */}
+      <div className="px-4 pt-4 pb-3">
+        <p className="font-semibold text-tate-terre text-sm leading-snug">{question}</p>
+      </div>
+
+      {/* Zone réponse */}
+      {revele ? (
+        <motion.div
+          initial={{ opacity:0, height:0 }} animate={{ opacity:1, height:'auto' }}
+          className="px-4 pb-4">
+          <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3">
+            <p className="text-xs font-bold text-emerald-700 mb-1">✅ Réponse :</p>
+            <p className="text-sm text-emerald-900 leading-snug">{reponse}</p>
+            {explication && (
+              <p className="text-xs text-emerald-700/70 mt-2 italic">{explication}</p>
+            )}
+          </div>
+          <button
+            onClick={() => setRevele(false)}
+            className="mt-2 text-xs text-tate-terre/40 hover:text-tate-terre/70 transition-colors w-full text-center">
+            Masquer la réponse
+          </button>
+        </motion.div>
+      ) : (
+        <div className="px-4 pb-4">
+          <button
+            onClick={() => setRevele(true)}
+            className="w-full py-2.5 rounded-xl border-2 border-dashed border-tate-border text-sm font-semibold text-tate-terre/50 hover:border-tate-soleil/50 hover:text-tate-soleil hover:bg-amber-50 transition-all active:scale-[0.97]">
+            👆 Appuie pour voir la réponse
+          </button>
+        </div>
+      )}
+    </motion.div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────
+// SECTION RÉVISIONS — Histoire & Géographie (flashcards)
+// ─────────────────────────────────────────────────────────────────
+function SectionRevisionsHiGe({ chapitres, matiere }) {
+  const [chapitreSelectionne, setChapitreSelectionne] = useState(null);
+  const [flashcards,          setFlashcards]          = useState([]);
+  const [loading,             setLoading]             = useState(false);
+
   const couleurMap = {
-    'Histoire':   { grad:'from-purple-500 to-violet-700', icone:'🏛️', badge:'bg-purple-100 text-purple-700 border-purple-200' },
-    'Géographie': { grad:'from-teal-500 to-cyan-700',     icone:'🌍', badge:'bg-teal-100 text-teal-700 border-teal-200'       },
+    'HI': { grad:'from-purple-500 to-violet-700', icone:'🏛️' },
+    'GE': { grad:'from-teal-500 to-cyan-700',     icone:'🌍' },
   };
-  const cfg = couleurMap[matiere] || couleurMap['Histoire'];
+  const cfg = couleurMap[matiere.id] || couleurMap['HI'];
 
-  useEffect(() => {
+  const ouvrirRevision = async (chap) => {
+    setChapitreSelectionne(chap);
     setLoading(true);
-    axios.get(`${API}/entrainements`, {
-      headers: { Authorization: `Bearer ${getToken()}` },
-      params:  { niveau: niveau || 'CM1', matiere },
-    })
-      .then(r => setItems(r.data.data || []))
-      .catch(() => setItems([]))
-      .finally(() => setLoading(false));
-  }, [niveau, matiere]);
-
-  const ouvrirDetail = async (item) => {
-    setDetail(item);
-    setVoirCorr(false);
-    setLoadingDetail(true);
-    setDetailFull(null);
+    setFlashcards([]);
     try {
-      const params = { corrections: isPremium ? 'true' : 'false' };
-      const r = await axios.get(`${API}/entrainements/${item._id}`, {
-        headers: { Authorization: `Bearer ${getToken()}` }, params,
+      const r = await axios.get(`${API}/lecons/${chap._id}`, {
+        headers: { Authorization: `Bearer ${getToken()}` },
       });
-      setDetailFull(r.data.data || item);
-    } catch { setDetailFull(item); }
-    finally { setLoadingDetail(false); }
+      const lecon = r.data.data || r.data;
+      const cards = lecon?.contenuFormate?.correctionsTypes || [];
+      setFlashcards(cards);
+    } catch { setFlashcards([]); }
+    finally { setLoading(false); }
   };
 
-  // ── Vue détail ──────────────────────────────────────────────
-  if (detail) {
-    const html = detailFull?.contenuHTML || '';
-    const corr = detailFull?.correctionHTML || null;
+  // ── Vue flashcards ──────────────────────────────────────────
+  if (chapitreSelectionne) {
     return (
       <motion.div initial={{ opacity:0, x:20 }} animate={{ opacity:1, x:0 }} transition={{ duration:0.2 }}>
-        <button onClick={() => { setDetail(null); setDetailFull(null); setVoirCorr(false); }}
+        <button
+          onClick={() => { setChapitreSelectionne(null); setFlashcards([]); }}
           className="flex items-center gap-1.5 mb-4 px-3 py-2 rounded-xl bg-white border-2 border-tate-border text-tate-terre font-semibold text-sm hover:bg-tate-doux transition-all shadow-card">
-          <ChevronLeft size={16} /> ← Retour aux quiz
+          <ChevronLeft size={16} /> ← Retour aux révisions
         </button>
 
-        <div className={`bg-gradient-to-r ${cfg.grad} rounded-2xl p-4 mb-4 text-white`}>
+        {/* En-tête chapitre */}
+        <div className={`bg-gradient-to-r ${cfg.grad} rounded-2xl p-4 mb-5 text-white`}>
           <div className="flex items-center gap-2 mb-1">
             <span className="text-lg">{cfg.icone}</span>
-            <span className="text-[10px] font-bold bg-white/20 rounded-full px-2 py-0.5">{matiere}</span>
+            <span className="text-[10px] font-bold bg-white/20 rounded-full px-2 py-0.5">Révisions</span>
           </div>
-          <h3 className="font-serif font-bold text-lg leading-tight">{detail.chapitre}</h3>
-          <p className="text-white/70 text-xs mt-1">{detail.nbExercices} questions</p>
+          <h3 className="font-serif font-bold text-lg leading-tight">{chapitreSelectionne.titre}</h3>
+          {!loading && <p className="text-white/70 text-xs mt-1">{flashcards.length} questions à réviser</p>}
         </div>
 
-        {loadingDetail ? (
-          <LoadingTate message="Chargement du quiz…" />
+        {loading ? (
+          <LoadingTate message="Chargement des révisions…" />
+        ) : flashcards.length === 0 ? (
+          <div className="text-center py-16 rounded-2xl border-2 border-dashed border-tate-border bg-white">
+            <span className="text-5xl block mb-3">📭</span>
+            <p className="font-semibold text-tate-terre">Aucune question disponible</p>
+          </div>
         ) : (
           <>
-            <div className="bg-white rounded-2xl border border-tate-border overflow-hidden mb-4 shadow-card">
-              <div className={`px-4 py-2 border-b flex items-center gap-2 bg-teal-50 border-teal-100`}>
-                <span className="text-sm">⚡</span>
-                <span className="text-xs font-bold text-teal-700">Questions</span>
-              </div>
-              <iframe
-                key={`quiz-enonce-${detail._id}`}
-                srcDoc={html}
-                title="Quiz"
-                className="w-full border-0"
-                style={{ height:'480px' }}
-                onLoad={e => {
-                  try {
-                    const h = e.target.contentDocument?.body?.scrollHeight;
-                    if (h && h > 100) e.target.style.height = Math.min(h + 20, 900) + 'px';
-                  } catch {}
-                }}
-                sandbox="allow-same-origin"
+            <p className="text-xs text-tate-terre/50 mb-4 px-1">
+              💡 Lis la question, réfléchis, puis appuie pour voir la réponse.
+            </p>
+            {flashcards.map((card, i) => (
+              <Flashcard
+                key={i}
+                index={i}
+                total={flashcards.length}
+                question={card.question}
+                reponse={card.reponse}
+                explication={card.explication}
+                gradient={cfg.grad}
               />
+            ))}
+            <div className="mt-2 text-center">
+              <p className="text-xs text-tate-terre/40">🎉 Tu as révisé toutes les questions !</p>
             </div>
-
-            {isPremium ? (
-              <div className="bg-white rounded-2xl border border-tate-border overflow-hidden mb-4 shadow-card">
-                <button
-                  onClick={() => setVoirCorr(v => !v)}
-                  className="w-full px-4 py-3 bg-emerald-50 border-b border-emerald-100 flex items-center justify-between hover:bg-emerald-100 transition-colors">
-                  <div className="flex items-center gap-2">
-                    <Eye size={14} className="text-emerald-600" />
-                    <span className="text-xs font-bold text-emerald-700">
-                      {voirCorr ? 'Masquer les corrections' : 'Voir les corrections'}
-                    </span>
-                  </div>
-                  <ChevronRight size={14} className={`text-emerald-600 transition-transform ${voirCorr ? 'rotate-90' : ''}`} />
-                </button>
-                {voirCorr && corr && (
-                  <iframe
-                    key={`quiz-corr-${detail._id}`}
-                    srcDoc={corr}
-                    title="Corrections"
-                    className="w-full border-0"
-                    style={{ height:'480px' }}
-                    onLoad={e => {
-                      try {
-                        const h = e.target.contentDocument?.body?.scrollHeight;
-                        if (h && h > 100) e.target.style.height = Math.min(h + 20, 900) + 'px';
-                      } catch {}
-                    }}
-                    sandbox="allow-same-origin"
-                  />
-                )}
-              </div>
-            ) : (
-              <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-start gap-3">
-                <Lock size={16} className="text-amber-600 mt-0.5 flex-shrink-0" />
-                <div>
-                  <p className="text-sm font-bold text-amber-800">Corrections Premium</p>
-                  <p className="text-xs text-amber-700 mt-0.5">
-                    Les corrections détaillées sont réservées aux abonnés Premium.
-                  </p>
-                </div>
-              </div>
-            )}
           </>
         )}
       </motion.div>
     );
   }
 
-  // ── Vue liste ───────────────────────────────────────────────
+  // ── Vue liste des chapitres ─────────────────────────────────
   return (
     <div>
-      {loading ? (
-        <LoadingTate message="Chargement des quiz…" />
-      ) : items.length === 0 ? (
+      <p className="text-xs text-tate-terre/50 mb-4 px-1">
+        📚 Choisis une leçon pour commencer tes révisions.
+      </p>
+      {chapitres.length === 0 ? (
         <div className="text-center py-16 rounded-2xl border-2 border-dashed border-tate-border bg-white">
-          <span className="text-5xl block mb-3">⚡</span>
-          <p className="font-semibold text-tate-terre">Aucun quiz disponible</p>
-          <p className="text-xs text-tate-terre/40 mt-1">Le contenu sera bientôt ajouté</p>
+          <span className="text-5xl block mb-3">{cfg.icone}</span>
+          <p className="font-semibold text-tate-terre">Aucune leçon disponible</p>
         </div>
       ) : (
         <div className="space-y-3">
-          {items.map(item => (
-            <motion.button key={item._id} whileTap={{ scale:0.97 }}
-              onClick={() => ouvrirDetail(item)}
-              className="w-full text-left bg-white rounded-2xl border-2 border-tate-border p-4 shadow-card hover:shadow-tate hover:border-teal-300 transition-all active:scale-[0.97]">
+          {chapitres.map((chap, i) => (
+            <motion.button key={chap._id} whileTap={{ scale:0.97 }}
+              onClick={() => ouvrirRevision(chap)}
+              className="w-full text-left bg-white rounded-2xl border-2 border-tate-border p-4 shadow-card hover:shadow-tate hover:border-amber-300 transition-all active:scale-[0.97]">
               <div className="flex items-start gap-3">
-                <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${cfg.grad} flex items-center justify-center text-white text-lg flex-shrink-0`}>
-                  ⚡
+                <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${cfg.grad} flex items-center justify-center text-white font-bold text-sm flex-shrink-0`}>
+                  {i + 1}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-tate-terre text-sm leading-snug">{item.chapitre}</p>
-                  <p className="text-xs text-tate-terre/50 mt-1">{item.nbExercices} questions · avec corrections</p>
+                  <p className="font-semibold text-tate-terre text-sm leading-snug">{chap.titre}</p>
+                  <p className="text-xs text-tate-terre/50 mt-1">Flashcards · question / réponse</p>
                 </div>
                 <ChevronRight size={16} className="text-tate-terre/30 flex-shrink-0 mt-1" />
               </div>
@@ -3252,11 +3249,10 @@ function SectionQuizHiGe({ niveau, matiere, user }) {
 }
 
 // ─────────────────────────────────────────────────────────────────
-// VUE CHAPITRES Histoire & Géographie — avec onglets Cours + Quiz
+// VUE CHAPITRES Histoire & Géographie — avec onglets Cours + Révisions
 // ─────────────────────────────────────────────────────────────────
 function VueChapitresHiGe({ matiere, chapitres, isValide, isVerrouille, nbValides, chargement, onDemarrer, onRetour, user }) {
-  const [vue, setVue] = useState('cours'); // 'cours' | 'quiz'
-  const niveau = user?.niveau || 'CM1';
+  const [vue, setVue] = useState('cours'); // 'cours' | 'revisions'
 
   return (
     <motion.div initial={{ opacity:0, x:20 }} animate={{ opacity:1, x:0 }} exit={{ opacity:0, x:-20 }}
@@ -3290,7 +3286,7 @@ function VueChapitresHiGe({ matiere, chapitres, isValide, isVerrouille, nbValide
         )}
       </div>
 
-      {/* Onglets Cours / Quiz */}
+      {/* Onglets Cours / Révisions */}
       <div className="flex gap-2 mb-5">
         <button onClick={() => setVue('cours')}
           className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 text-sm font-bold transition-all
@@ -3300,13 +3296,13 @@ function VueChapitresHiGe({ matiere, chapitres, isValide, isVerrouille, nbValide
           <BookOpen size={15} />
           <span>Cours</span>
         </button>
-        <button onClick={() => setVue('quiz')}
+        <button onClick={() => setVue('revisions')}
           className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 text-sm font-bold transition-all
-            ${vue === 'quiz'
+            ${vue === 'revisions'
               ? 'bg-tate-soleil border-tate-soleil text-white shadow-sm'
               : 'bg-white border-tate-border text-tate-terre/60 hover:bg-tate-doux'}`}>
-          <span>⚡</span>
-          <span>Quiz</span>
+          <span>🔁</span>
+          <span>Révisions</span>
         </button>
       </div>
 
@@ -3341,8 +3337,8 @@ function VueChapitresHiGe({ matiere, chapitres, isValide, isVerrouille, nbValide
             )}
           </motion.div>
         ) : (
-          <motion.div key="quiz" initial={{ opacity:0, y:5 }} animate={{ opacity:1, y:0 }} exit={{ opacity:0 }}>
-            <SectionQuizHiGe niveau={niveau} matiere={matiere.nom} user={user} />
+          <motion.div key="revisions" initial={{ opacity:0, y:5 }} animate={{ opacity:1, y:0 }} exit={{ opacity:0 }}>
+            <SectionRevisionsHiGe chapitres={chapitres} matiere={matiere} />
           </motion.div>
         )}
       </AnimatePresence>
