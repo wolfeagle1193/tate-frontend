@@ -1,6 +1,6 @@
 // Taté Service Worker — Cache Shell + API NetworkFirst
 // ⚠️  Incrémenter CACHE_NAME à chaque déploiement pour invalider le cache mobile
-const CACHE_NAME = 'tate-v4';
+const CACHE_NAME = 'tate-v5';
 const SHELL = ['/', '/index.html'];
 
 // Installation : mise en cache du shell uniquement
