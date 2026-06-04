@@ -3750,7 +3750,9 @@ export function AccueilEleve() {
 
   const afficherSectionsFr = matiereActive === 'FR';
   const afficherSectionsPC = matiereActive === 'PC';
-  const afficherSectionsHiGe = matiereActive === 'HI' || matiereActive === 'GE';
+  //const afficherSectionsHiGe = matiereActive === 'HI' || matiereActive === 'GE';
+  const afficherSectionsHiGe = matiereActive === 'HI' || matiereActive === 'GE' || matiereActive === 'IST';
+
 
   const handleDemarrer = async (chap) => {
     if (!aAcces) {
