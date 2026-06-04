@@ -61,6 +61,9 @@ const MATIERES = [
     gradient:'from-teal-400 to-cyan-600',     bg:'bg-teal-50',   border:'border-teal-200',   text:'text-teal-800',   dot:'bg-teal-500'    },
   { id:'PC', nom:'Physique-Chimie', icone:'⚗️', code:'PC',
     gradient:'from-violet-500 to-purple-700', bg:'bg-violet-50', border:'border-violet-200', text:'text-violet-800', dot:'bg-violet-500'  },
+      { id:'IST', nom:'Initiation Scientifique', icone:'🔬', code:'IST',
+    gradient:'from-fuchsia-500 to-pink-600', bg:'bg-fuchsia-50', border:'border-fuchsia-200', text:'text-fuchsia-800', dot:'bg-fuchsia-500'  },
+
 ];
 
 // ─── Config sections Français ────────────────────────────────────
