@@ -3756,7 +3756,7 @@ export function AccueilEleve() {
   const afficherSectionsFr = matiereActive === 'FR';
   const afficherSectionsPC = matiereActive === 'PC';
   //const afficherSectionsHiGe = matiereActive === 'HI' || matiereActive === 'GE';
-  const afficherSectionsHiGe = matiereActive === 'HI' || matiereActive === 'GE' || matiereActive === 'IST';
+  const afficherSectionsHiGe = matiereActive === 'HI' || matiereActive === 'GE' || matiereActive === 'IST' || matiereActive === 'VE' || matiereActive === 'VM';
 
 
   const handleDemarrer = async (chap) => {
@@ -4117,10 +4117,14 @@ export function AccueilEleve() {
 
             {/* Grille matières — si nombre impair, dernière carte occupe toute la largeur */}
             <div className="grid grid-cols-2 gap-3 mb-5">
-              {MATIERES.map((mat, index) => (
+              {MATIERES.filter(mat => {
+                // Physique-Chimie uniquement à partir de la 6ème
+                if (mat.id === 'PC' && ['CM1','CM2','CI','CP','CE1','CE2'].includes(user?.niveau)) return false;
+                return true;
+              }).map((mat, index, filtered) => (
                 <div
                   key={mat.id}
-                  className={MATIERES.length % 2 !== 0 && index === MATIERES.length - 1 ? 'col-span-2' : ''}
+                  className={filtered.length % 2 !== 0 && index === filtered.length - 1 ? 'col-span-2' : ''}
                 >
                   <CarteMatiere
                     matiere={mat}
