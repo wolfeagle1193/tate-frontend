@@ -63,6 +63,8 @@ function RouterEleve() {
 function RootRedirect() {
   const { user } = useAuthStore();
   if (!user) return <Navigate to="/login" replace />;
+  // Les adultes (clients langues) vont sur leur dashboard
+  if (user.role === 'eleve' && user.niveau === 'Adulte') return <Navigate to="/langue/dashboard" replace />;
   const routes = { admin: '/admin', prof: '/prof', eleve: '/eleve', parent: '/parent' };
   return <Navigate to={routes[user.role] || '/login'} replace />;
 }
