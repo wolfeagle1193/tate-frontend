@@ -63,6 +63,11 @@ const MATIERES = [
     gradient:'from-violet-500 to-purple-700', bg:'bg-violet-50', border:'border-violet-200', text:'text-violet-800', dot:'bg-violet-500'  },
       { id:'IST', nom:'Initiation Scientifique', icone:'🔬', code:'IST',
     gradient:'from-fuchsia-500 to-pink-600', bg:'bg-fuchsia-50', border:'border-fuchsia-200', text:'text-fuchsia-800', dot:'bg-fuchsia-500'  },
+      { id:'VE', nom:'Vivre ensemble',        icone:'🤝', code:'VE',
+    gradient:'from-orange-500 to-red-600',  bg:'bg-orange-50',  border:'border-orange-200',  text:'text-orange-800',  dot:'bg-orange-500'  },
+  { id:'VM', nom:'Vivre dans son milieu', icone:'🌍', code:'VM',
+    gradient:'from-cyan-400 to-blue-500',   bg:'bg-cyan-50',    border:'border-cyan-200',    text:'text-cyan-800',    dot:'bg-cyan-500'   },
+
 
 ];
 
