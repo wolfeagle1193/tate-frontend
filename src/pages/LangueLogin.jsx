@@ -32,14 +32,12 @@ export function LangueLogin() {
       
       if (data?.success && data?.data) {
         useAuthStore.getState().setUser(data.data);
-        localStorage.setItem('tate_token', data.data.token || data.token);
+        const token = data.data.token || data.token;
+        if (token) localStorage.setItem('tate_token', token);
         toast.success('Bienvenue !');
         
-        if (data.data.niveau === 'Adulte') {
-          navigate('/langue/dashboard', { replace: true });
-        } else {
-          navigate('/eleve', { replace: true });
-        }
+        // Force la navigation vers le dashboard langue
+        window.location.href = '/langue/dashboard';
       }
     } catch (err) {
       const msg = err.response?.data?.error || 'Email ou mot de passe incorrect';
