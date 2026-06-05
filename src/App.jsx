@@ -12,6 +12,9 @@ import { RegisterEleve }  from './pages/RegisterEleve';
 import { RegisterParent } from './pages/RegisterParent';
 import { RegisterProf }   from './pages/RegisterProf';
 
+import { LangueLogin }    from './pages/LangueLogin';
+import { EspaceLangue }   from './pages/EspaceLangue';
+
 import { AccueilEleve, PageCours } from './pages/eleve/PagesEleve';
 import { Tutorat }               from './pages/eleve/Tutorat';
 import { SectionEpreuves }       from './pages/eleve/SectionEpreuves';
@@ -130,6 +133,7 @@ function AppContent() {
           <Route path="/register/parent"  element={<RegisterParent />} />
           <Route path="/register/prof"    element={<RegisterProf />} />
           <Route path="/"                 element={<RootRedirect />} />
+          <Route path="/langue/login"     element={<LangueLogin />} />
 
           {/* ── ADMIN ──────────────────────────────────── */}
           <Route path="/admin" element={
@@ -218,6 +222,11 @@ function AppContent() {
           } />
           <Route path="/parent/tutorat" element={
             <PrivateRoute roles={['parent']}><Tutorat /></PrivateRoute>
+          } />
+
+          {/* ── LANGUE (Adultes) ──────────────────────── */}
+          <Route path="/langue/dashboard" element={
+            <PrivateRoute roles={['eleve','admin']}><EspaceLangue /></PrivateRoute>
           } />
 
           {/* Fallback */}

@@ -67,6 +67,8 @@ const MATIERES = [
     gradient:'from-orange-500 to-red-600',  bg:'bg-orange-50',  border:'border-orange-200',  text:'text-orange-800',  dot:'bg-orange-500'  },
   { id:'VM', nom:'Vivre dans son milieu', icone:'🌍', code:'VM',
     gradient:'from-cyan-400 to-blue-500',   bg:'bg-cyan-50',    border:'border-cyan-200',    text:'text-cyan-800',    dot:'bg-cyan-500'   },
+  { id:'AN-AD', nom:'Anglais Adultes',     icone:'🇬🇧', code:'AN-AD',
+    gradient:'from-blue-500 to-indigo-600',  bg:'bg-blue-50',    border:'border-blue-200',    text:'text-blue-800',    dot:'bg-blue-500'   },
 
 
 ];
