@@ -3972,7 +3972,7 @@ export function AccueilEleve() {
                 matiere={matiereObj}
                 chapitres={chapitres}
                 isValide={isValide}
-                isVerrouille={isVerrouille}
+                isVerrouille={() => false}
                 nbValides={nbValidesMatiere}
                 chargement={chargement}
                 onDemarrer={handleDemarrer}
