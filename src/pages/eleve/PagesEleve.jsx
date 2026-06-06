@@ -3198,6 +3198,7 @@ function SectionRevisionsHiGe({ chapitres, matiere }) {
   const isGE = matiere.id === 'GE';
   const isSV = matiere.id === 'SV';
   const isIST = matiere.id === 'IST';
+  const isVE = matiere.id === 'VE';
 
   const chargerFlashcards = async (chapitre) => {
     setChargement(true);
@@ -3226,7 +3227,7 @@ function SectionRevisionsHiGe({ chapitres, matiere }) {
           className="flex items-center gap-2 text-sm text-gray-500 mb-4 hover:text-gray-700">
           ← Retour aux leçons
         </button>
-        <h3 className="font-bold text-gray-800 mb-4">{isGE ? '🌍' : isIST ? '🔬' : '🏛️'} {chapitreActif.titre}</h3>
+        <h3 className="font-bold text-gray-800 mb-4">{isGE ? '🌍' : isIST ? '🔬' : isVE ? '🤝' : '🏛️'} {chapitreActif.titre}</h3>
         {chargement ? (
           <p className="text-center text-gray-400 py-8">Chargement des révisions…</p>
         ) : flashcards.length === 0 ? (
@@ -3242,6 +3243,11 @@ function SectionRevisionsHiGe({ chapitres, matiere }) {
               explication={fc.explication} index={i} total={flashcards.length} />
           ))
         ) : isIST ? (
+          flashcards.map((fc, i) => (
+            <FlashcardGE key={i} question={fc.question} reponse={fc.reponse}
+              explication={fc.explication} index={i} total={flashcards.length} />
+          ))
+        ) : isVE ? (
           flashcards.map((fc, i) => (
             <FlashcardGE key={i} question={fc.question} reponse={fc.reponse}
               explication={fc.explication} index={i} total={flashcards.length} />
@@ -3286,6 +3292,15 @@ function SectionRevisionsHiGe({ chapitres, matiere }) {
             <p className="text-xs opacity-80">Appuie pour réviser</p>
           </div>
         </button>
+      ) : isVE ? (
+        <button key={ch._id} onClick={() => chargerFlashcards(ch)}
+          className="w-full text-left flex items-center gap-3 p-4 rounded-xl mb-3 bg-gradient-to-r from-amber-500 to-yellow-600 text-white shadow">
+          <span className="text-2xl">🤝</span>
+          <div>
+            <p className="font-semibold text-sm">{ch.titre}</p>
+            <p className="text-xs opacity-80">Appuie pour réviser</p>
+          </div>
+        </button>
       ) : (
         <button key={ch._id} onClick={() => chargerFlashcards(ch)}
           className="w-full text-left flex items-center gap-3 p-4 rounded-xl mb-3 bg-gradient-to-r from-purple-500 to-violet-700 text-white shadow">
@@ -3305,6 +3320,7 @@ function VueChapitresHiGe({ matiere, chapitres, isValide, isVerrouille, nbValide
   const isGE = matiere.id === 'GE';
   const isSV = matiere.id === 'SV';
   const isIST = matiere.id === 'IST';
+  const isVE = matiere.id === 'VE';
 
   return (
     <div>
@@ -3340,6 +3356,17 @@ function VueChapitresHiGe({ matiere, chapitres, isValide, isVerrouille, nbValide
             </button>
             <button onClick={() => setVue('revisions')}
               className={`flex-1 py-2.5 rounded-xl font-semibold text-sm transition-all ${vue === 'revisions' ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow' : 'bg-gray-100 text-gray-500'}`}>
+              🔁 Révisions
+            </button>
+          </>
+        ) : isVE ? (
+          <>
+            <button onClick={() => setVue('cours')}
+              className={`flex-1 py-2.5 rounded-xl font-semibold text-sm transition-all ${vue === 'cours' ? 'bg-gradient-to-r from-amber-500 to-yellow-600 text-white shadow' : 'bg-gray-100 text-gray-500'}`}>
+              📖 Cours
+            </button>
+            <button onClick={() => setVue('revisions')}
+              className={`flex-1 py-2.5 rounded-xl font-semibold text-sm transition-all ${vue === 'revisions' ? 'bg-gradient-to-r from-amber-500 to-yellow-600 text-white shadow' : 'bg-gray-100 text-gray-500'}`}>
               🔁 Révisions
             </button>
           </>
@@ -3848,7 +3875,7 @@ export function AccueilEleve() {
   const afficherSectionsFr = matiereActive === 'FR';
   const afficherSectionsPC = matiereActive === 'PC';
   //const afficherSectionsHiGe = matiereActive === 'HI' || matiereActive === 'GE';
-  const afficherSectionsHiGe = matiereActive === 'HI' || matiereActive === 'GE' || matiereActive === 'SV' || matiereActive === 'IST';
+  const afficherSectionsHiGe = matiereActive === 'HI' || matiereActive === 'GE' || matiereActive === 'SV' || matiereActive === 'IST' || matiereActive === 'VE';
 
 
   const handleDemarrer = async (chap) => {
