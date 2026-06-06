@@ -3285,10 +3285,190 @@ function SectionRevisionsHiGe({ chapitres, matiere }) {
   );
 }
 
+// ─────────────────────────────────────────────────────────────────
+// Section QCM pour HI/GE/SVT
+// ─────────────────────────────────────────────────────────────────
+function SectionQCMHiGe({ chapitres, matiere, chapitreActif, onRetour }) {
+  const [qcm, setQcm] = useState(null);
+  const [chargement, setChargement] = useState(false);
+  const [reponses, setReponses] = useState({});
+  const [resultat, setResultat] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
+  const isSV = matiere.id === 'SV';
+
+  const chargerQCM = async (chapitre) => {
+    setChargement(true);
+    setResultat(null);
+    setReponses({});
+    try {
+      const token = getToken();
+      const res = await fetch(`${API}/qcm/chapitre/${chapitre._id}/actif`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const json = await res.json();
+      if (json.success && json.data) {
+        setQcm(json.data);
+      } else {
+        setQcm(null);
+      }
+    } catch (e) {
+      setQcm(null);
+    } finally {
+      setChargement(false);
+    }
+  };
+
+  const repondre = (index, lettre) => {
+    setReponses(prev => ({ ...prev, [index]: lettre }));
+  };
+
+  const soumettre = async () => {
+    if (!qcm) return;
+    setSubmitting(true);
+    const reponsesList = qcm.questions.map((question, idx) => ({
+      questionId: idx,
+      reponse: reponses[idx] || null
+    }));
+    try {
+      const token = getToken();
+      const res = await fetch(`${API}/qcm/${qcm._id}/soumettre`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reponses: reponsesList })
+      });
+      const json = await res.json();
+      if (json.success) {
+        setResultat(json.data);
+      }
+    } catch (e) {
+      toast.error('Erreur lors de la soumission');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const resetQCM = () => {
+    setReponses({});
+    setResultat(null);
+  };
+
+  // Si un chapitre est passé, charger direct
+  useEffect(() => {
+    if (chapitreActif) chargerQCM(chapitreActif);
+  }, [chapitreActif]);
+
+  // Si QCM chargé, afficher les questions
+  if (qcm && !resultat) {
+    const toutesRepondues = qcm.questions.every((_, idx) => reponses[idx]);
+    return (
+      <div>
+        <button onClick={() => { setQcm(null); setReponses({}); if (onRetour) onRetour(); }}
+          className="flex items-center gap-2 text-sm text-gray-500 mb-4 hover:text-gray-700">
+          ← Retour aux choix
+        </button>
+        <h3 className="font-bold text-gray-800 mb-1">{qcm.titre || 'QCM'}</h3>
+        <p className="text-xs text-gray-400 mb-4">{qcm.questions.length} questions</p>
+
+        <div className="space-y-4">
+          {qcm.questions.map((question, idx) => (
+            <div key={idx} className="bg-white rounded-xl border border-gray-200 p-4">
+              <p className="font-medium text-gray-800 text-sm mb-3">{idx + 1}. {question.enonce}</p>
+              <div className="space-y-2">
+                {question.options.map((opt) => {
+                  const selected = reponses[idx] === opt.lettre;
+                  return (
+                    <button key={opt.lettre}
+                      onClick={() => repondre(idx, opt.lettre)}
+                      className={`w-full text-left p-3 rounded-xl text-sm border transition-all ${selected ? 'bg-tate-doux border-tate-terre font-semibold' : 'bg-gray-50 border-gray-100 hover:border-gray-300'}`}>
+                      <span className="font-bold mr-2">{opt.lettre}.</span> {opt.texte}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <button onClick={soumettre} disabled={!toutesRepondues || submitting}
+          className={`w-full mt-6 py-3 rounded-xl text-white font-semibold transition-all ${isSV ? 'bg-gradient-to-r from-green-500 to-emerald-700' : 'bg-gradient-to-r from-purple-500 to-violet-700'} ${!toutesRepondues || submitting ? 'opacity-50' : 'shadow-lg hover:scale-[1.02]'}`}>
+          {submitting ? 'Soumission…' : '✅ Vérifier mes réponses'}
+        </button>
+      </div>
+    );
+  }
+
+  // Résultats
+  if (resultat) {
+    const score = resultat.score ?? resultat.nbCorrectes;
+    const total = qcm?.questions?.length || 0;
+    const pct = Math.round((score / total) * 100);
+    return (
+      <div>
+        <div className={`rounded-2xl p-5 mb-4 text-center ${pct >= 70 ? 'bg-green-50 border border-green-200' : pct >= 40 ? 'bg-yellow-50 border border-yellow-200' : 'bg-red-50 border border-red-200'}`}>
+          <span className={`text-4xl block mb-2 ${pct >= 70 ? '' : ''}`}>{pct >= 70 ? '🎉' : pct >= 40 ? '💪' : '📚'}</span>
+          <p className="text-2xl font-bold text-gray-800">{score}/{total}</p>
+          <p className="text-sm text-gray-500 mt-1">{pct >= 70 ? 'Bravo ! Continue comme ça.' : pct >= 40 ? 'Encore un peu de révision !' : 'Relis le cours et réessaie.'}</p>
+        </div>
+
+        <div className="space-y-3 mb-6">
+          {qcm.questions.map((question, idx) => {
+            const maReponse = reponses[idx];
+            const correcte = maReponse === question.reponseCorrecte;
+            return (
+              <div key={idx} className={`rounded-xl p-4 ${correcte ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
+                <p className="text-sm font-medium text-gray-800 mb-2">{idx+1}. {question.enonce}</p>
+                <div className="space-y-1 text-sm">
+                  <p className={correcte ? 'text-green-700' : 'text-red-700'}>
+                    Ta réponse : {maReponse || '—'} {correcte ? '✅' : '❌'}
+                  </p>
+                  {!correcte && <p className="text-green-700">Bonne réponse : {question.reponseCorrecte}</p>}
+                  <p className="text-gray-500 text-xs italic mt-1">{question.explication}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <button onClick={resetQCM}
+          className={`w-full py-3 rounded-xl text-white font-semibold shadow-lg transition-all ${isSV ? 'bg-gradient-to-r from-green-500 to-emerald-700' : 'bg-gradient-to-r from-purple-500 to-violet-700'} hover:scale-[1.02]`}>
+          🔄 Recommencer le QCM
+        </button>
+      </div>
+    );
+  }
+
+  // Liste des chapitres
+  return (
+    <div>
+      <p className="text-sm text-gray-500 mb-4">Choisis une leçon et teste-toi :</p>
+      {chapitres.map((ch) => {
+        const isGE = matiere.id === 'GE';
+        const isSV = matiere.id === 'SV';
+        return (
+          <button key={ch._id} onClick={() => chargerQCM(ch)}
+            className={`w-full text-left flex items-center gap-3 p-4 rounded-xl mb-3 text-white shadow ${isGE ? 'bg-gradient-to-r from-teal-500 to-cyan-700' : isSV ? 'bg-gradient-to-r from-green-500 to-emerald-700' : 'bg-gradient-to-r from-purple-500 to-violet-700'}`}>
+            <span className="text-2xl">{isGE ? '🌍' : isSV ? '🌿' : '🏛️'}</span>
+            <div>
+              <p className="font-semibold text-sm">{ch.titre}</p>
+              <p className="text-xs opacity-80">Appuie pour faire le QCM</p>
+            </div>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 function VueChapitresHiGe({ matiere, chapitres, isValide, isVerrouille, nbValides, chargement, onDemarrer, onRetour }) {
   const [vue, setVue] = useState('cours');
+  const [qcmChapitre, setQcmChapitre] = useState(null);
   const isGE = matiere.id === 'GE';
   const isSV = matiere.id === 'SV';
+
+  const onLancerQCM = (ch) => {
+    setQcmChapitre(ch);
+    setVue('qcm');
+  }
 
   return (
     <div>
@@ -3304,6 +3484,10 @@ function VueChapitresHiGe({ matiere, chapitres, isValide, isVerrouille, nbValide
               className={`flex-1 py-2.5 rounded-xl font-semibold text-sm transition-all ${vue === 'revisions' ? 'bg-gradient-to-r from-teal-500 to-cyan-700 text-white shadow' : 'bg-gray-100 text-gray-500'}`}>
               🔁 Révisions
             </button>
+            <button onClick={() => { setVue('qcm'); setQcmChapitre(null); }}
+              className={`flex-1 py-2.5 rounded-xl font-semibold text-sm transition-all ${vue === 'qcm' ? 'bg-gradient-to-r from-teal-500 to-cyan-700 text-white shadow' : 'bg-gray-100 text-gray-500'}`}>
+              ❓ QCM
+            </button>
           </>
         ) : isSV ? (
           <>
@@ -3314,6 +3498,10 @@ function VueChapitresHiGe({ matiere, chapitres, isValide, isVerrouille, nbValide
             <button onClick={() => setVue('revisions')}
               className={`flex-1 py-2.5 rounded-xl font-semibold text-sm transition-all ${vue === 'revisions' ? 'bg-gradient-to-r from-green-500 to-emerald-700 text-white shadow' : 'bg-gray-100 text-gray-500'}`}>
               🔁 Révisions
+            </button>
+            <button onClick={() => { setVue('qcm'); setQcmChapitre(null); }}
+              className={`flex-1 py-2.5 rounded-xl font-semibold text-sm transition-all ${vue === 'qcm' ? 'bg-gradient-to-r from-green-500 to-emerald-700 text-white shadow' : 'bg-gray-100 text-gray-500'}`}>
+              ❓ QCM
             </button>
           </>
         ) : (
@@ -3326,11 +3514,15 @@ function VueChapitresHiGe({ matiere, chapitres, isValide, isVerrouille, nbValide
               className={`flex-1 py-2.5 rounded-xl font-semibold text-sm transition-all ${vue === 'revisions' ? 'bg-gradient-to-r from-purple-500 to-violet-700 text-white shadow' : 'bg-gray-100 text-gray-500'}`}>
               🔁 Révisions
             </button>
+            <button onClick={() => { setVue('qcm'); setQcmChapitre(null); }}
+              className={`flex-1 py-2.5 rounded-xl font-semibold text-sm transition-all ${vue === 'qcm' ? 'bg-gradient-to-r from-purple-500 to-violet-700 text-white shadow' : 'bg-gray-100 text-gray-500'}`}>
+              ❓ QCM
+            </button>
           </>
         )}
       </div>
 
-      {vue === 'cours' ? (
+      {vue === 'cours' && (
         <VueChapitres
           matiere={matiere}
           chapitres={chapitres}
@@ -3340,9 +3532,14 @@ function VueChapitresHiGe({ matiere, chapitres, isValide, isVerrouille, nbValide
           chargement={chargement}
           onDemarrer={onDemarrer}
           onRetour={onRetour}
+          onLancerQCM={onLancerQCM}
         />
-      ) : (
+      )}
+      {vue === 'revisions' && (
         <SectionRevisionsHiGe chapitres={chapitres} matiere={matiere} />
+      )}
+      {vue === 'qcm' && (
+        <SectionQCMHiGe chapitres={chapitres} matiere={matiere} chapitreActif={qcmChapitre} onRetour={() => setQcmChapitre(null)} />
       )}
     </div>
   );
@@ -3492,7 +3689,7 @@ function CarteMatiere({ matiere, nbChapitres, nbValides, onClick }) {
 // ─────────────────────────────────────────────────────────────────
 // Vue chapitres pour une matière sélectionnée
 // ─────────────────────────────────────────────────────────────────
-function VueChapitres({ matiere, chapitres, isValide, isVerrouille, nbValides, chargement, onDemarrer, onRetour }) {
+function VueChapitres({ matiere, chapitres, isValide, isVerrouille, nbValides, chargement, onDemarrer, onRetour, onLancerQCM }) {
   return (
     <motion.div initial={{ opacity:0, x:20 }} animate={{ opacity:1, x:0 }} exit={{ opacity:0, x:-20 }}
       transition={{ duration:0.2 }}>
