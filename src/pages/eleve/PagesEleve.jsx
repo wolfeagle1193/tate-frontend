@@ -3161,11 +3161,42 @@ function FlashcardHI({ question, reponse, explication, index, total }) {
   );
 }
 
+function FlashcardSV({ question, reponse, explication, index, total }) {
+  const [revele, setRevele] = useState(false);
+  return (
+    <div className="rounded-2xl bg-gradient-to-br from-green-500 to-emerald-700 p-1 mb-4 shadow-lg">
+      <div className="bg-white rounded-xl p-5">
+        <div className="flex justify-between text-xs text-gray-400 mb-3">
+          <span>Révision {index + 1}/{total}</span>
+        </div>
+        <p className="font-semibold text-gray-800 text-base mb-4">❓ {question}</p>
+        {!revele ? (
+          <button onClick={() => setRevele(true)}
+            className="w-full py-3 rounded-xl text-white font-medium bg-gradient-to-r from-green-500 to-emerald-700 text-sm">
+            👆 Appuie pour voir la réponse
+          </button>
+        ) : (
+          <div>
+            <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-2">
+              <p className="font-bold text-green-800 text-sm">✅ {reponse}</p>
+            </div>
+            {explication && <p className="text-xs text-gray-500 italic">{explication}</p>}
+            <button onClick={() => setRevele(false)} className="mt-3 text-xs text-gray-400 underline">
+              🔄 Masquer la réponse
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function SectionRevisionsHiGe({ chapitres, matiere }) {
   const [chapitreActif, setChapitreActif] = useState(null);
   const [flashcards, setFlashcards] = useState([]);
   const [chargement, setChargement] = useState(false);
   const isGE = matiere.id === 'GE';
+  const isSV = matiere.id === 'SV';
 
   const chargerFlashcards = async (chapitre) => {
     setChargement(true);
@@ -3204,6 +3235,11 @@ function SectionRevisionsHiGe({ chapitres, matiere }) {
             <FlashcardGE key={i} question={fc.question} reponse={fc.reponse}
               explication={fc.explication} index={i} total={flashcards.length} />
           ))
+        ) : isSV ? (
+          flashcards.map((fc, i) => (
+            <FlashcardSV key={i} question={fc.question} reponse={fc.reponse}
+              explication={fc.explication} index={i} total={flashcards.length} />
+          ))
         ) : (
           flashcards.map((fc, i) => (
             <FlashcardHI key={i} question={fc.question} reponse={fc.reponse}
@@ -3226,6 +3262,15 @@ function SectionRevisionsHiGe({ chapitres, matiere }) {
             <p className="text-xs opacity-80">Appuie pour réviser</p>
           </div>
         </button>
+      ) : isSV ? (
+        <button key={ch._id} onClick={() => chargerFlashcards(ch)}
+          className="w-full text-left flex items-center gap-3 p-4 rounded-xl mb-3 bg-gradient-to-r from-green-500 to-emerald-700 text-white shadow">
+          <span className="text-2xl">🌿</span>
+          <div>
+            <p className="font-semibold text-sm">{ch.titre}</p>
+            <p className="text-xs opacity-80">Appuie pour réviser</p>
+          </div>
+        </button>
       ) : (
         <button key={ch._id} onClick={() => chargerFlashcards(ch)}
           className="w-full text-left flex items-center gap-3 p-4 rounded-xl mb-3 bg-gradient-to-r from-purple-500 to-violet-700 text-white shadow">
@@ -3243,6 +3288,7 @@ function SectionRevisionsHiGe({ chapitres, matiere }) {
 function VueChapitresHiGe({ matiere, chapitres, isValide, isVerrouille, nbValides, chargement, onDemarrer, onRetour }) {
   const [vue, setVue] = useState('cours');
   const isGE = matiere.id === 'GE';
+  const isSV = matiere.id === 'SV';
 
   return (
     <div>
@@ -3256,6 +3302,17 @@ function VueChapitresHiGe({ matiere, chapitres, isValide, isVerrouille, nbValide
             </button>
             <button onClick={() => setVue('revisions')}
               className={`flex-1 py-2.5 rounded-xl font-semibold text-sm transition-all ${vue === 'revisions' ? 'bg-gradient-to-r from-teal-500 to-cyan-700 text-white shadow' : 'bg-gray-100 text-gray-500'}`}>
+              🔁 Révisions
+            </button>
+          </>
+        ) : isSV ? (
+          <>
+            <button onClick={() => setVue('cours')}
+              className={`flex-1 py-2.5 rounded-xl font-semibold text-sm transition-all ${vue === 'cours' ? 'bg-gradient-to-r from-green-500 to-emerald-700 text-white shadow' : 'bg-gray-100 text-gray-500'}`}>
+              📖 Cours
+            </button>
+            <button onClick={() => setVue('revisions')}
+              className={`flex-1 py-2.5 rounded-xl font-semibold text-sm transition-all ${vue === 'revisions' ? 'bg-gradient-to-r from-green-500 to-emerald-700 text-white shadow' : 'bg-gray-100 text-gray-500'}`}>
               🔁 Révisions
             </button>
           </>
@@ -3764,7 +3821,7 @@ export function AccueilEleve() {
   const afficherSectionsFr = matiereActive === 'FR';
   const afficherSectionsPC = matiereActive === 'PC';
   //const afficherSectionsHiGe = matiereActive === 'HI' || matiereActive === 'GE';
-  const afficherSectionsHiGe = matiereActive === 'HI' || matiereActive === 'GE';
+  const afficherSectionsHiGe = matiereActive === 'HI' || matiereActive === 'GE' || matiereActive === 'SV';
 
 
   const handleDemarrer = async (chap) => {
