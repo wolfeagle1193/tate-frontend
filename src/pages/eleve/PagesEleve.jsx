@@ -4268,6 +4268,8 @@ export function AccueilEleve() {
                 if (mat.id === 'PC' && ['CM1','CM2','CI','CP','CE1','CE2'].includes(user?.niveau)) return false;
                 // IST, VE, VM uniquement pour CM1
                 if ((mat.id === 'IST' || mat.id === 'VE' || mat.id === 'VM') && user?.niveau !== 'CM1') return false;
+                // Anglais Adultes uniquement pour Adulte
+                if (mat.id === 'AN-AD' && user?.niveau !== 'Adulte') return false;
                 return true;
               }).map((mat, index, filtered) => (
                 <div
