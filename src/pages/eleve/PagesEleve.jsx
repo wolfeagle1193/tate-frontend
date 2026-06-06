@@ -63,6 +63,12 @@ const MATIERES = [
     gradient:'from-violet-500 to-purple-700', bg:'bg-violet-50', border:'border-violet-200', text:'text-violet-800', dot:'bg-violet-500'  },
   { id:'SV', nom:'SVT',            icone:'🌿', code:'SV',
     gradient:'from-green-500 to-emerald-700', bg:'bg-green-50',  border:'border-green-200',  text:'text-green-800',  dot:'bg-green-500'  },
+  { id:'IST', nom:'Initiation Scientifique', icone:'🔬', code:'IST',
+    gradient:'from-fuchsia-500 to-pink-600', bg:'bg-fuchsia-50', border:'border-fuchsia-200', text:'text-fuchsia-800', dot:'bg-fuchsia-500', niveau:['CM1'] },
+  { id:'VE', nom:'Vivre ensemble',        icone:'🤝', code:'VE',
+    gradient:'from-orange-500 to-red-600',  bg:'bg-orange-50',  border:'border-orange-200',  text:'text-orange-800',  dot:'bg-orange-500', niveau:['CM1'] },
+  { id:'VM', nom:'Vivre dans son milieu', icone:'🌍', code:'VM',
+    gradient:'from-cyan-400 to-blue-500',   bg:'bg-cyan-50',    border:'border-cyan-200',    text:'text-cyan-800',    dot:'bg-cyan-500',   niveau:['CM1'] },
   { id:'AN-AD', nom:'Anglais Adultes',     icone:'🇬🇧', code:'AN-AD',
     gradient:'from-blue-500 to-indigo-600',  bg:'bg-blue-50',    border:'border-blue-200',    text:'text-blue-800',    dot:'bg-blue-500'   },
 
@@ -4122,6 +4128,8 @@ export function AccueilEleve() {
               {MATIERES.filter(mat => {
                 // Physique-Chimie uniquement à partir de la 6ème
                 if (mat.id === 'PC' && ['CM1','CM2','CI','CP','CE1','CE2'].includes(user?.niveau)) return false;
+                // IST, VE, VM uniquement pour CM1
+                if ((mat.id === 'IST' || mat.id === 'VE' || mat.id === 'VM') && user?.niveau !== 'CM1') return false;
                 return true;
               }).map((mat, index, filtered) => (
                 <div
