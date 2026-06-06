@@ -4266,6 +4266,8 @@ export function AccueilEleve() {
               {MATIERES.filter(mat => {
                 // Physique-Chimie uniquement à partir de la 6ème
                 if (mat.id === 'PC' && ['CM1','CM2','CI','CP','CE1','CE2'].includes(user?.niveau)) return false;
+                // SVT à partir de la 6ème
+                if (mat.id === 'SV' && ['CM1','CM2','CI','CP','CE1','CE2'].includes(user?.niveau)) return false;
                 // IST, VE, VM uniquement pour CM1
                 if ((mat.id === 'IST' || mat.id === 'VE' || mat.id === 'VM') && user?.niveau !== 'CM1') return false;
                 // Anglais Adultes uniquement pour Adulte
