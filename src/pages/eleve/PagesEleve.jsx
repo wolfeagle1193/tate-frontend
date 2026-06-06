@@ -1427,20 +1427,24 @@ function PageCoursFormate() {
             {phase === 'cours' ? '📖 Cours' : `📝 Exercices · ${exoIndex + 1}/${nbExos}`}
           </p>
         </div>
-        {/* Tabs cours / exercices */}
-        {nbExos > 0 && (
-          <div className="flex bg-tate-doux rounded-xl p-0.5 gap-0.5 flex-shrink-0">
-            <button onClick={() => setPhase('cours')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${phase === 'cours' ? 'bg-white shadow text-tate-terre' : 'text-tate-terre/50'}`}>
-              Cours
-            </button>
+        {/* Tabs cours / révision / exercices */}
+        <div className="flex bg-tate-doux rounded-xl p-0.5 gap-0.5 flex-shrink-0">
+          <button onClick={() => setPhase('cours')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${phase === 'cours' ? 'bg-white shadow text-tate-terre' : 'text-tate-terre/50'}`}>
+            📖 Cours
+          </button>
+          <button onClick={() => setPhase('revision')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${phase === 'revision' ? 'bg-white shadow text-tate-terre' : 'text-tate-terre/50'}`}>
+            📝 Révision
+          </button>
+          {nbExos > 0 && (
             <button onClick={passerExercices}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 ${phase === 'exercices' ? 'bg-white shadow text-tate-terre' : 'text-tate-terre/50'}`}>
-              S'exercer
+              ❓ QCM
               {nbExos > 0 && <span className={`text-[10px] px-1.5 rounded-full font-bold ${phase === 'exercices' ? 'bg-tate-soleil text-white' : 'bg-tate-terre/20 text-tate-terre'}`}>{nbExos}</span>}
             </button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       <AnimatePresence mode="wait">
