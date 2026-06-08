@@ -162,6 +162,212 @@
   .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   STYLES LECONS ANGLAIS ADULTES
+   ═══════════════════════════════════════════════════════════════ */
+
+.lecon-contenu {
+  font-size: 15px;
+  line-height: 1.75;
+  color: #e2e8f0;
+}
+
+.lecon-contenu h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 1rem;
+  line-height: 1.3;
+}
+
+.lecon-contenu h2 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #60a5fa;
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid rgba(96, 165, 250, 0.2);
+}
+
+.lecon-contenu h3 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #93c5fd;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.lecon-contenu h4 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #bfdbfe;
+  margin-top: 1rem;
+  margin-bottom: 0.4rem;
+}
+
+.lecon-contenu p {
+  margin-bottom: 0.75rem;
+}
+
+.lecon-contenu ul, .lecon-contenu ol {
+  margin-left: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.lecon-contenu li {
+  margin-bottom: 0.35rem;
+}
+
+.lecon-contenu strong {
+  color: #fbbf24;
+  font-weight: 600;
+}
+
+.lecon-contenu em {
+  color: #94a3b8;
+  font-style: italic;
+}
+
+/* Boîte d'introduction */
+.lecon-contenu .intro-box {
+  background: rgba(96, 165, 250, 0.1);
+  border-left: 3px solid #60a5fa;
+  padding: 1rem 1.25rem;
+  border-radius: 0 0.75rem 0.75rem 0;
+  margin-bottom: 1.25rem;
+}
+
+/* Boîte de dialogue */
+.lecon-contenu .dialogue-box {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.lecon-contenu .dialogue-box p {
+  margin-bottom: 0.5rem;
+}
+
+/* Boîte d'exemple */
+.lecon-contenu .example-box {
+  background: rgba(251, 191, 36, 0.08);
+  border: 1px solid rgba(251, 191, 36, 0.2);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+/* Tableaux */
+.lecon-contenu table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.25rem;
+  font-size: 0.9rem;
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.lecon-contenu th {
+  background: rgba(96, 165, 250, 0.2);
+  color: #93c5fd;
+  font-weight: 600;
+  text-align: left;
+  padding: 0.6rem 0.75rem;
+}
+
+.lecon-contenu td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.lecon-contenu tr:hover td {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* Grille de vocabulaire */
+.lecon-contenu .vocab-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.lecon-contenu .vocab-item {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.6rem;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.88rem;
+}
+
+.lecon-contenu .vocab-item strong {
+  color: #fbbf24;
+}
+
+/* Tableaux de comparaison */
+.lecon-contenu .compare-table th {
+  background: rgba(16, 185, 129, 0.15);
+  color: #6ee7b7;
+}
+
+/* Tableaux de conjugaison */
+.lecon-contenu .conj-table th {
+  background: rgba(139, 92, 246, 0.15);
+  color: #c4b5fd;
+}
+
+/* Tableaux de fréquence */
+.lecon-contenu .freq-table th {
+  background: rgba(244, 63, 94, 0.15);
+  color: #fda4af;
+}
+
+/* Tableaux de verbes */
+.lecon-contenu .verb-table th {
+  background: rgba(14, 165, 233, 0.15);
+  color: #7dd3fc;
+}
+
+/* Bloc essentiel */
+.lecon-contenu .bloc-essentiel {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 1rem;
+  padding: 1rem 1.25rem;
+  margin: 1rem 0;
+}
+
+.lecon-contenu .bloc-essentiel h2 {
+  color: #fca5a5;
+  border-bottom-color: rgba(239, 68, 68, 0.2);
+  margin-top: 0;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .lecon-contenu {
+    font-size: 14px;
+  }
+  .lecon-contenu h1 {
+    font-size: 1.35rem;
+  }
+  .lecon-contenu h2 {
+    font-size: 1.1rem;
+  }
+  .lecon-contenu .vocab-grid {
+    grid-template-columns: 1fr;
+  }
+  .lecon-contenu table {
+    font-size: 0.82rem;
+  }
+  .lecon-contenu th, .lecon-contenu td {
+    padding: 0.4rem 0.5rem;
+  }
+}
+
 /* ── Animations globales ──────────────────────────────────── */
 @keyframes shimmer {
   0%   { background-position: 200% 0; }

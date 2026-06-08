@@ -86,6 +86,11 @@ export function Login() {
     try {
       const user = await login(identifiant.trim(), password, mode);
       toast.success(`Bienvenue, ${user.nom.split(' ')[0]} ! 👋`);
+      // Rediriger les adultes vers l'espace langue
+      if (user.role === 'eleve' && user.niveau === 'Adulte') {
+        navigate('/langue/dashboard', { replace: true });
+        return;
+      }
       const routes = { admin: '/admin', prof: '/prof', eleve: '/eleve', parent: '/parent' };
       navigate(routes[user.role] || '/eleve', { replace: true });
     } catch (err) {
