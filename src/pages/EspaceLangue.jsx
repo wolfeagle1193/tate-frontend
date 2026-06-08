@@ -119,7 +119,7 @@ export function EspaceLangue() {
   const ouvrirLecon = async (chap) => {
     try {
       const token = getToken();
-      const { data } = await axios.get(`${API}/lecons/chapitre/${chap._id}`, {
+      const { data } = await axios.get(`${API}/lecons/${chap._id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const lecon = Array.isArray(data.data) ? data.data[0] : data.data;
