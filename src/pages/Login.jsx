@@ -250,12 +250,18 @@ export function Login() {
             <div className="flex flex-wrap gap-x-4 gap-y-2 justify-center">
               {[
                 { label: 'Élève', path: '/register/eleve' },
+                { label: 'Étudiant', path: '/register/eleve', badge: 'Anglais' },
                 { label: 'Parent', path: '/register/parent' },
                 { label: 'Professeur', path: '/register/prof' },
               ].map(lnk => (
-                <button key={lnk.path} onClick={() => navigate(lnk.path)}
-                  className="text-sm font-semibold text-tate-soleil hover:underline">
+                <button key={lnk.label} onClick={() => navigate(lnk.path)}
+                  className="text-sm font-semibold text-tate-soleil hover:underline flex items-center gap-1">
                   {lnk.label}
+                  {lnk.badge && (
+                    <span className="text-[10px] bg-tate-soleil/20 text-tate-terre px-1.5 py-0.5 rounded-full">
+                      {lnk.badge}
+                    </span>
+                  )}
                 </button>
               ))}
             </div>

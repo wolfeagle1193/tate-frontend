@@ -15,6 +15,7 @@ const NIVEAUX = [
   { groupe: 'Primaire',  niveaux: ['CM1','CM2'] },
   { groupe: 'Collège',   niveaux: ['6eme','5eme','4eme','3eme'] },
   { groupe: 'Lycée',     niveaux: ['Seconde','Premiere','Terminale'] },
+  { groupe: 'Adulte',    niveaux: ['Adulte'] },
 ];
 
 export function RegisterEleve() {
@@ -80,7 +81,7 @@ export function RegisterEleve() {
           <div className="w-16 h-16 rounded-3xl bg-tate-soleil flex items-center justify-center
                           font-serif font-bold text-tate-terre text-2xl shadow-tate mx-auto mb-3">T</div>
           <h1 className="text-2xl font-serif font-bold text-tate-terre">Rejoindre Taté</h1>
-          <p className="text-tate-terre/50 text-sm mt-1">Crée ton compte élève — gratuit</p>
+          <p className="text-tate-terre/50 text-sm mt-1">Crée ton compte élève ou étudiant — gratuit</p>
         </div>
 
         <form onSubmit={handleSubmit} className="card space-y-4">
