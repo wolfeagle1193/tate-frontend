@@ -368,6 +368,17 @@
   }
 }
 
+/* ── Vidéos YouTube embed ─────────────────────────────── */
+.lecon-contenu iframe {
+  border-radius: 12px;
+  width: 100%;
+  max-width: 100%;
+}
+
+.lecon-contenu .example-box iframe {
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
 /* ── Animations globales ──────────────────────────────────── */
 @keyframes shimmer {
   0%   { background-position: 200% 0; }

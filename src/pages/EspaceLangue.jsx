@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   BookOpen, LogOut, Globe, Clock, ArrowRight,
   Headphones, GraduationCap, Library, CheckCircle2,
-  ChevronDown, ChevronUp, PlayCircle, Volume2
+  ChevronDown, ChevronUp, PlayCircle, Volume2, Mic
 } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import axios from 'axios';
@@ -14,9 +14,19 @@ const API = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 const SECTION_CONFIG = {
   listening: {
     label: 'Listening',
-    subtitle: 'Compréhension orale & prononciation',
+    subtitle: 'Vidéos YouTube & compréhension orale',
     icon: Headphones,
-    color: 'from-pink-500 to-rose-500',
+    color: 'from-red-500 to-rose-500',
+    bg: 'bg-red-500/10',
+    border: 'border-red-500/20',
+    text: 'text-red-400',
+    chip: 'bg-red-500/20 text-red-300',
+  },
+  pronunciation: {
+    label: 'Pronunciation',
+    subtitle: 'Phonèmes, accents & sons de l\'anglais',
+    icon: Mic,
+    color: 'from-pink-500 to-fuchsia-500',
     bg: 'bg-pink-500/10',
     border: 'border-pink-500/20',
     text: 'text-pink-400',
@@ -45,8 +55,12 @@ const SECTION_CONFIG = {
 };
 
 function classifyChapitre(titre) {
-  if (/^L\d+/i.test(titre) || titre.toLowerCase().includes('listening')) return 'listening';
-  if (/^V\d+/i.test(titre) || titre.toLowerCase().includes('vocabulary')) return 'vocabulary';
+  const t = titre.trim();
+  // LI1-LI6 = Listening (vidéos YouTube) — L suivi de I
+  if (/^LI\d+/i.test(t)) return 'listening';
+  // L1-L6 = Pronunciation (phonétique/sons) — L seul suivi d'un chiffre
+  if (/^L\d+/i.test(t)) return 'pronunciation';
+  if (/^V\d+/i.test(t) || t.toLowerCase().includes('vocabulary')) return 'vocabulary';
   return 'grammar';
 }
 
@@ -56,8 +70,8 @@ export function EspaceLangue() {
   const [chapitres, setChapitres] = useState([]);
   const [leconActive, setLeconActive] = useState(null);
   const [chargement, setChargement] = useState(true);
-  const [sectionsOuvertes, setSectionsOuvertes] = useState({ listening: true, grammar: true, vocabulary: true });
-  const [progression, setProgression] = useState({ listening: 0, grammar: 0, vocabulary: 0, total: 0 });
+  const [sectionsOuvertes, setSectionsOuvertes] = useState({ listening: true, pronunciation: true, grammar: true, vocabulary: true });
+  const [progression, setProgression] = useState({ listening: 0, pronunciation: 0, grammar: 0, vocabulary: 0, total: 0 });
   const [chapitresLus, setChapitresLus] = useState(new Set());
 
   useEffect(() => {
@@ -74,8 +88,8 @@ export function EspaceLangue() {
 
   const sauverProgression = (newLus, chaps) => {
     const total = chaps.length;
-    const bySection = { listening: 0, grammar: 0, vocabulary: 0 };
-    const totalBySection = { listening: 0, grammar: 0, vocabulary: 0 };
+    const bySection = { listening: 0, pronunciation: 0, grammar: 0, vocabulary: 0 };
+    const totalBySection = { listening: 0, pronunciation: 0, grammar: 0, vocabulary: 0 };
 
     chaps.forEach(c => {
       const sec = classifyChapitre(c.titre);
@@ -85,6 +99,7 @@ export function EspaceLangue() {
 
     setProgression({
       listening: totalBySection.listening > 0 ? Math.round((bySection.listening / totalBySection.listening) * 100) : 0,
+      pronunciation: totalBySection.pronunciation > 0 ? Math.round((bySection.pronunciation / totalBySection.pronunciation) * 100) : 0,
       grammar: totalBySection.grammar > 0 ? Math.round((bySection.grammar / totalBySection.grammar) * 100) : 0,
       vocabulary: totalBySection.vocabulary > 0 ? Math.round((bySection.vocabulary / totalBySection.vocabulary) * 100) : 0,
       total: total > 0 ? Math.round((newLus.size / total) * 100) : 0,
@@ -143,7 +158,7 @@ export function EspaceLangue() {
   };
 
   // Grouper par section
-  const grouped = { listening: [], grammar: [], vocabulary: [] };
+  const grouped = { listening: [], pronunciation: [], grammar: [], vocabulary: [] };
   chapitres.forEach(c => {
     const sec = classifyChapitre(c.titre);
     grouped[sec].push(c);
@@ -236,13 +251,21 @@ export function EspaceLangue() {
         </motion.div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mt-6">
           <div className="bg-white/5 backdrop-blur rounded-2xl p-4 border border-white/10 text-center">
-            <Headphones size={20} className="text-pink-400 mx-auto mb-2" />
+            <Headphones size={20} className="text-red-400 mx-auto mb-2" />
             <p className="text-2xl font-bold text-white">{grouped.listening.length}</p>
             <p className="text-blue-200/50 text-xs">Listening</p>
             <div className="w-full bg-white/10 rounded-full h-1.5 mt-2">
-              <div className="bg-pink-500 h-1.5 rounded-full transition-all" style={{ width: `${progression.listening}%` }} />
+              <div className="bg-red-500 h-1.5 rounded-full transition-all" style={{ width: `${progression.listening}%` }} />
+            </div>
+          </div>
+          <div className="bg-white/5 backdrop-blur rounded-2xl p-4 border border-white/10 text-center">
+            <Mic size={20} className="text-pink-400 mx-auto mb-2" />
+            <p className="text-2xl font-bold text-white">{grouped.pronunciation.length}</p>
+            <p className="text-blue-200/50 text-xs">Pronunciation</p>
+            <div className="w-full bg-white/10 rounded-full h-1.5 mt-2">
+              <div className="bg-pink-500 h-1.5 rounded-full transition-all" style={{ width: `${progression.pronunciation}%` }} />
             </div>
           </div>
           <div className="bg-white/5 backdrop-blur rounded-2xl p-4 border border-white/10 text-center">
@@ -281,7 +304,7 @@ export function EspaceLangue() {
           </div>
         ) : (
           <div className="space-y-5">
-            {(['listening', 'grammar', 'vocabulary']).map((secKey) => {
+            {(['listening', 'pronunciation', 'grammar', 'vocabulary']).map((secKey) => {
               const sec = SECTION_CONFIG[secKey];
               const secChaps = grouped[secKey] || [];
               if (secChaps.length === 0) return null;
