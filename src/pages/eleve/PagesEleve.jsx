@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { useEleveStore }  from '../../store/useEleveStore';
 import { useAuthStore }   from '../../store/useAuthStore';
-import { useNavigate }    from 'react-router-dom';
+import { useNavigate, Navigate }    from 'react-router-dom';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
@@ -3707,6 +3707,11 @@ function VueChapitresFr({ matiere, chapitres, isValide, isVerrouille, nbValides,
 export function AccueilEleve() {
   const { user, rafraichirUser } = useAuthStore();
   const navigate = useNavigate();
+
+  // 🔒 Les adultes ne voient JAMAIS l'espace élève scolaire
+  if (user?.role === 'eleve' && user?.niveau === 'Adulte') {
+    return <Navigate to="/langue/dashboard" replace />;
+  }
   const {
     chapitres, chargerChapitres, ouvrirChapitre, leconActive, chargement,
     matiereRetour, setMatiereRetour, clearMatiereRetour,

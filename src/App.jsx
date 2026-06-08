@@ -54,7 +54,12 @@ function PrivateRoute({ children, roles }) {
 
 // ── Router adaptatif pour l'espace élève ──────
 function RouterEleve() {
+  const { user } = useAuthStore();
   const { leconActive } = useEleveStore();
+  // Les adultes ne passent jamais par l'espace élève scolaire
+  if (user?.role === 'eleve' && user?.niveau === 'Adulte') {
+    return <Navigate to="/langue/dashboard" replace />;
+  }
   if (leconActive) return <PageCours />;
   return <AccueilEleve />;
 }
@@ -63,7 +68,7 @@ function RouterEleve() {
 function RootRedirect() {
   const { user } = useAuthStore();
   if (!user) return <Navigate to="/login" replace />;
-  // Les adultes (clients langues) vont sur leur dashboard
+  // Les adultes (clients langues) vont DIRECTEMENT sur leur espace anglais
   if (user.role === 'eleve' && user.niveau === 'Adulte') return <Navigate to="/langue/dashboard" replace />;
   const routes = { admin: '/admin', prof: '/prof', eleve: '/eleve', parent: '/parent' };
   return <Navigate to={routes[user.role] || '/login'} replace />;

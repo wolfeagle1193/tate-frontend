@@ -1,39 +1,53 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookOpen, LogOut, Globe, Clock, ArrowRight, GraduationCap, ChevronDown, ChevronUp, PlayCircle, CheckCircle2, Award } from 'lucide-react';
+import {
+  BookOpen, LogOut, Globe, Clock, ArrowRight,
+  Headphones, GraduationCap, Library, CheckCircle2,
+  ChevronDown, ChevronUp, PlayCircle, Volume2
+} from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import axios from 'axios';
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
-const MODULE_COLORS = {
-  'M1': { bg: 'bg-emerald-500/20', text: 'text-emerald-400', border: 'border-emerald-500/30', icon: '📚' },
-  'M2': { bg: 'bg-amber-500/20', text: 'text-amber-400', border: 'border-amber-500/30', icon: '💼' },
-  'M3': { bg: 'bg-rose-500/20', text: 'text-rose-400', border: 'border-rose-500/30', icon: '☕' },
-  'M4': { bg: 'bg-sky-500/20', text: 'text-sky-400', border: 'border-sky-500/30', icon: '✈️' },
-  'M5': { bg: 'bg-violet-500/20', text: 'text-violet-400', border: 'border-violet-500/30', icon: '✍️' },
-  'M6': { bg: 'bg-pink-500/20', text: 'text-pink-400', border: 'border-pink-500/30', icon: '🎧' },
-  'FINAL': { bg: 'bg-yellow-500/20', text: 'text-yellow-400', border: 'border-yellow-500/30', icon: '🎓' },
+const SECTION_CONFIG = {
+  listening: {
+    label: 'Listening',
+    subtitle: 'Compréhension orale & prononciation',
+    icon: Headphones,
+    color: 'from-pink-500 to-rose-500',
+    bg: 'bg-pink-500/10',
+    border: 'border-pink-500/20',
+    text: 'text-pink-400',
+    chip: 'bg-pink-500/20 text-pink-300',
+  },
+  grammar: {
+    label: 'Grammar',
+    subtitle: 'Grammaire, structures & dialogues',
+    icon: Library,
+    color: 'from-emerald-500 to-teal-500',
+    bg: 'bg-emerald-500/10',
+    border: 'border-emerald-500/20',
+    text: 'text-emerald-400',
+    chip: 'bg-emerald-500/20 text-emerald-300',
+  },
+  vocabulary: {
+    label: 'Vocabulary',
+    subtitle: 'Textes, vocabulaire & expressions',
+    icon: BookOpen,
+    color: 'from-amber-500 to-orange-500',
+    bg: 'bg-amber-500/10',
+    border: 'border-amber-500/20',
+    text: 'text-amber-400',
+    chip: 'bg-amber-500/20 text-amber-300',
+  },
 };
 
-function parseModule(titre) {
-  const match = titre.match(/^(M\d+)/);
-  return match ? match[1] : titre.includes('Final') || titre.includes('Bilan') ? 'FINAL' : 'OTHER';
-}
-
-function getModuleLabel(code) {
-  const labels = {
-    'M1': 'Module 1 — English Fundamentals',
-    'M2': 'Module 2 — Business English',
-    'M3': 'Module 3 — Everyday Conversations',
-    'M4': 'Module 4 — Travel & Tourism',
-    'M5': 'Module 5 — Writing & Communication',
-    'M6': 'Module 6 — Listening & Comprehension',
-    'FINAL': 'Final Assessment',
-    'OTHER': 'Autres',
-  };
-  return labels[code] || 'Autres';
+function classifyChapitre(titre) {
+  if (/^L\d+/i.test(titre) || titre.toLowerCase().includes('listening')) return 'listening';
+  if (/^V\d+/i.test(titre) || titre.toLowerCase().includes('vocabulary')) return 'vocabulary';
+  return 'grammar';
 }
 
 export function EspaceLangue() {
@@ -42,28 +56,41 @@ export function EspaceLangue() {
   const [chapitres, setChapitres] = useState([]);
   const [leconActive, setLeconActive] = useState(null);
   const [chargement, setChargement] = useState(true);
-  const [modulesOuverts, setModulesOuverts] = useState({});
-  const [progression, setProgression] = useState(0);
+  const [sectionsOuvertes, setSectionsOuvertes] = useState({ listening: true, grammar: true, vocabulary: true });
+  const [progression, setProgression] = useState({ listening: 0, grammar: 0, vocabulary: 0, total: 0 });
   const [chapitresLus, setChapitresLus] = useState(new Set());
 
   useEffect(() => {
     if (!user) { navigate('/langue/login', { replace: true }); return; }
     chargerCours();
-    // Charger progression depuis localStorage
     const saved = localStorage.getItem('tate_langue_progress');
     if (saved) {
       try {
         const p = JSON.parse(saved);
         setChapitresLus(new Set(p.lus || []));
-        setProgression(p.pct || 0);
       } catch { /* ignore */ }
     }
   }, []);
 
-  const sauverProgression = (newLus) => {
-    const pct = chapitres.length > 0 ? Math.round((newLus.size / chapitres.length) * 100) : 0;
-    setProgression(pct);
-    localStorage.setItem('tate_langue_progress', JSON.stringify({ lus: Array.from(newLus), pct }));
+  const sauverProgression = (newLus, chaps) => {
+    const total = chaps.length;
+    const bySection = { listening: 0, grammar: 0, vocabulary: 0 };
+    const totalBySection = { listening: 0, grammar: 0, vocabulary: 0 };
+
+    chaps.forEach(c => {
+      const sec = classifyChapitre(c.titre);
+      totalBySection[sec]++;
+      if (newLus.has(c._id)) bySection[sec]++;
+    });
+
+    setProgression({
+      listening: totalBySection.listening > 0 ? Math.round((bySection.listening / totalBySection.listening) * 100) : 0,
+      grammar: totalBySection.grammar > 0 ? Math.round((bySection.grammar / totalBySection.grammar) * 100) : 0,
+      vocabulary: totalBySection.vocabulary > 0 ? Math.round((bySection.vocabulary / totalBySection.vocabulary) * 100) : 0,
+      total: total > 0 ? Math.round((newLus.size / total) * 100) : 0,
+    });
+
+    localStorage.setItem('tate_langue_progress', JSON.stringify({ lus: Array.from(newLus) }));
   };
 
   const chargerCours = async () => {
@@ -74,11 +101,12 @@ export function EspaceLangue() {
       });
       const list = data.data || [];
       setChapitres(list);
-      // Ouvrir le premier module par défaut
-      if (list.length > 0) {
-        const firstMod = parseModule(list[0].titre);
-        setModulesOuverts({ [firstMod]: true });
-      }
+      // Recalculer progression
+      const saved = localStorage.getItem('tate_langue_progress');
+      let lus = new Set();
+      if (saved) { try { lus = new Set(JSON.parse(saved).lus || []); } catch {} }
+      setChapitresLus(lus);
+      sauverProgression(lus, list);
     } catch (e) {
       console.error('Erreur chargement cours', e);
     } finally {
@@ -94,18 +122,17 @@ export function EspaceLangue() {
       });
       const lecon = Array.isArray(data.data) ? data.data[0] : data.data;
       setLeconActive({ chapitre: chap, lecon });
-      // Marquer comme lu
       const newLus = new Set(chapitresLus);
       newLus.add(chap._id);
       setChapitresLus(newLus);
-      sauverProgression(newLus);
+      sauverProgression(newLus, chapitres);
     } catch (e) {
       console.error(e);
     }
   };
 
-  const toggleModule = (mod) => {
-    setModulesOuverts(prev => ({ ...prev, [mod]: !prev[mod] }));
+  const toggleSection = (sec) => {
+    setSectionsOuvertes(prev => ({ ...prev, [sec]: !prev[sec] }));
   };
 
   const handleLogout = () => {
@@ -113,13 +140,17 @@ export function EspaceLangue() {
     navigate('/langue/login', { replace: true });
   };
 
-  // Grouper les chapitres par module
-  const grouped = chapitres.reduce((acc, chap) => {
-    const mod = parseModule(chap.titre);
-    if (!acc[mod]) acc[mod] = [];
-    acc[mod].push(chap);
-    return acc;
-  }, {});
+  // Grouper par section
+  const grouped = { listening: [], grammar: [], vocabulary: [] };
+  chapitres.forEach(c => {
+    const sec = classifyChapitre(c.titre);
+    grouped[sec].push(c);
+  });
+
+  // Tri par ordre
+  Object.keys(grouped).forEach(k => {
+    grouped[k].sort((a, b) => (a.ordre || 0) - (b.ordre || 0));
+  });
 
   if (leconActive) {
     return (
@@ -167,8 +198,8 @@ export function EspaceLangue() {
               <Globe size={20} className="text-blue-400" />
             </div>
             <div>
-              <span className="text-white font-bold text-lg block leading-tight">Taté Langues</span>
-              <span className="text-blue-300/50 text-xs">Anglais Adultes</span>
+              <span className="text-white font-bold text-lg block leading-tight">Taté English</span>
+              <span className="text-blue-300/50 text-xs">Programme Adultes</span>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -187,44 +218,59 @@ export function EspaceLangue() {
       {/* Hero */}
       <div className="max-w-5xl mx-auto px-4 md:px-6 pt-8 pb-4">
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
-            Programme Anglais Adultes
-          </h1>
-          <p className="text-blue-200/60 text-base md:text-lg max-w-2xl">
-            6 modules complets pour maîtriser l'anglais professionnel et quotidien. 
-            Du niveau débutant à avancé, avec un contenu riche et pratique.
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
+              <Volume2 size={24} className="text-white" />
+            </div>
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold text-white">Taté English Academy</h1>
+              <p className="text-blue-200/60 text-sm">Programme complet pour adultes — 3 sections</p>
+            </div>
+          </div>
+          <p className="text-blue-200/50 text-sm md:text-base max-w-2xl mt-2">
+            Maîtrisez l'anglais professionnel et quotidien avec notre programme structuré en trois piliers :
+            Listening, Grammar et Vocabulary.
           </p>
         </motion.div>
 
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-3 md:gap-4 mt-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
           <div className="bg-white/5 backdrop-blur rounded-2xl p-4 border border-white/10 text-center">
-            <BookOpen size={20} className="text-blue-400 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-white">{chapitres.length}</p>
-            <p className="text-blue-200/50 text-xs">Chapitres</p>
+            <Headphones size={20} className="text-pink-400 mx-auto mb-2" />
+            <p className="text-2xl font-bold text-white">{grouped.listening.length}</p>
+            <p className="text-blue-200/50 text-xs">Listening</p>
+            <div className="w-full bg-white/10 rounded-full h-1.5 mt-2">
+              <div className="bg-pink-500 h-1.5 rounded-full transition-all" style={{ width: `${progression.listening}%` }} />
+            </div>
           </div>
           <div className="bg-white/5 backdrop-blur rounded-2xl p-4 border border-white/10 text-center">
-            <Award size={20} className="text-emerald-400 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-white">6</p>
-            <p className="text-blue-200/50 text-xs">Modules</p>
+            <Library size={20} className="text-emerald-400 mx-auto mb-2" />
+            <p className="text-2xl font-bold text-white">{grouped.grammar.length}</p>
+            <p className="text-blue-200/50 text-xs">Grammar</p>
+            <div className="w-full bg-white/10 rounded-full h-1.5 mt-2">
+              <div className="bg-emerald-500 h-1.5 rounded-full transition-all" style={{ width: `${progression.grammar}%` }} />
+            </div>
           </div>
           <div className="bg-white/5 backdrop-blur rounded-2xl p-4 border border-white/10 text-center">
-            <Clock size={20} className="text-amber-400 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-white">{progression}%</p>
+            <BookOpen size={20} className="text-amber-400 mx-auto mb-2" />
+            <p className="text-2xl font-bold text-white">{grouped.vocabulary.length}</p>
+            <p className="text-blue-200/50 text-xs">Vocabulary</p>
+            <div className="w-full bg-white/10 rounded-full h-1.5 mt-2">
+              <div className="bg-amber-500 h-1.5 rounded-full transition-all" style={{ width: `${progression.vocabulary}%` }} />
+            </div>
+          </div>
+          <div className="bg-white/5 backdrop-blur rounded-2xl p-4 border border-white/10 text-center">
+            <Clock size={20} className="text-blue-400 mx-auto mb-2" />
+            <p className="text-2xl font-bold text-white">{progression.total}%</p>
             <p className="text-blue-200/50 text-xs">Progression</p>
-          </div>
-        </div>
-
-        {/* Barre de progression */}
-        <div className="mt-4">
-          <div className="w-full bg-white/10 rounded-full h-2.5">
-            <div className="bg-gradient-to-r from-blue-500 to-emerald-500 h-2.5 rounded-full transition-all duration-500"
-              style={{ width: `${progression}%` }} />
+            <div className="w-full bg-white/10 rounded-full h-1.5 mt-2">
+              <div className="bg-blue-500 h-1.5 rounded-full transition-all" style={{ width: `${progression.total}%` }} />
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Contenu */}
+      {/* Contenu par section */}
       <main className="max-w-5xl mx-auto px-4 md:px-6 pb-12">
         {chargement ? (
           <div className="text-center py-20">
@@ -232,37 +278,43 @@ export function EspaceLangue() {
             <p className="text-blue-300/50">Chargement du programme...</p>
           </div>
         ) : (
-          <div className="space-y-4">
-            {Object.entries(grouped).map(([modCode, modChaps]) => {
-              const colors = MODULE_COLORS[modCode] || MODULE_COLORS['OTHER'];
-              const isOpen = modulesOuverts[modCode];
-              const completedCount = modChaps.filter(c => chapitresLus.has(c._id)).length;
+          <div className="space-y-5">
+            {(['listening', 'grammar', 'vocabulary']).map((secKey) => {
+              const sec = SECTION_CONFIG[secKey];
+              const secChaps = grouped[secKey] || [];
+              if (secChaps.length === 0) return null;
+              const isOpen = sectionsOuvertes[secKey];
+              const completedCount = secChaps.filter(c => chapitresLus.has(c._id)).length;
+              const Icon = sec.icon;
 
               return (
                 <motion.div
-                  key={modCode}
+                  key={secKey}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className={`bg-white/5 backdrop-blur rounded-2xl border ${colors.border} overflow-hidden`}
+                  className={`rounded-2xl border ${sec.border} overflow-hidden`}
                 >
-                  {/* Header du module */}
+                  {/* Header de section */}
                   <button
-                    onClick={() => toggleModule(modCode)}
-                    className="w-full flex items-center justify-between p-4 md:p-5 hover:bg-white/5 transition"
+                    onClick={() => toggleSection(secKey)}
+                    className={`w-full flex items-center justify-between p-4 md:p-5 ${sec.bg} hover:bg-white/5 transition`}
                   >
                     <div className="flex items-center gap-3">
-                      <div className={`w-10 h-10 rounded-xl ${colors.bg} flex items-center justify-center text-lg`}>
-                        {colors.icon}
+                      <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${sec.color} flex items-center justify-center`}>
+                        <Icon size={22} className="text-white" />
                       </div>
                       <div className="text-left">
-                        <h3 className="text-white font-semibold text-base">{getModuleLabel(modCode)}</h3>
-                        <p className="text-blue-200/50 text-xs">
-                          {completedCount}/{modChaps.length} chapitres • {modChaps.length} leçons
-                        </p>
+                        <div className="flex items-center gap-2">
+                          <h3 className="text-white font-bold text-base md:text-lg">{sec.label}</h3>
+                          <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${sec.chip}`}>
+                            {secChaps.length} chapitres
+                          </span>
+                        </div>
+                        <p className="text-blue-200/50 text-xs">{sec.subtitle}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      {completedCount === modChaps.length && modChaps.length > 0 && (
+                      {completedCount === secChaps.length && (
                         <CheckCircle2 size={18} className="text-emerald-400" />
                       )}
                       {isOpen ? <ChevronUp size={20} className="text-blue-300" /> : <ChevronDown size={20} className="text-blue-300" />}
@@ -280,7 +332,7 @@ export function EspaceLangue() {
                         className="overflow-hidden"
                       >
                         <div className="border-t border-white/5 px-4 pb-4">
-                          {modChaps.map((chap, idx) => {
+                          {secChaps.map((chap, idx) => {
                             const isRead = chapitresLus.has(chap._id);
                             return (
                               <motion.button
@@ -313,12 +365,6 @@ export function EspaceLangue() {
                 </motion.div>
               );
             })}
-          </div>
-        )}
-
-        {!chargement && chapitres.length === 0 && (
-          <div className="text-center py-20">
-            <p className="text-blue-300/50">Aucun cours disponible pour le moment.</p>
           </div>
         )}
       </main>
