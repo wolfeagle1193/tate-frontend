@@ -52,15 +52,28 @@ const SECTION_CONFIG = {
     text: 'text-amber-400',
     chip: 'bg-amber-500/20 text-amber-300',
   },
+  practice: {
+    label: 'Practice',
+    subtitle: 'Films, dessins animés & chansons',
+    icon: PlayCircle,
+    color: 'from-violet-500 to-purple-500',
+    bg: 'bg-violet-500/10',
+    border: 'border-violet-500/20',
+    text: 'text-violet-400',
+    chip: 'bg-violet-500/20 text-violet-300',
+  },
 };
 
 function classifyChapitre(titre) {
   const t = titre.trim();
-  // LI1-LI6 = Listening (vidéos YouTube) — L suivi de I
+  // LI1-LI6 = Listening (vidéos YouTube)
   if (/^LI\d+/i.test(t)) return 'listening';
-  // L1-L6 = Pronunciation (phonétique/sons) — L seul suivi d'un chiffre
+  // L1-L6 = Pronunciation (phonétique/sons)
   if (/^L\d+/i.test(t)) return 'pronunciation';
+  // V1-V6 = Vocabulary
   if (/^V\d+/i.test(t) || t.toLowerCase().includes('vocabulary')) return 'vocabulary';
+  // P1-P20 = Practice (films, dessins animés, chansons)
+  if (/^P\d+/i.test(t) || t.toLowerCase().includes('practice')) return 'practice';
   return 'grammar';
 }
 
@@ -70,8 +83,8 @@ export function EspaceLangue() {
   const [chapitres, setChapitres] = useState([]);
   const [leconActive, setLeconActive] = useState(null);
   const [chargement, setChargement] = useState(true);
-  const [sectionsOuvertes, setSectionsOuvertes] = useState({ listening: true, pronunciation: true, grammar: true, vocabulary: true });
-  const [progression, setProgression] = useState({ listening: 0, pronunciation: 0, grammar: 0, vocabulary: 0, total: 0 });
+  const [sectionsOuvertes, setSectionsOuvertes] = useState({ listening: true, pronunciation: true, grammar: true, vocabulary: true, practice: true });
+  const [progression, setProgression] = useState({ listening: 0, pronunciation: 0, grammar: 0, vocabulary: 0, practice: 0, total: 0 });
   const [chapitresLus, setChapitresLus] = useState(new Set());
 
   useEffect(() => {
@@ -88,8 +101,8 @@ export function EspaceLangue() {
 
   const sauverProgression = (newLus, chaps) => {
     const total = chaps.length;
-    const bySection = { listening: 0, pronunciation: 0, grammar: 0, vocabulary: 0 };
-    const totalBySection = { listening: 0, pronunciation: 0, grammar: 0, vocabulary: 0 };
+    const bySection = { listening: 0, pronunciation: 0, grammar: 0, vocabulary: 0, practice: 0 };
+    const totalBySection = { listening: 0, pronunciation: 0, grammar: 0, vocabulary: 0, practice: 0 };
 
     chaps.forEach(c => {
       const sec = classifyChapitre(c.titre);
@@ -102,6 +115,7 @@ export function EspaceLangue() {
       pronunciation: totalBySection.pronunciation > 0 ? Math.round((bySection.pronunciation / totalBySection.pronunciation) * 100) : 0,
       grammar: totalBySection.grammar > 0 ? Math.round((bySection.grammar / totalBySection.grammar) * 100) : 0,
       vocabulary: totalBySection.vocabulary > 0 ? Math.round((bySection.vocabulary / totalBySection.vocabulary) * 100) : 0,
+      practice: totalBySection.practice > 0 ? Math.round((bySection.practice / totalBySection.practice) * 100) : 0,
       total: total > 0 ? Math.round((newLus.size / total) * 100) : 0,
     });
 
@@ -158,7 +172,7 @@ export function EspaceLangue() {
   };
 
   // Grouper par section
-  const grouped = { listening: [], pronunciation: [], grammar: [], vocabulary: [] };
+  const grouped = { listening: [], pronunciation: [], grammar: [], vocabulary: [], practice: [] };
   chapitres.forEach(c => {
     const sec = classifyChapitre(c.titre);
     grouped[sec].push(c);
@@ -245,50 +259,58 @@ export function EspaceLangue() {
             </div>
           </div>
           <p className="text-blue-200/50 text-sm md:text-base max-w-2xl mt-2">
-            Maîtrisez l'anglais professionnel et quotidien avec notre programme structuré en trois piliers :
-            Listening, Grammar et Vocabulary.
+            Maîtrisez l'anglais avec notre programme complet : Listening, Pronunciation, Grammar, Vocabulary et Practice.
+            Des vidéos, des chansons, des films et des exercices pour progresser rapidement.
           </p>
         </motion.div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mt-6">
-          <div className="bg-white/5 backdrop-blur rounded-2xl p-4 border border-white/10 text-center">
-            <Headphones size={20} className="text-red-400 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-white">{grouped.listening.length}</p>
-            <p className="text-blue-200/50 text-xs">Listening</p>
-            <div className="w-full bg-white/10 rounded-full h-1.5 mt-2">
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-3 mt-6">
+          <div className="bg-white/5 backdrop-blur rounded-2xl p-3 border border-white/10 text-center">
+            <Headphones size={18} className="text-red-400 mx-auto mb-1" />
+            <p className="text-xl font-bold text-white">{grouped.listening.length}</p>
+            <p className="text-blue-200/50 text-[10px]">Listening</p>
+            <div className="w-full bg-white/10 rounded-full h-1.5 mt-1.5">
               <div className="bg-red-500 h-1.5 rounded-full transition-all" style={{ width: `${progression.listening}%` }} />
             </div>
           </div>
-          <div className="bg-white/5 backdrop-blur rounded-2xl p-4 border border-white/10 text-center">
-            <Mic size={20} className="text-pink-400 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-white">{grouped.pronunciation.length}</p>
-            <p className="text-blue-200/50 text-xs">Pronunciation</p>
-            <div className="w-full bg-white/10 rounded-full h-1.5 mt-2">
+          <div className="bg-white/5 backdrop-blur rounded-2xl p-3 border border-white/10 text-center">
+            <Mic size={18} className="text-pink-400 mx-auto mb-1" />
+            <p className="text-xl font-bold text-white">{grouped.pronunciation.length}</p>
+            <p className="text-blue-200/50 text-[10px]">Pronunciation</p>
+            <div className="w-full bg-white/10 rounded-full h-1.5 mt-1.5">
               <div className="bg-pink-500 h-1.5 rounded-full transition-all" style={{ width: `${progression.pronunciation}%` }} />
             </div>
           </div>
-          <div className="bg-white/5 backdrop-blur rounded-2xl p-4 border border-white/10 text-center">
-            <Library size={20} className="text-emerald-400 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-white">{grouped.grammar.length}</p>
-            <p className="text-blue-200/50 text-xs">Grammar</p>
-            <div className="w-full bg-white/10 rounded-full h-1.5 mt-2">
+          <div className="bg-white/5 backdrop-blur rounded-2xl p-3 border border-white/10 text-center">
+            <Library size={18} className="text-emerald-400 mx-auto mb-1" />
+            <p className="text-xl font-bold text-white">{grouped.grammar.length}</p>
+            <p className="text-blue-200/50 text-[10px]">Grammar</p>
+            <div className="w-full bg-white/10 rounded-full h-1.5 mt-1.5">
               <div className="bg-emerald-500 h-1.5 rounded-full transition-all" style={{ width: `${progression.grammar}%` }} />
             </div>
           </div>
-          <div className="bg-white/5 backdrop-blur rounded-2xl p-4 border border-white/10 text-center">
-            <BookOpen size={20} className="text-amber-400 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-white">{grouped.vocabulary.length}</p>
-            <p className="text-blue-200/50 text-xs">Vocabulary</p>
-            <div className="w-full bg-white/10 rounded-full h-1.5 mt-2">
+          <div className="bg-white/5 backdrop-blur rounded-2xl p-3 border border-white/10 text-center">
+            <BookOpen size={18} className="text-amber-400 mx-auto mb-1" />
+            <p className="text-xl font-bold text-white">{grouped.vocabulary.length}</p>
+            <p className="text-blue-200/50 text-[10px]">Vocabulary</p>
+            <div className="w-full bg-white/10 rounded-full h-1.5 mt-1.5">
               <div className="bg-amber-500 h-1.5 rounded-full transition-all" style={{ width: `${progression.vocabulary}%` }} />
             </div>
           </div>
-          <div className="bg-white/5 backdrop-blur rounded-2xl p-4 border border-white/10 text-center">
-            <Clock size={20} className="text-blue-400 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-white">{progression.total}%</p>
-            <p className="text-blue-200/50 text-xs">Progression</p>
-            <div className="w-full bg-white/10 rounded-full h-1.5 mt-2">
+          <div className="bg-white/5 backdrop-blur rounded-2xl p-3 border border-white/10 text-center">
+            <PlayCircle size={18} className="text-violet-400 mx-auto mb-1" />
+            <p className="text-xl font-bold text-white">{grouped.practice.length}</p>
+            <p className="text-blue-200/50 text-[10px]">Practice</p>
+            <div className="w-full bg-white/10 rounded-full h-1.5 mt-1.5">
+              <div className="bg-violet-500 h-1.5 rounded-full transition-all" style={{ width: `${progression.practice}%` }} />
+            </div>
+          </div>
+          <div className="bg-white/5 backdrop-blur rounded-2xl p-3 border border-white/10 text-center">
+            <Clock size={18} className="text-blue-400 mx-auto mb-1" />
+            <p className="text-xl font-bold text-white">{progression.total}%</p>
+            <p className="text-blue-200/50 text-[10px]">Total</p>
+            <div className="w-full bg-white/10 rounded-full h-1.5 mt-1.5">
               <div className="bg-blue-500 h-1.5 rounded-full transition-all" style={{ width: `${progression.total}%` }} />
             </div>
           </div>
@@ -304,7 +326,7 @@ export function EspaceLangue() {
           </div>
         ) : (
           <div className="space-y-5">
-            {(['listening', 'pronunciation', 'grammar', 'vocabulary']).map((secKey) => {
+            {(['listening', 'pronunciation', 'grammar', 'vocabulary', 'practice']).map((secKey) => {
               const sec = SECTION_CONFIG[secKey];
               const secChaps = grouped[secKey] || [];
               if (secChaps.length === 0) return null;
