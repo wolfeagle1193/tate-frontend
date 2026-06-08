@@ -93,9 +93,11 @@ export function EspaceLangue() {
     localStorage.setItem('tate_langue_progress', JSON.stringify({ lus: Array.from(newLus) }));
   };
 
+  const getToken = () => localStorage.getItem('accessToken') || localStorage.getItem('tate_token');
+
   const chargerCours = async () => {
     try {
-      const token = localStorage.getItem('tate_token');
+      const token = getToken();
       const { data } = await axios.get(`${API}/chapitres?niveau=Adulte&matiereCode=AN-AD`, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -116,7 +118,7 @@ export function EspaceLangue() {
 
   const ouvrirLecon = async (chap) => {
     try {
-      const token = localStorage.getItem('tate_token');
+      const token = getToken();
       const { data } = await axios.get(`${API}/lecons/chapitre/${chap._id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
