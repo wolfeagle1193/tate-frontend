@@ -14,6 +14,8 @@ import { RegisterProf }   from './pages/RegisterProf';
 
 import { LangueLogin }    from './pages/LangueLogin';
 import { EspaceLangue }   from './pages/EspaceLangue';
+import { EspaceInfo }     from './pages/EspaceInfo';
+import { PageLeconInfo }  from './pages/PageLeconInfo';
 
 import { AccueilEleve, PageCours } from './pages/eleve/PagesEleve';
 import { Tutorat }               from './pages/eleve/Tutorat';
@@ -58,7 +60,7 @@ function RouterEleve() {
   const { leconActive } = useEleveStore();
   // Les adultes ne passent jamais par l'espace élève scolaire
   if (user?.role === 'eleve' && user?.niveau === 'Adulte') {
-    return <Navigate to="/langue/dashboard" replace />;
+    return <Navigate to={user?.formation === 'excel' ? '/informatique/dashboard' : '/langue/dashboard'} replace />;
   }
   if (leconActive) return <PageCours />;
   return <AccueilEleve />;
@@ -69,7 +71,9 @@ function RootRedirect() {
   const { user } = useAuthStore();
   if (!user) return <Navigate to="/login" replace />;
   // Les adultes (clients langues) vont DIRECTEMENT sur leur espace anglais
-  if (user.role === 'eleve' && user.niveau === 'Adulte') return <Navigate to="/langue/dashboard" replace />;
+  // Les utilisateurs de la formation Excel iront via le bouton du login
+  if (user.role === 'eleve' && user.niveau === 'Adulte' && user.formation !== 'excel') return <Navigate to="/langue/dashboard" replace />;
+  if (user.role === 'eleve' && user.niveau === 'Adulte' && user.formation === 'excel') return <Navigate to="/informatique/dashboard" replace />;
   const routes = { admin: '/admin', prof: '/prof', eleve: '/eleve', parent: '/parent' };
   return <Navigate to={routes[user.role] || '/login'} replace />;
 }
@@ -234,6 +238,14 @@ function AppContent() {
           {/* ── LANGUE (Adultes) ──────────────────────── */}
           <Route path="/langue/dashboard" element={
             <PrivateRoute roles={['eleve','admin']}><EspaceLangue /></PrivateRoute>
+          } />
+
+          {/* ── INFORMATIQUE (Formation Excel) ────────── */}
+          <Route path="/informatique/dashboard" element={
+            <PrivateRoute roles={['eleve','admin']}><EspaceInfo /></PrivateRoute>
+          } />
+          <Route path="/informatique/lecon/:leconId" element={
+            <PrivateRoute roles={['eleve','admin']}><PageLeconInfo /></PrivateRoute>
           } />
 
           {/* Fallback */}
