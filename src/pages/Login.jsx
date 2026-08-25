@@ -256,6 +256,7 @@ export function Login() {
               {[
                 { label: 'Élève', path: '/register/eleve' },
                 { label: 'Étudiant', path: '/register/eleve', badge: 'Anglais' },
+                { label: 'Formation', path: '/register/eleve', badge: 'Excel' },
                 { label: 'Parent', path: '/register/parent' },
                 { label: 'Professeur', path: '/register/prof' },
               ].map(lnk => (
