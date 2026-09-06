@@ -52,6 +52,10 @@ export function Login() {
 
   // ── Redirection si déjà connecté (après tous les hooks) ──
   if (user) {
+    // Adulte : on va vers son espace de formation (langues ou informatique)
+    if (user.role === 'eleve' && user.niveau === 'Adulte') {
+      return <Navigate to={user.formation === 'excel' ? '/informatique/dashboard' : '/langue/dashboard'} replace />;
+    }
     const routes = { admin: '/admin', prof: '/prof', eleve: '/eleve', parent: '/parent' };
     return <Navigate to={routes[user.role] || '/eleve'} replace />;
   }
@@ -65,6 +69,11 @@ export function Login() {
       localStorage.setItem('refreshToken', refreshToken);
       setUser(user);
       toast.success(`Bienvenue, ${user.nom.split(' ')[0]} ! 👋`);
+      // Adulte : va sur son espace de formation
+      if (user.role === 'eleve' && user.niveau === 'Adulte') {
+        navigate(user.formation === 'excel' ? '/informatique/dashboard' : '/langue/dashboard', { replace: true });
+        return;
+      }
       // Si l'élève n'a pas encore choisi son niveau, on le redirige vers la config
       if (user.isNew && user.role === 'eleve') {
         navigate('/eleve/profil', { replace: true });
@@ -86,9 +95,9 @@ export function Login() {
     try {
       const user = await login(identifiant.trim(), password, mode);
       toast.success(`Bienvenue, ${user.nom.split(' ')[0]} ! 👋`);
-      // Rediriger les adultes vers l'espace langue
+      // Rediriger les adultes vers leur espace de formation (informatique ou langues)
       if (user.role === 'eleve' && user.niveau === 'Adulte') {
-        navigate('/langue/dashboard', { replace: true });
+        navigate(user.formation === 'excel' ? '/informatique/dashboard' : '/langue/dashboard', { replace: true });
         return;
       }
       const routes = { admin: '/admin', prof: '/prof', eleve: '/eleve', parent: '/parent' };
