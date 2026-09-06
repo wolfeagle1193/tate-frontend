@@ -1,12 +1,9 @@
 import { useState } from 'react';
-import { useNavigate, Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mail, Lock, Eye, EyeOff, ArrowRight, FileSpreadsheet } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import toast from 'react-hot-toast';
-import axios from 'axios';
-
-const API = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 // Page de connexion de l'espace Informatique (Excel) — même style que l'espace Langues.
 export function InfoLogin() {
@@ -14,7 +11,6 @@ export function InfoLogin() {
   const [password, setPassword] = useState('');
   const [showPwd, setShowPwd] = useState(false);
   const { login, loading, user } = useAuthStore();
-  const navigate = useNavigate();
 
   if (user) {
     if (user.role === 'eleve' && user.niveau === 'Adulte') return <Navigate to="/informatique/dashboard" replace />;
@@ -26,22 +22,13 @@ export function InfoLogin() {
     if (!email || !password) return toast.error('Veuillez remplir tous les champs');
 
     try {
-      const { data } = await axios.post(`${API}/auth/login`, {
-        email, password,
-        type: 'informatique'
-      });
-
-      if (data?.success && data?.data) {
-        useAuthStore.getState().setUser(data.data);
-        const token = data.data.token || data.token;
-        if (token) localStorage.setItem('tate_token', token);
-        toast.success('Bienvenue !');
-
-        // Force la navigation vers le dashboard informatique
-        window.location.href = '/informatique/dashboard';
-      }
+      // Utilise le vrai login du store : pose accessToken + refreshToken + user (comme /login)
+      await login(email, password, 'email');
+      toast.success('Bienvenue !');
+      // Force la navigation vers le dashboard informatique
+      window.location.href = '/informatique/dashboard';
     } catch (err) {
-      const msg = err.response?.data?.error || 'Email ou mot de passe incorrect';
+      const msg = err?.response?.data?.error || err?.message || 'Email ou mot de passe incorrect';
       toast.error(msg);
     }
   };
