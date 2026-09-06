@@ -273,6 +273,25 @@ export function Login() {
             </div>
           </div>
 
+          {/* Accès espaces spécialisés (langues / informatique) */}
+          <div className="mt-5 p-4 rounded-2xl border border-tate-border bg-white/60 shadow-sm">
+            <p className="text-xs font-bold text-tate-terre/50 mb-2 uppercase tracking-wide">
+              Espaces spécialisés
+            </p>
+            <div className="flex flex-col gap-2">
+              <button onClick={() => navigate('/langue/login')}
+                className="flex items-center justify-between w-full text-left px-4 py-2.5 rounded-xl border border-blue-200 bg-blue-50 hover:bg-blue-100 transition text-sm font-semibold text-blue-800">
+                🌍 Taté Langues
+                <span className="text-blue-400">→</span>
+              </button>
+              <button onClick={() => navigate('/informatique/login')}
+                className="flex items-center justify-between w-full text-left px-4 py-2.5 rounded-xl border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 transition text-sm font-semibold text-emerald-800">
+                📊 Taté Excel / Informatique
+                <span className="text-emerald-500">→</span>
+              </button>
+            </div>
+          </div>
+
           <p className="text-center text-xs text-tate-terre/30 mt-6">
             Taté © 2025 — L'école numérique
           </p>

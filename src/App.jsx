@@ -13,6 +13,7 @@ import { RegisterParent } from './pages/RegisterParent';
 import { RegisterProf }   from './pages/RegisterProf';
 
 import { LangueLogin }    from './pages/LangueLogin';
+import { InfoLogin }      from './pages/InfoLogin';
 import { EspaceLangue }   from './pages/EspaceLangue';
 import { EspaceInfo }     from './pages/EspaceInfo';
 import { PageLeconInfo }  from './pages/PageLeconInfo';
@@ -145,6 +146,7 @@ function AppContent() {
           <Route path="/register/prof"    element={<RegisterProf />} />
           <Route path="/"                 element={<RootRedirect />} />
           <Route path="/langue/login"     element={<LangueLogin />} />
+          <Route path="/informatique/login" element={<InfoLogin />} />
 
           {/* ── ADMIN ──────────────────────────────────── */}
           <Route path="/admin" element={

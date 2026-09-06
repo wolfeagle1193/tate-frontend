@@ -72,8 +72,8 @@ export function PageLeconInfo() {
 
             {/* Le contenu HTML */}
             {lecon.contenuHTML ? (
-              <div className="bg-white rounded-2xl border border-tate-border shadow-card overflow-hidden">
-                <div className="p-4 sm:p-6 lecon-content"
+              <div className="bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 rounded-2xl border border-white/10 shadow-card overflow-hidden">
+                <div className="p-4 sm:p-6 md:p-8 lecon-contenu"
                   dangerouslySetInnerHTML={{ __html: lecon.contenuHTML }} />
               </div>
             ) : (
